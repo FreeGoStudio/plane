@@ -49,7 +49,7 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
   // refs
   const dropElementRef = useRef<HTMLDivElement | null>(null);
   // plane hooks
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // state
   const [createState, setCreateState] = useState(false);
   // derived values
@@ -79,7 +79,9 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
         trigger={
           <span className="flex w-full items-center gap-1">
             <StateGroupIcon stateGroup={groupKey} size={EIconSize.LG} className="shrink-0" />
-            <span className="text-body-sm-medium text-primary capitalize">{groupKey}</span>
+            <span className="text-body-sm-medium text-primary capitalize">
+              {currentLocale === "zh-CN" ? t(`workspace_projects.state.${groupKey}`) : groupKey}
+            </span>
           </span>
         }
         trailing={
