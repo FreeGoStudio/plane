@@ -25,6 +25,8 @@ export const getFileURL = (path: string): string | undefined => {
  * @returns {string} assetId
  */
 export const getAssetIdFromUrl = (src: string): string => {
+  // drop query string / hash so they don't leak into the asset key
+  src = src.split(/[?#]/, 1)[0];
   // remove the last char if it is a slash
   if (src.charAt(src.length - 1) === "/") src = src.slice(0, -1);
   const sourcePaths = src.split("/");
@@ -44,7 +46,8 @@ export const getBase64Image = async (url: string): Promise<string> => {
 
   // Try to create a URL object to validate the URL
   try {
-    new URL(url);
+    const parsedUrl = new URL(url);
+    if (!parsedUrl.protocol) throw new Error("Missing URL protocol");
   } catch {
     throw new Error("Invalid URL format");
   }
@@ -67,9 +70,9 @@ export const getBase64Image = async (url: string): Promise<string> => {
       }
     };
 
-    reader.onerror = () => {
+    reader.addEventListener("error", () => {
       reject(new Error("Failed to read the image file."));
-    };
+    });
 
     reader.readAsDataURL(blob);
   });
