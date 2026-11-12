@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "昨天",
+      "last_7_days": "最近 7 天",
+      "last_30_days": "最近 30 天",
       "one_week_from_now": "一週後",
       "two_weeks_from_now": "兩週後",
       "one_month_from_now": "一個月後",

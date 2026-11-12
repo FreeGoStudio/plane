@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Вчера",
+      "last_7_days": "Последние 7 дней",
+      "last_30_days": "Последние 30 дней",
       "one_week_from_now": "Через 1 неделю",
       "two_weeks_from_now": "Через 2 недели",
       "one_month_from_now": "Через 1 месяц",

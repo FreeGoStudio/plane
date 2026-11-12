@@ -5,6 +5,7 @@
  */
 
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 // plane imports
 import { PAST_DURATION_FILTER_OPTIONS } from "@plane/constants";
 import type { TInboxIssueFilterDateKeys } from "@plane/types";
@@ -19,7 +20,8 @@ type Props = {
 };
 
 export const FilterDate = observer(function FilterDate(props: Props) {
-  const { filterKey, label = "Created date" } = props;
+  const { t } = useTranslation();
+  const { filterKey, label = t("common.date_filter.created_date") } = props;
   // hooks
   const { inboxFilters, handleInboxIssueFilters } = useProjectInbox();
   // derived values

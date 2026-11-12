@@ -19,6 +19,7 @@ const dictionaries = Object.fromEntries(
 );
 const translate = (key) => key.split(".").reduce((value, part) => value?.[part], dictionaries[locale]) ?? key;
 const mocks = {
+  "@plane/utils": { useDateFormatter: () => ({ renderFormattedDate: (value) => value }) },
   "react/jsx-runtime": require("react/jsx-runtime"),
   "mobx-react": { observer: (component) => component },
   "@plane/constants": constants,
@@ -56,6 +57,42 @@ const { FilterPriority } = load("./filters/priority.tsx");
 const { FilterStatus } = load("./filters/status.tsx");
 const { InboxIssueFilterSelection } = load("./filters/filter-selection.tsx");
 const { InboxIssueAppliedFiltersPriority } = load("./applied-filters/priority.tsx");
+const { FilterDate } = load("./filters/date.tsx");
+const { InboxIssueAppliedFiltersDate } = load("./applied-filters/date.tsx");
+
+test("date presets and selected chips translate without changing date filter values", () => {
+  const values = ["today", "yesterday", "last_7_days", "last_30_days"];
+  for (locale of ["zh-CN", "en", "zh-CN"]) {
+    filters = { created_at: ["yesterday"] };
+    const menu = FilterDate({ filterKey: "created_at" });
+    assert.equal(menu.props.label, translate("common.date_filter.created_date"));
+    assert.deepEqual(
+      menu.props.options.map((option) => option.value),
+      values
+    );
+    const labels = menu.props.options.map((option) => translate(option.i18n_name));
+    assert.deepEqual(
+      labels,
+      locale === "zh-CN"
+        ? ["今天", "昨天", "最近 7 天", "最近 30 天"]
+        : ["Today", "Yesterday", "Last 7 days", "Last 30 days"]
+    );
+    menu.props.onToggleOption("last_7_days");
+    assert.deepEqual(updates.pop(), ["created_at", ["last_7_days"]]);
+    menu.props.onToggleOption("yesterday");
+    assert.deepEqual(updates.pop(), ["created_at", []]);
+    filters = { created_at: values };
+    const chips = flatten(InboxIssueAppliedFiltersDate({ filterKey: "created_at", label: "date" })).filter(
+      (node) => node?.type === "RemovableChip"
+    );
+    assert.deepEqual(
+      chips.map((chip) => chip.props.label),
+      labels
+    );
+    chips[1].props.onRemove();
+    assert.deepEqual(updates.pop(), ["created_at", ["today", "last_7_days", "last_30_days"]]);
+  }
+});
 test("filter button, categories and priority options follow language changes", () => {
   for (locale of ["zh-CN", "en", "zh-CN"]) {
     assert.ok(flatten(FiltersRoot()).includes(translate("common.filters")));

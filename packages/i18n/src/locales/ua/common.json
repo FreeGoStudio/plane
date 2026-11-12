@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Учора",
+      "last_7_days": "Останні 7 днів",
+      "last_30_days": "Останні 30 днів",
       "one_week_from_now": "Через 1 тиждень",
       "two_weeks_from_now": "Через 2 тижні",
       "one_month_from_now": "Через 1 місяць",

@@ -731,6 +731,9 @@
     "execution": "Изпълнение",
     "administration": "Администриране",
     "date_filter": {
+      "yesterday": "Вчера",
+      "last_7_days": "Последните 7 дни",
+      "last_30_days": "Последните 30 дни",
       "one_week_from_now": "След 1 седмица",
       "two_weeks_from_now": "След 2 седмици",
       "one_month_from_now": "След 1 месец",

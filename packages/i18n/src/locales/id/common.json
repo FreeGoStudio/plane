@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Kemarin",
+      "last_7_days": "7 hari terakhir",
+      "last_30_days": "30 hari terakhir",
       "one_week_from_now": "1 minggu dari sekarang",
       "two_weeks_from_now": "2 minggu dari sekarang",
       "one_month_from_now": "1 bulan dari sekarang",

@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Včera",
+      "last_7_days": "Posledných 7 dní",
+      "last_30_days": "Posledných 30 dní",
       "one_week_from_now": "O 1 týždeň",
       "two_weeks_from_now": "O 2 týždne",
       "one_month_from_now": "O 1 mesiac",

@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Hôm qua",
+      "last_7_days": "7 ngày qua",
+      "last_30_days": "30 ngày qua",
       "one_week_from_now": "1 tuần nữa",
       "two_weeks_from_now": "2 tuần nữa",
       "one_month_from_now": "1 tháng nữa",

@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Wczoraj",
+      "last_7_days": "Ostatnie 7 dni",
+      "last_30_days": "Ostatnie 30 dni",
       "one_week_from_now": "Za 1 tydzień",
       "two_weeks_from_now": "Za 2 tygodnie",
       "one_month_from_now": "Za 1 miesiąc",

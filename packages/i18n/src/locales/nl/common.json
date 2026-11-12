@@ -731,6 +731,9 @@
     "execution": "Uitvoering",
     "administration": "Beheer",
     "date_filter": {
+      "yesterday": "Gisteren",
+      "last_7_days": "Afgelopen 7 dagen",
+      "last_30_days": "Afgelopen 30 dagen",
       "one_week_from_now": "Over 1 week",
       "two_weeks_from_now": "Over 2 weken",
       "one_month_from_now": "Over 1 maand",

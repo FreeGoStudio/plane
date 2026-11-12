@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Ieri",
+      "last_7_days": "Ultimele 7 zile",
+      "last_30_days": "Ultimele 30 de zile",
       "one_week_from_now": "Peste 1 săptămână",
       "two_weeks_from_now": "Peste 2 săptămâni",
       "one_month_from_now": "Peste 1 lună",

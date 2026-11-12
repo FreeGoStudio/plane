@@ -731,6 +731,9 @@
     "execution": "Execution",
     "administration": "Administration",
     "date_filter": {
+      "yesterday": "Dün",
+      "last_7_days": "Son 7 gün",
+      "last_30_days": "Son 30 gün",
       "one_week_from_now": "1 hafta sonra",
       "two_weeks_from_now": "2 hafta sonra",
       "one_month_from_now": "1 ay sonra",
