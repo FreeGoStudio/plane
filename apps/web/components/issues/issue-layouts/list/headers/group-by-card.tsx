@@ -59,6 +59,7 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
   } = props;
   // plane hooks
   const { t } = useTranslation();
+  const displayTitle = !props.groupBy && groupID === "All Issues" && !isEpic ? t("space_ui.all_work_items") : title;
   // states
   const [isOpen, setIsOpen] = useState(false);
   const [openExistingIssueListModal, setOpenExistingIssueListModal] = useState(false);
@@ -118,12 +119,12 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
 
         <button
           type="button"
-          aria-label={title}
+          aria-label={displayTitle}
           aria-expanded={isExpanded}
           className="relative flex w-full min-w-0 cursor-pointer flex-row items-center gap-1 rounded-xs text-left outline-none focus-visible:ring-2 focus-visible:ring-accent-strong"
           onClick={() => handleCollapsedGroups(groupID)}
         >
-          <span className="line-clamp-1 inline-block truncate text-body-sm-medium text-primary">{title}</span>
+          <span className="line-clamp-1 inline-block truncate text-body-sm-medium text-primary">{displayTitle}</span>
           <span className="pl-2 text-body-xs-medium text-tertiary">{count || 0}</span>
           <span className="px-2.5" />
         </button>
