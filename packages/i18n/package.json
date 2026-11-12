@@ -15,8 +15,9 @@
   "scripts": {
     "dev": "tsdown --watch --no-clean",
     "build": "pnpm run generate:types && tsdown",
-    "generate:types": "tsx scripts/generate-types.ts",
+    "generate:types": "tsx scripts/generate-types.ts && tsx scripts/generate-loader.ts",
     "sync:check": "tsx scripts/sync-check.ts",
+    "test": "tsx --test scripts/*.test.ts",
     "check:sync": "tsx scripts/sync-check.ts --ci",
     "check:lint": "oxlint --max-warnings=9 .",
     "check:types": "pnpm run generate:types && tsc --noEmit",
