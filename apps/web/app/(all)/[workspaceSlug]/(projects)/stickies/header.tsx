@@ -50,7 +50,7 @@ export const WorkspaceStickyHeader = observer(function WorkspaceStickyHeader() {
             variant="primary"
             size="md"
             stretch="auto"
-            label="Add sticky"
+            label={t("stickies.add")}
             onClick={() => {
               toggleShowNewSticky(true);
               stickyOperations.create();
