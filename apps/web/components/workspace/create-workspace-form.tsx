@@ -11,7 +11,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Field } from "@makeplane/propel/components/field";
 import { Input, InputGroup } from "@makeplane/propel/components/input";
 import { ORGANIZATION_SIZE, RESTRICTED_URLS } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { setToast } from "@plane/blocks/toast";
 import type { IWorkspace } from "@plane/types";
@@ -129,7 +129,7 @@ export const CreateWorkspaceForm = observer(function CreateWorkspaceForm(props: 
               name="name"
               rules={{
                 required: t("common.errors.required"),
-                validate: (value) => validateWorkspaceName(value, true),
+                validate: (value) => translateValidationMessage(validateWorkspaceName(value, true), t),
                 maxLength: {
                   value: 80,
                   message: t("workspace_creation.errors.validation.name_length"),

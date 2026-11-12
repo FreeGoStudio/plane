@@ -1547,5 +1547,24 @@
     "change_image": "更换图片",
     "upload_image": "上传图片",
     "just_myself": "只有我"
+  },
+  "workspace_ui": {
+    "invitation_removed_successfully": "邀请已移除。",
+    "suspended": "已停用",
+    "workspace_updated_successfully": "工作空间已更新",
+    "workspace_picture_removed_successfully": "工作空间图片已移除。",
+    "there_was_some_error_in_deleting_your_profile_picture_please_try_again": "删除图片失败，请重试。",
+    "workspace_url_copied_to_the_clipboard": "工作空间地址已复制到剪贴板。",
+    "link_copied": "链接已复制！",
+    "failed_to_delete_the_view_please_try_again": "删除视图失败，请重试。",
+    "view_created_successfully": "视图已创建。",
+    "view_could_not_be_created_please_try_again": "创建视图失败，请重试。",
+    "view_updated_successfully": "视图已更新。",
+    "view_could_not_be_updated_please_try_again": "更新视图失败，请重试。",
+    "edit_view": "编辑视图",
+    "delete_view": "删除视图",
+    "an_error_occurred_while_updating_member_role_please_try_again": "更新成员角色失败，请重试。",
+    "remove_member_title": "移除 {name}？",
+    "remove_member_description": "确定要移除 {name} 吗？该成员将无法再访问此工作空间，此操作无法撤销。"
   }
 }

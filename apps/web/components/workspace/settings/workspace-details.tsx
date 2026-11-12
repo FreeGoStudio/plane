@@ -14,7 +14,7 @@ import { InputField } from "@makeplane/propel/components/input-field";
 import { TextButton } from "@makeplane/propel/components/text-button";
 import { WorkspaceAvatar } from "@makeplane/propel/components/workspace-avatar";
 import { ORGANIZATION_SIZE, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { EditOutline } from "@makeplane/propel/icons";
 import { setToast } from "@plane/blocks/toast";
@@ -74,9 +74,9 @@ export const WorkspaceDetails = observer(function WorkspaceDetails() {
     try {
       await updateWorkspace(currentWorkspace.slug, payload);
       setToast({
-        title: "Success!",
+        title: t("success"),
         type: "success",
-        message: "Workspace updated successfully",
+        message: t("workspace_ui.workspace_updated_successfully"),
       });
     } catch (err: unknown) {
       console.error(err);
@@ -96,14 +96,14 @@ export const WorkspaceDetails = observer(function WorkspaceDetails() {
       });
       setToast({
         type: "success",
-        title: "Success!",
-        message: "Workspace picture removed successfully.",
+        title: t("success"),
+        message: t("workspace_ui.workspace_picture_removed_successfully"),
       });
     } catch {
       setToast({
         type: "error",
-        title: "Error!",
-        message: "There was some error in deleting your profile picture. Please try again.",
+        title: t("error"),
+        message: t("workspace_ui.there_was_some_error_in_deleting_your_profile_picture_please_try_again"),
       });
     }
   };
@@ -115,7 +115,7 @@ export const WorkspaceDetails = observer(function WorkspaceDetails() {
       .then(() => {
         setToast({
           type: "success",
-          title: "Workspace URL copied to the clipboard.",
+          title: t("workspace_ui.workspace_url_copied_to_the_clipboard"),
         });
         return undefined;
       })
@@ -198,7 +198,7 @@ export const WorkspaceDetails = observer(function WorkspaceDetails() {
                 control={control}
                 name="name"
                 rules={{
-                  validate: (value) => validateWorkspaceName(value, true),
+                  validate: (value) => translateValidationMessage(validateWorkspaceName(value, true), t),
                 }}
                 render={({ field: { value, onChange, ref } }) => (
                   <InputField
@@ -239,7 +239,12 @@ export const WorkspaceDetails = observer(function WorkspaceDetails() {
                     <SelectContent side="bottom" align="end">
                       <SelectList>
                         {ORGANIZATION_SIZE.map((item) => (
-                          <SelectItem key={item} value={item} size="lg" label={item} />
+                          <SelectItem
+                            key={item}
+                            value={item}
+                            size="lg"
+                            label={item === "Just myself" ? t("onboarding_ui.just_myself") : item}
+                          />
                         ))}
                       </SelectList>
                     </SelectContent>

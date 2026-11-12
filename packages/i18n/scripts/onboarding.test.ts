@@ -35,13 +35,16 @@ function scan(directory: string) {
   }
 }
 scan(root);
-test("onboarding messages resolve in both languages and preserve interpolated user content", async () => {
+scan(path.resolve(root, "../workspace/settings"));
+scan(path.resolve(root, "../workspace/views"));
+test("onboarding and workspace messages resolve in both languages and preserve interpolated user content", async () => {
   for (const locale of ["zh-CN", "en"] as const) {
     // The shared instance must finish one language before the next assertion set.
     // oxlint-disable-next-line no-await-in-loop
     await setLanguage(locale);
     for (const key of keys)
       assert.notEqual(translate(key, { name: "用户 原名", email: "User@example.com", current: 2, total: 5 }), key, key);
+    assert.ok(translate("workspace_ui.remove_member_description", { name: "成员 Original" }).includes("成员 Original"));
     const welcome = translate("onboarding_ui.welcome", { name: "用户 原名" });
     assert.ok(welcome.includes("用户 原名"));
     assert.ok(
