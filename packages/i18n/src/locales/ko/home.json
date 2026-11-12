@@ -1,5 +1,10 @@
 {
   "home": {
+    "greetings": {
+      "morning": "좋은 아침, {name}",
+      "afternoon": "좋은 오후, {name}",
+      "evening": "좋은 저녁, {name}"
+    },
     "date_display": {
       "title": "Home date format",
       "description": "Choose the order of year, month and day on your home page.",

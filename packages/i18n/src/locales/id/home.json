@@ -1,5 +1,10 @@
 {
   "home": {
+    "greetings": {
+      "morning": "Bagus pagi, {name}",
+      "afternoon": "Bagus siang, {name}",
+      "evening": "Bagus malam, {name}"
+    },
     "date_display": {
       "title": "Home date format",
       "description": "Choose the order of year, month and day on your home page.",

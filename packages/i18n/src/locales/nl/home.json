@@ -1,5 +1,10 @@
 {
   "home": {
+    "greetings": {
+      "morning": "Goede morgen, {name}",
+      "afternoon": "Goede middag, {name}",
+      "evening": "Goede avond, {name}"
+    },
     "date_display": {
       "title": "Home date format",
       "description": "Choose the order of year, month and day on your home page.",

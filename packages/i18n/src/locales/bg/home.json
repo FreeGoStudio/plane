@@ -1,5 +1,10 @@
 {
   "home": {
+    "greetings": {
+      "morning": "Добре дошли тази сутрин, {name}",
+      "afternoon": "Добре дошли този следобед, {name}",
+      "evening": "Добре дошли тази вечер, {name}"
+    },
     "date_display": {
       "title": "Home date format",
       "description": "Choose the order of year, month and day on your home page.",

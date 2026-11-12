@@ -33,7 +33,7 @@ export const UserGreetingsView = observer(function UserGreetingsView(props: IUse
   return (
     <div className="my-6 flex flex-col items-center">
       <h2 className="text-center text-h4-semibold">
-        {t("good")} {t(greeting)}, {user?.first_name} {user?.last_name}
+        {t(`home.greetings.${greeting}`, { name: [user.first_name, user.last_name].filter(Boolean).join(" ") })}
       </h2>
       <h5 className="flex items-center gap-2 font-medium text-placeholder">
         <div>{greeting === "morning" ? "🌤️" : greeting === "afternoon" ? "🌥️" : "🌙️"}</div>

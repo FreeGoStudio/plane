@@ -11,3 +11,16 @@ test("runtime ICU formats parameters and follows the active language in Node", a
   await setLanguage("en");
   assert.equal(translate("editor_ui.heading_level", { level: 2 }), "Heading 2");
 });
+
+test("home greetings use Chinese sentence order and preserve English greetings", async () => {
+  await setLanguage("zh-CN");
+  for (const [period, expected] of [
+    ["morning", "早上好，Jacky"],
+    ["afternoon", "下午好，Jacky"],
+    ["evening", "晚上好，Jacky"],
+  ]) {
+    assert.equal(translate(`home.greetings.${period}`, { name: "Jacky" }), expected);
+  }
+  await setLanguage("en");
+  assert.equal(translate("home.greetings.afternoon", { name: "Jacky" }), "Good afternoon, Jacky");
+});

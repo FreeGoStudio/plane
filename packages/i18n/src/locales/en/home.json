@@ -1,5 +1,10 @@
 {
   "home": {
+    "greetings": {
+      "morning": "Good morning, {name}",
+      "afternoon": "Good afternoon, {name}",
+      "evening": "Good evening, {name}"
+    },
     "date_display": {
       "title": "Home date format",
       "description": "Choose the order of year, month and day on your home page.",
