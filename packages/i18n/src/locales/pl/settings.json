@@ -1,5 +1,9 @@
 {
   "account_settings": {
+    "start_of_week": {
+      "title": "First day of the week",
+      "description": "This will change how all calendars in your app look."
+    },
     "profile": {
       "change_email_modal": {
         "title": "Zmień e-mail",

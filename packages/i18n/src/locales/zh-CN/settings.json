@@ -1,5 +1,9 @@
 {
   "account_settings": {
+    "start_of_week": {
+      "title": "每周首日",
+      "description": "设置应用中所有日历一周从星期几开始。"
+    },
     "profile": {
       "change_email_modal": {
         "title": "更改邮箱",

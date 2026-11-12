@@ -7,6 +7,7 @@
 import { observer } from "mobx-react";
 // plane imports
 import { SelectField } from "@makeplane/propel/components/select-field";
+import { useTranslation } from "@plane/i18n";
 import { START_OF_THE_WEEK_OPTIONS } from "@plane/constants";
 import { setToast } from "@plane/blocks/toast";
 import type { EStartOfTheWeek } from "@plane/types";
@@ -19,6 +20,7 @@ export const StartOfWeekPreference = observer(function StartOfWeekPreference(pro
   option: { title: string; description: string };
 }) {
   // hooks
+  const { currentLocale } = useTranslation();
   const { data: userProfile, updateUserProfile } = useUserProfile();
 
   const handleStartOfWeekChange = async (val: EStartOfTheWeek) => {
@@ -39,7 +41,13 @@ export const StartOfWeekPreference = observer(function StartOfWeekPreference(pro
           aria-label={props.option.title}
           size="md"
           width="fit"
-          options={START_OF_THE_WEEK_OPTIONS}
+          options={START_OF_THE_WEEK_OPTIONS.map((option) => ({
+            value: option.value,
+            // January 7, 2024 was Sunday; UTC keeps weekday labels independent of the user's timezone.
+            label: new Intl.DateTimeFormat(currentLocale, { weekday: "long", timeZone: "UTC" }).format(
+              new Date(Date.UTC(2024, 0, 7 + option.value))
+            ),
+          }))}
           value={userProfile.start_of_the_week}
           onValueChange={(value) => {
             if (value !== null) void handleStartOfWeekChange(value);
