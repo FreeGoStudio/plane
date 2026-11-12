@@ -64,5 +64,42 @@
   },
   "formatting_toolbar": {
     "label": "Formatting"
+  },
+  "editor_controls": {
+    "color": "Color",
+    "text_colors": "Text colors",
+    "background_colors": "Background colors",
+    "clear_text_color": "Clear text color",
+    "clear_background_color": "Clear background color",
+    "color_text_label": "{color} text color",
+    "color_background_label": "{color} background color",
+    "link": "Link",
+    "link_url": "Link URL",
+    "link_placeholder": "Enter or paste a link",
+    "remove_link": "Remove link",
+    "apply_link": "Apply link",
+    "invalid_url": "Please enter a valid URL",
+    "loading": "Loading...",
+    "no_results": "No results",
+    "no_emojis": "No emojis found",
+    "header_row": "Header row",
+    "header_column": "Header column",
+    "insert_above": "Insert above",
+    "insert_below": "Insert below",
+    "insert_left": "Insert left",
+    "insert_right": "Insert right",
+    "duplicate": "Duplicate",
+    "clear_contents": "Clear contents",
+    "delete": "Delete",
+    "colors": {
+      "gray": "Gray",
+      "peach": "Peach",
+      "pink": "Pink",
+      "orange": "Orange",
+      "green": "Green",
+      "light-blue": "Light blue",
+      "dark-blue": "Dark blue",
+      "purple": "Purple"
+    }
   }
 }

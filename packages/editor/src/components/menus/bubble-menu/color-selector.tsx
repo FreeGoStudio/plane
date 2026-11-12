@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Editor } from "@tiptap/react";
 import { DeactivatedOutline, TextOutline } from "@makeplane/propel/icons";
 import { useMemo } from "react";
@@ -27,6 +28,7 @@ type Props = {
 };
 
 export function BubbleMenuColorSelector(props: Props) {
+  const { t } = useTranslation();
   const { editor, editorState } = props;
   // floating ui
   const { options, getReferenceProps, getFloatingProps } = useFloatingMenu({});
@@ -44,7 +46,7 @@ export function BubbleMenuColorSelector(props: Props) {
       )}
       menuButton={
         <>
-          <ToolbarMenuTriggerLabel>Color</ToolbarMenuTriggerLabel>
+          <ToolbarMenuTriggerLabel>{t("editor_controls.color")}</ToolbarMenuTriggerLabel>
           <span
             className={cn("grid size-6 flex-shrink-0 place-items-center rounded-sm border-[0.5px] border-strong", {
               "bg-surface-1": !activeBackgroundColor,
@@ -70,13 +72,13 @@ export function BubbleMenuColorSelector(props: Props) {
     >
       <PopoverPopup variant="rich" render={<section className="mt-1" />}>
         <div className="space-y-1.5">
-          <p className="text-body-xs-medium text-secondary">Text colors</p>
-          <div role="group" aria-label="Text colors" className="flex items-center gap-2">
+          <p className="text-body-xs-medium text-secondary">{t("editor_controls.text_colors")}</p>
+          <div role="group" aria-label={t("editor_controls.text_colors")} className="flex items-center gap-2">
             {COLORS_LIST.map((color) => (
               <button
                 key={color.key}
                 type="button"
-                aria-label={`${color.label} text color`}
+                aria-label={t("editor_controls.color_text_label", { color: t(`editor_controls.colors.${color.key}`) })}
                 aria-pressed={activeTextColor?.key === color.key}
                 className={cn(
                   "size-6 shrink-0 cursor-pointer rounded-sm border-xs border-subtle transition-opacity outline-none hover:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-1",
@@ -92,7 +94,7 @@ export function BubbleMenuColorSelector(props: Props) {
               type="button"
               variant="secondary"
               size="sm"
-              aria-label="Clear text color"
+              aria-label={t("editor_controls.clear_text_color")}
               onClick={() => TextColorItem(editor).command({ color: undefined })}
             >
               <Icon icon={DeactivatedOutline} />
@@ -100,13 +102,15 @@ export function BubbleMenuColorSelector(props: Props) {
           </div>
         </div>
         <div className="space-y-1.5">
-          <p className="text-body-xs-medium text-secondary">Background colors</p>
-          <div role="group" aria-label="Background colors" className="flex items-center gap-2">
+          <p className="text-body-xs-medium text-secondary">{t("editor_controls.background_colors")}</p>
+          <div role="group" aria-label={t("editor_controls.background_colors")} className="flex items-center gap-2">
             {COLORS_LIST.map((color) => (
               <button
                 key={color.key}
                 type="button"
-                aria-label={`${color.label} background color`}
+                aria-label={t("editor_controls.color_background_label", {
+                  color: t(`editor_controls.colors.${color.key}`),
+                })}
                 aria-pressed={activeBackgroundColor?.key === color.key}
                 className={cn(
                   "size-6 shrink-0 cursor-pointer rounded-sm border-xs border-subtle transition-opacity outline-none hover:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-1",
@@ -122,7 +126,7 @@ export function BubbleMenuColorSelector(props: Props) {
               type="button"
               variant="secondary"
               size="sm"
-              aria-label="Clear background color"
+              aria-label={t("editor_controls.clear_background_color")}
               onClick={() => BackgroundColorItem(editor).command({ color: undefined })}
             >
               <Icon icon={DeactivatedOutline} />

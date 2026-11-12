@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import { TableMap } from "@tiptap/pm/tables";
 import {
@@ -32,19 +33,19 @@ const DROPDOWN_ITEMS: {
 }[] = [
   {
     key: "insert-left",
-    label: "Insert left",
+    label: "editor_controls.insert_left",
     icon: ArrowNarrowLeftOutline,
     action: (editor) => editor.chain().focus().addColumnBefore().run(),
   },
   {
     key: "insert-right",
-    label: "Insert right",
+    label: "editor_controls.insert_right",
     icon: ArrowNarrowRightOutline,
     action: (editor) => editor.chain().focus().addColumnAfter().run(),
   },
   {
     key: "duplicate",
-    label: "Duplicate",
+    label: "editor_controls.duplicate",
     icon: CopyOutline,
     action: (editor) => {
       const table = findTable(editor.state.selection);
@@ -59,13 +60,13 @@ const DROPDOWN_ITEMS: {
   },
   {
     key: "clear-contents",
-    label: "Clear contents",
+    label: "editor_controls.clear_contents",
     icon: CloseOutline,
     action: (editor) => editor.chain().focus().clearSelectedCells().run(),
   },
   {
     key: "delete",
-    label: "Delete",
+    label: "editor_controls.delete",
     icon: DeleteOutline,
     action: (editor) => editor.chain().focus().deleteColumn().run(),
   },
@@ -77,6 +78,7 @@ type Props = {
 };
 
 export function ColumnOptionsDropdown(props: Props) {
+  const { t } = useTranslation();
   const { editor, onClose } = props;
 
   return (
@@ -91,7 +93,7 @@ export function ColumnOptionsDropdown(props: Props) {
         }}
       >
         <MenuItemContent>
-          <MenuItemTitle>Header column</MenuItemTitle>
+          <MenuItemTitle>{t("editor_controls.header_column")}</MenuItemTitle>
         </MenuItemContent>
         <MenuItemTrailing>
           <Icon icon={ToggleFilled} tint="secondary" />
@@ -113,7 +115,7 @@ export function ColumnOptionsDropdown(props: Props) {
         >
           <Icon icon={item.icon} />
           <MenuItemContent>
-            <MenuItemTitle>{item.label}</MenuItemTitle>
+            <MenuItemTitle>{t(item.label)}</MenuItemTitle>
           </MenuItemContent>
         </FloatingMenuItem>
       ))}

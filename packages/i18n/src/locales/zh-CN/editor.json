@@ -64,5 +64,42 @@
   },
   "formatting_toolbar": {
     "label": "格式"
+  },
+  "editor_controls": {
+    "color": "颜色",
+    "text_colors": "文字颜色",
+    "background_colors": "背景颜色",
+    "clear_text_color": "清除文字颜色",
+    "clear_background_color": "清除背景颜色",
+    "color_text_label": "{color}文字",
+    "color_background_label": "{color}背景",
+    "link": "链接",
+    "link_url": "链接地址",
+    "link_placeholder": "输入或粘贴链接",
+    "remove_link": "移除链接",
+    "apply_link": "应用链接",
+    "invalid_url": "请输入有效的 URL",
+    "loading": "正在加载…",
+    "no_results": "没有匹配结果",
+    "no_emojis": "没有找到表情",
+    "header_row": "表头行",
+    "header_column": "表头列",
+    "insert_above": "在上方插入",
+    "insert_below": "在下方插入",
+    "insert_left": "在左侧插入",
+    "insert_right": "在右侧插入",
+    "duplicate": "复制",
+    "clear_contents": "清空内容",
+    "delete": "删除",
+    "colors": {
+      "gray": "灰色",
+      "peach": "桃色",
+      "pink": "粉色",
+      "orange": "橙色",
+      "green": "绿色",
+      "light-blue": "浅蓝色",
+      "dark-blue": "深蓝色",
+      "purple": "紫色"
+    }
   }
 }

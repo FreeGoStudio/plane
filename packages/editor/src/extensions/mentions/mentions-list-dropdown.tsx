@@ -4,9 +4,19 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { FloatingOverlay } from "@floating-ui/react";
 import type { SuggestionProps } from "@tiptap/suggestion";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { v4 as uuidv4 } from "uuid";
 import { debounce } from "lodash-es";
 // propel imports
@@ -31,6 +41,7 @@ export type MentionsListDropdownProps = SuggestionProps<TMentionSection, TMentio
   };
 
 export const MentionsListDropdown = forwardRef(function MentionsListDropdown(props: MentionsListDropdownProps, ref) {
+  const { t } = useTranslation();
   const { command, query, searchCallback, onClose } = props;
   // states
   const [sections, setSections] = useState<TMentionSection[]>([]);
@@ -91,19 +102,20 @@ export const MentionsListDropdown = forwardRef(function MentionsListDropdown(pro
   }, [sections]);
 
   // debounced search callback
-  const debouncedSearchCallback = useCallback(
-    debounce(async (searchQuery: string) => {
-      try {
-        const sectionsResponse = await searchCallback?.(searchQuery);
-        if (sectionsResponse) {
-          setSections(sectionsResponse);
+  const debouncedSearchCallback = useMemo(
+    () =>
+      debounce(async (searchQuery: string) => {
+        try {
+          const sectionsResponse = await searchCallback?.(searchQuery);
+          if (sectionsResponse) {
+            setSections(sectionsResponse);
+          }
+        } catch (error) {
+          console.error("Failed to fetch suggestions:", error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.error("Failed to fetch suggestions:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300),
+      }, 300),
     [searchCallback]
   );
 
@@ -157,6 +169,7 @@ export const MentionsListDropdown = forwardRef(function MentionsListDropdown(pro
         render={
           <div
             ref={dropdownContainer}
+            role="presentation"
             className="relative"
             style={{ zIndex: 100 }}
             onClick={(e) => {
@@ -169,7 +182,7 @@ export const MentionsListDropdown = forwardRef(function MentionsListDropdown(pro
         }
       >
         {isLoading ? (
-          <div className="p-2 text-center text-body-sm-regular text-placeholder">Loading...</div>
+          <div className="p-2 text-center text-body-sm-regular text-placeholder">{t("editor_controls.loading")}</div>
         ) : sections.length ? (
           sections.map((section, sectionIndex) => (
             <SuggestionMenuGroup key={section.key}>
@@ -218,7 +231,7 @@ export const MentionsListDropdown = forwardRef(function MentionsListDropdown(pro
             </SuggestionMenuGroup>
           ))
         ) : (
-          <div className="p-2 text-center text-body-sm-regular text-placeholder">No results</div>
+          <div className="p-2 text-center text-body-sm-regular text-placeholder">{t("editor_controls.no_results")}</div>
         )}
       </SuggestionMenu>
     </>

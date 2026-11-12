@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { ChevronDownOutline, DeactivatedOutline } from "@makeplane/propel/icons";
 import { Icon } from "@makeplane/propel/components/icon";
 import { Button } from "@makeplane/propel/elements/button";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export function CalloutBlockColorSelector(props: Props) {
+  const { t } = useTranslation();
   const { disabled, isOpen, onSelect, toggleDropdown } = props;
 
   const handleColorSelect = (val: string | null) => {
@@ -51,18 +53,20 @@ export function CalloutBlockColorSelector(props: Props) {
           }}
           disabled={disabled}
         >
-          <span>Color</span>
+          <span>{t("editor_controls.color")}</span>
           <Icon icon={ChevronDownOutline} />
         </Button>
         {isOpen && (
           <section className="animate-in fade-in slide-in-from-top-1 absolute top-full right-0 z-10 mt-1">
             <PopoverPopup variant="rich">
-              <div role="group" aria-label="Background colors" className="flex items-center gap-2">
+              <div role="group" aria-label={t("editor_controls.background_colors")} className="flex items-center gap-2">
                 {COLORS_LIST.map((color) => (
                   <button
                     key={color.key}
                     type="button"
-                    aria-label={`${color.label} background color`}
+                    aria-label={t("editor_controls.color_background_label", {
+                      color: t(`editor_controls.colors.${color.key}`),
+                    })}
                     className="size-6 shrink-0 cursor-pointer rounded-sm border-xs border-subtle transition-opacity outline-none hover:opacity-60 focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-1"
                     style={{
                       backgroundColor: color.backgroundColor,
@@ -74,7 +78,7 @@ export function CalloutBlockColorSelector(props: Props) {
                   type="button"
                   variant="secondary"
                   size="sm"
-                  aria-label="Clear background color"
+                  aria-label={t("editor_controls.clear_background_color")}
                   onClick={() => handleColorSelect(null)}
                 >
                   <Icon icon={DeactivatedOutline} />

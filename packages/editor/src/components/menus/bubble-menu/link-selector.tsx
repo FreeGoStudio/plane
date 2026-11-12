@@ -4,9 +4,10 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 
-import { useCallback, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { DeleteOutline, LinkOutline, TickOutline } from "@makeplane/propel/icons";
 // plane imports
 import { Icon } from "@makeplane/propel/components/icon";
@@ -27,6 +28,7 @@ type Props = {
 };
 
 export function BubbleMenuLinkSelector(props: Props) {
+  const { t } = useTranslation();
   const { editor } = props;
   const errorId = useId();
   // states
@@ -36,6 +38,9 @@ export function BubbleMenuLinkSelector(props: Props) {
   const { context } = options;
   // refs
   const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (context.open) inputRef.current?.focus();
+  }, [context.open]);
 
   const handleLinkSubmit = useCallback(() => {
     const input = inputRef.current;
@@ -64,7 +69,7 @@ export function BubbleMenuLinkSelector(props: Props) {
       getReferenceProps={getReferenceProps}
       menuButton={
         <span className={editor.isActive(CORE_EXTENSIONS.CUSTOM_LINK) ? "contents text-primary" : "contents"}>
-          <ToolbarMenuTriggerLabel>Link</ToolbarMenuTriggerLabel>
+          <ToolbarMenuTriggerLabel>{t("editor_controls.link")}</ToolbarMenuTriggerLabel>
           <Icon icon={LinkOutline} />
         </span>
       }
@@ -77,11 +82,11 @@ export function BubbleMenuLinkSelector(props: Props) {
             size="md"
             ref={inputRef}
             type="url"
-            aria-label="Link URL"
+            aria-label={t("editor_controls.link_url")}
             aria-invalid={error || undefined}
             aria-describedby={error ? errorId : undefined}
             data-invalid={error ? "" : undefined}
-            placeholder="Enter or paste a link"
+            placeholder={t("editor_controls.link_placeholder")}
             onClick={(e) => e.stopPropagation()}
             defaultValue={editor.getAttributes("link").href || ""}
             onKeyDown={(e) => {
@@ -92,14 +97,13 @@ export function BubbleMenuLinkSelector(props: Props) {
               }
             }}
             onFocus={() => setError(false)}
-            autoFocus
           />
           {editor.getAttributes("link").href ? (
             <IconButton
               type="button"
               variant="ghost"
               size="sm"
-              aria-label="Remove link"
+              aria-label={t("editor_controls.remove_link")}
               showTooltip={false}
               icon={<Icon icon={DeleteOutline} tint="danger" />}
               onClick={(e) => {
@@ -113,7 +117,7 @@ export function BubbleMenuLinkSelector(props: Props) {
               type="button"
               variant="ghost"
               size="sm"
-              aria-label="Apply link"
+              aria-label={t("editor_controls.apply_link")}
               showTooltip={false}
               icon={<Icon icon={TickOutline} />}
               onClick={(e) => {
@@ -128,7 +132,7 @@ export function BubbleMenuLinkSelector(props: Props) {
             id={errorId}
             className="animate-in fade-in slide-in-from-top-0 pointer-events-none text-caption-sm-regular text-danger-primary"
           >
-            Please enter a valid URL
+            {t("editor_controls.invalid_url")}
           </p>
         )}
       </PopoverPopup>
