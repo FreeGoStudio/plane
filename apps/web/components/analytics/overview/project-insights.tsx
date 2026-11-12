@@ -30,6 +30,16 @@ const RadarChart = lazy(function RadarChart() {
 
 const analyticsService = new AnalyticsService();
 
+const INSIGHT_LABEL_KEYS: Record<string, string> = {
+  "work items": "work_items",
+  cycles: "cycles",
+  modules: "modules",
+  intake: "intake",
+  members: "members",
+  pages: "pages",
+  views: "views",
+};
+
 const ProjectInsights = observer(function ProjectInsights() {
   const params = useParams();
   const { t } = useTranslation();
@@ -53,6 +63,11 @@ const ProjectInsights = observer(function ProjectInsights() {
       )
   );
 
+  const localizedInsightsData = projectInsightsData?.map((item) => {
+    const translationKey = INSIGHT_LABEL_KEYS[item.name.toLowerCase()];
+    return Object.assign({}, item, { name: translationKey ? t(translationKey) : item.name });
+  });
+
   return (
     <AnalyticsSectionWrapper
       title={`${t("workspace_analytics.project_insights")}`}
@@ -70,11 +85,11 @@ const ProjectInsights = observer(function ProjectInsights() {
         />
       ) : (
         <div className="gap-8 xl:flex">
-          {projectInsightsData && (
+          {localizedInsightsData && (
             <Suspense fallback={<ProjectInsightsLoader />}>
               <RadarChart
                 className={cn(ANALYTICS_CHART_HEIGHT_CLASSNAME, "w-full text-accent-primary xl:w-3/5")}
-                data={projectInsightsData}
+                data={localizedInsightsData}
                 dataKey="key"
                 radars={[
                   {
@@ -105,7 +120,7 @@ const ProjectInsights = observer(function ProjectInsights() {
                 <div>{t("workspace_analytics.trend_on_charts")}</div>
                 <div>{t("common.work_items")}</div>
               </div>
-              {projectInsightsData?.map((item) => (
+              {localizedInsightsData?.map((item) => (
                 <div key={item.key} className="flex items-center justify-between text-body-xs-regular text-primary">
                   <div>{item.name}</div>
                   <div className="flex items-center gap-1">
