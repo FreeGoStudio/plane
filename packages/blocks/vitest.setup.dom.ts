@@ -9,6 +9,7 @@
 
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach } from "vitest";
+import { setLanguage } from "@plane/i18n";
 
 /**
  * jsdom implements neither observer API. Base UI's floating positioning needs a `ResizeObserver`
@@ -114,7 +115,10 @@ function stubElementMethod(name: string, value: () => unknown) {
   proto[name] = value;
 }
 
-beforeEach(() => {
+beforeEach(async () => {
+  // Component assertions use English; await real resources and reset language between tests.
+  // Locale-specific tests can explicitly switch language after this shared setup.
+  await setLanguage("en");
   globalThis.ResizeObserver ??= TestResizeObserver;
   globalThis.IntersectionObserver ??= TestIntersectionObserver;
   stubLayoutBox();
