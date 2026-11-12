@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import * as React from "react";
 import { cn } from "@plane/utils";
 import { OAuthButton } from "./oauth-button";
@@ -25,6 +26,7 @@ type OAuthOptionsProps = {
 };
 
 export function OAuthOptions(props: OAuthOptionsProps) {
+  const { t } = useTranslation();
   const { options, compact = false, showDivider = true, className = "", containerClassName = "" } = props;
 
   // Filter enabled options
@@ -52,7 +54,7 @@ export function OAuthOptions(props: OAuthOptionsProps) {
         <div className="mt-4 flex items-center transition-all duration-300">
           <hr className="w-full border-strong transition-colors duration-300" />
           <p className="mx-3 flex-shrink-0 text-center text-body-xs-regular text-placeholder transition-colors duration-300">
-            or
+            {t("common.or")}
           </p>
           <hr className="w-full border-strong transition-colors duration-300" />
         </div>

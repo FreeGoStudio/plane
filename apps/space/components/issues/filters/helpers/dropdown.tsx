@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type React from "react";
 // plane imports
 import { toSideAndAlign } from "@plane/blocks/common";
@@ -18,7 +19,8 @@ type Props = {
 };
 
 export function FiltersDropdown(props: Props) {
-  const { children, title = "Dropdown", placement = "auto" } = props;
+  const { t } = useTranslation();
+  const { children, title = t("space_ui.dropdown"), placement = "auto" } = props;
   const { side, align } = toSideAndAlign(placement);
 
   return (

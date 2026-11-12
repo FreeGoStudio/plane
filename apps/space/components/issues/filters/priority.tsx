@@ -30,12 +30,14 @@ export const FilterPriority = observer(function FilterPriority(props: Props) {
 
   const appliedFiltersCount = appliedFilters?.length ?? 0;
 
-  const filteredOptions = ISSUE_PRIORITY_FILTERS.filter((p) => p.key.includes(searchQuery.toLowerCase()));
+  const filteredOptions = ISSUE_PRIORITY_FILTERS.filter((p) =>
+    t(p.titleTranslationKey).toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase())
+  );
 
   return (
     <>
       <FilterHeader
-        title={`Priority${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={t("space_ui.priority_count", { count: appliedFiltersCount })}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -45,7 +47,7 @@ export const FilterPriority = observer(function FilterPriority(props: Props) {
             filteredOptions.map((priority) => (
               <FilterOption
                 key={priority.key}
-                isChecked={appliedFilters?.includes(priority.key) ? true : false}
+                isChecked={Boolean(appliedFilters?.includes(priority.key))}
                 onClick={() => handleUpdate(priority.key)}
                 icon={<PriorityIcon priority={priority.key} className="h-3.5 w-3.5" />}
                 title={t(priority.titleTranslationKey)}

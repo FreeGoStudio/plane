@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useSearchParams } from "next/navigation";
@@ -30,6 +31,7 @@ import { AuthUniqueCodeForm } from "./unique-code";
 const authService = new SitesAuthService();
 
 export const AuthRoot = observer(function AuthRoot() {
+  const { t } = useTranslation();
   // router params
   const searchParams = useSearchParams();
   const emailParam = searchParams.get("email") || undefined;
@@ -46,7 +48,7 @@ export const AuthRoot = observer(function AuthRoot() {
 
   useEffect(() => {
     if (error_code) {
-      const errorhandler = authErrorHandler(error_code?.toString() as EAuthenticationErrorCodes);
+      const errorhandler = authErrorHandler(error_code?.toString() as EAuthenticationErrorCodes, t);
       if (errorhandler) {
         if (errorhandler.code === EAuthenticationErrorCodes.AUTHENTICATION_FAILED_SIGN_IN) {
           setAuthMode(EAuthModes.SIGN_IN);
@@ -79,12 +81,12 @@ export const AuthRoot = observer(function AuthRoot() {
         setErrorInfo(errorhandler);
       }
     }
-  }, [error_code]);
+  }, [error_code, t]);
 
   const isSMTPConfigured = config?.is_smtp_configured || false;
   const isMagicLoginEnabled = config?.is_magic_login_enabled || false;
   const isEmailPasswordEnabled = config?.is_email_password_enabled || false;
-  const oAuthActionText = authMode === EAuthModes.SIGN_UP ? "Sign up" : "Sign in";
+  const oAuthActionText = authMode === EAuthModes.SIGN_UP ? t("space_ui.sign_up") : t("space_ui.sign_in");
   const { isOAuthEnabled, oAuthOptions } = useOAuthConfig(oAuthActionText);
 
   // submit handler- email verification
@@ -111,7 +113,7 @@ export const AuthRoot = observer(function AuthRoot() {
             setIsPasswordAutoset(false);
             setAuthStep(EAuthSteps.PASSWORD);
           } else {
-            const errorhandler = authErrorHandler("5005" as EAuthenticationErrorCodes);
+            const errorhandler = authErrorHandler("5005" as EAuthenticationErrorCodes, t);
             setErrorInfo(errorhandler);
           }
         } else {
@@ -121,26 +123,26 @@ export const AuthRoot = observer(function AuthRoot() {
           } else if (isEmailPasswordEnabled) {
             setAuthStep(EAuthSteps.PASSWORD);
           } else {
-            const errorhandler = authErrorHandler("5006" as EAuthenticationErrorCodes);
+            const errorhandler = authErrorHandler("5006" as EAuthenticationErrorCodes, t);
             setErrorInfo(errorhandler);
           }
         }
         return;
       })
       .catch((error) => {
-        const errorhandler = authErrorHandler(error?.error_code?.toString(), data?.email || undefined);
+        const errorhandler = authErrorHandler(error?.error_code?.toString(), t, data?.email || undefined);
         if (errorhandler?.type) setErrorInfo(errorhandler);
       });
   };
 
   // generating the unique code
-  const generateEmailUniqueCode = async (email: string): Promise<{ code: string } | undefined> => {
-    const payload = { email: email };
+  const generateEmailUniqueCode = async (recipientEmail: string): Promise<{ code: string } | undefined> => {
+    const payload = { email: recipientEmail };
     return await authService
       .generateUniqueCode(payload)
       .then(() => ({ code: "" }))
       .catch((error) => {
-        const errorhandler = authErrorHandler(error?.error_code.toString());
+        const errorhandler = authErrorHandler(error?.error_code.toString(), t);
         if (errorhandler?.type) setErrorInfo(errorhandler);
         throw error;
       });
@@ -185,7 +187,7 @@ export const AuthRoot = observer(function AuthRoot() {
             }}
           />
         )}
-        <TermsAndConditions isSignUp={authMode === EAuthModes.SIGN_UP ? true : false} />
+        <TermsAndConditions isSignUp={authMode === EAuthModes.SIGN_UP} />
       </div>
     </div>
   );

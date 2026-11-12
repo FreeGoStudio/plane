@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Banner } from "@makeplane/propel/components/banner";
 // helpers
 import type { TAuthErrorInfo } from "@/helpers/authentication.helper";
@@ -14,6 +15,7 @@ type TAuthBanner = {
 };
 
 export function AuthBanner(props: TAuthBanner) {
+  const { t } = useTranslation();
   const { bannerData, handleBannerData } = props;
 
   if (!bannerData) return <></>;
@@ -22,6 +24,7 @@ export function AuthBanner(props: TAuthBanner) {
       placement="inline"
       variant="info"
       description={bannerData.message}
+      dismissLabel={t("space_ui.dismiss")}
       onDismiss={() => handleBannerData?.(undefined)}
     />
   );

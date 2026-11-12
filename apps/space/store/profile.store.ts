@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { resolveLanguage, setLanguage } from "@plane/i18n";
 import { set } from "lodash-es";
 import { action, makeObservable, observable, runInAction } from "mobx";
 // plane imports
@@ -90,6 +91,7 @@ export class ProfileStore implements IProfileStore {
         this.error = undefined;
       });
       const userProfile = await this.userService.profile();
+      await setLanguage(resolveLanguage(userProfile.language));
       runInAction(() => {
         this.isLoading = false;
         this.data = userProfile;
@@ -121,6 +123,7 @@ export class ProfileStore implements IProfileStore {
         });
       }
       const userProfile = await this.userService.updateProfile(data);
+      if (data.language !== undefined) await setLanguage(resolveLanguage(userProfile.language));
       return userProfile;
     } catch (_error) {
       if (currentUserProfileData) {

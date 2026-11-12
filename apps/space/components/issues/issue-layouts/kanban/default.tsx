@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+import { localizeGroupColumns } from "@/helpers/localization";
 import type { MutableRefObject } from "react";
 import { isNil } from "lodash-es";
 import { observer } from "mobx-react";
@@ -50,6 +52,7 @@ export interface IKanBan {
 }
 
 export const KanBan = observer(function KanBan(props: IKanBan) {
+  const { t } = useTranslation();
   const {
     groupedIssueIds,
     displayProperties,
@@ -70,7 +73,11 @@ export const KanBan = observer(function KanBan(props: IKanBan) {
   const modules = useModule();
   const state = useStates();
 
-  const groupList = getGroupByColumns(groupBy as GroupByColumnTypes, cycle, modules, label, state, member);
+  const groupList = localizeGroupColumns(
+    getGroupByColumns(groupBy as GroupByColumnTypes, cycle, modules, label, state, member),
+    groupBy,
+    t
+  );
 
   if (!groupList) return null;
 

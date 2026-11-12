@@ -60,7 +60,7 @@ export const PeekOverviewIssueActivity = observer(function PeekOverviewIssueActi
             <div className="mb-4 flex items-center justify-between gap-2 rounded-sm border border-strong bg-layer-2 px-2 py-2.5">
               <p className="flex items-center gap-2 overflow-hidden text-body-xs-regular break-words text-secondary">
                 <LockOutline className="size-3 shrink-0" />
-                Sign in to add your comment
+                {t("space_ui.sign_in_comment")}
               </p>
               <Button
                 variant="primary"
@@ -68,7 +68,7 @@ export const PeekOverviewIssueActivity = observer(function PeekOverviewIssueActi
                 stretch="auto"
                 nativeButton={false}
                 render={<Link to={`/?next_path=${pathname}`} />}
-                label="Sign in"
+                label={t("space_ui.sign_in")}
               />
             </div>
           ))}

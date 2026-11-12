@@ -5,33 +5,34 @@
  */
 
 // ui
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 
+const handleRetry = () => {
+  window.location.reload();
+};
+
 function ErrorPage() {
-  const handleRetry = () => {
-    window.location.reload();
-  };
+  const { t } = useTranslation();
 
   return (
     <div className="grid h-screen place-items-center bg-surface-1 p-4">
       <div className="space-y-8 text-center">
         <div className="space-y-2">
-          <h3 className="text-h6-semibold">Yikes! That doesn{"'"}t look good.</h3>
+          <h3 className="text-h6-semibold">{t("space_ui.crash_title")}</h3>
           <p className="mx-auto text-body-xs-regular text-secondary md:w-1/2">
-            That crashed Plane, pun intended. No worries, though. Our engineers have been notified. If you have more
-            details, please write to{" "}
+            {t("space_ui.crash_help")}{" "}
             <a href="mailto:support@plane.so" className="text-accent-primary">
               support@plane.so
-            </a>{" "}
-            or on our{" "}
-            <a href="https://forum.plane.so" target="_blank" className="text-accent-primary" rel="noopener noreferrer">
-              Forum
             </a>
-            .
+            {" · "}
+            <a href="https://forum.plane.so" target="_blank" className="text-accent-primary" rel="noopener noreferrer">
+              {t("space_ui.forum")}
+            </a>
           </p>
         </div>
         <div className="flex items-center justify-center gap-2">
-          <Button variant="primary" size="md" stretch="auto" label="Refresh" onClick={handleRetry} />
+          <Button variant="primary" size="md" stretch="auto" label={t("space_ui.refresh")} onClick={handleRetry} />
           {/* <Button variant="secondary" size="lg" onClick={() => {}}>
             Sign out
           </Button> */}

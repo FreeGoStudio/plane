@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import { observer } from "mobx-react";
 // ui
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const FilterState = observer(function FilterState(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate, searchQuery } = props;
 
   const { sortedStates: states } = useStates();
@@ -44,7 +46,7 @@ export const FilterState = observer(function FilterState(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`State${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={t("space_ui.state_count", { count: appliedFiltersCount })}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -56,7 +58,7 @@ export const FilterState = observer(function FilterState(props: Props) {
                 {filteredOptions.slice(0, itemsToRender).map((state) => (
                   <FilterOption
                     key={state.id}
-                    isChecked={appliedFilters?.includes(state.id) ? true : false}
+                    isChecked={Boolean(appliedFilters?.includes(state.id))}
                     onClick={() => handleUpdate(state.id)}
                     icon={<StateGroupIcon stateGroup={state.group} color={state.color} size={EIconSize.MD} />}
                     title={state.name}
@@ -68,12 +70,12 @@ export const FilterState = observer(function FilterState(props: Props) {
                     className="ml-8 text-caption-sm-medium text-accent-primary"
                     onClick={handleViewToggle}
                   >
-                    {itemsToRender === filteredOptions.length ? "View less" : "View all"}
+                    {itemsToRender === filteredOptions.length ? t("space_ui.view_less") : t("space_ui.view_all")}
                   </button>
                 )}
               </>
             ) : (
-              <p className="text-caption-sm-regular text-placeholder italic">No matches found</p>
+              <p className="text-caption-sm-regular text-placeholder italic">{t("space_ui.no_matches")}</p>
             )
           ) : (
             <Loader className="space-y-2">

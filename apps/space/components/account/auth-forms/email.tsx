@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { FormEvent } from "react";
 import { useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react";
@@ -24,14 +25,15 @@ type TAuthEmailForm = {
 };
 
 export const AuthEmailForm = observer(function AuthEmailForm(props: TAuthEmailForm) {
+  const { t } = useTranslation();
   const { onSubmit, defaultEmail } = props;
   // states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [email, setEmail] = useState(defaultEmail);
 
   const emailError = useMemo(
-    () => (email && !checkEmailValidity(email) ? { email: "Email is invalid" } : undefined),
-    [email]
+    () => (email && !checkEmailValidity(email) ? { email: t("space_ui.invalid_email") } : undefined),
+    [email, t]
   );
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -53,7 +55,7 @@ export const AuthEmailForm = observer(function AuthEmailForm(props: TAuthEmailFo
     <form onSubmit={handleFormSubmit} className="mt-5 space-y-4">
       <div className="space-y-1">
         <label className="text-body-xs-medium text-tertiary" htmlFor="email">
-          Email
+          {t("space_ui.email")}
         </label>
         <div
           className={cn(
@@ -83,7 +85,7 @@ export const AuthEmailForm = observer(function AuthEmailForm(props: TAuthEmailFo
           {email.length > 0 && (
             <button
               type="button"
-              aria-label="Clear email"
+              aria-label={t("space_ui.clear_email")}
               onClick={() => {
                 setEmail("");
                 inputRef.current?.focus();
@@ -108,7 +110,7 @@ export const AuthEmailForm = observer(function AuthEmailForm(props: TAuthEmailFo
         stretch="full"
         disabled={isButtonDisabled}
         loading={isSubmitting}
-        label="Continue"
+        label={t("space_ui.continue")}
       />
     </form>
   );

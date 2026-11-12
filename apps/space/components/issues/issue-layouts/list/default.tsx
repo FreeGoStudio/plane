@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+import { localizeGroupColumns } from "@/helpers/localization";
 import { useRef } from "react";
 import { observer } from "mobx-react";
 // types
@@ -41,6 +43,7 @@ export interface IList {
 }
 
 export const List = observer(function List(props: IList) {
+  const { t } = useTranslation();
   const {
     groupedIssueIds,
     groupBy,
@@ -60,7 +63,11 @@ export const List = observer(function List(props: IList) {
   const modules = useModule();
   const state = useStates();
 
-  const groupList = getGroupByColumns(groupBy as GroupByColumnTypes, cycle, modules, label, state, member, true);
+  const groupList = localizeGroupColumns(
+    getGroupByColumns(groupBy as GroupByColumnTypes, cycle, modules, label, state, member, true),
+    groupBy,
+    t
+  );
 
   if (!groupList) return null;
 

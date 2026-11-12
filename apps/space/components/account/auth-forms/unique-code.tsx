@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useEffect, useState } from "react";
 import { CloseCircleOutline, TickCircleOutline } from "@makeplane/propel/icons";
 // plane imports
@@ -38,6 +39,7 @@ const defaultValues: TUniqueCodeFormValues = {
 };
 
 export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
+  const { t } = useTranslation();
   const { mode, email, nextPath, handleEmailClear, generateEmailUniqueCode } = props;
   // derived values
   const defaultResetTimerValue = 5;
@@ -52,10 +54,10 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
   const handleFormChange = (key: keyof TUniqueCodeFormValues, value: string) =>
     setUniqueCodeFormData((prev) => ({ ...prev, [key]: value }));
 
-  const generateNewCode = async (email: string) => {
+  const generateNewCode = async (recipientEmail: string) => {
     try {
       setIsRequestingNewCode(true);
-      const uniqueCode = await generateEmailUniqueCode(email);
+      const uniqueCode = await generateEmailUniqueCode(recipientEmail);
       setResendCodeTimer(defaultResetTimerValue);
       handleFormChange("code", uniqueCode?.code || "");
       setIsRequestingNewCode(false);
@@ -87,7 +89,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
       <input type="hidden" value={nextPath} name="next_path" />
       <div className="space-y-1">
         <label className="text-body-xs-medium text-tertiary" htmlFor="email">
-          Email
+          {t("space_ui.email")}
         </label>
         <div className="relative flex h-10 items-center rounded-md border border-subtle bg-surface-1 px-3 [&_input]:disable-autofill-style">
           <Input
@@ -104,7 +106,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
           {uniqueCodeFormData.email.length > 0 && (
             <button
               type="button"
-              aria-label="Clear email"
+              aria-label={t("space_ui.clear_email")}
               className="absolute right-3 hover:cursor-pointer"
               onClick={handleEmailClear}
               tabIndex={-1}
@@ -117,7 +119,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
 
       <div className="space-y-1">
         <label className="text-body-xs-medium text-tertiary" htmlFor="code">
-          Unique code
+          {t("space_ui.code")}
         </label>
         <div className="relative flex h-10 items-center rounded-md border border-subtle bg-surface-1 pr-12 pl-3 [&_input]:disable-autofill-style">
           <Input
@@ -135,7 +137,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
         <div className="flex w-full items-center justify-between px-1 pt-1 text-caption-sm-regular">
           <p className="flex items-center gap-1 font-medium text-success-primary">
             <TickCircleOutline height={12} width={12} />
-            Paste the code sent to your email
+            {t("space_ui.paste_code")}
           </p>
           <button
             type="button"
@@ -148,10 +150,10 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
             disabled={isRequestNewCodeDisabled}
           >
             {resendTimerCode > 0
-              ? `Resend in ${resendTimerCode}s`
+              ? t("space_ui.resend_seconds", { seconds: resendTimerCode })
               : isRequestingNewCode
-                ? "Requesting new code"
-                : "Resend"}
+                ? t("space_ui.request_code")
+                : t("space_ui.resend")}
           </button>
         </div>
       </div>
@@ -164,7 +166,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
           stretch="full"
           disabled={isButtonDisabled}
           loading={isSubmitting && !isRequestingNewCode}
-          label={isRequestingNewCode ? "Sending code" : "Continue"}
+          label={isRequestingNewCode ? t("space_ui.sending_code") : t("space_ui.continue")}
         />
       </div>
     </form>

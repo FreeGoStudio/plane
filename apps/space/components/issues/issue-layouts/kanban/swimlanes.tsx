@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+import { localizeGroupColumns } from "@/helpers/localization";
 import type { MutableRefObject } from "react";
 import { useState } from "react";
 import { observer } from "mobx-react";
@@ -50,6 +52,7 @@ export interface IKanBanSwimLanes {
 }
 
 export const KanBanSwimLanes = observer(function KanBanSwimLanes(props: IKanBanSwimLanes) {
+  const { t } = useTranslation();
   const {
     groupedIssueIds,
     displayProperties,
@@ -70,8 +73,16 @@ export const KanBanSwimLanes = observer(function KanBanSwimLanes(props: IKanBanS
   const modules = useModule();
   const state = useStates();
 
-  const groupByList = getGroupByColumns(groupBy as GroupByColumnTypes, cycle, modules, label, state, member);
-  const subGroupByList = getGroupByColumns(subGroupBy as GroupByColumnTypes, cycle, modules, label, state, member);
+  const groupByList = localizeGroupColumns(
+    getGroupByColumns(groupBy as GroupByColumnTypes, cycle, modules, label, state, member),
+    groupBy,
+    t
+  );
+  const subGroupByList = localizeGroupColumns(
+    getGroupByColumns(subGroupBy as GroupByColumnTypes, cycle, modules, label, state, member),
+    subGroupBy,
+    t
+  );
 
   if (!groupByList || !subGroupByList) return null;
 

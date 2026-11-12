@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router";
@@ -25,6 +26,7 @@ import { useUser } from "@/hooks/store/use-user";
 const authService = new AuthService();
 
 export const UserAvatar = observer(function UserAvatar() {
+  const { t } = useTranslation();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   // query params
@@ -56,7 +58,7 @@ export const UserAvatar = observer(function UserAvatar() {
     currentUser?.display_name ||
     `${currentUser?.first_name} ${currentUser?.first_name}` ||
     currentUser?.email ||
-    "User";
+    t("space_ui.user");
 
   return (
     <div className="relative mr-2">
@@ -97,7 +99,7 @@ export const UserAvatar = observer(function UserAvatar() {
               {csrfToken && (
                 <MenuItem
                   icon={<Icon icon={LogOutOutline} tint="danger" />}
-                  label="Sign out"
+                  label={t("space_ui.sign_out")}
                   onClick={() => signOutFormRef.current?.requestSubmit()}
                 />
               )}
@@ -112,7 +114,7 @@ export const UserAvatar = observer(function UserAvatar() {
             stretch="auto"
             nativeButton={false}
             render={<Link to={`/?next_path=${pathName}?${queryParam}`} />}
-            label="Sign in"
+            label={t("space_ui.sign_in")}
           />
         </div>
       )}

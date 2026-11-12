@@ -5,17 +5,19 @@
  */
 
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { EmptyStateDetailed } from "@plane/blocks/empty-state";
 
 function NotFound() {
+  const { t } = useTranslation();
   return (
     <div className="h-screen w-screen bg-surface-1 p-4">
       <EmptyStateDetailed
         align="center"
         assetKey="error-404"
         assetClassName="size-40"
-        title="That didn't work"
-        description="Check the URL you are entering in the browser's address bar and try again."
+        title={t("space_ui.not_found")}
+        description={t("space_ui.check_url")}
       />
     </div>
   );

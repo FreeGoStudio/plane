@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { PlaneLockup } from "@plane/blocks/icons";
 // assets
@@ -15,6 +16,7 @@ import { UserAvatar } from "@/components/issues/navbar/user-avatar";
 import { useUser } from "@/hooks/store/use-user";
 
 export const UserLoggedIn = observer(function UserLoggedIn() {
+  const { t } = useTranslation();
   // store hooks
   const { data: user } = useUser();
 
@@ -31,14 +33,11 @@ export const UserLoggedIn = observer(function UserLoggedIn() {
         <div className="text-center">
           <div className="mx-auto grid size-32 place-items-center rounded-full bg-layer-1 md:size-52">
             <div className="grid size-16 place-items-center md:size-32">
-              <img src={UserLoggedInImage} alt="User already logged in" className="h-full w-full object-cover" />
+              <img src={UserLoggedInImage} alt={t("space_ui.signed_in_image")} className="h-full w-full object-cover" />
             </div>
           </div>
-          <h1 className="mt-8 text-h5-semibold md:mt-12 md:text-h3-semibold">Nice! Just one more step.</h1>
-          <p className="mt-2 text-body-xs-regular md:mt-4 md:text-body-sm-regular">
-            Enter the public-share URL or link of the view or Page you are trying to see in the browser{"'"}s address
-            bar.
-          </p>
+          <h1 className="mt-8 text-h5-semibold md:mt-12 md:text-h3-semibold">{t("space_ui.one_step")}</h1>
+          <p className="mt-2 text-body-xs-regular md:mt-4 md:text-body-sm-regular">{t("space_ui.open_share")}</p>
         </div>
       </div>
       <PoweredBy />

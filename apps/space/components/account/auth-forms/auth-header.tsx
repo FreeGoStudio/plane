@@ -5,6 +5,7 @@
  */
 
 // helpers
+import { useTranslation } from "@plane/i18n";
 import { EAuthModes } from "@/types/auth";
 
 type TAuthHeader = {
@@ -20,19 +21,19 @@ type TAuthHeaderDetails = {
   [mode in EAuthModes]: TAuthHeaderContent;
 };
 
-const Titles: TAuthHeaderDetails = {
-  [EAuthModes.SIGN_IN]: {
-    header: "Sign in to upvote or comment",
-    subHeader: "Contribute in nudging the features you want to get built.",
-  },
-  [EAuthModes.SIGN_UP]: {
-    header: "View, comment, and do more",
-    subHeader: "Sign up or log in to work with Plane work items and Pages.",
-  },
-};
-
 export function AuthHeader(props: TAuthHeader) {
+  const { t } = useTranslation();
   const { authMode } = props;
+  const Titles: TAuthHeaderDetails = {
+    [EAuthModes.SIGN_IN]: {
+      header: t("space_ui.login_title"),
+      subHeader: t("space_ui.login_subtitle"),
+    },
+    [EAuthModes.SIGN_UP]: {
+      header: t("space_ui.signup_title"),
+      subHeader: t("space_ui.signup_subtitle"),
+    },
+  };
 
   const getHeaderSubHeader = (mode: EAuthModes | null): TAuthHeaderContent => {
     if (mode) {
@@ -40,8 +41,8 @@ export function AuthHeader(props: TAuthHeader) {
     }
 
     return {
-      header: "Comment or react to work items",
-      subHeader: "Use plane to add your valuable inputs to features.",
+      header: t("space_ui.comment_title"),
+      subHeader: t("space_ui.comment_subtitle"),
     };
   };
 

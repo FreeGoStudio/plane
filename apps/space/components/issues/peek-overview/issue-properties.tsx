@@ -51,9 +51,10 @@ export const PeekOverviewIssueProperties = observer(function PeekOverviewIssuePr
     copyTextToClipboard(urlToCopy).then(() => {
       setToast({
         type: "info",
-        title: "Link copied!",
-        message: "Work item link copied to clipboard",
+        title: t("space_ui.copied"),
+        message: t("space_ui.copied_message"),
       });
+      return undefined;
     });
   };
 

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { CloseCircleOutline, HideOutline, ShowOutline } from "@makeplane/propel/icons";
@@ -43,6 +44,7 @@ const defaultValues: TPasswordFormValues = {
 const authService = new AuthService();
 
 export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props) {
+  const { t } = useTranslation();
   const { email, nextPath, isSMTPConfigured, handleAuthStep, handleEmailClear, mode } = props;
   // ref
   const formRef = useRef<HTMLFormElement>(null);
@@ -82,14 +84,11 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
 
   const isButtonDisabled = useMemo(
     () =>
-      !isSubmitting &&
-      !!passwordFormData.password &&
-      (mode === EAuthModes.SIGN_UP
-        ? getPasswordStrength(passwordFormData.password) === E_PASSWORD_STRENGTH.STRENGTH_VALID &&
-          passwordFormData.password === passwordFormData.confirm_password
-        : true)
-        ? false
-        : true,
+      isSubmitting ||
+      !passwordFormData.password ||
+      (mode === EAuthModes.SIGN_UP &&
+        (getPasswordStrength(passwordFormData.password) !== E_PASSWORD_STRENGTH.STRENGTH_VALID ||
+          passwordFormData.password !== passwordFormData.confirm_password)),
     [isSubmitting, mode, passwordFormData.confirm_password, passwordFormData.password]
   );
 
@@ -126,7 +125,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
       <input type="hidden" value={nextPath} name="next_path" />
       <div className="space-y-1">
         <label className="text-body-xs-medium text-tertiary" htmlFor="email">
-          Email
+          {t("space_ui.email")}
         </label>
         <div className="relative flex h-10 items-center rounded-md border border-subtle bg-surface-1 px-3 [&_input]:disable-autofill-style">
           <Input
@@ -142,7 +141,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
           {passwordFormData.email.length > 0 && (
             <button
               type="button"
-              aria-label="Clear email"
+              aria-label={t("space_ui.clear_email")}
               className="absolute right-3 hover:cursor-pointer"
               onClick={handleEmailClear}
               tabIndex={-1}
@@ -155,7 +154,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
 
       <div className="space-y-1">
         <label className="text-body-xs-medium text-tertiary" htmlFor="password">
-          {mode === EAuthModes.SIGN_IN ? "Password" : "Set a password"}
+          {mode === EAuthModes.SIGN_IN ? t("space_ui.password") : t("space_ui.set_password")}
         </label>
         <div className="relative flex h-10 items-center rounded-md border border-subtle bg-surface-1 pr-12 pl-3 [&_input]:disable-autofill-style">
           <Input
@@ -165,10 +164,10 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
             size="xl"
             value={passwordFormData.password}
             onChange={(e) => handleFormChange("password", e.target.value)}
-            placeholder="Enter password"
+            placeholder={t("space_ui.enter_password")}
             onFocus={() => setIsPasswordInputFocused(true)}
             onBlur={() => setIsPasswordInputFocused(false)}
-            autoComplete="off"
+            autoComplete={mode === EAuthModes.SIGN_IN ? "current-password" : "new-password"}
             // oxlint-disable-next-line jsx-a11y/no-autofocus -- sole primary field of a dedicated auth step; matches standard sign-in flows
             autoFocus
           />
@@ -177,7 +176,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
               type="button"
               variant="ghost"
               size="sm"
-              aria-label={showPassword.password ? "Hide password" : "Show password"}
+              aria-label={showPassword.password ? t("space_ui.hide_password") : t("space_ui.show_password")}
               aria-pressed={showPassword.password}
               onClick={() => handleShowPassword("password")}
               icon={<Icon icon={showPassword.password ? HideOutline : ShowOutline} />}
@@ -190,7 +189,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
       {mode === EAuthModes.SIGN_UP && (
         <div className="space-y-1">
           <label className="text-body-xs-medium text-tertiary" htmlFor="confirm_password">
-            Confirm password
+            {t("space_ui.confirm_password")}
           </label>
           <div className="relative flex h-10 items-center rounded-md border border-subtle bg-surface-1 pr-12 pl-3 [&_input]:disable-autofill-style">
             <Input
@@ -200,17 +199,17 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
               size="xl"
               value={passwordFormData.confirm_password}
               onChange={(e) => handleFormChange("confirm_password", e.target.value)}
-              placeholder="Confirm password"
+              placeholder={t("space_ui.confirm_password")}
               onFocus={() => setIsRetryPasswordInputFocused(true)}
               onBlur={() => setIsRetryPasswordInputFocused(false)}
-              autoComplete="off"
+              autoComplete="new-password"
             />
             <span className="absolute right-2">
               <IconButton
                 type="button"
                 variant="ghost"
                 size="sm"
-                aria-label={showPassword.retypePassword ? "Hide password" : "Show password"}
+                aria-label={showPassword.retypePassword ? t("space_ui.hide_password") : t("space_ui.show_password")}
                 aria-pressed={showPassword.retypePassword}
                 onClick={() => handleShowPassword("retypePassword")}
                 icon={<Icon icon={showPassword.retypePassword ? HideOutline : ShowOutline} />}
@@ -220,7 +219,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
           {!!passwordFormData.confirm_password &&
             passwordFormData.password !== passwordFormData.confirm_password &&
             renderPasswordMatchError && (
-              <span className="text-body-xs-regular text-danger-primary">Passwords don{"'"}t match</span>
+              <span className="text-body-xs-regular text-danger-primary">{t("space_ui.password_mismatch")}</span>
             )}
         </div>
       )}
@@ -235,7 +234,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
               stretch="full"
               disabled={isButtonDisabled}
               loading={isSubmitting}
-              label={isSMTPConfigured ? "Continue" : "Go to workspace"}
+              label={isSMTPConfigured ? t("space_ui.continue") : t("space_ui.workspace")}
             />
             {isSMTPConfigured && (
               <Button
@@ -243,7 +242,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
                 variant="secondary"
                 size="lg"
                 stretch="full"
-                label="Sign in with unique code"
+                label={t("space_ui.code_login")}
                 onClick={redirectToUniqueCodeSignIn}
               />
             )}
@@ -256,7 +255,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
             stretch="full"
             disabled={isButtonDisabled}
             loading={isSubmitting}
-            label="Create account"
+            label={t("space_ui.create_account")}
           />
         )}
       </div>
