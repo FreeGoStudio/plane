@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useMemo } from "react";
 import { observer } from "mobx-react";
 import type { Control, UseFormSetValue } from "react-hook-form";
@@ -29,6 +30,9 @@ type Props = {
 
 export const AnalyticsSelectParams = observer(function AnalyticsSelectParams(props: Props) {
   const { control, params, classNames, isEpic } = props;
+  const { t } = useTranslation();
+  const localizeOption = (option: { value: string; label: string }) =>
+    t(`workspace_analytics.work_item_charts.axes.${option.value}`);
   const xAxisOptions = useMemo(
     () => ANALYTICS_X_AXIS_VALUES.filter((option) => option.value !== params.group_by),
     [params.group_by]
@@ -50,7 +54,10 @@ export const AnalyticsSelectParams = observer(function AnalyticsSelectParams(pro
               onChange={(val: ChartYAxisMetric | null) => {
                 onChange(val);
               }}
-              options={ANALYTICS_Y_AXIS_VALUES}
+              options={ANALYTICS_Y_AXIS_VALUES.map((option) => ({
+                value: option.value,
+                label: localizeOption(option),
+              }))}
               hiddenOptions={[
                 ChartYAxisMetric.ESTIMATE_POINT_COUNT,
                 isEpic ? ChartYAxisMetric.WORK_ITEM_COUNT : ChartYAxisMetric.EPIC_WORK_ITEM_COUNT,
@@ -71,11 +78,13 @@ export const AnalyticsSelectParams = observer(function AnalyticsSelectParams(pro
                 <div className="flex items-center gap-2">
                   <CalendarOutline className="h-3 w-3" />
                   <span className={cn("text-secondary", value && "text-primary")}>
-                    {xAxisOptions.find((v) => v.value === value)?.label || "Add Property"}
+                    {value
+                      ? t(`workspace_analytics.work_item_charts.axes.${value}`)
+                      : t("workspace_analytics.work_item_charts.add_property")}
                   </span>
                 </div>
               }
-              options={xAxisOptions}
+              options={xAxisOptions.map((option) => ({ value: option.value, label: localizeOption(option) }))}
             />
           )}
         />
@@ -92,12 +101,12 @@ export const AnalyticsSelectParams = observer(function AnalyticsSelectParams(pro
                 <div className="flex items-center gap-2">
                   <PreferencesOutline className="h-3 w-3" />
                   <span className={cn("text-secondary", value && "text-primary")}>
-                    {groupByOptions.find((v) => v.value === value)?.label || "Add Property"}
+                    {value ? t(`workspace_analytics.work_item_charts.axes.${value}`) : t("common.group_by")}
                   </span>
                 </div>
               }
-              options={groupByOptions}
-              placeholder="Group By"
+              options={groupByOptions.map((option) => ({ value: option.value, label: localizeOption(option) }))}
+              placeholder={t("common.group_by")}
               allowNoValue
             />
           )}

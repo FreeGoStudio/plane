@@ -66,6 +66,29 @@
     }
   },
   "workspace_analytics": {
+    "work_item_charts": {
+      "count": "數量",
+      "add_property": "新增屬性",
+      "add_metric": "新增指標",
+      "no_value": "不分組",
+      "axes": {
+        "STATES": "狀態名稱",
+        "STATE_GROUPS": "狀態群組",
+        "PRIORITY": "優先級",
+        "LABELS": "標籤",
+        "ASSIGNEES": "負責人",
+        "ESTIMATE_POINTS": "估算點",
+        "CYCLES": "週期",
+        "MODULES": "模組",
+        "COMPLETED_AT": "完成日期",
+        "TARGET_DATE": "截止日期",
+        "START_DATE": "開始日期",
+        "CREATED_AT": "建立日期",
+        "WORK_ITEM_COUNT": "工作項目",
+        "ESTIMATE_POINT_COUNT": "估算",
+        "EPIC_WORK_ITEM_COUNT": "史詩"
+      }
+    },
     "label": "分析",
     "page_label": "{workspace} - 分析",
     "open_tasks": "開啟任務總數",

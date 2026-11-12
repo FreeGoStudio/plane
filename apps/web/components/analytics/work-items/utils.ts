@@ -5,7 +5,7 @@
  */
 
 // plane package imports
-import type { ChartYAxisMetric, IState } from "@plane/types";
+import type { ChartYAxisMetric, IState, TChart } from "@plane/types";
 import { ChartXAxisProperty } from "@plane/types";
 
 interface ParamsProps {
@@ -50,4 +50,31 @@ export const generateBarColor = (
   }
 
   return color;
+};
+
+/** Translate built-in categories only; user-defined names and data keys stay intact. */
+export const localizeWorkItemChart = (
+  chart: TChart,
+  xAxis: ChartXAxisProperty,
+  groupBy: ChartXAxisProperty | undefined,
+  t: (key: string) => string
+): TChart => {
+  const label = (name: string, property: ChartXAxisProperty | undefined, key: string) => {
+    if (key.toLowerCase() === "none") return t(property === ChartXAxisProperty.ASSIGNEES ? "unassigned" : "none");
+    const value = name.toLowerCase();
+    if (property === ChartXAxisProperty.PRIORITY && ["urgent", "high", "medium", "low", "none"].includes(value)) {
+      return t(value);
+    }
+    if (
+      property === ChartXAxisProperty.STATE_GROUPS &&
+      ["backlog", "unstarted", "started", "completed", "cancelled"].includes(value)
+    ) {
+      return t(`workspace_projects.state.${value}`);
+    }
+    return name;
+  };
+  return {
+    data: chart.data.map((datum) => Object.assign({}, datum, { name: label(datum.name, xAxis, datum.key) })),
+    schema: Object.fromEntries(Object.entries(chart.schema).map(([key, name]) => [key, label(name, groupBy, key)])),
+  };
 };

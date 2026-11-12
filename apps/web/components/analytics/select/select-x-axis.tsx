@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useMemo } from "react";
 // plane package imports
 import { Select } from "@plane/blocks/select";
@@ -30,14 +31,17 @@ type Props = {
 
 export function SelectXAxis(props: Props) {
   const { value, onChange, options, hiddenOptions, allowNoValue, label } = props;
+  const { t } = useTranslation();
   // derived values
   const selectOptions = useMemo<XAxisOption[]>(() => {
     const hidden = new Set(hiddenOptions);
     const visible = options
       .filter((item) => !hidden.has(item.value))
       .map((item) => ({ id: item.value, label: item.label, value: item.value }));
-    return allowNoValue ? [{ id: NO_VALUE_ID, label: "No value", value: null }, ...visible] : visible;
-  }, [options, hiddenOptions, allowNoValue]);
+    return allowNoValue
+      ? [{ id: NO_VALUE_ID, label: t("workspace_analytics.work_item_charts.no_value"), value: null }, ...visible]
+      : visible;
+  }, [options, hiddenOptions, allowNoValue, t]);
   const selected = useMemo(
     () => selectOptions.find((option) => option.value === value) ?? null,
     [selectOptions, value]

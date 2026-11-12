@@ -66,6 +66,29 @@
     }
   },
   "workspace_analytics": {
+    "work_item_charts": {
+      "count": "Count",
+      "add_property": "Add property",
+      "add_metric": "Add metric",
+      "no_value": "No value",
+      "axes": {
+        "STATES": "State name",
+        "STATE_GROUPS": "State group",
+        "PRIORITY": "Priority",
+        "LABELS": "Label",
+        "ASSIGNEES": "Assignee",
+        "ESTIMATE_POINTS": "Estimate point",
+        "CYCLES": "Cycle",
+        "MODULES": "Module",
+        "COMPLETED_AT": "Completed date",
+        "TARGET_DATE": "Due date",
+        "START_DATE": "Start date",
+        "CREATED_AT": "Created date",
+        "WORK_ITEM_COUNT": "Work item",
+        "ESTIMATE_POINT_COUNT": "Estimate",
+        "EPIC_WORK_ITEM_COUNT": "Epic"
+      }
+    },
     "label": "Análisis",
     "page_label": "{workspace} - Análisis",
     "open_tasks": "Total de tareas abiertas",

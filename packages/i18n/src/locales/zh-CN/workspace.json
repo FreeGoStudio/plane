@@ -66,6 +66,29 @@
     }
   },
   "workspace_analytics": {
+    "work_item_charts": {
+      "count": "数量",
+      "add_property": "添加属性",
+      "add_metric": "添加指标",
+      "no_value": "不分组",
+      "axes": {
+        "STATES": "状态名称",
+        "STATE_GROUPS": "状态组",
+        "PRIORITY": "优先级",
+        "LABELS": "标签",
+        "ASSIGNEES": "负责人",
+        "ESTIMATE_POINTS": "估算点",
+        "CYCLES": "周期",
+        "MODULES": "模块",
+        "COMPLETED_AT": "完成日期",
+        "TARGET_DATE": "截止日期",
+        "START_DATE": "开始日期",
+        "CREATED_AT": "创建日期",
+        "WORK_ITEM_COUNT": "工作项",
+        "ESTIMATE_POINT_COUNT": "估算",
+        "EPIC_WORK_ITEM_COUNT": "史诗"
+      }
+    },
     "label": "分析",
     "page_label": "{workspace} - 分析",
     "open_tasks": "总开放任务",
