@@ -1724,5 +1724,8 @@
     "pending_points": "待完成点数：{count}",
     "pending_work_items": "待完成工作项：{count}",
     "target_date": "目标日期：{date}"
+  },
+  "work_item_activity": {
+    "cycle_added": "将此工作项加入周期 <value/>。"
   }
 }

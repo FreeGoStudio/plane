@@ -1724,5 +1724,8 @@
     "pending_points": "Pending points - {count}",
     "pending_work_items": "Pending work items - {count}",
     "target_date": "Target Date: {date}"
+  },
+  "work_item_activity": {
+    "cycle_added": "added this work item to cycle <value/>."
   }
 }

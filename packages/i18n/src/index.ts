@@ -32,3 +32,4 @@ export {
 export { translateValidationMessage } from "./validation";
 
 export { translate } from "./core/translate";
+export { LocalizedText } from "./localized-text";
