@@ -1,5 +1,14 @@
 {
   "home": {
+    "date_display": {
+      "title": "首页日期格式",
+      "description": "设置首页日期中年、月、日的排列顺序。",
+      "locale": "跟随语言",
+      "ymd": "年 / 月 / 日",
+      "mdy": "月 / 日 / 年",
+      "dmy": "日 / 月 / 年",
+      "save_error": "日期格式保存失败"
+    },
     "empty": {
       "quickstart_guide": "快速入门指南",
       "not_right_now": "暂时不要",

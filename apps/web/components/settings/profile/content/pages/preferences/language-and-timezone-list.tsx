@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 // plane imports
 import { SelectField } from "@makeplane/propel/components/select-field";
 import { SUPPORTED_LANGUAGES, useTranslation } from "@plane/i18n";
+import type { THomeDateOrder } from "@plane/types";
 import { setToast } from "@plane/blocks/toast";
 // components
 import { TimezoneSelect } from "@/components/global/timezone-select";
@@ -24,7 +25,7 @@ export const ProfileSettingsLanguageAndTimezonePreferencesList = observer(
       updateCurrentUser,
       userProfile: { data: profile },
     } = useUser();
-    const { updateUserProfile } = useUserProfile();
+    const { updateUserProfile, updateUserTheme } = useUserProfile();
     // translation
     const { t } = useTranslation();
 
@@ -62,6 +63,14 @@ export const ProfileSettingsLanguageAndTimezonePreferencesList = observer(
       }
     };
 
+    const handleDateOrderChange = async (homeDateOrder: THomeDateOrder) => {
+      try {
+        await updateUserTheme({ homeDateOrder });
+      } catch (_error) {
+        setToast({ type: "error", title: t("home.date_display.save_error") });
+      }
+    };
+
     return (
       <div className="flex flex-col gap-y-1">
         <SettingsControlItem
@@ -92,6 +101,25 @@ export const ProfileSettingsLanguageAndTimezonePreferencesList = observer(
                 if (value !== null) void handleLanguageChange(value);
               }}
               placeholder="Select a language"
+            />
+          }
+        />
+        <SettingsControlItem
+          title={t("home.date_display.title")}
+          description={t("home.date_display.description")}
+          control={
+            <SelectField<THomeDateOrder>
+              aria-label={t("home.date_display.title")}
+              size="md"
+              width="fit"
+              options={(["locale", "ymd", "mdy", "dmy"] as const).map((value) => ({
+                value,
+                label: t(`home.date_display.${value}`),
+              }))}
+              value={profile?.theme?.homeDateOrder ?? "locale"}
+              onValueChange={(value) => {
+                if (value !== null) void handleDateOrderChange(value);
+              }}
             />
           }
         />

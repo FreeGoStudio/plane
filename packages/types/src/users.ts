@@ -59,6 +59,8 @@ export interface IUserAccount {
   updated_at: Date;
 }
 
+export type THomeDateOrder = "locale" | "ymd" | "mdy" | "dmy";
+
 export type TUserProfile = {
   id: string | undefined;
   user: string | undefined;
@@ -69,6 +71,7 @@ export type TUserProfile = {
     primary: string | undefined;
     background: string | undefined;
     darkPalette: boolean | undefined;
+    homeDateOrder?: THomeDateOrder;
   };
   onboarding_step: TOnboardingSteps;
   is_onboarded: boolean;
@@ -103,6 +106,7 @@ export interface IUserSettings {
 }
 
 export interface IUserTheme {
+  homeDateOrder?: THomeDateOrder;
   theme: string | undefined; // 'light', 'dark', 'custom', etc.
   primary?: string | undefined;
   background?: string | undefined;

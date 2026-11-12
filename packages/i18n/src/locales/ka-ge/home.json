@@ -1,5 +1,14 @@
 {
   "home": {
+    "date_display": {
+      "title": "Home date format",
+      "description": "Choose the order of year, month and day on your home page.",
+      "locale": "Follow language",
+      "ymd": "Year / Month / Day",
+      "mdy": "Month / Day / Year",
+      "dmy": "Day / Month / Year",
+      "save_error": "Failed to save date format"
+    },
     "empty": {
       "quickstart_guide": "თქვენი სწრაფი დაწყების სახელმძღვანელო",
       "not_right_now": "ახლა არა",
