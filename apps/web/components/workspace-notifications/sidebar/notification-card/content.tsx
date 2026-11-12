@@ -5,6 +5,7 @@
  */
 
 import type { ReactNode } from "react";
+import { LocalizedText } from "@plane/i18n";
 // plane imports
 import type { TNotification } from "@plane/types";
 import {
@@ -66,11 +67,6 @@ export const BASE_NOTIFICATION_CONTENT_MAP: TNotificationContentMap = {
   target_date: ({ newValue }) => ({
     action: newValue !== "" ? "set due date" : "removed the due date",
     value: <DateDisplay value={newValue} />,
-    showConnector: false,
-  }),
-  labels: ({ newValue, oldValue }) => ({
-    action: newValue !== "" ? "added label" : "removed label",
-    value: newValue !== "" ? newValue : oldValue,
     showConnector: false,
   }),
   parent: ({ newValue, oldValue }) => ({
@@ -181,6 +177,26 @@ export function NotificationContent({
       {triggeredBy?.is_bot ? triggeredBy.first_name : triggeredBy?.display_name}{" "}
     </span>
   );
+
+  if (notificationField === "labels") {
+    return (
+      <>
+        {renderTriggerName()}
+        <span className="text-tertiary">
+          <LocalizedText
+            messageKey={`work_item_activity.label_${newValue !== "" ? "added" : "removed"}_self`}
+            components={{
+              value: (
+                <span className={cn("text-primary", emphasisClassName)}>
+                  {verb !== "deleted" ? (newValue !== "" ? newValue : oldValue) : null}
+                </span>
+              ),
+            }}
+          />
+        </span>
+      </>
+    );
+  }
 
   // Get content details from map
   const contentDetails = getNotificationContentDetails(fieldData, renderCommentBox);
