@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 // hooks
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export const PasswordLoginConfiguration = observer(function PasswordLoginConfiguration(props: Props) {
+  const { t } = useTranslation();
   const { disabled, updateConfig } = props;
   // store
   const { formattedConfig } = useInstance();
@@ -33,7 +35,7 @@ export const PasswordLoginConfiguration = observer(function PasswordLoginConfigu
         updateConfig("ENABLE_EMAIL_PASSWORD", newEnableEmailPassword);
       }}
       size="sm"
-      aria-label="Enable login with passwords"
+      aria-label={t("admin_settings.enable_passwords")}
       disabled={disabled}
     />
   );

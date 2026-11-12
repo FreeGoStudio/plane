@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
@@ -29,6 +30,7 @@ import { InstanceGithubConfigForm } from "./form";
 const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthenticationPage(
   _props: Route.ComponentProps
 ) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -50,20 +52,21 @@ const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthent
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("admin_settings.saving_config"),
       success: {
-        title: "Configuration saved",
-        message: () => `GitHub authentication is now ${value === "1" ? "active" : "disabled"}.`,
+        title: t("admin_settings.config_saved"),
+        message: () => t("admin_settings.auth_state", { provider: "GitHub", enabled: value === "1" ? "yes" : "no" }),
       },
       error: {
-        title: "Error",
-        message: () => "Failed to save configuration",
+        title: t("admin_settings.error"),
+        message: () => t("admin_settings.save_failed"),
       },
     });
 
     await updateConfigPromise
       .then(() => {
         setIsSubmitting(false);
+        return undefined;
       })
       .catch((err) => {
         console.error(err);
@@ -75,21 +78,22 @@ const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthent
 
   return (
     <PageWrapper
+      title={t("admin_settings.provider_title", { provider: "GitHub" })}
       customHeader={
         <AuthenticationMethodCard
           name="GitHub"
-          description="Allow members to login or sign up to plane with their GitHub accounts."
+          description={t("admin_settings.social_description", { provider: "GitHub" })}
           icon={
             <img
               src={resolveGeneralTheme(resolvedTheme) === "dark" ? githubDarkModeImage : githubLightModeImage}
               height={24}
               width={24}
-              alt="GitHub Logo"
+              alt="GitHub"
             />
           }
           config={
             <Switch
-              aria-label="Enable GitHub authentication"
+              aria-label={t("admin_settings.enable_auth", { provider: "GitHub" })}
               checked={isGithubEnabled}
               onCheckedChange={() => {
                 updateConfig("IS_GITHUB_ENABLED", isGithubEnabled ? "0" : "1");
@@ -118,6 +122,6 @@ const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthent
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "GitHub Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [{ title: "Plane" }];
 
 export default InstanceGithubAuthenticationPage;

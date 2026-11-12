@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useForm } from "react-hook-form";
 import { ThoughtsOutline } from "@makeplane/propel/icons";
 import { Button } from "@makeplane/propel/components/button";
@@ -22,6 +23,7 @@ type IInstanceAIForm = {
 type AIFormValues = Record<TInstanceAIConfigurationKeys, string>;
 
 export function InstanceAIForm(props: IInstanceAIForm) {
+  const { t } = useTranslation();
   const { config } = props;
   // store
   const { updateInstanceConfigurations } = useInstance();
@@ -41,18 +43,17 @@ export function InstanceAIForm(props: IInstanceAIForm) {
     {
       key: "LLM_MODEL",
       type: "text",
-      label: "LLM Model",
+      label: t("admin_settings.model"),
       description: (
         <>
-          Choose an OpenAI engine.{" "}
           <a
             href="https://platform.openai.com/docs/models/overview"
             target="_blank"
             className="text-accent-primary hover:underline"
             rel="noreferrer"
-            aria-label="OpenAI models documentation"
+            aria-label={t("admin_settings.model_docs")}
           >
-            Learn more
+            {t("admin_settings.choose_model")}
           </a>
         </>
       ),
@@ -63,18 +64,17 @@ export function InstanceAIForm(props: IInstanceAIForm) {
     {
       key: "LLM_API_KEY",
       type: "password",
-      label: "API key",
+      label: t("admin_settings.api_key"),
       description: (
         <>
-          You will find your API key{" "}
           <a
             href="https://platform.openai.com/api-keys"
             target="_blank"
             className="text-accent-primary hover:underline"
             rel="noreferrer"
-            aria-label="OpenAI API keys page"
+            aria-label={t("admin_settings.key_page")}
           >
-            here.
+            {t("admin_settings.find_key")}
           </a>
         </>
       ),
@@ -91,8 +91,8 @@ export function InstanceAIForm(props: IInstanceAIForm) {
       .then(() =>
         setToast({
           type: "success",
-          title: "Success",
-          message: "AI Settings updated successfully",
+          title: t("admin_settings.success"),
+          message: t("admin_settings.ai_saved"),
         })
       )
       .catch((err) => console.error(err));
@@ -103,7 +103,7 @@ export function InstanceAIForm(props: IInstanceAIForm) {
       <div className="space-y-3">
         <div>
           <div className="pb-1 text-h6-medium text-primary">OpenAI</div>
-          <div className="text-body-sm-regular text-tertiary">If you use ChatGPT, this is for you.</div>
+          <div className="text-body-sm-regular text-tertiary">{t("admin_settings.chatgpt")}</div>
         </div>
         <div className="grid-col grid w-full grid-cols-1 items-center justify-between gap-x-12 gap-y-8 lg:grid-cols-3">
           {aiFormFields.map((field) => (
@@ -129,15 +129,14 @@ export function InstanceAIForm(props: IInstanceAIForm) {
           stretch="auto"
           onClick={handleSubmit(onSubmit)}
           loading={isSubmitting}
-          label={isSubmitting ? "Saving" : "Save changes"}
+          label={isSubmitting ? t("admin_settings.saving") : t("admin_settings.save")}
         />
 
         <div className="relative inline-flex items-center gap-1.5 rounded-sm border border-accent-subtle bg-accent-subtle px-4 py-2 text-caption-sm-regular text-accent-secondary">
           <ThoughtsOutline className="size-4" />
           <div>
-            If you have a preferred AI models vendor, please get in{" "}
             <a className="font-medium underline" href="https://plane.so/contact">
-              touch with us.
+              {t("admin_settings.contact_ai")}
             </a>
           </div>
         </div>

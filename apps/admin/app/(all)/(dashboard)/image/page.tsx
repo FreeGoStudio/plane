@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 // components
@@ -17,6 +18,7 @@ import type { Route } from "./+types/page";
 import { InstanceImageConfigForm } from "./form";
 
 const InstanceImagePage = observer(function InstanceImagePage(_props: Route.ComponentProps) {
+  const { t } = useTranslation();
   // store
   const { formattedConfig, fetchInstanceConfigurations } = useInstance();
 
@@ -25,8 +27,8 @@ const InstanceImagePage = observer(function InstanceImagePage(_props: Route.Comp
   return (
     <PageWrapper
       header={{
-        title: "Third-party image libraries",
-        description: "Let your users search and choose images from third-party libraries",
+        title: t("admin_settings.image_title"),
+        description: t("admin_settings.image_description"),
       }}
     >
       {formattedConfig ? (

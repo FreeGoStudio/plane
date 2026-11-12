@@ -18,12 +18,13 @@ type TPageWrapperProps = {
     actions?: ReactNode;
   };
   customHeader?: ReactNode;
+  title?: string;
   size?: "lg" | "md";
 };
 
 export const PageWrapper = (props: TPageWrapperProps) => {
   const { children, header, customHeader, size = "md" } = props;
-  const pageTitle = header?.title;
+  const pageTitle = props.title ?? header?.title;
   useEffect(() => {
     if (pageTitle) document.title = `${pageTitle} - Plane`;
   }, [pageTitle]);

@@ -4,12 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { isEmpty } from "lodash-es";
 // plane internal packages
 import { API_BASE_URL } from "@plane/constants";
 import type { IFormattedInstanceConfiguration, TInstanceGitlabAuthenticationConfigurationKeys } from "@plane/types";
 // components
-import { CodeBlock } from "@/components/common/code-block";
 import type { TControllerInputFormField } from "@/components/common/controller-input";
 import type { TControllerSwitchFormField } from "@/components/common/controller-switch";
 import type { TCopyField } from "@/components/common/copy-field";
@@ -29,6 +29,7 @@ const GITLAB_FORM_SWITCH_FIELD: TControllerSwitchFormField<GitlabConfigFormValue
 };
 
 export function InstanceGitlabConfigForm(props: Props) {
+  const { t } = useTranslation();
   const { config } = props;
   // form data
   const {
@@ -48,12 +49,8 @@ export function InstanceGitlabConfigForm(props: Props) {
     {
       key: "GITLAB_HOST",
       type: "text",
-      label: "Host",
-      description: (
-        <>
-          This is either https://gitlab.com or the <CodeBlock>domain.tld</CodeBlock> where you host GitLab.
-        </>
-      ),
+      label: t("admin_settings.host"),
+      description: t("admin_settings.gitlab_host_help"),
       placeholder: "https://gitlab.com",
       error: Boolean(errors.GITLAB_HOST),
       required: true,
@@ -61,20 +58,16 @@ export function InstanceGitlabConfigForm(props: Props) {
     {
       key: "GITLAB_CLIENT_ID",
       type: "text",
-      label: "Application ID",
+      label: t("admin_settings.application_id"),
       description: (
-        <>
-          Get this from your{" "}
-          <a
-            href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            GitLab OAuth application settings
-          </a>
-          .
-        </>
+        <a
+          href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_client", { provider: "GitLab" })}
+        </a>
       ),
       placeholder: "c2ef2e7fc4e9d15aa7630f5637d59e8e4a27ff01dceebdb26b0d267b9adcf3c3",
       error: Boolean(errors.GITLAB_CLIENT_ID),
@@ -83,20 +76,16 @@ export function InstanceGitlabConfigForm(props: Props) {
     {
       key: "GITLAB_CLIENT_SECRET",
       type: "password",
-      label: "Secret",
+      label: t("admin_settings.secret"),
       description: (
-        <>
-          The client secret is also found in your{" "}
-          <a
-            href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            GitLab OAuth application settings
-          </a>
-          .
-        </>
+        <a
+          href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_secret", { provider: "GitLab" })}
+        </a>
       ),
       placeholder: "gloas-f79cfa9a03c97f6ffab303177a5a6778a53c61e3914ba093412f68a9298a1b28",
       error: Boolean(errors.GITLAB_CLIENT_SECRET),
@@ -107,21 +96,17 @@ export function InstanceGitlabConfigForm(props: Props) {
   const GITLAB_SERVICE_FIELD: TCopyField[] = [
     {
       key: "Callback_URL",
-      label: "Callback URL",
+      label: t("admin_settings.callback_url"),
       url: `${originURL}/auth/gitlab/callback/`,
       description: (
-        <>
-          We will auto-generate this. Paste this into the <CodeBlock darkerShade>Redirect URI</CodeBlock> field of your{" "}
-          <a
-            href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            GitLab OAuth application
-          </a>
-          .
-        </>
+        <a
+          href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.auto_url", { field: "Redirect URI", provider: "GitLab" })}
+        </a>
       ),
     },
   ];

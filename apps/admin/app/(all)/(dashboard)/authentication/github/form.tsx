@@ -4,12 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { isEmpty } from "lodash-es";
 // plane internal packages
 import { API_BASE_URL } from "@plane/constants";
 import type { IFormattedInstanceConfiguration, TInstanceGithubAuthenticationConfigurationKeys } from "@plane/types";
 // components
-import { CodeBlock } from "@/components/common/code-block";
 import type { TControllerInputFormField } from "@/components/common/controller-input";
 import type { TControllerSwitchFormField } from "@/components/common/controller-switch";
 import type { TCopyField } from "@/components/common/copy-field";
@@ -29,6 +29,7 @@ const GITHUB_FORM_SWITCH_FIELD: TControllerSwitchFormField<GithubConfigFormValue
 };
 
 export function InstanceGithubConfigForm(props: Props) {
+  const { t } = useTranslation();
   const { config } = props;
   // form data
   const {
@@ -48,19 +49,16 @@ export function InstanceGithubConfigForm(props: Props) {
     {
       key: "GITHUB_CLIENT_ID",
       type: "text",
-      label: "Client ID",
+      label: t("admin_settings.client_id"),
       description: (
-        <>
-          You will get this from your{" "}
-          <a
-            href="https://github.com/settings/applications/new"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            GitHub OAuth application settings.
-          </a>
-        </>
+        <a
+          href="https://github.com/settings/applications/new"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_client", { provider: "GitHub" })}
+        </a>
       ),
       placeholder: "70a44354520df8bd9bcd",
       error: Boolean(errors.GITHUB_CLIENT_ID),
@@ -69,19 +67,16 @@ export function InstanceGithubConfigForm(props: Props) {
     {
       key: "GITHUB_CLIENT_SECRET",
       type: "password",
-      label: "Client secret",
+      label: t("admin_settings.client_secret"),
       description: (
-        <>
-          Your client secret is also found in your{" "}
-          <a
-            href="https://github.com/settings/applications/new"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            GitHub OAuth application settings.
-          </a>
-        </>
+        <a
+          href="https://github.com/settings/applications/new"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_secret", { provider: "GitHub" })}
+        </a>
       ),
       placeholder: "9b0050f94ec1b744e32ce79ea4ffacd40d4119cb",
       error: Boolean(errors.GITHUB_CLIENT_SECRET),
@@ -90,8 +85,8 @@ export function InstanceGithubConfigForm(props: Props) {
     {
       key: "GITHUB_ORGANIZATION_ID",
       type: "text",
-      label: "Organization ID",
-      description: <>The organization github ID.</>,
+      label: t("admin_settings.organization_id"),
+      description: t("admin_settings.github_org_help"),
       placeholder: "123456789",
       error: Boolean(errors.GITHUB_ORGANIZATION_ID),
       required: false,
@@ -101,21 +96,17 @@ export function InstanceGithubConfigForm(props: Props) {
   const GITHUB_COMMON_SERVICE_DETAILS: TCopyField[] = [
     {
       key: "Origin_URL",
-      label: "Origin URL",
+      label: t("admin_settings.origin_url"),
       url: originURL,
       description: (
-        <>
-          We will auto-generate this. Paste this into the <CodeBlock darkerShade>Authorized origin URL</CodeBlock> field{" "}
-          <a
-            href="https://github.com/settings/applications/new"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="GitHub OAuth application settings"
-          >
-            here.
-          </a>
-        </>
+        <a
+          href="https://github.com/settings/applications/new"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.auto_url", { field: "Authorized origin URL", provider: "GitHub" })}
+        </a>
       ),
     },
   ];
@@ -123,22 +114,17 @@ export function InstanceGithubConfigForm(props: Props) {
   const GITHUB_SERVICE_DETAILS: TCopyField[] = [
     {
       key: "Callback_URI",
-      label: "Callback URI",
+      label: t("admin_settings.callback_uri"),
       url: `${originURL}/auth/github/callback/`,
       description: (
-        <>
-          We will auto-generate this. Paste this into your <CodeBlock darkerShade>Authorized Callback URI</CodeBlock>{" "}
-          field{" "}
-          <a
-            href="https://github.com/settings/applications/new"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="GitHub OAuth application settings"
-          >
-            here.
-          </a>
-        </>
+        <a
+          href="https://github.com/settings/applications/new"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.auto_url", { field: "Authorized Callback URI", provider: "GitHub" })}
+        </a>
       ),
     },
   ];

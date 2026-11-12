@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
@@ -33,6 +34,7 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
   const authenticationModesRef = useRef<TInstanceAuthenticationModes[]>([]);
   // state
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { t } = useTranslation();
   // store hooks
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // derived values
@@ -56,9 +58,8 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
           if (!canDisable) {
             setToast({
               type: "error",
-              title: "Cannot disable authentication",
-              message:
-                "At least one authentication method must remain enabled. Please enable another method before disabling this one.",
+              title: t("admin_settings.cannot_disable"),
+              message: t("admin_settings.one_method"),
             });
             return;
           }
@@ -75,14 +76,14 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
       const updateConfigPromise = updateInstanceConfigurations(payload);
 
       setPromiseToast(updateConfigPromise, {
-        loading: "Saving configuration",
+        loading: t("admin_settings.saving_config"),
         success: {
-          title: "Success",
-          message: () => "Configuration saved successfully",
+          title: t("admin_settings.success"),
+          message: () => t("admin_settings.saved_config"),
         },
         error: {
-          title: "Error",
-          message: () => "Failed to save configuration",
+          title: t("admin_settings.error"),
+          message: () => t("admin_settings.save_failed"),
         },
       });
 
@@ -96,7 +97,7 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
           setIsSubmitting(false);
         });
     },
-    [formattedConfig, updateInstanceConfigurations]
+    [formattedConfig, updateInstanceConfigurations, t]
   );
 
   // Get authentication modes - this will use updateConfig which includes validation
@@ -114,8 +115,8 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
   return (
     <PageWrapper
       header={{
-        title: "Manage authentication modes for your instance",
-        description: "Configure authentication modes for your team and restrict sign-ups to be invite only.",
+        title: t("admin_settings.auth_title"),
+        description: t("admin_settings.auth_description"),
       }}
     >
       {formattedConfig ? (
@@ -123,18 +124,14 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
           <div className="flex w-full items-start justify-between gap-4 rounded-lg border border-subtle bg-layer-2 px-4 py-3 md:items-center md:gap-8">
             <div className="flex min-w-0 grow items-center gap-4">
               <div className="min-w-0 grow">
-                <div className="pb-1 text-body-sm-medium text-primary">
-                  Allow anyone to sign up even without an invite
-                </div>
-                <div className="text-body-xs-regular leading-5 text-tertiary">
-                  Toggling this off will only let users sign up when they are invited.
-                </div>
+                <div className="pb-1 text-body-sm-medium text-primary">{t("admin_settings.allow_signup")}</div>
+                <div className="text-body-xs-regular leading-5 text-tertiary">{t("admin_settings.invite_only")}</div>
               </div>
             </div>
             <div className={cn("shrink-0", { "opacity-70": isSubmitting })}>
               <div className="flex items-center gap-4">
                 <Switch
-                  aria-label="Allow anyone to sign up even without an invite"
+                  aria-label={t("admin_settings.allow_signup")}
                   checked={Boolean(parseInt(enableSignUpConfig))}
                   onCheckedChange={() => {
                     if (Boolean(parseInt(enableSignUpConfig)) === true) {
@@ -149,7 +146,7 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
               </div>
             </div>
           </div>
-          <h3 className="pt-3 text-h6-medium text-primary">Available authentication modes</h3>
+          <h3 className="pt-3 text-h6-medium text-primary">{t("admin_settings.available_methods")}</h3>
           {authenticationModes.map((method) => (
             <AuthenticationMethodCard
               key={method.key}

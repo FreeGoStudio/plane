@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -25,6 +26,7 @@ import { InstanceGoogleConfigForm } from "./form";
 const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthenticationPage(
   _props: Route.ComponentProps
 ) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -44,20 +46,21 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("admin_settings.saving_config"),
       success: {
-        title: "Configuration saved",
-        message: () => `Google authentication is now ${value === "1" ? "active" : "disabled"}.`,
+        title: t("admin_settings.config_saved"),
+        message: () => t("admin_settings.auth_state", { provider: "Google", enabled: value === "1" ? "yes" : "no" }),
       },
       error: {
-        title: "Error",
-        message: () => "Failed to save configuration",
+        title: t("admin_settings.error"),
+        message: () => t("admin_settings.save_failed"),
       },
     });
 
     await updateConfigPromise
       .then(() => {
         setIsSubmitting(false);
+        return undefined;
       })
       .catch((err) => {
         console.error(err);
@@ -66,15 +69,15 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
   };
   return (
     <PageWrapper
+      title={t("admin_settings.provider_title", { provider: "Google" })}
       customHeader={
         <AuthenticationMethodCard
           name="Google"
-          description="Allow members to login or sign up to plane with their Google
-            accounts."
-          icon={<img src={GoogleLogo} height={24} width={24} alt="Google Logo" />}
+          description={t("admin_settings.social_description", { provider: "Google" })}
+          icon={<img src={GoogleLogo} height={24} width={24} alt="Google" />}
           config={
             <Switch
-              aria-label="Enable Google authentication"
+              aria-label={t("admin_settings.enable_auth", { provider: "Google" })}
               checked={Boolean(parseInt(enableGoogleConfig))}
               onCheckedChange={() => {
                 if (Boolean(parseInt(enableGoogleConfig)) === true) {
@@ -107,6 +110,6 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "Google Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [{ title: "Plane" }];
 
 export default InstanceGoogleAuthenticationPage;

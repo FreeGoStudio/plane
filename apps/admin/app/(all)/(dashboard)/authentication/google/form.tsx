@@ -4,12 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { isEmpty } from "lodash-es";
 // plane internal packages
 import { API_BASE_URL } from "@plane/constants";
 import type { IFormattedInstanceConfiguration, TInstanceGoogleAuthenticationConfigurationKeys } from "@plane/types";
 // components
-import { CodeBlock } from "@/components/common/code-block";
 import type { TControllerInputFormField } from "@/components/common/controller-input";
 import type { TControllerSwitchFormField } from "@/components/common/controller-switch";
 import type { TCopyField } from "@/components/common/copy-field";
@@ -29,6 +29,7 @@ const GOOGLE_FORM_SWITCH_FIELD: TControllerSwitchFormField<GoogleConfigFormValue
 };
 
 export function InstanceGoogleConfigForm(props: Props) {
+  const { t } = useTranslation();
   const { config } = props;
   // form data
   const {
@@ -47,20 +48,16 @@ export function InstanceGoogleConfigForm(props: Props) {
     {
       key: "GOOGLE_CLIENT_ID",
       type: "text",
-      label: "Client ID",
+      label: t("admin_settings.client_id"),
       description: (
-        <>
-          Your client ID lives in your Google API Console.{" "}
-          <a
-            href="https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#creatingcred"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="Google OAuth client ID documentation"
-          >
-            Learn more
-          </a>
-        </>
+        <a
+          href="https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#creatingcred"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_client", { provider: "Google" })}
+        </a>
       ),
       placeholder: "840195096245-0p2tstej9j5nc4l8o1ah2dqondscqc1g.apps.googleusercontent.com",
       error: Boolean(errors.GOOGLE_CLIENT_ID),
@@ -69,20 +66,16 @@ export function InstanceGoogleConfigForm(props: Props) {
     {
       key: "GOOGLE_CLIENT_SECRET",
       type: "password",
-      label: "Client secret",
+      label: t("admin_settings.client_secret"),
       description: (
-        <>
-          Your client secret should also be in your Google API Console.{" "}
-          <a
-            href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="Google OAuth client secret documentation"
-          >
-            Learn more
-          </a>
-        </>
+        <a
+          href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_secret", { provider: "Google" })}
+        </a>
       ),
       placeholder: "GOCShX-ADp4cI0kPqav1gGCBg5bE02E",
       error: Boolean(errors.GOOGLE_CLIENT_SECRET),
@@ -93,22 +86,17 @@ export function InstanceGoogleConfigForm(props: Props) {
   const GOOGLE_COMMON_SERVICE_DETAILS: TCopyField[] = [
     {
       key: "Origin_URL",
-      label: "Origin URL",
+      label: t("admin_settings.origin_url"),
       url: originURL,
       description: (
-        <p>
-          We will auto-generate this. Paste this into your{" "}
-          <CodeBlock darkerShade>Authorized JavaScript origins</CodeBlock> field. For this OAuth client{" "}
-          <a
-            href="https://console.cloud.google.com/apis/credentials/oauthclient"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="Google Cloud Console OAuth client credentials"
-          >
-            here.
-          </a>
-        </p>
+        <a
+          href="https://console.cloud.google.com/apis/credentials/oauthclient"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.auto_url", { field: "Authorized JavaScript origins", provider: "Google" })}
+        </a>
       ),
     },
   ];
@@ -116,22 +104,17 @@ export function InstanceGoogleConfigForm(props: Props) {
   const GOOGLE_SERVICE_DETAILS: TCopyField[] = [
     {
       key: "Callback_URI",
-      label: "Callback URI",
+      label: t("admin_settings.callback_uri"),
       url: `${originURL}/auth/google/callback/`,
       description: (
-        <p>
-          We will auto-generate this. Paste this into your <CodeBlock darkerShade>Authorized Redirect URI</CodeBlock>{" "}
-          field. For this OAuth client{" "}
-          <a
-            href="https://console.cloud.google.com/apis/credentials/oauthclient"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="Google Cloud Console OAuth client credentials"
-          >
-            here.
-          </a>
-        </p>
+        <a
+          href="https://console.cloud.google.com/apis/credentials/oauthclient"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.auto_url", { field: "Authorized Redirect URI", provider: "Google" })}
+        </a>
       ),
     },
   ];

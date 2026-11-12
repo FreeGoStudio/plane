@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { BaseSyntheticEvent } from "react";
 import { useForm } from "react-hook-form";
 import type { DefaultValues, UseFormReturn } from "react-hook-form";
@@ -21,6 +22,7 @@ export function useOAuthProviderConfigForm<T extends Partial<IFormattedInstanceC
   providerName: string,
   defaultValues: DefaultValues<T>
 ): UseFormReturn<T> & { onSave: (e?: BaseSyntheticEvent) => Promise<void> } {
+  const { t } = useTranslation();
   // store hooks
   const { updateInstanceConfigurations } = useInstance();
   // form data
@@ -31,8 +33,8 @@ export function useOAuthProviderConfigForm<T extends Partial<IFormattedInstanceC
       const response = await updateInstanceConfigurations(formData);
       setToast({
         type: "success",
-        title: "Done!",
-        message: `Your ${providerName} authentication is configured. You should test it now.`,
+        title: t("admin_settings.done"),
+        message: t("admin_settings.provider_configured", { provider: providerName }),
       });
       const savedValues = Object.fromEntries(
         Object.keys(formData).map((key) => [key, response.find((item) => item.key === key)?.value])

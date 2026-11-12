@@ -4,13 +4,13 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { isEmpty } from "lodash-es";
 import { useWatch } from "react-hook-form";
 // plane internal packages
 import { API_BASE_URL } from "@plane/constants";
 import type { IFormattedInstanceConfiguration, TInstanceGiteaAuthenticationConfigurationKeys } from "@plane/types";
 // components
-import { CodeBlock } from "@/components/common/code-block";
 import type { TControllerInputFormField } from "@/components/common/controller-input";
 import type { TControllerSwitchFormField } from "@/components/common/controller-switch";
 import type { TCopyField } from "@/components/common/copy-field";
@@ -30,6 +30,7 @@ const GITEA_FORM_SWITCH_FIELD: TControllerSwitchFormField<GiteaConfigFormValues>
 };
 
 export function InstanceGiteaConfigForm(props: Props) {
+  const { t } = useTranslation();
   const { config } = props;
   // form data
   const {
@@ -51,10 +52,8 @@ export function InstanceGiteaConfigForm(props: Props) {
     {
       key: "GITEA_HOST",
       type: "text",
-      label: "Gitea Host",
-      description: (
-        <>Use the URL of your Gitea instance. For the official Gitea instance, use &quot;https://gitea.com&quot;.</>
-      ),
+      label: t("admin_settings.gitea_host"),
+      description: t("admin_settings.gitea_host_help"),
       placeholder: "https://gitea.com",
       error: Boolean(errors.GITEA_HOST),
       required: true,
@@ -62,19 +61,16 @@ export function InstanceGiteaConfigForm(props: Props) {
     {
       key: "GITEA_CLIENT_ID",
       type: "text",
-      label: "Client ID",
+      label: t("admin_settings.client_id"),
       description: (
-        <>
-          You will get this from your{" "}
-          <a
-            href="https://gitea.com/user/settings/applications"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            Gitea OAuth application settings.
-          </a>
-        </>
+        <a
+          href="https://gitea.com/user/settings/applications"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_client", { provider: "Gitea" })}
+        </a>
       ),
       placeholder: "70a44354520df8bd9bcd",
       error: Boolean(errors.GITEA_CLIENT_ID),
@@ -83,19 +79,16 @@ export function InstanceGiteaConfigForm(props: Props) {
     {
       key: "GITEA_CLIENT_SECRET",
       type: "password",
-      label: "Client secret",
+      label: t("admin_settings.client_secret"),
       description: (
-        <>
-          Your client secret is also found in your{" "}
-          <a
-            href="https://gitea.com/user/settings/applications"
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-          >
-            Gitea OAuth application settings.
-          </a>
-        </>
+        <a
+          href="https://gitea.com/user/settings/applications"
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.get_secret", { provider: "Gitea" })}
+        </a>
       ),
       placeholder: "9b0050f94ec1b744e32ce79ea4ffacd40d4119cb",
       error: Boolean(errors.GITEA_CLIENT_SECRET),
@@ -106,22 +99,17 @@ export function InstanceGiteaConfigForm(props: Props) {
   const GITEA_SERVICE_FIELD: TCopyField[] = [
     {
       key: "Callback_URI",
-      label: "Callback URI",
+      label: t("admin_settings.callback_uri"),
       url: `${originURL}/auth/gitea/callback/`,
       description: (
-        <>
-          We will auto-generate this. Paste this into your <CodeBlock darkerShade>Authorized Callback URI</CodeBlock>{" "}
-          field{" "}
-          <a
-            href={`${giteaHost || "https://gitea.com"}/user/settings/applications`}
-            target="_blank"
-            className="text-accent-primary hover:underline"
-            rel="noreferrer"
-            aria-label="Gitea OAuth application settings"
-          >
-            here.
-          </a>
-        </>
+        <a
+          href={`${giteaHost || "https://gitea.com"}/user/settings/applications`}
+          target="_blank"
+          className="text-accent-primary hover:underline"
+          rel="noreferrer"
+        >
+          {t("admin_settings.auto_url", { field: "Authorized Callback URI", provider: "Gitea" })}
+        </a>
       ),
     },
   ];

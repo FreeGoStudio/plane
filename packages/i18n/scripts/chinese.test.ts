@@ -34,6 +34,39 @@ test("test-email confirmation preserves the recipient in Chinese and English", a
   );
 });
 
+// Provider names, field identifiers and state must survive localization and switching.
+test("OAuth help and status preserve technical values in both languages", async () => {
+  const instance = createInstance().use(ICU);
+  const resources = Object.fromEntries(
+    ["en", "zh-CN"].map((language) => [
+      language,
+      {
+        translation: JSON.parse(fs.readFileSync(path.join(root, language, "common.json"), "utf8")),
+      },
+    ])
+  );
+  await instance.init({ lng: "zh-CN", fallbackLng: false, resources });
+  assert.equal(
+    instance.t("admin_settings.auth_state", { provider: "GitHub", enabled: "yes" }),
+    "GitHub 认证现已启用。"
+  );
+  assert.equal(instance.t("admin_settings.auth_state", { provider: "GitHub", enabled: "no" }), "GitHub 认证现已禁用。");
+  assert.equal(instance.t("admin_settings.required", { label: "客户端 ID" }), "请填写客户端 ID。");
+  assert.equal(
+    instance.t("admin_settings.auto_url", { provider: "Google", field: "Authorized Redirect URI" }),
+    "此地址由系统自动生成，请将其粘贴到 Google OAuth 应用设置的 Authorized Redirect URI 字段中。"
+  );
+  await instance.changeLanguage("en");
+  assert.equal(
+    instance.t("admin_settings.auth_state", { provider: "GitHub", enabled: "yes" }),
+    "GitHub authentication is now active."
+  );
+  assert.equal(
+    instance.t("admin_settings.auth_state", { provider: "GitHub", enabled: "no" }),
+    "GitHub authentication is now disabled."
+  );
+});
+
 function flatten(data: Record<string, unknown>, prefix = ""): Record<string, string> {
   return Object.fromEntries(
     Object.entries(data).flatMap(([key, value]) => {

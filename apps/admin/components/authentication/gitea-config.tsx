@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 // icons
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const GiteaConfiguration = observer(function GiteaConfiguration(props: Props) {
+  const { t } = useTranslation();
   const { disabled, updateConfig } = props;
   // store
   const { formattedConfig } = useInstance();
@@ -35,16 +37,19 @@ export const GiteaConfiguration = observer(function GiteaConfiguration(props: Pr
     <>
       {GiteaConfigured ? (
         <div className="flex items-center gap-4">
-          <AnchorButton variant="primary" size="sm" render={<Link href="/authentication/gitea" />} label="Edit" />
+          <AnchorButton
+            variant="primary"
+            size="sm"
+            render={<Link href="/authentication/gitea" />}
+            label={t("admin_settings.edit")}
+          />
           <Switch
             checked={Boolean(parseInt(GiteaConfig))}
             onCheckedChange={() => {
-              Boolean(parseInt(GiteaConfig)) === true
-                ? updateConfig("IS_GITEA_ENABLED", "0")
-                : updateConfig("IS_GITEA_ENABLED", "1");
+              updateConfig("IS_GITEA_ENABLED", parseInt(GiteaConfig) ? "0" : "1");
             }}
             size="sm"
-            aria-label="Enable Gitea"
+            aria-label={t("admin_settings.enable_auth", { provider: "Gitea" })}
             disabled={disabled}
           />
         </div>
@@ -56,7 +61,7 @@ export const GiteaConfiguration = observer(function GiteaConfiguration(props: Pr
           nativeButton={false}
           render={<Link href="/authentication/gitea" />}
           icon={<Icon icon={PreferencesOutline} tint="tertiary" />}
-          label="Configure"
+          label={t("admin_settings.configure")}
         />
       )}
     </>

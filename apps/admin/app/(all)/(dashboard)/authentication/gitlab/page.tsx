@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -25,6 +26,7 @@ import { InstanceGitlabConfigForm } from "./form";
 const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthenticationPage(
   _props: Route.ComponentProps
 ) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -44,20 +46,21 @@ const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthent
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("admin_settings.saving_config"),
       success: {
-        title: "Configuration saved",
-        message: () => `GitLab authentication is now ${value === "1" ? "active" : "disabled"}.`,
+        title: t("admin_settings.config_saved"),
+        message: () => t("admin_settings.auth_state", { provider: "GitLab", enabled: value === "1" ? "yes" : "no" }),
       },
       error: {
-        title: "Error",
-        message: () => "Failed to save configuration",
+        title: t("admin_settings.error"),
+        message: () => t("admin_settings.save_failed"),
       },
     });
 
     await updateConfigPromise
       .then(() => {
         setIsSubmitting(false);
+        return undefined;
       })
       .catch((err) => {
         console.error(err);
@@ -66,14 +69,15 @@ const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthent
   };
   return (
     <PageWrapper
+      title={t("admin_settings.provider_title", { provider: "GitLab" })}
       customHeader={
         <AuthenticationMethodCard
           name="GitLab"
-          description="Allow members to login or sign up to plane with their GitLab accounts."
-          icon={<img src={GitlabLogo} height={24} width={24} alt="GitLab Logo" />}
+          description={t("admin_settings.social_description", { provider: "GitLab" })}
+          icon={<img src={GitlabLogo} height={24} width={24} alt="GitLab" />}
           config={
             <Switch
-              aria-label="Enable GitLab authentication"
+              aria-label={t("admin_settings.enable_auth", { provider: "GitLab" })}
               checked={Boolean(parseInt(enableGitlabConfig))}
               onCheckedChange={() => {
                 if (Boolean(parseInt(enableGitlabConfig)) === true) {
@@ -106,6 +110,6 @@ const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthent
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "GitLab Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [{ title: "Plane" }];
 
 export default InstanceGitlabAuthenticationPage;

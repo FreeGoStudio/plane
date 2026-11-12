@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 // icons
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const GitlabConfiguration = observer(function GitlabConfiguration(props: Props) {
+  const { t } = useTranslation();
   const { disabled, updateConfig } = props;
   // store
   const { formattedConfig } = useInstance();
@@ -34,7 +36,12 @@ export const GitlabConfiguration = observer(function GitlabConfiguration(props: 
     <>
       {isGitlabConfigured ? (
         <div className="flex items-center gap-4">
-          <AnchorButton variant="primary" size="sm" render={<Link href="/authentication/gitlab" />} label="Edit" />
+          <AnchorButton
+            variant="primary"
+            size="sm"
+            render={<Link href="/authentication/gitlab" />}
+            label={t("admin_settings.edit")}
+          />
           <Switch
             checked={Boolean(parseInt(enableGitlabConfig))}
             onCheckedChange={() => {
@@ -42,7 +49,7 @@ export const GitlabConfiguration = observer(function GitlabConfiguration(props: 
               updateConfig("IS_GITLAB_ENABLED", newEnableGitlabConfig);
             }}
             size="sm"
-            aria-label="Enable GitLab"
+            aria-label={t("admin_settings.enable_auth", { provider: "GitLab" })}
             disabled={disabled}
           />
         </div>
@@ -54,7 +61,7 @@ export const GitlabConfiguration = observer(function GitlabConfiguration(props: 
           nativeButton={false}
           render={<Link href="/authentication/gitlab" />}
           icon={<Icon icon={PreferencesOutline} tint="tertiary" />}
-          label="Configure"
+          label={t("admin_settings.configure")}
         />
       )}
     </>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 // icons
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const GoogleConfiguration = observer(function GoogleConfiguration(props: Props) {
+  const { t } = useTranslation();
   const { disabled, updateConfig } = props;
   // store
   const { formattedConfig } = useInstance();
@@ -34,7 +36,12 @@ export const GoogleConfiguration = observer(function GoogleConfiguration(props: 
     <>
       {isGoogleConfigured ? (
         <div className="flex items-center gap-4">
-          <AnchorButton variant="primary" size="sm" render={<Link href="/authentication/google" />} label="Edit" />
+          <AnchorButton
+            variant="primary"
+            size="sm"
+            render={<Link href="/authentication/google" />}
+            label={t("admin_settings.edit")}
+          />
           <Switch
             checked={Boolean(parseInt(enableGoogleConfig))}
             onCheckedChange={() => {
@@ -42,7 +49,7 @@ export const GoogleConfiguration = observer(function GoogleConfiguration(props: 
               updateConfig("IS_GOOGLE_ENABLED", newEnableGoogleConfig);
             }}
             size="sm"
-            aria-label="Enable Google"
+            aria-label={t("admin_settings.enable_auth", { provider: "Google" })}
             disabled={disabled}
           />
         </div>
@@ -54,7 +61,7 @@ export const GoogleConfiguration = observer(function GoogleConfiguration(props: 
           nativeButton={false}
           render={<Link href="/authentication/google" />}
           icon={<Icon icon={PreferencesOutline} tint="tertiary" />}
-          label="Configure"
+          label={t("admin_settings.configure")}
         />
       )}
     </>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { Controller } from "react-hook-form";
@@ -39,6 +40,7 @@ export type TControllerInputFormField<TFieldValues extends FieldValues = FieldVa
 };
 
 export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(props: Props<TFieldValues>) {
+  const { t } = useTranslation();
   const { name, control, type, label, description, placeholder, error, required } = props;
   // states
   const [showPassword, setShowPassword] = useState(false);
@@ -47,7 +49,7 @@ export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(
     <Controller
       control={control}
       name={name}
-      rules={{ required: required ? `${label} is required.` : false }}
+      rules={{ required: required ? t("admin_settings.required", { label }) : false }}
       render={({ field: { value, onChange, ref }, fieldState }) => (
         <InputField
           size="lg"
@@ -60,7 +62,7 @@ export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(
           value={value ?? ""}
           onChange={onChange}
           ref={ref}
-          error={error ? (fieldState.error?.message ?? `${label} is invalid.`) : undefined}
+          error={error ? (fieldState.error?.message ?? t("admin_settings.invalid", { label })) : undefined}
           hint={description}
           placeholder={placeholder}
           endIcon={
@@ -68,7 +70,7 @@ export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(
               <IconButton
                 variant="ghost"
                 size="sm"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? t("admin_settings.hide_password") : t("admin_settings.show_password")}
                 aria-pressed={showPassword}
                 icon={<Icon icon={showPassword ? HideOutline : ShowOutline} />}
                 onClick={() => setShowPassword((visible) => !visible)}
