@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { observer } from "mobx-react";
 // plane package imports
 import { Select } from "@plane/blocks/select";
+import { useTranslation } from "@plane/i18n";
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 import { ProjectsOutline } from "@makeplane/propel/icons";
 import type { TLogoProps } from "@plane/types";
@@ -30,6 +31,7 @@ type Props = {
 
 export const ProjectSelect = observer(function ProjectSelect(props: Props) {
   const { value, onChange, projectIds } = props;
+  const { t } = useTranslation();
   const { getProjectById } = useProject();
 
   // derived values
@@ -85,7 +87,7 @@ export const ProjectSelect = observer(function ProjectSelect(props: Props) {
               ? `3+ projects`
               : selectedOptions.length > 0
                 ? selectedOptions.map((option) => option.name).join(", ")
-                : "All projects"}
+                : t("workspace_analytics.all_projects")}
           </span>
         )}
       </Select.Trigger>
