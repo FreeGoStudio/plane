@@ -7,6 +7,7 @@
 import { observer } from "mobx-react";
 // plane imports
 import { setPromiseToast } from "@plane/blocks/toast";
+import { useTranslation } from "@plane/i18n";
 import type { IProject } from "@plane/types";
 import { Switch } from "@makeplane/propel/components/switch";
 // components
@@ -26,6 +27,7 @@ type Props = {
 
 export const ProjectSettingsFeatureControlItem = observer(function ProjectSettingsFeatureControlItem(props: Props) {
   const { description, disabled, featureProperty, projectId, title, value, workspaceSlug } = props;
+  const { t } = useTranslation();
   // store hooks
   const { getProjectById, updateProject } = useProject();
   // derived values
@@ -43,8 +45,8 @@ export const ProjectSettingsFeatureControlItem = observer(function ProjectSettin
     setPromiseToast(updateProjectPromise, {
       loading: "Updating project feature...",
       success: {
-        title: "Success!",
-        message: () => "Project feature updated successfully.",
+        title: t("success"),
+        message: () => t("project_settings.features.toasts.success"),
       },
       error: {
         title: "Error!",
