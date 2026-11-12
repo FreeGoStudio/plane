@@ -1,4 +1,10 @@
 {
+  "navigation_customization": {
+    "description": "Selected items will always stay visible in your sidebar. You can still find the others anytime from the More menu. These changes are personal to you and won't affect anyone else on your workspace.",
+    "accordion_description": "Feature tabs will appear as nested items under project and acts as accordion.",
+    "tabbed_description": "Feature tabs will appear as horizontal tabs inside a project.",
+    "minimum_projects": "Minimum value is 1"
+  },
   "command_k": {
     "empty_state": {
       "search": {

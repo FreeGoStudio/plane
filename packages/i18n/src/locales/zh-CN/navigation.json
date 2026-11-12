@@ -1,4 +1,10 @@
 {
+  "navigation_customization": {
+    "description": "选中的导航项将始终显示在侧边栏中，其他导航项仍可随时从“更多”菜单中找到。这些设置仅对你生效，不会影响工作空间中的其他成员。",
+    "accordion_description": "功能入口将嵌套显示在项目下方，可展开或折叠。",
+    "tabbed_description": "功能入口将在项目内以横向标签页显示。",
+    "minimum_projects": "项目数量至少为 1"
+  },
   "command_k": {
     "empty_state": {
       "search": {

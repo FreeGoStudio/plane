@@ -1,4 +1,10 @@
 {
+  "navigation_customization": {
+    "description": "選取的項目將始終顯示在側邊欄中，其他項目仍可隨時從「更多」選單中找到。這些設定僅對你生效，不會影響工作空間中的其他成員。",
+    "accordion_description": "功能入口將巢狀顯示在專案下方，可展開或收合。",
+    "tabbed_description": "功能入口將在專案內以橫向分頁顯示。",
+    "minimum_projects": "專案數量至少為 1"
+  },
   "command_k": {
     "empty_state": {
       "search": {

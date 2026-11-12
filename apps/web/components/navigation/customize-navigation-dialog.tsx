@@ -265,10 +265,7 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
           <DialogHeader>
             <DialogHeading>
               <DialogTitle>{t("customize_navigation")}</DialogTitle>
-              <DialogDescription>
-                Selected items will always stay visible in your sidebar. You can still find the others anytime from the
-                More menu. These changes are personal to you and won&apos;t affect anyone else on your workspace.
-              </DialogDescription>
+              <DialogDescription>{t("navigation_customization.description")}</DialogDescription>
             </DialogHeading>
           </DialogHeader>
 
@@ -334,13 +331,13 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
                         size="md"
                         value="ACCORDION"
                         label={t("accordion_navigation_control")}
-                        description="Feature tabs will appear as nested items under project and acts as accordion."
+                        description={t("navigation_customization.accordion_description")}
                       />
                       <RadioGroupFieldOption
                         size="md"
                         value="TABBED"
                         label={t("horizontal_navigation_bar")}
-                        description="Feature tabs will appear as horizontal tabs inside a project."
+                        description={t("navigation_customization.tabbed_description")}
                       />
                     </RadioGroup>
                   </Field>
@@ -388,7 +385,7 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
                           </InputGroup>
                           {parseInt(projectCountInput) < 1 && projectCountInput !== "" && (
                             <InputFieldError id={`${projectCountId}-error`} size="md">
-                              Minimum value is 1
+                              {t("navigation_customization.minimum_projects")}
                             </InputFieldError>
                           )}
                         </InputField>
