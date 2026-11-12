@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useMemo } from "react";
 import { sortBy } from "lodash-es";
 import { observer } from "mobx-react";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export const FilterLabels = observer(function FilterLabels(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate, labels } = props;
 
   const options = useMemo(
@@ -31,6 +33,12 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
   );
 
   return (
-    <FilterSubmenu label="Label" options={options} appliedFilters={appliedFilters} onToggle={handleUpdate} searchable />
+    <FilterSubmenu
+      label={t("common.label")}
+      options={options}
+      appliedFilters={appliedFilters}
+      onToggle={handleUpdate}
+      searchable
+    />
   );
 });

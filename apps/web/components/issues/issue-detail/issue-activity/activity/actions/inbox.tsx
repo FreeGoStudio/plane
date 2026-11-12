@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 // hooks
 import { IntakeOutline } from "@makeplane/propel/icons";
@@ -26,15 +27,15 @@ export const IssueInboxActivity = observer(function IssueInboxActivity(props: TI
   const getInboxActivityMessage = () => {
     switch (activity?.verb) {
       case "-1":
-        return "declined this work item from intake.";
+        return "work_item_activity.intake_declined";
       case "0":
-        return "snoozed this work item.";
+        return "work_item_activity.intake_snoozed";
       case "1":
-        return "accepted this work item from intake.";
+        return "work_item_activity.intake_accepted";
       case "2":
-        return "declined this work item from intake by marking a duplicate work item.";
+        return "work_item_activity.intake_duplicate";
       default:
-        return "updated intake work item status.";
+        return "work_item_activity.intake_updated";
     }
   };
 
@@ -45,7 +46,7 @@ export const IssueInboxActivity = observer(function IssueInboxActivity(props: TI
       activityId={activityId}
       ends={ends}
     >
-      <>{getInboxActivityMessage()}</>
+      <LocalizedText messageKey={getInboxActivityMessage()} />
     </IssueActivityBlockComponent>
   );
 });

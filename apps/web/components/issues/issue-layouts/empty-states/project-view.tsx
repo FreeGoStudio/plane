@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // components
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
@@ -14,6 +15,7 @@ import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useUserPermissions } from "@/hooks/store/user";
 
 export const ProjectViewEmptyState = observer(function ProjectViewEmptyState() {
+  const { t } = useTranslation();
   // store hooks
   const { toggleCreateIssueModal } = useCommandPalette();
   const { allowPermissions } = useUserPermissions();
@@ -32,7 +34,7 @@ export const ProjectViewEmptyState = observer(function ProjectViewEmptyState() {
       description="Work items help you track individual pieces of work. With work items, keep track of what's going on, who is working on it, and what's done."
       actions={[
         {
-          label: "New work item",
+          label: t("new_issue"),
           onClick: () => {
             toggleCreateIssueModal(true, EIssuesStoreType.PROJECT_VIEW);
           },

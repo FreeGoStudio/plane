@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { PriorityOutline } from "@makeplane/propel/icons";
 // hooks
@@ -14,6 +15,7 @@ import { IssueActivityBlockComponent, IssueLink } from "./";
 type TIssuePriorityActivity = { activityId: string; showIssue?: boolean; ends: "top" | "bottom" | undefined };
 
 export const IssuePriorityActivity = observer(function IssuePriorityActivity(props: TIssuePriorityActivity) {
+  const { t } = useTranslation();
   const { activityId, showIssue = true, ends } = props;
   // hooks
   const {
@@ -29,11 +31,19 @@ export const IssuePriorityActivity = observer(function IssuePriorityActivity(pro
       activityId={activityId}
       ends={ends}
     >
-      <>
-        set the priority to <span className="font-medium text-primary">{activity.new_value}</span>
-        {showIssue ? ` for ` : ``}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.priority_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: (
+            <span className="font-medium text-primary">
+              {["urgent", "high", "medium", "low", "none"].includes(activity.new_value ?? "")
+                ? t(`issue.priority.${activity.new_value}`)
+                : activity.new_value}
+            </span>
+          ),
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

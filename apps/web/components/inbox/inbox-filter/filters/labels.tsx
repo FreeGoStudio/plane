@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import type { IIssueLabel } from "@plane/types";
 // components
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export const FilterLabels = observer(function FilterLabels(props: Props) {
+  const { t } = useTranslation();
   const { labels } = props;
   // hooks
   const { inboxFilters, handleInboxIssueFilters } = useProjectInbox();
@@ -34,6 +36,12 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
     );
 
   return (
-    <FilterSubmenu label="Label" options={options} appliedFilters={filterValue} onToggle={handleToggle} searchable />
+    <FilterSubmenu
+      label={t("common.label")}
+      options={options}
+      appliedFilters={filterValue}
+      onToggle={handleToggle}
+      searchable
+    />
   );
 });

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { ChatOutline } from "@makeplane/propel/icons";
 // hooks
@@ -14,6 +15,7 @@ import { IssueActivityBlockComponent, IssueLink } from "./";
 type TIssueLinkActivity = { activityId: string; showIssue?: boolean; ends: "top" | "bottom" | undefined };
 
 export const IssueLinkActivity = observer(function IssueLinkActivity(props: TIssueLinkActivity) {
+  const { t } = useTranslation();
   const { activityId, showIssue = false, ends } = props;
   // hooks
   const {
@@ -29,47 +31,22 @@ export const IssueLinkActivity = observer(function IssueLinkActivity(props: TIss
       activityId={activityId}
       ends={ends}
     >
-      <>
-        {activity.verb === "created" ? (
-          <>
-            <span>added </span>
+      <LocalizedText
+        messageKey={`work_item_activity.link_${activity.verb === "created" ? "added" : activity.verb === "updated" ? "updated" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: (
             <a
-              href={`${activity.new_value}`}
+              href={activity.verb === "created" ? `${activity.new_value}` : `${activity.old_value}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              link
+              {t("link")}
             </a>
-          </>
-        ) : activity.verb === "updated" ? (
-          <>
-            <span>updated the </span>
-            <a
-              href={`${activity.old_value}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              link
-            </a>
-          </>
-        ) : (
-          <>
-            <span>removed this </span>
-            <a
-              href={`${activity.old_value}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              link
-            </a>
-          </>
-        )}
-        {showIssue && (activity.verb === "created" ? ` to ` : ` from `)}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+          ),
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

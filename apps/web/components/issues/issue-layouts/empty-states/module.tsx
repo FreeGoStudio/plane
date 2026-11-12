@@ -52,14 +52,14 @@ export const ModuleEmptyState = observer(function ModuleEmptyState() {
       .then(() =>
         setToast({
           type: "success",
-          title: "Success!",
+          title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
           message: "Work items added to the module successfully.",
         })
       )
       .catch(() =>
         setToast({
           type: "error",
-          title: "Error!",
+          title: t("sso.providers.saml.configure.toast.error_title"),
           message: "Selected work items could not be added to the module. Please try again.",
         })
       );
@@ -83,7 +83,7 @@ export const ModuleEmptyState = observer(function ModuleEmptyState() {
             description={t("common_empty_state.search.description")}
             actions={[
               {
-                label: "Clear filters",
+                label: t("sub_work_item.empty_state.sub_list_filters.action"),
                 onClick: moduleWorkItemFilter?.clearFilters,
                 disabled: !canPerformEmptyStateActions || !moduleWorkItemFilter,
                 variant: "secondary",

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { observer } from "mobx-react";
@@ -46,6 +47,7 @@ type Props = {
 };
 
 export const InboxIssueMainContent = observer(function InboxIssueMainContent(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, inboxIssue, isEditable, isSubmitting, setIsSubmitting } = props;
   // refs
   const editorRef = useRef<EditorRefApi>(null);
@@ -82,14 +84,14 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
         try {
           await removeIssue(workspaceSlug, projectId, _issueId);
           setToast({
-            title: "Success!",
+            title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
             type: "success",
-            message: "Work item deleted successfully",
+            message: t("inbox_issue.modals.delete.success"),
           });
         } catch (error) {
           console.log("Error in deleting work item:", error);
           setToast({
-            title: "Error!",
+            title: t("sso.providers.saml.configure.toast.error_title"),
             type: "error",
             message: "Work item delete failed",
           });

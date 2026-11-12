@@ -287,7 +287,7 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
     } catch {
       setToast({
         type: "error",
-        title: "Error!",
+        title: t("sso.providers.saml.configure.toast.error_title"),
         message: "Failed to move work item to project. Please try again.",
       });
     } finally {
@@ -455,7 +455,7 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
                     } else {
                       setToast({
                         type: "error",
-                        title: "Error!",
+                        title: t("sso.providers.saml.configure.toast.error_title"),
                         message: "Editor is still processing changes. Please wait before proceeding.",
                       });
                     }

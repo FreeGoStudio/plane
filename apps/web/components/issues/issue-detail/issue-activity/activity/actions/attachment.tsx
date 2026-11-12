@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { AttachOutline } from "@makeplane/propel/icons";
 // hooks
@@ -29,11 +30,10 @@ export const IssueAttachmentActivity = observer(function IssueAttachmentActivity
       activityId={activityId}
       ends={ends}
     >
-      <>
-        {activity.verb === "created" ? `uploaded a new attachment` : `removed an attachment`}
-        {showIssue && (activity.verb === "created" ? ` to ` : ` from `)}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.attachment_${activity.verb === "created" ? "uploaded" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{ issue: <IssueLink activityId={activityId} /> }}
+      />
     </IssueActivityBlockComponent>
   );
 });

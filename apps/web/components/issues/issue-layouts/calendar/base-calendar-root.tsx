@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { FC } from "react";
 import { useCallback, useEffect } from "react";
 import { observer } from "mobx-react";
@@ -43,6 +44,7 @@ interface IBaseCalendarRoot {
 }
 
 export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseCalendarRoot) {
+  const { t } = useTranslation();
   const {
     QuickActions,
     addIssuesToView,
@@ -121,7 +123,7 @@ export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseC
       updateIssue
     ).catch((err) => {
       setToast({
-        title: "Error!",
+        title: t("sso.providers.saml.configure.toast.error_title"),
         type: "error",
         message: err?.detail ?? "Failed to perform this action",
       });
@@ -137,12 +139,12 @@ export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseC
 
   const getPaginationData = useCallback(
     (groupId: string | undefined) => issues?.getPaginationData(groupId, undefined),
-    [issues?.getPaginationData]
+    [issues]
   );
 
   const getGroupIssueCount = useCallback(
     (groupId: string | undefined) => issues?.getGroupIssueCount(groupId, undefined, false),
-    [issues?.getGroupIssueCount]
+    [issues]
   );
 
   const canEditProperties = useCallback(

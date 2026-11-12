@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { ArchiveOutline, RefreshOutline } from "@makeplane/propel/icons";
 // hooks
@@ -38,7 +39,9 @@ export const IssueArchivedAtActivity = observer(function IssueArchivedAtActivity
       ends={ends}
       customUserName={activity.new_value === "archive" ? "Plane" : undefined}
     >
-      {activity.new_value === "restore" ? "restored the work item" : "archived the work item"}.
+      <LocalizedText
+        messageKey={activity.new_value === "restore" ? "work_item_activity.restored" : "work_item_activity.archived"}
+      />
     </IssueActivityBlockComponent>
   );
 });

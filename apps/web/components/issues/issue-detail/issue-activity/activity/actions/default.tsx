@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { WorkItemsOutline } from "@makeplane/propel/icons";
@@ -34,20 +35,18 @@ export const IssueDefaultActivity = observer(function IssueDefaultActivity(props
       icon={<WorkItemsOutline width={14} height={14} className="text-secondary" aria-hidden="true" />}
       ends={ends}
     >
-      <>
-        {activity.verb === "created" ? (
-          source && source !== EInboxIssueSource.IN_APP ? (
-            <span>
-              created the work item via{" "}
-              <span className="font-medium">{capitalizeFirstLetter(source.toLowerCase() || "")}</span>.
-            </span>
-          ) : (
-            <span> created the work item.</span>
-          )
-        ) : (
-          <span> deleted a work item.</span>
-        )}
-      </>
+      <LocalizedText
+        messageKey={
+          activity.verb === "created"
+            ? source && source !== EInboxIssueSource.IN_APP
+              ? "work_item_activity.created_via"
+              : "work_item_activity.created"
+            : "work_item_activity.deleted"
+        }
+        components={{
+          value: <span className="font-medium">{source ? capitalizeFirstLetter(source.toLowerCase()) : ""}</span>,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

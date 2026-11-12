@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { stringToEmoji } from "@plane/blocks/emoji-icon-picker";
@@ -29,6 +30,7 @@ export type TIssueReaction = {
 };
 
 export const IssueReaction = observer(function IssueReaction(props: TIssueReaction) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, issueId, currentUser, disabled = false, className = "" } = props;
   // state
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -50,13 +52,13 @@ export const IssueReaction = observer(function IssueReaction(props: TIssueReacti
           if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing fields");
           await createReaction(workspaceSlug, projectId, issueId, reaction);
           setToast({
-            title: "Success!",
+            title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
             type: "success",
             message: "Reaction created successfully",
           });
         } catch (_error) {
           setToast({
-            title: "Error!",
+            title: t("sso.providers.saml.configure.toast.error_title"),
             type: "error",
             message: "Reaction creation failed",
           });
@@ -67,13 +69,13 @@ export const IssueReaction = observer(function IssueReaction(props: TIssueReacti
           if (!workspaceSlug || !projectId || !issueId || !currentUser?.id) throw new Error("Missing fields");
           await removeReaction(workspaceSlug, projectId, issueId, reaction, currentUser.id);
           setToast({
-            title: "Success!",
+            title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
             type: "success",
             message: "Reaction removed successfully",
           });
         } catch (_error) {
           setToast({
-            title: "Error!",
+            title: t("sso.providers.saml.configure.toast.error_title"),
             type: "error",
             message: "Reaction remove failed",
           });
@@ -84,7 +86,7 @@ export const IssueReaction = observer(function IssueReaction(props: TIssueReacti
         else await issueReactionOperations.create(reaction);
       },
     }),
-    [workspaceSlug, projectId, issueId, currentUser, createReaction, removeReaction, userReactions]
+    [workspaceSlug, projectId, issueId, currentUser, createReaction, removeReaction, userReactions, t]
   );
 
   const getReactionUsers = (reaction: string): string[] => {
@@ -101,7 +103,7 @@ export const IssueReaction = observer(function IssueReaction(props: TIssueReacti
   };
 
   // Transform reactions data to Propel EmojiReactionType format
-  const reactions: EmojiReactionType[] = useMemo(() => {
+  const reactions: EmojiReactionType[] = (() => {
     if (!reactionIds) return [];
 
     return Object.keys(reactionIds)
@@ -112,7 +114,7 @@ export const IssueReaction = observer(function IssueReaction(props: TIssueReacti
         reacted: userReactions.includes(reaction),
         users: getReactionUsers(reaction),
       }));
-  }, [reactionIds, userReactions]);
+  })();
 
   const handleReactionClick = (emoji: string) => {
     if (disabled) return;

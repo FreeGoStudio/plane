@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 // icons
 import { MembersOutline } from "@makeplane/propel/icons";
@@ -30,19 +31,22 @@ export const IssueAssigneeActivity = observer(function IssueAssigneeActivity(pro
       activityId={activityId}
       ends={ends}
     >
-      <>
-        {activity.old_value === "" ? `added a new assignee ` : `removed the assignee `}
-        <a
-          href={`/${activity.workspace_detail?.slug}/profile/${activity.new_identifier ?? activity.old_identifier}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center font-medium text-primary capitalize hover:underline"
-        >
-          {activity.new_value && activity.new_value !== "" ? activity.new_value : activity.old_value}
-        </a>
-        {showIssue && (activity.old_value === "" ? ` to ` : ` from `)}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.assignee_${activity.old_value === "" ? "added" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: (
+            <a
+              href={`/${activity.workspace_detail?.slug}/profile/${activity.new_identifier ?? activity.old_identifier}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center font-medium text-primary capitalize hover:underline"
+            >
+              {activity.new_value && activity.new_value !== "" ? activity.new_value : activity.old_value}
+            </a>
+          ),
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

@@ -157,14 +157,14 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
               {isAcceptedOrDeclined && (
                 <MenuItem
                   icon={<Icon icon={LinkOutline} />}
-                  label="Copy work item link"
+                  label={t("inbox_issue.actions.copy")}
                   onClick={handleCopyIssueLink}
                 />
               )}
               {isAcceptedOrDeclined && (
                 <MenuItem
                   icon={<Icon icon={NewTabOutline} />}
-                  label="Open work item"
+                  label={t("inbox_issue.actions.open")}
                   onClick={() => router.push(workItemLink)}
                 />
               )}
@@ -184,7 +184,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
               {canMarkAsDuplicate && !isAcceptedOrDeclined && (
                 <MenuItem
                   icon={<Icon icon={DuplicateOfOutline} />}
-                  label="Mark as duplicate"
+                  label={t("inbox_issue.actions.mark_as_duplicate")}
                   onClick={() =>
                     handleActionWithPermission(
                       isProjectAdmin,
@@ -198,7 +198,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
                 // Propel menu rows are neutral/accent/danger only, so the accept/decline tint lives on the glyph.
                 <MenuItem
                   icon={<Icon icon={<TickCircleFilled className="text-success-secondary" />} />}
-                  label="Accept"
+                  label={t("inbox_issue.actions.accept")}
                   onClick={() =>
                     handleActionWithPermission(
                       isProjectAdmin,
@@ -211,7 +211,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
               {canMarkAsDeclined && (
                 <MenuItem
                   icon={<Icon icon={<CloseCircleFilled className="text-danger-secondary" />} />}
-                  label="Decline"
+                  label={t("decline")}
                   onClick={() =>
                     handleActionWithPermission(
                       isProjectAdmin,
@@ -225,7 +225,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
                 <MenuItem
                   variant="danger"
                   icon={<Icon icon={DeleteOutline} />}
-                  label="Delete"
+                  label={t("sso.domain_management.verified_domains.delete_domain.primary_button_text")}
                   onClick={() => setDeleteIssueModal(true)}
                 />
               )}

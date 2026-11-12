@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { EIconSize } from "@plane/constants";
 import { StateGroupIcon } from "@plane/blocks/icons";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export const FilterState = observer(function FilterState(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate, states } = props;
   // derived values
   const options = (states ?? []).map((state) => ({
@@ -27,6 +29,12 @@ export const FilterState = observer(function FilterState(props: Props) {
   }));
 
   return (
-    <FilterSubmenu label="State" options={options} appliedFilters={appliedFilters} onToggle={handleUpdate} searchable />
+    <FilterSubmenu
+      label={t("state")}
+      options={options}
+      appliedFilters={appliedFilters}
+      onToggle={handleUpdate}
+      searchable
+    />
   );
 });

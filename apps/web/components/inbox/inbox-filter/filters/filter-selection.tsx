@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // hooks
 import { useLabel } from "@/hooks/store/use-label";
@@ -16,6 +17,7 @@ import { FilterPriority } from "./priority";
 import { FilterStatus } from "./status";
 
 export const InboxIssueFilterSelection = observer(function InboxIssueFilterSelection() {
+  const { t } = useTranslation();
   // hooks
   const {
     project: { projectMemberIds },
@@ -29,13 +31,13 @@ export const InboxIssueFilterSelection = observer(function InboxIssueFilterSelec
       {/* Priority */}
       <FilterPriority />
       {/* assignees */}
-      <FilterMember filterKey="assignees" label="Assignees" memberIds={projectMemberIds ?? []} />
+      <FilterMember filterKey="assignees" label={t("assignees")} memberIds={projectMemberIds ?? []} />
       {/* Created By */}
       <FilterMember filterKey="created_by" label="Created By" memberIds={projectMemberIds ?? []} />
       {/* Labels */}
       <FilterLabels labels={projectLabels ?? []} />
       {/* Created at */}
-      <FilterDate filterKey="created_at" label="Created date" />
+      <FilterDate filterKey="created_at" label={t("common.date_filter.created_date")} />
       {/* Updated at */}
       <FilterDate filterKey="updated_at" label="Last updated date" />
     </>

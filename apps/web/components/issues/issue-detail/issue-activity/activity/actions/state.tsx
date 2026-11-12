@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 // hooks
 import { StateOutline } from "@makeplane/propel/icons";
@@ -30,11 +31,13 @@ export const IssueStateActivity = observer(function IssueStateActivity(props: TI
       activityId={activityId}
       ends={ends}
     >
-      <>
-        set the state to <span className="font-medium text-primary">{activity.new_value}</span>
-        {showIssue ? ` for ` : ``}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.state_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: <span className="font-medium text-primary">{activity.new_value}</span>,
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 // types
 import type { TIssueRelationTypes } from "@plane/types";
@@ -13,7 +14,7 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useTimeLineRelationOptions } from "@/components/relations";
 // local helpers
 import { IssueActivityBlockComponent } from "./";
-import { getRelationActivityContent } from "./helpers/activity";
+import { getRelationActivityMessageKey } from "./helpers/activity";
 
 type TIssueRelationActivity = { activityId: string; ends: "top" | "bottom" | undefined };
 
@@ -26,7 +27,7 @@ export const IssueRelationActivity = observer(function IssueRelationActivity(pro
 
   const activity = getActivityById(activityId);
   const ISSUE_RELATION_OPTIONS = useTimeLineRelationOptions();
-  const activityContent = getRelationActivityContent(activity);
+  const activityContent = getRelationActivityMessageKey(activity);
 
   if (!activity) return <></>;
   return (
@@ -35,11 +36,19 @@ export const IssueRelationActivity = observer(function IssueRelationActivity(pro
       activityId={activityId}
       ends={ends}
     >
-      {activityContent}
-      {activity.old_value === "" ? (
-        <span className="font-medium text-primary">{activity.new_value}.</span>
+      {activityContent ? (
+        <LocalizedText
+          messageKey={activityContent}
+          components={{
+            value: (
+              <span className="font-medium text-primary">
+                {activity.old_value === "" ? activity.new_value : activity.old_value}
+              </span>
+            ),
+          }}
+        />
       ) : (
-        <span className="font-medium text-primary">{activity.old_value}.</span>
+        <span>{activity.old_value === "" ? activity.new_value : activity.old_value}</span>
       )}
     </IssueActivityBlockComponent>
   );

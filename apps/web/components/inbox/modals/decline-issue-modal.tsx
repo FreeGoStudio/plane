@@ -60,7 +60,8 @@ export function DeclineIssueModal(props: Props) {
           <span className="font-medium break-words text-primary">
             {projectDetails?.identifier}-{data?.sequence_id}
           </span>
-          {""}? This action cannot be undone.
+          {""}
+          {t("sso.domain_management.verified_domains.delete_domain.description.suffix")}
         </>
       }
       primaryButtonText={{

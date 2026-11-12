@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { ModuleOutline } from "@makeplane/propel/icons";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export const FilterModule = observer(function FilterModule(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate } = props;
   // router
   const { projectId } = useParams();
@@ -39,7 +41,7 @@ export const FilterModule = observer(function FilterModule(props: Props) {
 
   return (
     <FilterSubmenu
-      label="Module"
+      label={t("common.module")}
       options={options}
       appliedFilters={appliedFilters}
       onToggle={handleUpdate}

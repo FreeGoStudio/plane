@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { DeleteOutline, EditOutline, NewTabOutline } from "@makeplane/propel/icons";
 import { setToast } from "@plane/blocks/toast";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
@@ -22,6 +23,7 @@ export type TIssueLinkDetail = {
 };
 
 export function IssueLinkDetail(props: TIssueLinkDetail) {
+  const { t } = useTranslation();
   // props
   const { linkId, linkOperations, isNotAllowed } = props;
   // hooks
@@ -47,18 +49,19 @@ export function IssueLinkDetail(props: TIssueLinkDetail) {
   return (
     <div key={linkId}>
       <div className="relative flex flex-col rounded-md bg-surface-2 p-2.5">
-        <div
-          className="flex w-full cursor-pointer items-start justify-between gap-2"
-          onClick={() => {
-            copyTextToClipboard(linkDetail.url);
-            setToast({
-              type: "success",
-              title: "Link copied!",
-              message: "Link copied to clipboard",
-            });
-          }}
-        >
-          <div className="flex items-start gap-2 truncate">
+        <div className="flex w-full items-start justify-between gap-2">
+          <button
+            type="button"
+            className="flex min-w-0 flex-1 cursor-pointer items-start gap-2 truncate text-left"
+            onClick={() => {
+              copyTextToClipboard(linkDetail.url);
+              setToast({
+                type: "success",
+                title: t("common.link_copied"),
+                message: t("common.link_copied_to_clipboard"),
+              });
+            }}
+          >
             <span className="py-1">
               <Icon className="size-3 flex-shrink-0 stroke-2 text-tertiary group-hover:text-primary" />
             </span>
@@ -71,7 +74,7 @@ export function IssueLinkDetail(props: TIssueLinkDetail) {
                 {linkDetail.title && linkDetail.title !== "" ? linkDetail.title : linkDetail.url}
               </span>
             </Tooltip>
-          </div>
+          </button>
 
           {!isNotAllowed && (
             <div className="z-[1] flex flex-shrink-0 items-center gap-2">
@@ -111,7 +114,8 @@ export function IssueLinkDetail(props: TIssueLinkDetail) {
 
         <div className="px-5">
           <p className="mt-0.5 stroke-[1.5] text-caption-sm-regular text-tertiary">
-            Added {calculateTimeAgo(linkDetail.created_at)}
+            {t("project.members_import.summary.stats.added")}
+            {calculateTimeAgo(linkDetail.created_at)}
             <br />
             {createdByDetails && (
               <>

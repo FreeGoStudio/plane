@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { ParentOutline } from "@makeplane/propel/icons";
 // hooks
@@ -29,16 +30,13 @@ export const IssueParentActivity = observer(function IssueParentActivity(props: 
       activityId={activityId}
       ends={ends}
     >
-      <>
-        {activity.new_value ? `set the parent to ` : `removed the parent `}
-        {activity.new_value ? (
-          <span className="font-medium text-primary">{activity.new_value}</span>
-        ) : (
-          <span className="font-medium text-primary">{activity.old_value}</span>
-        )}
-        {showIssue && (activity.new_value ? ` for ` : ` from `)}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.parent_${activity.new_value ? "set" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: <span className="font-medium text-primary">{activity.new_value || activity.old_value}</span>,
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

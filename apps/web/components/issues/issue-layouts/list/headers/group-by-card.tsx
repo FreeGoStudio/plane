@@ -82,13 +82,13 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
 
       setToast({
         type: "success",
-        title: "Success!",
+        title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
         message: "Work items added to the cycle successfully.",
       });
     } catch (_error) {
       setToast({
         type: "error",
-        title: "Error!",
+        title: t("sso.providers.saml.configure.toast.error_title"),
         message: "Selected work items could not be added to the cycle. Please try again.",
       });
     }
@@ -143,13 +143,13 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
               />
               <MenuContent side="bottom" align="start">
                 <MenuItem
-                  label="Create work item"
+                  label={t("create_work_item")}
                   onClick={() => {
                     setIsOpen(true);
                   }}
                 />
                 <MenuItem
-                  label="Add an existing work item"
+                  label={t("project_module.empty_state.no_issues.secondary_button.text")}
                   onClick={() => {
                     setOpenExistingIssueListModal(true);
                   }}

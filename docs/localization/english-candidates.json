@@ -3,57 +3,9 @@
   "candidates": [
     {
       "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 44,
-      "kind": "display-property",
-      "text": "LLM Model"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 47,
-      "kind": "jsx-text",
-      "text": "Choose an OpenAI engine."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 53,
-      "kind": "jsx-attribute",
-      "text": "OpenAI models documentation"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 55,
-      "kind": "jsx-text",
-      "text": "Learn more"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 59,
+      "line": 60,
       "kind": "display-property",
       "text": "gpt-4o-mini"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 66,
-      "kind": "display-property",
-      "text": "API key"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 69,
-      "kind": "jsx-text",
-      "text": "You will find your API key"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 75,
-      "kind": "jsx-attribute",
-      "text": "OpenAI API keys page"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 77,
-      "kind": "jsx-text",
-      "text": "here."
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
@@ -63,55 +15,13 @@
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 94,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 95,
-      "kind": "display-property",
-      "text": "AI Settings updated successfully"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
       "line": 105,
       "kind": "jsx-text",
       "text": "OpenAI"
     },
     {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 106,
-      "kind": "jsx-text",
-      "text": "If you use ChatGPT, this is for you."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 138,
-      "kind": "jsx-text",
-      "text": "If you have a preferred AI models vendor, please get in"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/form.tsx",
-      "line": 140,
-      "kind": "jsx-text",
-      "text": "touch with us."
-    },
-    {
       "file": "apps/admin/app/(all)/(dashboard)/ai/page.tsx",
-      "line": 28,
-      "kind": "display-property",
-      "text": "AI features for all your workspaces"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/page.tsx",
-      "line": 29,
-      "kind": "display-property",
-      "text": "Configure your AI API credentials so Plane AI features are turned on for all your workspaces."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/ai/page.tsx",
-      "line": 48,
+      "line": 50,
       "kind": "display-property",
       "text": "Artificial Intelligence Settings - God Mode"
     },
@@ -123,141 +33,33 @@
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 54,
-      "kind": "display-property",
-      "text": "Gitea Host"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 56,
-      "kind": "jsx-text",
-      "text": "Use the URL of your Gitea instance. For the official Gitea instance, use &quot;https://gitea.com&quot;."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 58,
+      "line": 57,
       "kind": "display-property",
       "text": "https://gitea.com"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 65,
-      "kind": "display-property",
-      "text": "Client ID"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 68,
-      "kind": "jsx-text",
-      "text": "You will get this from your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
       "line": 75,
-      "kind": "jsx-text",
-      "text": "Gitea OAuth application settings."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 79,
       "kind": "display-property",
       "text": "70a44354520df8bd9bcd"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 86,
-      "kind": "display-property",
-      "text": "Client secret"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 89,
-      "kind": "jsx-text",
-      "text": "Your client secret is also found in your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 96,
-      "kind": "jsx-text",
-      "text": "Gitea OAuth application settings."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 100,
+      "line": 93,
       "kind": "display-property",
       "text": "9b0050f94ec1b744e32ce79ea4ffacd40d4119cb"
     },
     {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
+      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
+      "line": 78,
+      "kind": "jsx-attribute",
+      "text": "Gitea"
+    },
+    {
+      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
       "line": 109,
       "kind": "display-property",
-      "text": "Callback URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 113,
-      "kind": "jsx-text",
-      "text": "We will auto-generate this. Paste this into your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 113,
-      "kind": "jsx-text",
-      "text": "Authorized Callback URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 114,
-      "kind": "jsx-text",
-      "text": "field"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 120,
-      "kind": "jsx-attribute",
-      "text": "Gitea OAuth application settings"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/form.tsx",
-      "line": 122,
-      "kind": "jsx-text",
-      "text": "here."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
-      "line": 47,
-      "kind": "display-property",
-      "text": "Configuration saved"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
-      "line": 51,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
-      "line": 73,
-      "kind": "jsx-attribute",
-      "text": "Allow members to login or sign up to plane with their Gitea accounts."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
-      "line": 74,
-      "kind": "jsx-attribute",
-      "text": "Gitea Logo"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
-      "line": 77,
-      "kind": "jsx-attribute",
-      "text": "Enable Gitea authentication"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitea/page.tsx",
-      "line": 105,
-      "kind": "display-property",
-      "text": "Gitea Authentication - God Mode"
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
@@ -267,171 +69,27 @@
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 51,
-      "kind": "display-property",
-      "text": "Client ID"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "You will get this from your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 61,
-      "kind": "jsx-text",
-      "text": "GitHub OAuth application settings."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 65,
+      "line": 63,
       "kind": "display-property",
       "text": "70a44354520df8bd9bcd"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 72,
-      "kind": "display-property",
-      "text": "Client secret"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 75,
-      "kind": "jsx-text",
-      "text": "Your client secret is also found in your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 82,
-      "kind": "jsx-text",
-      "text": "GitHub OAuth application settings."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 86,
+      "line": 81,
       "kind": "display-property",
       "text": "9b0050f94ec1b744e32ce79ea4ffacd40d4119cb"
     },
     {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 93,
-      "kind": "display-property",
-      "text": "Organization ID"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 94,
-      "kind": "jsx-text",
-      "text": "The organization github ID."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 104,
-      "kind": "display-property",
-      "text": "Origin URL"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 108,
-      "kind": "jsx-text",
-      "text": "We will auto-generate this. Paste this into the"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 108,
-      "kind": "jsx-text",
-      "text": "Authorized origin URL"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 108,
-      "kind": "jsx-text",
-      "text": "field"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 114,
+      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
+      "line": 91,
       "kind": "jsx-attribute",
-      "text": "GitHub OAuth application settings"
+      "text": "GitHub"
     },
     {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 116,
-      "kind": "jsx-text",
-      "text": "here."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 126,
+      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
+      "line": 125,
       "kind": "display-property",
-      "text": "Callback URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 130,
-      "kind": "jsx-text",
-      "text": "We will auto-generate this. Paste this into your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 130,
-      "kind": "jsx-text",
-      "text": "Authorized Callback URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 131,
-      "kind": "jsx-text",
-      "text": "field"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 137,
-      "kind": "jsx-attribute",
-      "text": "GitHub OAuth application settings"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/form.tsx",
-      "line": 139,
-      "kind": "jsx-text",
-      "text": "here."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
-      "line": 55,
-      "kind": "display-property",
-      "text": "Configuration saved"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
-      "line": 59,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
-      "line": 81,
-      "kind": "jsx-attribute",
-      "text": "Allow members to login or sign up to plane with their GitHub accounts."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
-      "line": 87,
-      "kind": "jsx-attribute",
-      "text": "GitHub Logo"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
-      "line": 92,
-      "kind": "jsx-attribute",
-      "text": "Enable GitHub authentication"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/github/page.tsx",
-      "line": 121,
-      "kind": "display-property",
-      "text": "GitHub Authentication - God Mode"
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
@@ -441,147 +99,33 @@
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 51,
-      "kind": "display-property",
-      "text": "Host"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
       "line": 54,
-      "kind": "jsx-text",
-      "text": "This is either https://gitlab.com or the"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "domain.tld"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "where you host GitLab."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 57,
       "kind": "display-property",
       "text": "https://gitlab.com"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 64,
-      "kind": "display-property",
-      "text": "Application ID"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 67,
-      "kind": "jsx-text",
-      "text": "Get this from your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 74,
-      "kind": "jsx-text",
-      "text": "GitLab OAuth application settings"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 79,
+      "line": 72,
       "kind": "display-property",
       "text": "c2ef2e7fc4e9d15aa7630f5637d59e8e4a27ff01dceebdb26b0d267b9adcf3c3"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 86,
-      "kind": "display-property",
-      "text": "Secret"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 89,
-      "kind": "jsx-text",
-      "text": "The client secret is also found in your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 96,
-      "kind": "jsx-text",
-      "text": "GitLab OAuth application settings"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 101,
+      "line": 90,
       "kind": "display-property",
       "text": "gloas-f79cfa9a03c97f6ffab303177a5a6778a53c61e3914ba093412f68a9298a1b28"
     },
     {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 110,
-      "kind": "display-property",
-      "text": "Callback URL"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 114,
-      "kind": "jsx-text",
-      "text": "We will auto-generate this. Paste this into the"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 114,
-      "kind": "jsx-text",
-      "text": "Redirect URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 114,
-      "kind": "jsx-text",
-      "text": "field of your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/form.tsx",
-      "line": 121,
-      "kind": "jsx-text",
-      "text": "GitLab OAuth application"
-    },
-    {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/page.tsx",
-      "line": 49,
-      "kind": "display-property",
-      "text": "Configuration saved"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/page.tsx",
-      "line": 53,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/page.tsx",
-      "line": 72,
+      "line": 77,
       "kind": "jsx-attribute",
-      "text": "Allow members to login or sign up to plane with their GitLab accounts."
+      "text": "GitLab"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/page.tsx",
-      "line": 73,
-      "kind": "jsx-attribute",
-      "text": "GitLab Logo"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/page.tsx",
-      "line": 76,
-      "kind": "jsx-attribute",
-      "text": "Enable GitLab authentication"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/gitlab/page.tsx",
-      "line": 109,
+      "line": 113,
       "kind": "display-property",
-      "text": "GitLab Authentication - God Mode"
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
@@ -591,235 +135,31 @@
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 50,
-      "kind": "display-property",
-      "text": "Client ID"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 53,
-      "kind": "jsx-text",
-      "text": "Your client ID lives in your Google API Console."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 59,
-      "kind": "jsx-attribute",
-      "text": "Google OAuth client ID documentation"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 61,
-      "kind": "jsx-text",
-      "text": "Learn more"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 65,
+      "line": 62,
       "kind": "display-property",
       "text": "840195096245-0p2tstej9j5nc4l8o1ah2dqondscqc1g.apps.googleusercontent.com"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 72,
-      "kind": "display-property",
-      "text": "Client secret"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 75,
-      "kind": "jsx-text",
-      "text": "Your client secret should also be in your Google API Console."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 81,
-      "kind": "jsx-attribute",
-      "text": "Google OAuth client secret documentation"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 83,
-      "kind": "jsx-text",
-      "text": "Learn more"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 87,
+      "line": 80,
       "kind": "display-property",
       "text": "GOCShX-ADp4cI0kPqav1gGCBg5bE02E"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 96,
-      "kind": "display-property",
-      "text": "Origin URL"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 100,
-      "kind": "jsx-text",
-      "text": "We will auto-generate this. Paste this into your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 101,
-      "kind": "jsx-text",
-      "text": "Authorized JavaScript origins"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 101,
-      "kind": "jsx-text",
-      "text": "field. For this OAuth client"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 107,
-      "kind": "jsx-attribute",
-      "text": "Google Cloud Console OAuth client credentials"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 109,
-      "kind": "jsx-text",
-      "text": "here."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 119,
-      "kind": "display-property",
-      "text": "Callback URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 123,
-      "kind": "jsx-text",
-      "text": "We will auto-generate this. Paste this into your"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 123,
-      "kind": "jsx-text",
-      "text": "Authorized Redirect URI"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 124,
-      "kind": "jsx-text",
-      "text": "field. For this OAuth client"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 130,
-      "kind": "jsx-attribute",
-      "text": "Google Cloud Console OAuth client credentials"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/form.tsx",
-      "line": 132,
-      "kind": "jsx-text",
-      "text": "here."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/page.tsx",
-      "line": 49,
-      "kind": "display-property",
-      "text": "Configuration saved"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/page.tsx",
-      "line": 53,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/page.tsx",
-      "line": 72,
-      "kind": "jsx-attribute",
-      "text": "Allow members to login or sign up to plane with their Google accounts."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/google/page.tsx",
-      "line": 74,
-      "kind": "jsx-attribute",
-      "text": "Google Logo"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/google/page.tsx",
       "line": 77,
       "kind": "jsx-attribute",
-      "text": "Enable Google authentication"
+      "text": "Google"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/google/page.tsx",
-      "line": 110,
+      "line": 113,
       "kind": "display-property",
-      "text": "Google Authentication - God Mode"
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 59,
-      "kind": "display-property",
-      "text": "Cannot disable authentication"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 61,
-      "kind": "display-property",
-      "text": "At least one authentication method must remain enabled. Please enable another method before disabling this one."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 84,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 117,
-      "kind": "display-property",
-      "text": "Manage authentication modes for your instance"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 118,
-      "kind": "display-property",
-      "text": "Configure authentication modes for your team and restrict sign-ups to be invite only."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 127,
-      "kind": "jsx-text",
-      "text": "Allow anyone to sign up even without an invite"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 130,
-      "kind": "jsx-text",
-      "text": "Toggling this off will only let users sign up when they are invited."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 137,
-      "kind": "jsx-attribute",
-      "text": "Allow anyone to sign up even without an invite"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 152,
-      "kind": "jsx-text",
-      "text": "Available authentication modes"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/authentication/page.tsx",
-      "line": 178,
+      "line": 175,
       "kind": "display-property",
       "text": "Authentication Settings - Plane Web"
     },
@@ -855,429 +195,51 @@
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 47,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 48,
-      "kind": "display-property",
-      "text": "Image Configuration Settings updated successfully"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 62,
-      "kind": "jsx-attribute",
-      "text": "Access key from your Unsplash account"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 65,
-      "kind": "jsx-text",
-      "text": "You will find your access key in your Unsplash developer console.&nbsp;"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 71,
-      "kind": "jsx-attribute",
-      "text": "Unsplash developer account documentation"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 73,
-      "kind": "jsx-text",
-      "text": "Learn more."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/form.tsx",
-      "line": 77,
+      "line": 78,
       "kind": "jsx-attribute",
       "text": "oXgq-sdfadsaeweqasdfasdf3234234rassd"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/image/page.tsx",
-      "line": 28,
-      "kind": "display-property",
-      "text": "Third-party image libraries"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/page.tsx",
-      "line": 29,
-      "kind": "display-property",
-      "text": "Let your users search and choose images from third-party libraries"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/image/page.tsx",
-      "line": 44,
+      "line": 46,
       "kind": "display-property",
       "text": "Images Settings - God Mode"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 71,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 72,
-      "kind": "display-property",
-      "text": "Workspace created successfully."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Workspace could not be created. Please try again."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 88,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 89,
-      "kind": "display-property",
-      "text": "Some error occurred while creating workspace. Please try again."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 128,
-      "kind": "jsx-attribute",
-      "text": "Something familiar and recognizable is always best."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 157,
+      "line": 159,
       "kind": "jsx-attribute",
       "text": "workspace-name"
     },
     {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/form.tsx",
-      "line": 225,
-      "kind": "jsx-attribute",
-      "text": "Go back"
-    },
-    {
       "file": "apps/admin/app/(all)/(dashboard)/workspace/create/page.tsx",
-      "line": 19,
+      "line": 30,
       "kind": "display-property",
-      "text": "Create a new workspace on this instance."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/page.tsx",
-      "line": 20,
-      "kind": "display-property",
-      "text": "You will need to invite users from Workspace Settings after you create this workspace."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/create/page.tsx",
-      "line": 28,
-      "kind": "display-property",
-      "text": "Create Workspace - God Mode"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 63,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 67,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 85,
-      "kind": "display-property",
-      "text": "Workspaces on this instance"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 86,
-      "kind": "display-property",
-      "text": "See all workspaces and control who can create them."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 95,
-      "kind": "jsx-text",
-      "text": "Prevent anyone else from creating a workspace."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 98,
-      "kind": "jsx-text",
-      "text": "Toggling this on will let only you create workspaces. You will have to invite users to new workspaces."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 114,
-      "kind": "jsx-attribute",
-      "text": "Prevent anyone else from creating a workspace"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 130,
-      "kind": "jsx-text",
-      "text": "All workspaces on this instance"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 136,
-      "kind": "jsx-text",
-      "text": "You can&apos;t yet delete workspaces and you can only go to the workspace if you are an Admin or a Member."
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 147,
-      "kind": "jsx-attribute",
-      "text": "Create workspace"
-    },
-    {
-      "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
-      "line": 171,
-      "kind": "jsx-attribute",
-      "text": "Load more"
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(dashboard)/workspace/page.tsx",
       "line": 189,
       "kind": "display-property",
-      "text": "Workspace Management - God Mode"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/auth-helpers.tsx",
-      "line": 52,
-      "kind": "jsx-text",
-      "text": "Admin user already exists.&nbsp;"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/auth-helpers.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "Sign In"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/auth-helpers.tsx",
-      "line": 56,
-      "kind": "jsx-text",
-      "text": "&nbsp;now."
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/auth-helpers.tsx",
-      "line": 64,
-      "kind": "jsx-text",
-      "text": "Admin user does not exist.&nbsp;"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/auth-helpers.tsx",
-      "line": 66,
-      "kind": "jsx-text",
-      "text": "Sign In"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/auth-helpers.tsx",
-      "line": 68,
-      "kind": "jsx-text",
-      "text": "&nbsp;now."
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(home)/page.tsx",
-      "line": 48,
+      "line": 47,
       "kind": "display-property",
-      "text": "Admin – Instance Setup & Sign-In"
+      "text": "Plane"
     },
     {
       "file": "apps/admin/app/(all)/(home)/sign-in-form.tsx",
-      "line": 133,
+      "line": 138,
       "kind": "jsx-attribute",
       "text": "name@company.com"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/sign-in-form.tsx",
-      "line": 140,
-      "kind": "jsx-attribute",
-      "text": "Email"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/sign-in-form.tsx",
-      "line": 149,
-      "kind": "jsx-attribute",
-      "text": "Enter your password"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/sign-in-form.tsx",
-      "line": 154,
-      "kind": "jsx-attribute",
-      "text": "Password"
-    },
-    {
-      "file": "apps/admin/app/(all)/(home)/sign-in-form.tsx",
-      "line": 176,
-      "kind": "jsx-attribute",
-      "text": "Sign in"
-    },
-    {
-      "file": "apps/admin/app/components/404.tsx",
-      "line": 19,
-      "kind": "jsx-attribute",
-      "text": "Oops! Something went wrong."
-    },
-    {
-      "file": "apps/admin/app/components/404.tsx",
-      "line": 20,
-      "kind": "jsx-attribute",
-      "text": "Sorry, the page you are looking for cannot be found. It may have been removed, had its name changed, or is temporarily unavailable."
-    },
-    {
-      "file": "apps/admin/app/components/404.tsx",
-      "line": 28,
-      "kind": "jsx-attribute",
-      "text": "Go to general settings"
     },
     {
       "file": "apps/admin/app/root.tsx",
       "line": 97,
       "kind": "jsx-text",
       "text": "Something went wrong."
-    },
-    {
-      "file": "apps/admin/components/authentication/email-config-switch.tsx",
-      "line": 36,
-      "kind": "jsx-attribute",
-      "text": "Enable login with email codes"
-    },
-    {
-      "file": "apps/admin/components/authentication/gitea-config.tsx",
-      "line": 38,
-      "kind": "jsx-attribute",
-      "text": "Edit"
-    },
-    {
-      "file": "apps/admin/components/authentication/gitea-config.tsx",
-      "line": 47,
-      "kind": "jsx-attribute",
-      "text": "Enable Gitea"
-    },
-    {
-      "file": "apps/admin/components/authentication/gitea-config.tsx",
-      "line": 59,
-      "kind": "jsx-attribute",
-      "text": "Configure"
-    },
-    {
-      "file": "apps/admin/components/authentication/github-config.tsx",
-      "line": 37,
-      "kind": "jsx-attribute",
-      "text": "Edit"
-    },
-    {
-      "file": "apps/admin/components/authentication/github-config.tsx",
-      "line": 45,
-      "kind": "jsx-attribute",
-      "text": "Enable GitHub"
-    },
-    {
-      "file": "apps/admin/components/authentication/github-config.tsx",
-      "line": 57,
-      "kind": "jsx-attribute",
-      "text": "Configure"
-    },
-    {
-      "file": "apps/admin/components/authentication/gitlab-config.tsx",
-      "line": 37,
-      "kind": "jsx-attribute",
-      "text": "Edit"
-    },
-    {
-      "file": "apps/admin/components/authentication/gitlab-config.tsx",
-      "line": 45,
-      "kind": "jsx-attribute",
-      "text": "Enable GitLab"
-    },
-    {
-      "file": "apps/admin/components/authentication/gitlab-config.tsx",
-      "line": 57,
-      "kind": "jsx-attribute",
-      "text": "Configure"
-    },
-    {
-      "file": "apps/admin/components/authentication/google-config.tsx",
-      "line": 37,
-      "kind": "jsx-attribute",
-      "text": "Edit"
-    },
-    {
-      "file": "apps/admin/components/authentication/google-config.tsx",
-      "line": 45,
-      "kind": "jsx-attribute",
-      "text": "Enable Google"
-    },
-    {
-      "file": "apps/admin/components/authentication/google-config.tsx",
-      "line": 57,
-      "kind": "jsx-attribute",
-      "text": "Configure"
-    },
-    {
-      "file": "apps/admin/components/authentication/oauth-provider-form.tsx",
-      "line": 59,
-      "kind": "jsx-text",
-      "text": "-provided details for Plane"
-    },
-    {
-      "file": "apps/admin/components/authentication/oauth-provider-form.tsx",
-      "line": 91,
-      "kind": "jsx-attribute",
-      "text": "Go back"
-    },
-    {
-      "file": "apps/admin/components/authentication/oauth-provider-form.tsx",
-      "line": 97,
-      "kind": "jsx-text",
-      "text": "Plane-provided details for"
-    },
-    {
-      "file": "apps/admin/components/authentication/oauth-provider-form.tsx",
-      "line": 108,
-      "kind": "jsx-text",
-      "text": "Web"
-    },
-    {
-      "file": "apps/admin/components/authentication/password-config-switch.tsx",
-      "line": 36,
-      "kind": "jsx-attribute",
-      "text": "Enable login with passwords"
-    },
-    {
-      "file": "apps/admin/components/common/confirm-discard-modal.tsx",
-      "line": 40,
-      "kind": "jsx-attribute",
-      "text": "You have unsaved changes"
-    },
-    {
-      "file": "apps/admin/components/common/controller-switch.tsx",
-      "line": 33,
-      "kind": "jsx-text",
-      "text": "Refresh user attributes from"
-    },
-    {
-      "file": "apps/admin/components/common/controller-switch.tsx",
-      "line": 33,
-      "kind": "jsx-text",
-      "text": "during sign in"
     },
     {
       "file": "apps/admin/components/common/logo-spinner.tsx",
@@ -1292,226 +254,34 @@
       "text": "Plane icon"
     },
     {
-      "file": "apps/admin/components/instance/failure.tsx",
-      "line": 30,
-      "kind": "jsx-attribute",
-      "text": "Instance failure illustration"
-    },
-    {
-      "file": "apps/admin/components/instance/failure.tsx",
-      "line": 31,
-      "kind": "jsx-text",
-      "text": "Unable to fetch instance details."
-    },
-    {
-      "file": "apps/admin/components/instance/failure.tsx",
-      "line": 33,
-      "kind": "jsx-text",
-      "text": "We were unable to fetch the details of the instance. Fret not, it might just be a connectivity issue."
-    },
-    {
-      "file": "apps/admin/components/instance/failure.tsx",
-      "line": 37,
-      "kind": "jsx-attribute",
-      "text": "Retry"
-    },
-    {
       "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 169,
-      "kind": "jsx-attribute",
-      "text": "Wilber"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 182,
-      "kind": "jsx-attribute",
-      "text": "First name"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 192,
-      "kind": "jsx-attribute",
-      "text": "Wright"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 203,
-      "kind": "jsx-attribute",
-      "text": "Last name"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 214,
+      "line": 223,
       "kind": "jsx-attribute",
       "text": "name@company.com"
     },
     {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 220,
+      "file": "apps/admin/hooks/oauth/core.tsx",
+      "line": 58,
       "kind": "jsx-attribute",
-      "text": "Email"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 230,
-      "kind": "jsx-attribute",
-      "text": "Company name"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 240,
-      "kind": "jsx-attribute",
-      "text": "Company name"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 250,
-      "kind": "jsx-attribute",
-      "text": "New password"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 258,
-      "kind": "jsx-attribute",
-      "text": "Set a password"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 286,
-      "kind": "jsx-attribute",
-      "text": "Confirm password"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 291,
-      "kind": "jsx-attribute",
-      "text": "Confirm password"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 308,
-      "kind": "jsx-text",
-      "text": "Passwords don"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 308,
-      "kind": "jsx-text",
-      "text": "t match"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 316,
-      "kind": "jsx-attribute",
-      "text": "Allow Plane to anonymously collect usage events"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 322,
-      "kind": "jsx-text",
-      "text": "Allow Plane to anonymously collect usage events."
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 329,
-      "kind": "jsx-text",
-      "text": "See More"
-    },
-    {
-      "file": "apps/admin/components/instance/setup-form.tsx",
-      "line": 342,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/admin/components/workspace/list-item.tsx",
-      "line": 52,
-      "kind": "jsx-attribute",
-      "text": "The unique URL of your workspace"
-    },
-    {
-      "file": "apps/admin/components/workspace/list-item.tsx",
-      "line": 61,
-      "kind": "jsx-text",
-      "text": "Owned by:"
-    },
-    {
-      "file": "apps/admin/components/workspace/list-item.tsx",
-      "line": 70,
-      "kind": "jsx-text",
-      "text": "Total projects:"
-    },
-    {
-      "file": "apps/admin/components/workspace/list-item.tsx",
-      "line": 78,
-      "kind": "jsx-text",
-      "text": "Total members:"
+      "text": "Google"
     },
     {
       "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 40,
-      "kind": "display-property",
-      "text": "Log in or sign up for Plane using codes sent via email. You need to have set up SMTP to use this method."
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 48,
-      "kind": "display-property",
-      "text": "Allow members to create accounts with passwords and use it with their email addresses to sign in."
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 56,
-      "kind": "display-property",
-      "text": "Allow members to log in or sign up for Plane with their Google accounts."
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 57,
+      "line": 71,
       "kind": "jsx-attribute",
-      "text": "Google Logo"
+      "text": "GitHub"
     },
     {
       "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 64,
-      "kind": "display-property",
-      "text": "Allow members to log in or sign up for Plane with their GitHub accounts."
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 70,
+      "line": 81,
       "kind": "jsx-attribute",
-      "text": "GitHub Logo"
+      "text": "GitLab"
     },
     {
       "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Allow members to log in or sign up to plane with their GitLab accounts."
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 80,
+      "line": 89,
       "kind": "jsx-attribute",
-      "text": "GitLab Logo"
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 87,
-      "kind": "display-property",
-      "text": "Allow members to log in or sign up to plane with their Gitea accounts."
-    },
-    {
-      "file": "apps/admin/hooks/oauth/core.tsx",
-      "line": 88,
-      "kind": "jsx-attribute",
-      "text": "Gitea Logo"
-    },
-    {
-      "file": "apps/admin/hooks/use-oauth-provider-config-form.ts",
-      "line": 34,
-      "kind": "display-property",
-      "text": "Done!"
+      "text": "Gitea"
     },
     {
       "file": "apps/admin/hooks/use-sidebar-menu/core.ts",
@@ -1557,303 +327,33 @@
     },
     {
       "file": "apps/space/app/error.tsx",
-      "line": 19,
-      "kind": "jsx-text",
-      "text": "Yikes! That doesn"
-    },
-    {
-      "file": "apps/space/app/error.tsx",
-      "line": 19,
-      "kind": "jsx-text",
-      "text": "t look good."
-    },
-    {
-      "file": "apps/space/app/error.tsx",
-      "line": 21,
-      "kind": "jsx-text",
-      "text": "That crashed Plane, pun intended. No worries, though. Our engineers have been notified. If you have more details, please write to"
-    },
-    {
-      "file": "apps/space/app/error.tsx",
-      "line": 24,
+      "line": 26,
       "kind": "jsx-text",
       "text": "support@plane.so"
     },
     {
-      "file": "apps/space/app/error.tsx",
-      "line": 26,
-      "kind": "jsx-text",
-      "text": "or on our"
-    },
-    {
-      "file": "apps/space/app/error.tsx",
-      "line": 28,
-      "kind": "jsx-text",
-      "text": "Forum"
-    },
-    {
-      "file": "apps/space/app/error.tsx",
-      "line": 34,
-      "kind": "jsx-attribute",
-      "text": "Refresh"
-    },
-    {
-      "file": "apps/space/app/not-found.tsx",
-      "line": 17,
-      "kind": "jsx-attribute",
-      "text": "That didn't work"
-    },
-    {
-      "file": "apps/space/app/not-found.tsx",
-      "line": 18,
-      "kind": "jsx-attribute",
-      "text": "Check the URL you are entering in the browser's address bar and try again."
-    },
-    {
       "file": "apps/space/components/account/auth-forms/email.tsx",
-      "line": 56,
-      "kind": "jsx-text",
-      "text": "Email"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/email.tsx",
-      "line": 77,
-      "kind": "jsx-attribute",
-      "text": "name@company.com"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/email.tsx",
-      "line": 86,
-      "kind": "jsx-attribute",
-      "text": "Clear email"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/email.tsx",
-      "line": 111,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 129,
-      "kind": "jsx-text",
-      "text": "Email"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 139,
+      "line": 79,
       "kind": "jsx-attribute",
       "text": "name@company.com"
     },
     {
       "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 145,
-      "kind": "jsx-attribute",
-      "text": "Clear email"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 168,
-      "kind": "jsx-attribute",
-      "text": "Enter password"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 193,
-      "kind": "jsx-text",
-      "text": "Confirm password"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 203,
-      "kind": "jsx-attribute",
-      "text": "Confirm password"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 223,
-      "kind": "jsx-text",
-      "text": "Passwords don"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 223,
-      "kind": "jsx-text",
-      "text": "t match"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 246,
-      "kind": "jsx-attribute",
-      "text": "Sign in with unique code"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/password.tsx",
-      "line": 259,
-      "kind": "jsx-attribute",
-      "text": "Create account"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/unique-code.tsx",
-      "line": 90,
-      "kind": "jsx-text",
-      "text": "Email"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/unique-code.tsx",
-      "line": 100,
-      "kind": "jsx-attribute",
-      "text": "name@company.com"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/unique-code.tsx",
-      "line": 107,
-      "kind": "jsx-attribute",
-      "text": "Clear email"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/unique-code.tsx",
-      "line": 120,
-      "kind": "jsx-text",
-      "text": "Unique code"
-    },
-    {
-      "file": "apps/space/components/account/auth-forms/unique-code.tsx",
       "line": 138,
-      "kind": "jsx-text",
-      "text": "Paste the code sent to your email"
-    },
-    {
-      "file": "apps/space/components/account/terms-and-conditions.tsx",
-      "line": 16,
-      "kind": "jsx-text",
-      "text": ", you agree to our"
-    },
-    {
-      "file": "apps/space/components/account/terms-and-conditions.tsx",
-      "line": 18,
-      "kind": "jsx-text",
-      "text": "Terms of Service"
-    },
-    {
-      "file": "apps/space/components/account/terms-and-conditions.tsx",
-      "line": 20,
-      "kind": "jsx-text",
-      "text": "and"
-    },
-    {
-      "file": "apps/space/components/account/terms-and-conditions.tsx",
-      "line": 22,
-      "kind": "jsx-text",
-      "text": "Privacy Policy"
-    },
-    {
-      "file": "apps/space/components/account/user-logged-in.tsx",
-      "line": 34,
       "kind": "jsx-attribute",
-      "text": "User already logged in"
+      "text": "name@company.com"
     },
     {
-      "file": "apps/space/components/account/user-logged-in.tsx",
-      "line": 37,
-      "kind": "jsx-text",
-      "text": "Nice! Just one more step."
-    },
-    {
-      "file": "apps/space/components/account/user-logged-in.tsx",
-      "line": 39,
-      "kind": "jsx-text",
-      "text": "Enter the public-share URL or link of the view or Page you are trying to see in the browser"
-    },
-    {
-      "file": "apps/space/components/account/user-logged-in.tsx",
-      "line": 39,
-      "kind": "jsx-text",
-      "text": "s address bar."
+      "file": "apps/space/components/account/auth-forms/unique-code.tsx",
+      "line": 102,
+      "kind": "jsx-attribute",
+      "text": "name@company.com"
     },
     {
       "file": "apps/space/components/common/logo-spinner.tsx",
       "line": 19,
       "kind": "jsx-attribute",
-      "text": "logo"
-    },
-    {
-      "file": "apps/space/components/common/powered-by.tsx",
-      "line": 30,
-      "kind": "jsx-text",
-      "text": "Powered by"
-    },
-    {
-      "file": "apps/space/components/common/powered-by.tsx",
-      "line": 30,
-      "kind": "jsx-text",
-      "text": "Plane Publish"
-    },
-    {
-      "file": "apps/space/components/editor/embeds/mentions/user.tsx",
-      "line": 29,
-      "kind": "jsx-text",
-      "text": "@deactivated user"
-    },
-    {
-      "file": "apps/space/components/instance/instance-failure-view.tsx",
-      "line": 26,
-      "kind": "jsx-attribute",
-      "text": "Plane instance failure image"
-    },
-    {
-      "file": "apps/space/components/instance/instance-failure-view.tsx",
-      "line": 27,
-      "kind": "jsx-text",
-      "text": "Unable to fetch instance details."
-    },
-    {
-      "file": "apps/space/components/instance/instance-failure-view.tsx",
-      "line": 29,
-      "kind": "jsx-text",
-      "text": "We were unable to fetch the details of the instance."
-    },
-    {
-      "file": "apps/space/components/instance/instance-failure-view.tsx",
-      "line": 30,
-      "kind": "jsx-text",
-      "text": "Fret not, it might just be a connectivity work items."
-    },
-    {
-      "file": "apps/space/components/instance/instance-failure-view.tsx",
-      "line": 34,
-      "kind": "jsx-attribute",
-      "text": "Retry"
-    },
-    {
-      "file": "apps/space/components/issues/filters/root.tsx",
-      "line": 66,
-      "kind": "jsx-attribute",
-      "text": "Filters"
-    },
-    {
-      "file": "apps/space/components/issues/filters/state.tsx",
-      "line": 76,
-      "kind": "jsx-text",
-      "text": "No matches found"
-    },
-    {
-      "file": "apps/space/components/issues/issue-layouts/error.tsx",
-      "line": 17,
-      "kind": "jsx-attribute",
-      "text": "Oops! Something went wrong."
-    },
-    {
-      "file": "apps/space/components/issues/issue-layouts/error.tsx",
-      "line": 18,
-      "kind": "jsx-attribute",
-      "text": "The public board does not exist. Please check the URL."
-    },
-    {
-      "file": "apps/space/components/issues/issue-layouts/kanban/kanban-group.tsx",
-      "line": 104,
-      "kind": "jsx-text",
-      "text": "Load More &darr;"
+      "text": "Plane"
     },
     {
       "file": "apps/space/components/issues/issue-layouts/list/list-group.tsx",
@@ -1862,202 +362,58 @@
       "text": "&darr;"
     },
     {
-      "file": "apps/space/components/issues/navbar/user-avatar.tsx",
-      "line": 100,
-      "kind": "jsx-attribute",
-      "text": "Sign out"
-    },
-    {
-      "file": "apps/space/components/issues/navbar/user-avatar.tsx",
-      "line": 115,
-      "kind": "jsx-attribute",
-      "text": "Sign in"
-    },
-    {
-      "file": "apps/space/components/issues/peek-overview/comment/add-comment.tsx",
-      "line": 69,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/space/components/issues/peek-overview/comment/add-comment.tsx",
-      "line": 70,
-      "kind": "display-property",
-      "text": "Comment could not be posted. Please try again."
-    },
-    {
-      "file": "apps/space/components/issues/peek-overview/comment/add-comment.tsx",
-      "line": 99,
-      "kind": "jsx-attribute",
-      "text": "Add comment..."
-    },
-    {
       "file": "apps/space/components/issues/peek-overview/header.tsx",
       "line": 43,
       "kind": "display-property",
-      "text": "Side Peek"
+      "text": "space_ui.peek_side"
     },
     {
       "file": "apps/space/components/issues/peek-overview/header.tsx",
       "line": 47,
       "kind": "display-property",
-      "text": "Modal"
+      "text": "space_ui.peek_modal"
     },
     {
       "file": "apps/space/components/issues/peek-overview/header.tsx",
       "line": 52,
       "kind": "display-property",
-      "text": "Full Screen"
+      "text": "space_ui.peek_full"
     },
     {
-      "file": "apps/space/components/issues/peek-overview/header.tsx",
-      "line": 70,
+      "file": "apps/space/helpers/authentication.helper.tsx",
+      "line": 117,
       "kind": "display-property",
-      "text": "Link copied!"
+      "text": "Password is too short"
     },
     {
-      "file": "apps/space/components/issues/peek-overview/header.tsx",
-      "line": 71,
+      "file": "apps/space/helpers/authentication.helper.tsx",
+      "line": 121,
       "kind": "display-property",
-      "text": "Work item link copied to clipboard."
+      "text": "Password not allowed"
     },
     {
-      "file": "apps/space/components/issues/peek-overview/issue-activity.tsx",
-      "line": 63,
-      "kind": "jsx-text",
-      "text": "Sign in to add your comment"
-    },
-    {
-      "file": "apps/space/components/issues/peek-overview/issue-activity.tsx",
-      "line": 71,
+      "file": "apps/space/hooks/oauth/core.tsx",
+      "line": 44,
       "kind": "jsx-attribute",
-      "text": "Sign in"
+      "text": "Google"
     },
     {
-      "file": "apps/space/components/issues/peek-overview/issue-properties.tsx",
+      "file": "apps/space/hooks/oauth/core.tsx",
       "line": 54,
-      "kind": "display-property",
-      "text": "Link copied!"
-    },
-    {
-      "file": "apps/space/components/issues/peek-overview/issue-properties.tsx",
-      "line": 55,
-      "kind": "display-property",
-      "text": "Work item link copied to clipboard"
-    },
-    {
-      "file": "apps/space/components/ui/not-found.tsx",
-      "line": 17,
       "kind": "jsx-attribute",
-      "text": "Oops! Something went wrong."
-    },
-    {
-      "file": "apps/space/components/ui/not-found.tsx",
-      "line": 18,
-      "kind": "jsx-attribute",
-      "text": "Sorry, the page you are looking for cannot be found. It may have been removed, had its name changed, or is temporarily unavailable."
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 131,
-      "kind": "jsx-text",
-      "text": "Your account is already registered.&nbsp;"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 136,
-      "kind": "jsx-text",
-      "text": "Sign In"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 138,
-      "kind": "jsx-text",
-      "text": "&nbsp;now."
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 177,
-      "kind": "jsx-text",
-      "text": "No account found.&nbsp;"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 182,
-      "kind": "jsx-text",
-      "text": "Create one"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 184,
-      "kind": "jsx-text",
-      "text": "&nbsp;to get started."
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 324,
-      "kind": "jsx-text",
-      "text": "Admin user already exists.&nbsp;"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 326,
-      "kind": "jsx-text",
-      "text": "Sign In"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 328,
-      "kind": "jsx-text",
-      "text": "&nbsp;now."
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 336,
-      "kind": "jsx-text",
-      "text": "Admin user does not exist.&nbsp;"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 338,
-      "kind": "jsx-text",
-      "text": "Sign In"
-    },
-    {
-      "file": "apps/space/helpers/authentication.helper.tsx",
-      "line": 340,
-      "kind": "jsx-text",
-      "text": "&nbsp;now."
+      "text": "GitHub"
     },
     {
       "file": "apps/space/hooks/oauth/core.tsx",
-      "line": 42,
+      "line": 64,
       "kind": "jsx-attribute",
-      "text": "Google Logo"
+      "text": "GitLab"
     },
     {
       "file": "apps/space/hooks/oauth/core.tsx",
-      "line": 56,
+      "line": 73,
       "kind": "jsx-attribute",
-      "text": "GitHub Logo"
-    },
-    {
-      "file": "apps/space/hooks/oauth/core.tsx",
-      "line": 67,
-      "kind": "jsx-attribute",
-      "text": "GitLab Logo"
-    },
-    {
-      "file": "apps/space/hooks/oauth/core.tsx",
-      "line": 76,
-      "kind": "jsx-attribute",
-      "text": "Gitea Logo"
-    },
-    {
-      "file": "apps/space/lib/instance-provider.tsx",
-      "line": 61,
-      "kind": "jsx-attribute",
-      "text": "Plane background pattern"
+      "text": "Gitea"
     },
     {
       "file": "apps/space/store/instance.store.ts",
@@ -2067,13 +423,13 @@
     },
     {
       "file": "apps/space/store/profile.store.ts",
-      "line": 103,
+      "line": 105,
       "kind": "display-property",
       "text": "Failed to fetch user profile"
     },
     {
       "file": "apps/space/store/profile.store.ts",
-      "line": 135,
+      "line": 138,
       "kind": "display-property",
       "text": "Failed to update user profile"
     },
@@ -2787,7 +1143,7 @@
     },
     {
       "file": "apps/web/components/account/auth-forms/password.tsx",
-      "line": 326,
+      "line": 341,
       "kind": "jsx-attribute",
       "text": "Create account"
     },
@@ -4244,12 +2600,6 @@
       "text": "Dark mode"
     },
     {
-      "file": "apps/web/components/cycles/active-cycle/cycle-stats.tsx",
-      "line": 234,
-      "kind": "jsx-attribute",
-      "text": "User"
-    },
-    {
       "file": "apps/web/components/cycles/analytics-sidebar/issue-progress.tsx",
       "line": 37,
       "kind": "display-property",
@@ -4272,216 +2622,6 @@
       "line": 42,
       "kind": "display-property",
       "text": "Burn-up"
-    },
-    {
-      "file": "apps/web/components/cycles/archived-cycles/header.tsx",
-      "line": 73,
-      "kind": "jsx-attribute",
-      "text": "Filters"
-    },
-    {
-      "file": "apps/web/components/cycles/archived-cycles/modal.tsx",
-      "line": 46,
-      "kind": "display-property",
-      "text": "Archive success"
-    },
-    {
-      "file": "apps/web/components/cycles/archived-cycles/modal.tsx",
-      "line": 47,
-      "kind": "display-property",
-      "text": "Your archives can be found in project archives."
-    },
-    {
-      "file": "apps/web/components/cycles/archived-cycles/modal.tsx",
-      "line": 56,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/cycles/archived-cycles/modal.tsx",
-      "line": 57,
-      "kind": "display-property",
-      "text": "Cycle could not be archived. Please try again."
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 52,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 53,
-      "kind": "display-property",
-      "text": "Cycle deleted successfully."
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 71,
-      "kind": "display-property",
-      "text": "Warning!"
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 72,
-      "kind": "display-property",
-      "text": "Something went wrong please try again later."
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 85,
-      "kind": "jsx-attribute",
-      "text": "Delete cycle"
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 88,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to delete cycle"
-    },
-    {
-      "file": "apps/web/components/cycles/delete-modal.tsx",
-      "line": 90,
-      "kind": "jsx-text",
-      "text": "? All of the data related to the cycle will be permanently removed. This action cannot be undone."
-    },
-    {
-      "file": "apps/web/components/cycles/dropdowns/estimate-type-dropdown.tsx",
-      "line": 41,
-      "kind": "jsx-attribute",
-      "text": "None"
-    },
-    {
-      "file": "apps/web/components/cycles/dropdowns/filters/end-date.tsx",
-      "line": 23,
-      "kind": "jsx-attribute",
-      "text": "Due date"
-    },
-    {
-      "file": "apps/web/components/cycles/dropdowns/filters/start-date.tsx",
-      "line": 23,
-      "kind": "jsx-attribute",
-      "text": "Start date"
-    },
-    {
-      "file": "apps/web/components/cycles/dropdowns/filters/status.tsx",
-      "line": 29,
-      "kind": "jsx-attribute",
-      "text": "Status of the cycle"
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 65,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 66,
-      "kind": "display-property",
-      "text": "Cycle created successfully."
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 72,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 86,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 87,
-      "kind": "display-property",
-      "text": "Cycle updated successfully."
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 93,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 154,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/cycles/modal.tsx",
-      "line": 155,
-      "kind": "display-property",
-      "text": "You already have a cycle on the given dates, if you want to create a draft cycle, remove the dates."
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 57,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 58,
-      "kind": "display-property",
-      "text": "Work items have been transferred successfully"
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 65,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 66,
-      "kind": "display-property",
-      "text": "Unable to transfer work items. Please try again."
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 112,
-      "kind": "jsx-text",
-      "text": "Transfer work items"
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 119,
-      "kind": "jsx-attribute",
-      "text": "Search for a cycle..."
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 161,
-      "kind": "jsx-text",
-      "text": "You don’t have any current cycle. Please create one to transfer the work items."
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues-modal.tsx",
-      "line": 166,
-      "kind": "jsx-text",
-      "text": "Loading..."
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues.tsx",
-      "line": 26,
-      "kind": "jsx-attribute",
-      "text": "Completed cycles are not editable."
-    },
-    {
-      "file": "apps/web/components/cycles/transfer-issues.tsx",
-      "line": 37,
-      "kind": "jsx-attribute",
-      "text": "Transfer work items"
     },
     {
       "file": "apps/web/components/editor/embeds/mentions/user.tsx",
@@ -6812,424 +4952,10 @@
       "text": "See full features list"
     },
     {
-      "file": "apps/web/components/modules/analytics-sidebar/root.tsx",
-      "line": 183,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/analytics-sidebar/root.tsx",
-      "line": 184,
-      "kind": "display-property",
-      "text": "Module link deleted successfully."
-    },
-    {
-      "file": "apps/web/components/modules/analytics-sidebar/root.tsx",
-      "line": 189,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/analytics-sidebar/root.tsx",
-      "line": 190,
-      "kind": "display-property",
-      "text": "Some error occurred"
-    },
-    {
-      "file": "apps/web/components/modules/analytics-sidebar/root.tsx",
-      "line": 204,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/analytics-sidebar/root.tsx",
-      "line": 205,
-      "kind": "display-property",
-      "text": "Module updated successfully."
-    },
-    {
-      "file": "apps/web/components/modules/applied-filters/root.tsx",
-      "line": 104,
-      "kind": "jsx-text",
-      "text": "Modules"
-    },
-    {
-      "file": "apps/web/components/modules/applied-filters/root.tsx",
-      "line": 107,
-      "kind": "jsx-attribute",
-      "text": "Favorite"
-    },
-    {
-      "file": "apps/web/components/modules/archived-modules/modal.tsx",
-      "line": 46,
-      "kind": "display-property",
-      "text": "Archive success"
-    },
-    {
-      "file": "apps/web/components/modules/archived-modules/modal.tsx",
-      "line": 47,
-      "kind": "display-property",
-      "text": "Your archives can be found in project archives."
-    },
-    {
-      "file": "apps/web/components/modules/archived-modules/modal.tsx",
-      "line": 54,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/archived-modules/modal.tsx",
-      "line": 55,
-      "kind": "display-property",
-      "text": "Module could not be archived. Please try again."
-    },
-    {
-      "file": "apps/web/components/modules/delete-module-modal.tsx",
-      "line": 54,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/delete-module-modal.tsx",
-      "line": 55,
-      "kind": "display-property",
-      "text": "Module deleted successfully."
-    },
-    {
-      "file": "apps/web/components/modules/delete-module-modal.tsx",
-      "line": 80,
-      "kind": "jsx-attribute",
-      "text": "Delete module"
-    },
-    {
-      "file": "apps/web/components/modules/delete-module-modal.tsx",
-      "line": 83,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to delete module-"
-    },
-    {
-      "file": "apps/web/components/modules/delete-module-modal.tsx",
-      "line": 84,
-      "kind": "jsx-text",
-      "text": "? All of the data related to the module will be permanently removed. This action cannot be undone."
-    },
-    {
-      "file": "apps/web/components/modules/dropdowns/filters/lead.tsx",
-      "line": 21,
-      "kind": "jsx-attribute",
-      "text": "Lead"
-    },
-    {
-      "file": "apps/web/components/modules/dropdowns/filters/members.tsx",
-      "line": 22,
-      "kind": "jsx-attribute",
-      "text": "Members"
-    },
-    {
-      "file": "apps/web/components/modules/dropdowns/filters/root.tsx",
-      "line": 43,
-      "kind": "jsx-attribute",
-      "text": "Favorites"
-    },
-    {
-      "file": "apps/web/components/modules/dropdowns/filters/start-date.tsx",
-      "line": 23,
-      "kind": "jsx-attribute",
-      "text": "Start date"
-    },
-    {
-      "file": "apps/web/components/modules/dropdowns/filters/status.tsx",
-      "line": 32,
-      "kind": "jsx-attribute",
-      "text": "Status"
-    },
-    {
-      "file": "apps/web/components/modules/dropdowns/filters/target-date.tsx",
-      "line": 23,
-      "kind": "jsx-attribute",
-      "text": "Due date"
-    },
-    {
-      "file": "apps/web/components/modules/gantt-chart/modules-list-layout.tsx",
-      "line": 61,
-      "kind": "jsx-attribute",
-      "text": "Modules"
-    },
-    {
       "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 66,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 67,
-      "kind": "display-property",
-      "text": "Module link created successfully."
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 73,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 74,
-      "kind": "display-property",
-      "text": "Module link updated successfully."
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 81,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 106,
-      "kind": "jsx-text",
-      "text": "link"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 123,
+      "line": 125,
       "kind": "jsx-attribute",
       "text": "URL"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 128,
-      "kind": "jsx-attribute",
-      "text": "Type or paste a URL"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 141,
-      "kind": "jsx-attribute",
-      "text": "Display title"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 142,
-      "kind": "jsx-attribute",
-      "text": "Optional"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 147,
-      "kind": "jsx-attribute",
-      "text": "What you'd like to see this link as"
-    },
-    {
-      "file": "apps/web/components/modules/links/create-update-modal.tsx",
-      "line": 155,
-      "kind": "jsx-attribute",
-      "text": "Cancel"
-    },
-    {
-      "file": "apps/web/components/modules/links/list-item.tsx",
-      "line": 49,
-      "kind": "display-property",
-      "text": "Copied to clipboard"
-    },
-    {
-      "file": "apps/web/components/modules/links/list-item.tsx",
-      "line": 50,
-      "kind": "display-property",
-      "text": "The URL has been successfully copied to your clipboard"
-    },
-    {
-      "file": "apps/web/components/modules/links/list-item.tsx",
-      "line": 74,
-      "kind": "jsx-text",
-      "text": "Added"
-    },
-    {
-      "file": "apps/web/components/modules/links/list-item.tsx",
-      "line": 76,
-      "kind": "jsx-text",
-      "text": "by"
-    },
-    {
-      "file": "apps/web/components/modules/modal.tsx",
-      "line": 67,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/modal.tsx",
-      "line": 68,
-      "kind": "display-property",
-      "text": "Module created successfully."
-    },
-    {
-      "file": "apps/web/components/modules/modal.tsx",
-      "line": 74,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/modal.tsx",
-      "line": 90,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/modal.tsx",
-      "line": 91,
-      "kind": "display-property",
-      "text": "Module updated successfully."
-    },
-    {
-      "file": "apps/web/components/modules/modal.tsx",
-      "line": 97,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 90,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 94,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 114,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 118,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 136,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 137,
-      "kind": "display-property",
-      "text": "Module updated successfully."
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 143,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-card-item.tsx",
-      "line": 246,
-      "kind": "jsx-attribute",
-      "text": "No lead"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 76,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 100,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 104,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 117,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 118,
-      "kind": "display-property",
-      "text": "Module updated successfully."
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 124,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/module-list-item-action.tsx",
-      "line": 167,
-      "kind": "jsx-attribute",
-      "text": "No lead"
-    },
-    {
-      "file": "apps/web/components/modules/quick-actions.tsx",
-      "line": 68,
-      "kind": "display-property",
-      "text": "Link Copied!"
-    },
-    {
-      "file": "apps/web/components/modules/quick-actions.tsx",
-      "line": 69,
-      "kind": "display-property",
-      "text": "Module link copied to clipboard."
-    },
-    {
-      "file": "apps/web/components/modules/quick-actions.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Restore success"
-    },
-    {
-      "file": "apps/web/components/modules/quick-actions.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Your module can be found in project modules."
-    },
-    {
-      "file": "apps/web/components/modules/quick-actions.tsx",
-      "line": 86,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/modules/quick-actions.tsx",
-      "line": 87,
-      "kind": "display-property",
-      "text": "Module could not be restored. Please try again."
-    },
-    {
-      "file": "apps/web/components/modules/select/status.tsx",
-      "line": 65,
-      "kind": "jsx-text",
-      "text": "Status"
-    },
-    {
-      "file": "apps/web/components/modules/sidebar-select/select-status.tsx",
-      "line": 36,
-      "kind": "jsx-text",
-      "text": "Status"
     },
     {
       "file": "apps/web/components/navigation/app-rail-hoc.tsx",
@@ -7370,844 +5096,136 @@
       "text": "Something went wrong. Please try again later."
     },
     {
-      "file": "apps/web/components/onboarding/create-or-join-workspaces.tsx",
-      "line": 81,
-      "kind": "jsx-text",
-      "text": "You don&apos;t seem to have any invites to a workspace and your instance admin has restricted creation of new workspaces. Please ask a workspace owner or admin to invite you to a workspace first and come back to this screen to join."
-    },
-    {
-      "file": "apps/web/components/onboarding/create-workspace.tsx",
-      "line": 117,
-      "kind": "jsx-text",
-      "text": "I want to join invited workspaces"
-    },
-    {
-      "file": "apps/web/components/onboarding/create-workspace.tsx",
-      "line": 124,
-      "kind": "jsx-text",
-      "text": "or"
-    },
-    {
-      "file": "apps/web/components/onboarding/invitations.tsx",
-      "line": 69,
-      "kind": "jsx-text",
-      "text": "You are invited!"
-    },
-    {
-      "file": "apps/web/components/onboarding/invitations.tsx",
-      "line": 70,
-      "kind": "jsx-text",
-      "text": "Accept the invites to collaborate with your team."
-    },
-    {
-      "file": "apps/web/components/onboarding/invitations.tsx",
-      "line": 114,
-      "kind": "jsx-text",
-      "text": "or"
-    },
-    {
-      "file": "apps/web/components/onboarding/invitations.tsx",
-      "line": 124,
-      "kind": "jsx-attribute",
-      "text": "Create your own workspace"
-    },
-    {
-      "file": "apps/web/components/onboarding/invitations.tsx",
-      "line": 128,
-      "kind": "jsx-text",
-      "text": "No Invitations found"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 148,
-      "kind": "display-property",
-      "text": "Invalid Email ID"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 222,
-      "kind": "jsx-text",
-      "text": "That doesn"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 222,
-      "kind": "jsx-text",
-      "text": "t look like an email address."
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 269,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 270,
-      "kind": "display-property",
-      "text": "Invitations sent successfully."
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 277,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 307,
-      "kind": "jsx-text",
-      "text": "Invite your teammates"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 309,
-      "kind": "jsx-text",
-      "text": "Work in plane happens best with your team. Invite them now to use Plane to its potential."
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 321,
-      "kind": "jsx-text",
-      "text": "Email"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 322,
-      "kind": "jsx-text",
-      "text": "Role"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 348,
-      "kind": "jsx-text",
-      "text": "Add another"
-    },
-    {
-      "file": "apps/web/components/onboarding/invite-members.tsx",
-      "line": 361,
-      "kind": "jsx-attribute",
-      "text": "I’ll do it later"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 143,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 144,
-      "kind": "display-property",
-      "text": "Profile setup completed!"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 153,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 154,
-      "kind": "display-property",
-      "text": "Profile setup failed. Please try again!"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 178,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 179,
-      "kind": "display-property",
-      "text": "User details update failed. Please try again!"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 196,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 197,
-      "kind": "display-property",
-      "text": "Profile setup completed!"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 206,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 207,
-      "kind": "display-property",
-      "text": "Profile setup failed. Please try again!"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 281,
-      "kind": "jsx-text",
-      "text": "Choose image"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 302,
-      "kind": "jsx-text",
-      "text": "First name"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 312,
-      "kind": "display-property",
-      "text": "First name must be within 50 characters."
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 327,
-      "kind": "jsx-attribute",
-      "text": "Wilbur"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 343,
-      "kind": "jsx-text",
-      "text": "Last name"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 353,
-      "kind": "display-property",
-      "text": "Last name must be within 50 characters."
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 367,
-      "kind": "jsx-attribute",
-      "text": "Wright"
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 385,
-      "kind": "jsx-text",
-      "text": "Set a password ("
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 403,
-      "kind": "jsx-attribute",
-      "text": "New password..."
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 407,
-      "kind": "jsx-attribute",
-      "text": "New password..."
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 486,
-      "kind": "jsx-text",
-      "text": "What role are you working on? Choose one."
-    },
-    {
-      "file": "apps/web/components/onboarding/profile-setup.tsx",
-      "line": 521,
-      "kind": "jsx-text",
-      "text": "What is your domain expertise? Choose one or more."
-    },
-    {
-      "file": "apps/web/components/onboarding/root.tsx",
-      "line": 47,
-      "kind": "display-property",
-      "text": "Failed"
-    },
-    {
-      "file": "apps/web/components/onboarding/root.tsx",
-      "line": 48,
-      "kind": "display-property",
-      "text": "Failed to finish onboarding, Please try again later."
-    },
-    {
-      "file": "apps/web/components/onboarding/step-indicator.tsx",
-      "line": 46,
-      "kind": "jsx-text",
-      "text": "of"
-    },
-    {
-      "file": "apps/web/components/onboarding/step-indicator.tsx",
-      "line": 46,
-      "kind": "jsx-text",
-      "text": "steps"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/consent.tsx",
-      "line": 18,
-      "kind": "jsx-attribute",
-      "text": "I agree to Plane marketing communications"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 105,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 106,
-      "kind": "display-property",
-      "text": "User details update failed. Please try again!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 153,
-      "kind": "jsx-attribute",
-      "text": "Create your profile."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 153,
-      "kind": "jsx-attribute",
-      "text": "This is how you will appear in Plane."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 209,
-      "kind": "display-property",
-      "text": "Name must be within 50 characters."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 220,
-      "kind": "jsx-attribute",
-      "text": "Name"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 225,
-      "kind": "jsx-attribute",
-      "text": "Enter your full name"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/root.tsx",
-      "line": 241,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 93,
-      "kind": "jsx-text",
-      "text": "Set a password"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 106,
-      "kind": "jsx-attribute",
-      "text": "Password"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 109,
-      "kind": "jsx-attribute",
-      "text": "Set a password"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 120,
-      "kind": "jsx-attribute",
-      "text": "Confirm password"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 123,
-      "kind": "jsx-attribute",
-      "text": "Confirm password"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 127,
-      "kind": "jsx-text",
-      "text": "Passwords do not match"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/profile/set-password.tsx",
-      "line": 129,
-      "kind": "jsx-text",
-      "text": "✓ Passwords match"
-    },
-    {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 35,
+      "line": 36,
       "kind": "display-property",
       "text": "Product Manager"
     },
     {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 36,
+      "line": 37,
       "kind": "display-property",
       "text": "Engineering Manager"
     },
     {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 37,
+      "line": 38,
       "kind": "display-property",
       "text": "Designer"
     },
     {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 38,
+      "line": 39,
       "kind": "display-property",
       "text": "Developer"
     },
     {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 39,
+      "line": 40,
       "kind": "display-property",
       "text": "Founder/Executive"
     },
     {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 40,
+      "line": 41,
       "kind": "display-property",
       "text": "Operations Manager"
     },
     {
       "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 41,
+      "line": 42,
       "kind": "display-property",
       "text": "Others"
     },
     {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 73,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 74,
-      "kind": "display-property",
-      "text": "Profile setup completed!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Profile setup failed. Please try again!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 100,
-      "kind": "jsx-attribute",
-      "text": "What's your role?"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 100,
-      "kind": "jsx-attribute",
-      "text": "Let's set up Plane for how you work."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 103,
-      "kind": "jsx-text",
-      "text": "Select one"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 166,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/role/root.tsx",
-      "line": 173,
-      "kind": "jsx-attribute",
-      "text": "Skip"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 145,
-      "kind": "display-property",
-      "text": "Invalid Email ID"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 218,
-      "kind": "jsx-text",
-      "text": "That doesn"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 218,
-      "kind": "jsx-text",
-      "text": "t look like an email address."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 268,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 269,
-      "kind": "display-property",
-      "text": "Invitations sent successfully."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 276,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 310,
-      "kind": "jsx-attribute",
-      "text": "Invite your teammates"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 311,
-      "kind": "jsx-attribute",
-      "text": "Work in plane happens best with your team. Invite them now to use Plane to its potential."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 353,
-      "kind": "jsx-attribute",
-      "text": "Add another"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 365,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/team/root.tsx",
-      "line": 367,
-      "kind": "jsx-attribute",
-      "text": "I’ll do it later"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 56,
-      "kind": "display-property",
-      "text": "Success"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 57,
-      "kind": "display-property",
-      "text": "Profile setup completed!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 62,
-      "kind": "display-property",
-      "text": "Error"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 63,
-      "kind": "display-property",
-      "text": "Profile setup failed. Please try again!"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 86,
-      "kind": "jsx-attribute",
-      "text": "What brings you to Plane?"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 86,
-      "kind": "jsx-attribute",
-      "text": "Tell us your goals and team size."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 90,
-      "kind": "jsx-text",
-      "text": "Select one or more"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 160,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/usecase/root.tsx",
-      "line": 161,
-      "kind": "jsx-attribute",
-      "text": "Skip"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/create.tsx",
-      "line": 123,
-      "kind": "jsx-text",
-      "text": "You don&apos;t seem to have any invites to a workspace and your instance admin has restricted creation of new workspaces. Please ask a workspace owner or admin to invite you to a workspace first and come back to this screen to join."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/create.tsx",
-      "line": 137,
-      "kind": "jsx-attribute",
-      "text": "Create your workspace"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/create.tsx",
-      "line": 137,
-      "kind": "jsx-attribute",
-      "text": "All your work — unified."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/create.tsx",
-      "line": 167,
-      "kind": "jsx-attribute",
-      "text": "Enter workspace name"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/create.tsx",
-      "line": 274,
-      "kind": "jsx-attribute",
-      "text": "Join existing workspace"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/join-invites.tsx",
-      "line": 70,
-      "kind": "jsx-attribute",
-      "text": "Join invites or create a workspace"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/join-invites.tsx",
-      "line": 70,
-      "kind": "jsx-attribute",
-      "text": "All your work — unified."
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/join-invites.tsx",
-      "line": 124,
-      "kind": "jsx-attribute",
-      "text": "Continue"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/join-invites.tsx",
-      "line": 130,
-      "kind": "jsx-attribute",
-      "text": "Create new workspace"
-    },
-    {
-      "file": "apps/web/components/onboarding/steps/workspace/join-invites.tsx",
-      "line": 137,
-      "kind": "jsx-text",
-      "text": "No Invitations found"
-    },
-    {
-      "file": "apps/web/components/onboarding/switch-account-dropdown.tsx",
-      "line": 58,
-      "kind": "jsx-attribute",
-      "text": "Wrong e-mail address?"
-    },
-    {
-      "file": "apps/web/components/onboarding/switch-account-modal.tsx",
-      "line": 49,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/onboarding/switch-account-modal.tsx",
-      "line": 50,
-      "kind": "display-property",
-      "text": "Failed to sign out. Please try again."
-    },
-    {
-      "file": "apps/web/components/onboarding/switch-account-modal.tsx",
-      "line": 64,
-      "kind": "jsx-attribute",
-      "text": "Switch account"
-    },
-    {
-      "file": "apps/web/components/onboarding/switch-account-modal.tsx",
-      "line": 68,
-      "kind": "jsx-text",
-      "text": "If you have signed up via"
-    },
-    {
-      "file": "apps/web/components/onboarding/switch-account-modal.tsx",
-      "line": 68,
-      "kind": "jsx-text",
-      "text": "un-intentionally, you can switch your account to a different one from here."
-    },
-    {
       "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 41,
+      "line": 42,
       "kind": "display-property",
-      "text": "Plan with work items"
+      "text": "onboarding_ui.plan_items"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
       "line": 43,
       "kind": "display-property",
-      "text": "The work item is the building block of the Plane. Most concepts in Plane are either associated with work items and their properties."
+      "text": "onboarding_ui.plan_items_description"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
       "line": 49,
       "kind": "display-property",
-      "text": "Move with cycles"
+      "text": "onboarding_ui.cycles"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 51,
+      "line": 50,
       "kind": "display-property",
-      "text": "Cycles help you and your team to progress faster, similar to the sprints commonly used in agile development."
+      "text": "onboarding_ui.cycles_description"
+    },
+    {
+      "file": "apps/web/components/onboarding/tour/root.tsx",
+      "line": 57,
+      "kind": "display-property",
+      "text": "onboarding_ui.modules"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
       "line": 58,
       "kind": "display-property",
-      "text": "Break into modules"
+      "text": "onboarding_ui.modules_description"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 59,
+      "line": 65,
       "kind": "display-property",
-      "text": "Modules break your big thing into Projects or Features, to help you organize better."
+      "text": "views"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
       "line": 66,
       "kind": "display-property",
-      "text": "Views"
+      "text": "onboarding_ui.views_description"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 68,
+      "line": 73,
       "kind": "display-property",
-      "text": "Create custom filters to display only the work items that matter to you. Save and share your filters in just a few clicks."
+      "text": "onboarding_ui.pages"
     },
     {
       "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 75,
+      "line": 74,
       "kind": "display-property",
-      "text": "Document with pages"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 76,
-      "kind": "display-property",
-      "text": "Use Pages to quickly jot down work items when you're in a meeting or starting a day."
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 103,
-      "kind": "jsx-text",
-      "text": "Welcome to Plane,"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 106,
-      "kind": "jsx-text",
-      "text": "We"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 106,
-      "kind": "jsx-text",
-      "text": "re glad that you decided to try out Plane. You can now manage your projects with ease. Get started by creating a project."
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 115,
-      "kind": "jsx-attribute",
-      "text": "Take a Product Tour"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 127,
-      "kind": "jsx-text",
-      "text": "No thanks, I will explore it myself"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 162,
-      "kind": "jsx-attribute",
-      "text": "Back"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 171,
-      "kind": "jsx-attribute",
-      "text": "Next"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/root.tsx",
-      "line": 181,
-      "kind": "jsx-attribute",
-      "text": "Create your first project"
+      "text": "onboarding_ui.pages_description"
     },
     {
       "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 20,
+      "line": 21,
       "kind": "display-property",
-      "text": "Work items"
+      "text": "work_items"
     },
     {
       "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 25,
+      "line": 26,
       "kind": "display-property",
-      "text": "Cycles"
+      "text": "cycles"
     },
     {
       "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 30,
+      "line": 31,
       "kind": "display-property",
-      "text": "Modules"
+      "text": "modules"
     },
     {
       "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 35,
+      "line": 36,
       "kind": "display-property",
-      "text": "Views"
+      "text": "views"
     },
     {
       "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 40,
+      "line": 41,
       "kind": "display-property",
-      "text": "Pages"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "Let"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 54,
-      "kind": "jsx-text",
-      "text": "s get started!"
-    },
-    {
-      "file": "apps/web/components/onboarding/tour/sidebar.tsx",
-      "line": 56,
-      "kind": "jsx-text",
-      "text": "Get more out of Plane."
+      "text": "pages"
     },
     {
       "file": "apps/web/components/pages/editor/ai/ask-pi-menu.tsx",
@@ -8882,676 +5900,70 @@
       "text": "Please try again later."
     },
     {
-      "file": "apps/web/components/project-states/create-update/create.tsx",
-      "line": 40,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/create.tsx",
-      "line": 41,
-      "kind": "display-property",
-      "text": "State created successfully."
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/create.tsx",
-      "line": 50,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/create.tsx",
-      "line": 51,
-      "kind": "display-property",
-      "text": "State with that name already exists. Please try again with another name."
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/create.tsx",
-      "line": 57,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/form.tsx",
-      "line": 104,
-      "kind": "jsx-attribute",
-      "text": "Name"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/form.tsx",
-      "line": 123,
-      "kind": "jsx-attribute",
-      "text": "Describe this state for your members."
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/form.tsx",
-      "line": 135,
-      "kind": "jsx-attribute",
-      "text": "Cancel"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/update.tsx",
-      "line": 37,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/update.tsx",
-      "line": 38,
-      "kind": "display-property",
-      "text": "State updated successfully."
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/update.tsx",
-      "line": 47,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/update.tsx",
-      "line": 48,
-      "kind": "display-property",
-      "text": "Another state exists with the same name. Please try again with another name."
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/update.tsx",
-      "line": 54,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/create-update/update.tsx",
-      "line": 55,
-      "kind": "display-property",
-      "text": "State could not be updated. Please try again."
-    },
-    {
-      "file": "apps/web/components/project-states/options/quick-actions.tsx",
-      "line": 64,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/options/quick-actions.tsx",
-      "line": 82,
-      "kind": "jsx-attribute",
-      "text": "Delete State"
-    },
-    {
-      "file": "apps/web/components/project-states/options/quick-actions.tsx",
-      "line": 85,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to delete state-"
-    },
-    {
-      "file": "apps/web/components/project-states/options/quick-actions.tsx",
-      "line": 85,
-      "kind": "jsx-text",
-      "text": "? All of the data related to the state will be permanently removed. This action cannot be undone."
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 48,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 50,
-      "kind": "display-property",
-      "text": "This state contains some work items within it, please move them to some other state to delete this state."
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 55,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 56,
-      "kind": "display-property",
-      "text": "State could not be deleted. Please try again."
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 69,
-      "kind": "jsx-attribute",
-      "text": "Delete State"
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 72,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to delete state-"
-    },
-    {
-      "file": "apps/web/components/project-states/state-delete-modal.tsx",
-      "line": 72,
-      "kind": "jsx-text",
-      "text": "? All of the data related to the state will be permanently removed. This action cannot be undone."
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 57,
-      "kind": "display-property",
-      "text": "Archive success"
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 67,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 68,
-      "kind": "display-property",
-      "text": "Project could not be archived. Please try again."
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Restore success"
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 90,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 91,
-      "kind": "display-property",
-      "text": "Project could not be restored. Please try again."
-    },
-    {
-      "file": "apps/web/components/project/archive-restore-modal.tsx",
-      "line": 122,
-      "kind": "jsx-attribute",
-      "text": "Cancel"
-    },
-    {
-      "file": "apps/web/components/project/card.tsx",
-      "line": 119,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project/card.tsx",
-      "line": 129,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/card.tsx",
-      "line": 142,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project/card.tsx",
-      "line": 146,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/card.tsx",
-      "line": 157,
-      "kind": "display-property",
-      "text": "Link Copied!"
-    },
-    {
-      "file": "apps/web/components/project/card.tsx",
-      "line": 158,
-      "kind": "display-property",
-      "text": "Project link copied to clipboard."
-    },
-    {
-      "file": "apps/web/components/project/confirm-project-member-remove.tsx",
-      "line": 89,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to leave the"
-    },
-    {
-      "file": "apps/web/components/project/confirm-project-member-remove.tsx",
-      "line": 90,
-      "kind": "jsx-text",
-      "text": "project? You will be able to join the project if invited again or if it"
-    },
-    {
-      "file": "apps/web/components/project/confirm-project-member-remove.tsx",
-      "line": 90,
-      "kind": "jsx-text",
-      "text": "s public."
-    },
-    {
-      "file": "apps/web/components/project/confirm-project-member-remove.tsx",
-      "line": 94,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to remove member-"
-    },
-    {
-      "file": "apps/web/components/project/confirm-project-member-remove.tsx",
-      "line": 94,
-      "kind": "jsx-text",
-      "text": "? They will no longer have access to this project. This action cannot be undone."
-    },
-    {
-      "file": "apps/web/components/project/confirm-project-member-remove.tsx",
-      "line": 102,
-      "kind": "jsx-attribute",
-      "text": "Cancel"
-    },
-    {
-      "file": "apps/web/components/project/dropdowns/filters/access.tsx",
-      "line": 32,
-      "kind": "jsx-attribute",
-      "text": "Access"
-    },
-    {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 35,
       "kind": "display-property",
-      "text": "Admin"
+      "text": "role_details.admin.title"
     },
     {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 36,
       "kind": "display-property",
-      "text": "Member"
+      "text": "role_details.member.title"
     },
     {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 37,
       "kind": "display-property",
-      "text": "Guest"
+      "text": "role_details.guest.title"
     },
     {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 41,
       "kind": "display-property",
-      "text": "Admin"
+      "text": "role_details.admin.title"
     },
     {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 42,
       "kind": "display-property",
-      "text": "Member"
+      "text": "role_details.member.title"
     },
     {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 43,
       "kind": "display-property",
-      "text": "Guest"
+      "text": "role_details.guest.title"
     },
     {
       "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
       "line": 44,
       "kind": "display-property",
-      "text": "Suspended"
+      "text": "workspace_ui.suspended"
     },
     {
-      "file": "apps/web/components/project/dropdowns/filters/member-list.tsx",
-      "line": 76,
-      "kind": "jsx-text",
-      "text": "Roles"
+      "file": "apps/web/components/project/integration-card.tsx",
+      "line": 30,
+      "kind": "display-property",
+      "text": "project_ui.select_github_repository_to_enable_sync"
     },
     {
-      "file": "apps/web/components/project/dropdowns/filters/root.tsx",
-      "line": 32,
-      "kind": "jsx-attribute",
-      "text": "My projects"
-    },
-    {
-      "file": "apps/web/components/project/dropdowns/filters/root.tsx",
-      "line": 47,
-      "kind": "jsx-attribute",
-      "text": "Lead"
-    },
-    {
-      "file": "apps/web/components/project/dropdowns/filters/root.tsx",
-      "line": 55,
-      "kind": "jsx-attribute",
-      "text": "Members"
-    },
-    {
-      "file": "apps/web/components/project/dropdowns/filters/root.tsx",
-      "line": 63,
-      "kind": "jsx-attribute",
-      "text": "Created date"
-    },
-    {
-      "file": "apps/web/components/project/form-loader.tsx",
+      "file": "apps/web/components/project/integration-card.tsx",
       "line": 34,
-      "kind": "jsx-text",
-      "text": "Project name"
-    },
-    {
-      "file": "apps/web/components/project/form-loader.tsx",
-      "line": 40,
-      "kind": "jsx-text",
-      "text": "Description"
-    },
-    {
-      "file": "apps/web/components/project/form-loader.tsx",
-      "line": 47,
-      "kind": "jsx-text",
-      "text": "Identifier"
-    },
-    {
-      "file": "apps/web/components/project/form-loader.tsx",
-      "line": 53,
-      "kind": "jsx-text",
-      "text": "Network"
-    },
-    {
-      "file": "apps/web/components/project/form.tsx",
-      "line": 209,
-      "kind": "jsx-attribute",
-      "text": "Project cover image"
-    },
-    {
-      "file": "apps/web/components/project/form.tsx",
-      "line": 285,
       "kind": "display-property",
-      "text": "Project name should be less than 255 characters"
-    },
-    {
-      "file": "apps/web/components/project/form.tsx",
-      "line": 349,
-      "kind": "jsx-attribute",
-      "text": "Project ID"
-    },
-    {
-      "file": "apps/web/components/project/header.tsx",
-      "line": 54,
-      "kind": "jsx-attribute",
-      "text": "Archived"
-    },
-    {
-      "file": "apps/web/components/project/integration-card.tsx",
-      "line": 29,
-      "kind": "display-property",
-      "text": "Select GitHub repository to enable sync."
-    },
-    {
-      "file": "apps/web/components/project/integration-card.tsx",
-      "line": 33,
-      "kind": "display-property",
-      "text": "Get regular updates and control which notification you want to receive."
-    },
-    {
-      "file": "apps/web/components/project/integration-card.tsx",
-      "line": 71,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project/integration-card.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/integration-card.tsx",
-      "line": 80,
-      "kind": "display-property",
-      "text": "Repository could not be synced with the project. Please try again."
-    },
-    {
-      "file": "apps/web/components/project/join-project-modal.tsx",
-      "line": 71,
-      "kind": "jsx-text",
-      "text": "Join Project?"
-    },
-    {
-      "file": "apps/web/components/project/join-project-modal.tsx",
-      "line": 76,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to join the project"
-    },
-    {
-      "file": "apps/web/components/project/join-project-modal.tsx",
-      "line": 77,
-      "kind": "jsx-text",
-      "text": "? Please click the &apos;Join Project&apos; button below to continue."
-    },
-    {
-      "file": "apps/web/components/project/join-project-modal.tsx",
-      "line": 83,
-      "kind": "jsx-attribute",
-      "text": "Cancel"
-    },
-    {
-      "file": "apps/web/components/project/member-list-item.tsx",
-      "line": 58,
-      "kind": "display-property",
-      "text": "You can’t leave this project yet."
-    },
-    {
-      "file": "apps/web/components/project/member-list-item.tsx",
-      "line": 66,
-      "kind": "display-property",
-      "text": "You can't remove the member from this project yet."
-    },
-    {
-      "file": "apps/web/components/project/multi-select-modal.tsx",
-      "line": 120,
-      "kind": "jsx-attribute",
-      "text": "Search for projects"
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 143,
-      "kind": "jsx-attribute",
-      "text": "Project Lead"
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 143,
-      "kind": "jsx-attribute",
-      "text": "Select the project lead for the project."
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 170,
-      "kind": "jsx-attribute",
-      "text": "Default Assignee"
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 170,
-      "kind": "jsx-attribute",
-      "text": "Select the default assignee for the project."
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 199,
-      "kind": "jsx-attribute",
-      "text": "Guest access"
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 200,
-      "kind": "jsx-attribute",
-      "text": "This will allow guests to have view access to all the project work items."
-    },
-    {
-      "file": "apps/web/components/project/project-settings-member-defaults.tsx",
-      "line": 208,
-      "kind": "jsx-attribute",
-      "text": "Guest access"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 62,
-      "kind": "display-property",
-      "text": "List"
+      "text": "project_ui.get_regular_updates_and_control_which_notification_you_want_to_receive"
     },
     {
       "file": "apps/web/components/project/publish-project/modal.tsx",
       "line": 63,
       "kind": "display-property",
-      "text": "Kanban"
+      "text": "list"
     },
     {
       "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 119,
+      "line": 64,
       "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 120,
-      "kind": "display-property",
-      "text": "Publish settings updated successfully!"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 137,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 138,
-      "kind": "display-property",
-      "text": "Something went wrong while unpublishing the project."
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 155,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 156,
-      "kind": "display-property",
-      "text": "Please select at least one view layout to publish the project."
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 193,
-      "kind": "display-property",
-      "text": "Published page link copied successfully."
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 210,
-      "kind": "jsx-text",
-      "text": "Publish project"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 250,
-      "kind": "jsx-attribute",
-      "text": "Open in new tab"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 262,
-      "kind": "jsx-text",
-      "text": "Copy link"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 271,
-      "kind": "jsx-text",
-      "text": "This project is now live on web"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 277,
-      "kind": "jsx-text",
-      "text": "Views"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 316,
-      "kind": "jsx-text",
-      "text": "Allow comments"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 321,
-      "kind": "jsx-attribute",
-      "text": "Allow comments"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 326,
-      "kind": "jsx-text",
-      "text": "Allow reactions"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 331,
-      "kind": "jsx-attribute",
-      "text": "Allow reactions"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 336,
-      "kind": "jsx-text",
-      "text": "Allow voting"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 341,
-      "kind": "jsx-attribute",
-      "text": "Allow voting"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 357,
-      "kind": "jsx-text",
-      "text": "Anyone with the link can access"
-    },
-    {
-      "file": "apps/web/components/project/publish-project/modal.tsx",
-      "line": 361,
-      "kind": "jsx-attribute",
-      "text": "Cancel"
-    },
-    {
-      "file": "apps/web/components/project/send-project-invitation-modal.tsx",
-      "line": 108,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project/send-project-invitation-modal.tsx",
-      "line": 110,
-      "kind": "display-property",
-      "text": "Members added successfully."
-    },
-    {
-      "file": "apps/web/components/project/send-project-invitation-modal.tsx",
-      "line": 209,
-      "kind": "jsx-attribute",
-      "text": "Select co-worker"
-    },
-    {
-      "file": "apps/web/components/project/send-project-invitation-modal.tsx",
-      "line": 236,
-      "kind": "jsx-attribute",
-      "text": "Select role"
-    },
-    {
-      "file": "apps/web/components/project/settings/control-section.tsx",
-      "line": 62,
-      "kind": "jsx-attribute",
-      "text": "Archiving a project will unlist your project from your side navigation although you will still be able to access it from your projects page. You can restore the project or delete it whenever you want."
-    },
-    {
-      "file": "apps/web/components/project/settings/control-section.tsx",
-      "line": 77,
-      "kind": "jsx-attribute",
-      "text": "When deleting a project, all of the data and resources within that project will be permanently removed and cannot be recovered."
+      "text": "kanban"
     },
     {
       "file": "apps/web/components/project/settings/features-list.tsx",
@@ -9612,42 +6024,6 @@
       "line": 71,
       "kind": "display-property",
       "text": "Consider and discuss work items before you add them to your project."
-    },
-    {
-      "file": "apps/web/components/project/settings/features-list.tsx",
-      "line": 98,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/project/settings/features-list.tsx",
-      "line": 102,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/project/settings/features-list.tsx",
-      "line": 125,
-      "kind": "jsx-attribute",
-      "text": "Pro feature"
-    },
-    {
-      "file": "apps/web/components/project/settings/helper.tsx",
-      "line": 37,
-      "kind": "jsx-attribute",
-      "text": "Toggle project feature"
-    },
-    {
-      "file": "apps/web/components/project/settings/member-columns.tsx",
-      "line": 177,
-      "kind": "display-property",
-      "text": "You can’t change this role yet."
-    },
-    {
-      "file": "apps/web/components/projects/settings/intake/header.tsx",
-      "line": 60,
-      "kind": "jsx-attribute",
-      "text": "Intake"
     },
     {
       "file": "apps/web/components/readonly/labels.tsx",
@@ -10286,1484 +6662,86 @@
       "text": ",&nbsp;"
     },
     {
-      "file": "apps/web/components/workspace/billing/comparison/base.tsx",
-      "line": 64,
-      "kind": "jsx-text",
-      "text": "Highlights"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/frequency-toggle.tsx",
-      "line": 38,
-      "kind": "jsx-text",
-      "text": "Monthly"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/frequency-toggle.tsx",
-      "line": 50,
-      "kind": "jsx-text",
-      "text": "Yearly"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plan-detail.tsx",
-      "line": 63,
-      "kind": "jsx-text",
-      "text": "Popular"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 65,
-      "kind": "jsx-text",
-      "text": "COMING SOON"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 75,
-      "kind": "display-property",
-      "text": "Project + work tracking"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 78,
-      "kind": "display-property",
-      "text": "Projects"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Add projects to house work items, cycles, and modules."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 89,
-      "kind": "display-property",
-      "text": "Work items"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 90,
-      "kind": "display-property",
-      "text": "Add work via work items, set properties for tracking, and add to cycles or modules."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 100,
-      "kind": "display-property",
-      "text": "Comments"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 101,
-      "kind": "display-property",
-      "text": "Respond to work items, @mention members, and brainstorm together without leaving Plane."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 111,
-      "kind": "display-property",
-      "text": "Cycles"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 112,
-      "kind": "display-property",
-      "text": "Track work in timeboxes with differing frequency."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 122,
-      "kind": "display-property",
-      "text": "Modules"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 123,
-      "kind": "display-property",
-      "text": "Group replicable work in modules with their own leads."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 133,
-      "kind": "display-property",
-      "text": "Intake"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 135,
-      "kind": "display-property",
-      "text": "See suggestions and feedback from viewers and guests before you decide to add them to your project."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 145,
-      "kind": "display-property",
-      "text": "Estimates"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 146,
-      "kind": "display-property",
-      "text": "Measure effort in points in a system that works for you."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 159,
-      "kind": "display-property",
-      "text": "Project + work management"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 162,
-      "kind": "display-property",
-      "text": "Bulk Ops"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 163,
-      "kind": "display-property",
-      "text": "Add several work items to cycles or modules, transfer them, or edit their properties."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 171,
-      "kind": "jsx-text",
-      "text": "Work item transfers and conversions"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 177,
-      "kind": "jsx-text",
-      "text": "Work item transfers and conversions"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 183,
-      "kind": "display-property",
-      "text": "Time Tracking + Worklogs"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 184,
-      "kind": "display-property",
-      "text": "Track time per work item, see aggregated reports, and filter by need."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 194,
-      "kind": "display-property",
-      "text": "Active Cycles"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 195,
-      "kind": "display-property",
-      "text": "See all running cycles across all projects, or soon, in a single project."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 205,
-      "kind": "display-property",
-      "text": "Work item Types"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 206,
-      "kind": "display-property",
-      "text": "Create your own work item types with your own properties."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 216,
-      "kind": "display-property",
-      "text": "Custom Properties"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 217,
-      "kind": "display-property",
-      "text": "Create your own properties and apply them to your workspace or project."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 227,
-      "kind": "display-property",
-      "text": "Dependencies in Gantt"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 228,
-      "kind": "display-property",
-      "text": "Adjust timelines for dependent work items visually on our Gantt layout."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 238,
-      "kind": "display-property",
-      "text": "Work item Transfers"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 239,
-      "kind": "display-property",
-      "text": "Move a work item from a project or a cycle to another."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 249,
-      "kind": "display-property",
-      "text": "Auto-transfer Cycle Work items"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 251,
-      "kind": "display-property",
-      "text": "Transfer incomplete work items from a completed cycle to the next cycle or to the default project state."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 261,
-      "kind": "display-property",
-      "text": "Epics"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 262,
-      "kind": "display-property",
-      "text": "Organize long-term work in epics that house work items, cycles, and modules."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 272,
-      "kind": "display-property",
-      "text": "Initiatives"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 273,
-      "kind": "display-property",
-      "text": "Create initiatives to roll up several epics."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 284,
-      "kind": "display-property",
-      "text": "Checkpoints"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 286,
-      "kind": "display-property",
-      "text": "Add markers to Projects, Epics and Initiatives to keep your team on track and report on progress."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 297,
-      "kind": "display-property",
-      "text": "Module Overview"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 298,
-      "kind": "display-property",
-      "text": "Like Cycle Overviews, see relevant details and progress charts for each module."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 308,
-      "kind": "display-property",
-      "text": "Auto-assignment In Modules"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 309,
-      "kind": "display-property",
-      "text": "Choose assignment rules for work items in a module including Linear, Round Robin, or Capacity."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 331,
-      "kind": "display-property",
-      "text": "Public, Private, and Secret projects"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 333,
-      "kind": "display-property",
-      "text": "Public projects are visible and accessible to everyone. Private ones are visible but need approval to join. Secret projects aren't visible or accessible."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 343,
-      "kind": "display-property",
-      "text": "State Of Projects"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 345,
-      "kind": "display-property",
-      "text": "See all projects laid across states that highlight those that need attention and those on track."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 368,
-      "kind": "display-property",
-      "text": "Pre-defined work item Templates"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 370,
-      "kind": "display-property",
-      "text": "Choose from our available work item templates that customize work item types and properties for several use cases."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 381,
-      "kind": "display-property",
-      "text": "Teamspace Cycles"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 382,
-      "kind": "display-property",
-      "text": "See multiple cycles in multiple projects at once."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 392,
-      "kind": "display-property",
-      "text": "Project Templates"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 393,
-      "kind": "display-property",
-      "text": "Save states, workflows, automation, and other project settings into templates."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 403,
-      "kind": "display-property",
-      "text": "Baselines And Deviations"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 404,
-      "kind": "display-property",
-      "text": "Declare baselines for how your projects progress and zoom in on deviations."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 414,
-      "kind": "display-property",
-      "text": "Scheduled Comms"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 415,
-      "kind": "display-property",
-      "text": "Schedule reports, notifications, and messages to third-party tools."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 425,
-      "kind": "display-property",
-      "text": "Intake Assignees"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 426,
-      "kind": "display-property",
-      "text": "Assign approved Intake work items to a member by default."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 436,
-      "kind": "display-property",
-      "text": "Custom SLAs"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 437,
-      "kind": "display-property",
-      "text": "Set SLA matrices for time-sensitive work items."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 447,
-      "kind": "display-property",
-      "text": "Intake Forms"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 448,
-      "kind": "display-property",
-      "text": "Take Intake work items from externally accessible web forms."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 458,
-      "kind": "display-property",
-      "text": "Emails For Intake"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 459,
-      "kind": "display-property",
-      "text": "Get an email address for reporting work items directly into a project's Intake."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 473,
-      "kind": "display-property",
-      "text": "Visualization"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 476,
-      "kind": "display-property",
-      "text": "Layouts"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 478,
-      "kind": "display-property",
-      "text": "Choose from the List, the Board, the Calendar, the Gantt, or the Spreadsheet layout for your work items."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 488,
-      "kind": "display-property",
-      "text": "Views"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 489,
-      "kind": "display-property",
-      "text": "Save sort, filter, and display options on a layout to a view."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 499,
-      "kind": "display-property",
-      "text": "Shared Views"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 500,
-      "kind": "display-property",
-      "text": "Choose a few members to share a view with."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 510,
-      "kind": "display-property",
-      "text": "Publish Views"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 511,
-      "kind": "display-property",
-      "text": "Put a view on the Internet and let your customers interact with them."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 521,
-      "kind": "display-property",
-      "text": "Dashboards and Widgets"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 522,
-      "kind": "display-property",
-      "text": "Create your own dashboards with custom widgets and data types."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 535,
-      "kind": "display-property",
-      "text": "Analytics + reports"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 538,
-      "kind": "display-property",
-      "text": "Progress Charts"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 540,
-      "kind": "display-property",
-      "text": "Track progress in cycles, modules, and overviews throughout Plane without switching to dashboards or Analytics."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 550,
-      "kind": "display-property",
-      "text": "Cycle Reports"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 551,
-      "kind": "display-property",
-      "text": "Get on-demand cycle reports during and after a cycle. Revisit reports anytime from permalinks."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 561,
-      "kind": "display-property",
-      "text": "Insights"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 562,
-      "kind": "display-property",
-      "text": "Hindsight, On-demand insights, Foresights."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 585,
-      "kind": "display-property",
-      "text": "Advanced Pages Analytics"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 586,
-      "kind": "display-property",
-      "text": "See who's viewing, sharing, and commenting on your pages along with other useful info."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 597,
-      "kind": "display-property",
-      "text": "Custom Reports"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 598,
-      "kind": "display-property",
-      "text": "Generate reports by any dimension and metric across your project or workspace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 612,
-      "kind": "display-property",
-      "text": "Navigation"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 615,
-      "kind": "display-property",
-      "text": "Power K"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 616,
-      "kind": "display-property",
-      "text": "Access a keyboard-first gateway to almost anything in Plane."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 658,
-      "kind": "display-property",
-      "text": "PQL"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 660,
-      "kind": "display-property",
-      "text": "Write Plane Query Language in search with support for Boolean operators. Soon, you can write natural language queries."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 673,
-      "kind": "display-property",
-      "text": "Workspace and user management"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 676,
-      "kind": "display-property",
-      "text": "Member limit"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 677,
-      "kind": "display-property",
-      "text": "Number of seats that can use project and work management features"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 695,
-      "kind": "display-property",
-      "text": "Roles"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 696,
-      "kind": "display-property",
-      "text": "Choose from one of four pre-defined roles or create custom ones with RBAC."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 706,
-      "kind": "display-property",
-      "text": "Guests"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 707,
-      "kind": "display-property",
-      "text": "Let some users see everything or just their work items in a project."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 717,
-      "kind": "display-property",
-      "text": "Approvals"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 718,
-      "kind": "display-property",
-      "text": "Set workspace, project, and work item type approvals to designated admins."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 729,
-      "kind": "display-property",
-      "text": "Admin Interface"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 730,
-      "kind": "display-property",
-      "text": "Get an admin overview to manage workspace and project settings."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 740,
-      "kind": "display-property",
-      "text": "Workspace Activity Logs"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 741,
-      "kind": "display-property",
-      "text": "See filterable activity logs for your entire workspace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 751,
-      "kind": "display-property",
-      "text": "API-enabled Audit Logs"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 752,
-      "kind": "display-property",
-      "text": "See a full-workspace audit log and use APIs to flag Plane activity in compliance systems."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 766,
-      "kind": "display-property",
-      "text": "Automations and workflows"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 769,
-      "kind": "display-property",
-      "text": "Trigger And Action"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 770,
-      "kind": "display-property",
-      "text": "Choose a trigger and a corresponding action per automation flow."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 780,
-      "kind": "display-property",
-      "text": "Decisions And Loops Automation"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 781,
-      "kind": "display-property",
-      "text": "Use actions as triggers indefinitely in an automation flow."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 792,
-      "kind": "display-property",
-      "text": "Number of automations"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 793,
-      "kind": "display-property",
-      "text": "Total number of automation flows in your workspace"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 806,
-      "kind": "display-property",
-      "text": "Knowledge management"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 809,
-      "kind": "display-property",
-      "text": "Pages"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 810,
-      "kind": "display-property",
-      "text": "Build knowledge bases for your teams which are accessible & shareable."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 820,
-      "kind": "display-property",
-      "text": "Real-time Collab"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 821,
-      "kind": "display-property",
-      "text": "Edit a page together with members in your project, team, or workspace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 831,
-      "kind": "display-property",
-      "text": "Work item Embeds"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 832,
-      "kind": "display-property",
-      "text": "Embed work items from any project you are a member of."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 842,
-      "kind": "display-property",
-      "text": "Link-to-work items"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 843,
-      "kind": "display-property",
-      "text": "Link pages in work items in a separate section in work item details."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 853,
-      "kind": "display-property",
-      "text": "Publish"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 855,
-      "kind": "display-property",
-      "text": "Put your pages on the web for external users and let them comment without signing into your workspace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 865,
-      "kind": "display-property",
-      "text": "Wiki"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 866,
-      "kind": "display-property",
-      "text": "Create company-wide wikis or knowledge bases without creating a project."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 876,
-      "kind": "display-property",
-      "text": "Exports"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 877,
-      "kind": "display-property",
-      "text": "Export page content into PDFs or Word-compatible docs."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 887,
-      "kind": "display-property",
-      "text": "Templates"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 888,
-      "kind": "display-property",
-      "text": "Use pages as templates for your project, team, or workspace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 898,
-      "kind": "display-property",
-      "text": "Versions"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 899,
-      "kind": "display-property",
-      "text": "See restorable version of edits to your pages."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 909,
-      "kind": "display-property",
-      "text": "Databases + Formulas"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 911,
-      "kind": "display-property",
-      "text": "Put databases and formulas into a page without worrying about losing text, images, or other content types."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 922,
-      "kind": "display-property",
-      "text": "Nested Pages"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 923,
-      "kind": "display-property",
-      "text": "Pages inside a page, organize your pages as you see fit for the progressive disclosure."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 937,
-      "kind": "display-property",
-      "text": "Importers"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 940,
-      "kind": "display-property",
-      "text": "Jira"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 941,
-      "kind": "display-property",
-      "text": "Import your work items and members from Jira."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 951,
-      "kind": "display-property",
-      "text": "GitHub"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 952,
-      "kind": "display-property",
-      "text": "Import your work items and members from GitHub."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 965,
-      "kind": "display-property",
-      "text": "Integrations"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 969,
-      "kind": "display-property",
-      "text": "GitHub"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 971,
-      "kind": "display-property",
-      "text": "Sync Plane work items and states to GitHub work items and states. Update GitHub automatically with activity from Plane and vice-versa."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 981,
-      "kind": "display-property",
-      "text": "Slack"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 982,
-      "kind": "display-property",
-      "text": "Get Plane activity in Slack and use / commands in Slack to make changes in Plane."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 992,
-      "kind": "display-property",
-      "text": "Zapier"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 993,
-      "kind": "display-property",
-      "text": "Run if-then-else automations using Zapier."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1003,
-      "kind": "display-property",
-      "text": "Zendesk"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1004,
-      "kind": "display-property",
-      "text": "Create Plane work items from Zendesk tickets."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1014,
-      "kind": "display-property",
-      "text": "Freshdesk"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1015,
-      "kind": "display-property",
-      "text": "Create Plane work items from Freshdesk tickets."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1028,
-      "kind": "display-property",
-      "text": "Storage"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1032,
-      "kind": "display-property",
-      "text": "Space"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1033,
-      "kind": "display-property",
-      "text": "Total storage allowed per workspace"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1043,
-      "kind": "display-property",
-      "text": "Max file size"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1044,
-      "kind": "display-property",
-      "text": "Limit for uploads to your workspace"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1057,
-      "kind": "display-property",
-      "text": "Security"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1060,
-      "kind": "display-property",
-      "text": "SAML"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1061,
-      "kind": "display-property",
-      "text": "Get the officially supported SAML implementation and make Plane secure with any IdP."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1071,
-      "kind": "display-property",
-      "text": "OIDC"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1072,
-      "kind": "display-property",
-      "text": "Get the officially supported OIDC implementation and make Plane secure with any IdP."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1083,
-      "kind": "display-property",
-      "text": "Domain Security"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1085,
-      "kind": "display-property",
-      "text": "Choose other domains that can authenticate into your Plane workspace or restrict all but one domain."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1095,
-      "kind": "display-property",
-      "text": "Two-factor authentication and passkeys"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1096,
-      "kind": "display-property",
-      "text": "Secure your Plane workspace with device- dependent two-factor authentication and passkeys."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1106,
-      "kind": "display-property",
-      "text": "Password Policy"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1107,
-      "kind": "display-property",
-      "text": "Set custom password policies in line with your compliance requirements."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1117,
-      "kind": "display-property",
-      "text": "LDAP"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1118,
-      "kind": "display-property",
-      "text": "Get our official LDAP implementation and secure your Plane workspace with your LDAP server."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1132,
-      "kind": "display-property",
-      "text": "Self-hosted"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1136,
-      "kind": "display-property",
-      "text": "God Mode"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1137,
-      "kind": "display-property",
-      "text": "Manage your self-hosted Plane instance better with an instance admin interface."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1147,
-      "kind": "display-property",
-      "text": "One-click Deployment"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1148,
-      "kind": "display-property",
-      "text": "Install and deploy your self-hosted Plane to any private cloud with a single-line command."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1158,
-      "kind": "display-property",
-      "text": "Digital Ocean Marketplace app"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1159,
-      "kind": "display-property",
-      "text": "Get our Digital Ocean-compatible app on their marketplace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1169,
-      "kind": "display-property",
-      "text": "Heroku Platform app"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1170,
-      "kind": "display-property",
-      "text": "Get our Heroku Platform-compatible app and deploy to Heroku easily."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1180,
-      "kind": "display-property",
-      "text": "AWS AMI"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1181,
-      "kind": "display-property",
-      "text": "Get our AMI-compatible app from the AWS marketplace."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1191,
-      "kind": "display-property",
-      "text": "Private deployments"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1192,
-      "kind": "display-property",
-      "text": "Get our hosted Cloud app on a private Cloud managed by us."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1206,
-      "kind": "display-property",
-      "text": "Support"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1209,
-      "kind": "display-property",
-      "text": "Channels"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1210,
-      "kind": "display-property",
-      "text": "Get access to one or more Support channels by your plan."
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1235,
-      "kind": "display-property",
-      "text": "SLA"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1238,
-      "kind": "jsx-text",
-      "text": "Get business-friendly SLAs with higher plans. SLAs are by priority of work item and tiers"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/comparison/plans.tsx",
-      "line": 1240,
-      "kind": "jsx-text",
-      "text": "can be requested"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/root.tsx",
-      "line": 55,
-      "kind": "jsx-attribute",
-      "text": "Community"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/root.tsx",
-      "line": 56,
-      "kind": "jsx-attribute",
-      "text": "Unlimited projects, issues, cycles, modules, pages, and storage"
-    },
-    {
-      "file": "apps/web/components/workspace/billing/root.tsx",
-      "line": 61,
-      "kind": "jsx-text",
-      "text": "All plans"
-    },
-    {
-      "file": "apps/web/components/workspace/confirm-workspace-member-remove.tsx",
-      "line": 85,
-      "kind": "jsx-text",
-      "text": "Are you sure you want to remove member-"
-    },
-    {
-      "file": "apps/web/components/workspace/confirm-workspace-member-remove.tsx",
-      "line": 85,
-      "kind": "jsx-text",
-      "text": "? They will no longer have access to this workspace. This action cannot be undone."
-    },
-    {
       "file": "apps/web/components/workspace/edition-badge.tsx",
       "line": 38,
       "kind": "jsx-attribute",
       "text": "Community"
     },
     {
-      "file": "apps/web/components/workspace/settings/invitations-list-item.tsx",
-      "line": 81,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/invitations-list-item.tsx",
-      "line": 82,
-      "kind": "display-property",
-      "text": "Invitation removed successfully."
-    },
-    {
-      "file": "apps/web/components/workspace/settings/invitations-list-item.tsx",
-      "line": 88,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/invitations-list-item.tsx",
-      "line": 167,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/member-columns.tsx",
-      "line": 131,
-      "kind": "jsx-attribute",
-      "text": "Suspended"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/member-columns.tsx",
-      "line": 156,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/members-list-item.tsx",
-      "line": 57,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/members-list-item.tsx",
-      "line": 72,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 77,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 79,
-      "kind": "display-property",
-      "text": "Workspace updated successfully"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 99,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 100,
-      "kind": "display-property",
-      "text": "Workspace picture removed successfully."
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 105,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 106,
-      "kind": "display-property",
-      "text": "There was some error in deleting your profile picture. Please try again."
-    },
-    {
-      "file": "apps/web/components/workspace/settings/workspace-details.tsx",
-      "line": 118,
-      "kind": "display-property",
-      "text": "Workspace URL copied to the clipboard."
-    },
-    {
-      "file": "apps/web/components/workspace/sidebar/help-section/root.tsx",
-      "line": 72,
-      "kind": "jsx-attribute",
-      "text": "Forum"
-    },
-    {
-      "file": "apps/web/components/workspace/views/default-view-quick-action.tsx",
-      "line": 41,
-      "kind": "display-property",
-      "text": "Link Copied!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/default-view-quick-action.tsx",
-      "line": 42,
-      "kind": "display-property",
-      "text": "View link copied to clipboard."
-    },
-    {
-      "file": "apps/web/components/workspace/views/delete-view-modal.tsx",
-      "line": 44,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/delete-view-modal.tsx",
-      "line": 45,
-      "kind": "display-property",
-      "text": "Failed to delete the view. Please try again."
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 58,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 59,
-      "kind": "display-property",
-      "text": "View created successfully."
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 66,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 67,
-      "kind": "display-property",
-      "text": "View could not be created. Please try again."
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 87,
-      "kind": "display-property",
-      "text": "Success!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 88,
-      "kind": "display-property",
-      "text": "View updated successfully."
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 95,
-      "kind": "display-property",
-      "text": "Error!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/modal.tsx",
-      "line": 96,
-      "kind": "display-property",
-      "text": "View could not be updated. Please try again."
-    },
-    {
-      "file": "apps/web/components/workspace/views/quick-action.tsx",
-      "line": 52,
-      "kind": "display-property",
-      "text": "Link Copied!"
-    },
-    {
-      "file": "apps/web/components/workspace/views/quick-action.tsx",
-      "line": 53,
-      "kind": "display-property",
-      "text": "View link copied to clipboard."
-    },
-    {
-      "file": "apps/web/components/workspace/views/view-list-item.tsx",
-      "line": 88,
-      "kind": "jsx-attribute",
-      "text": "Edit View"
-    },
-    {
-      "file": "apps/web/components/workspace/views/view-list-item.tsx",
-      "line": 93,
-      "kind": "jsx-attribute",
-      "text": "Delete View"
-    },
-    {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 167,
+      "line": 172,
       "kind": "jsx-text",
       "text": "Your account is already registered.&nbsp;"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 172,
+      "line": 177,
       "kind": "jsx-text",
       "text": "Sign In"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 174,
+      "line": 179,
       "kind": "jsx-text",
       "text": "&nbsp;now."
-    },
-    {
-      "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 203,
-      "kind": "jsx-text",
-      "text": "No account found.&nbsp;"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
       "line": 208,
       "kind": "jsx-text",
+      "text": "No account found.&nbsp;"
+    },
+    {
+      "file": "apps/web/helpers/authentication.helper.tsx",
+      "line": 213,
+      "kind": "jsx-text",
       "text": "Create one"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 210,
+      "line": 215,
       "kind": "jsx-text",
       "text": "&nbsp;to get started."
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 350,
+      "line": 355,
       "kind": "jsx-text",
       "text": "Admin user already exists.&nbsp;"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 352,
+      "line": 357,
       "kind": "jsx-text",
       "text": "Sign In"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 354,
+      "line": 359,
       "kind": "jsx-text",
       "text": "&nbsp;now."
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 362,
+      "line": 367,
       "kind": "jsx-text",
       "text": "Admin user does not exist.&nbsp;"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 364,
+      "line": 369,
       "kind": "jsx-text",
       "text": "Sign In"
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 366,
+      "line": 371,
       "kind": "jsx-text",
       "text": "&nbsp;now."
     },
     {
       "file": "apps/web/helpers/authentication.helper.tsx",
-      "line": 372,
+      "line": 377,
       "kind": "jsx-text",
       "text": "Your account is deactivated"
     },
@@ -12284,12 +7262,6 @@
       "text": "Failed to fetch user settings"
     },
     {
-      "file": "packages/blocks/src/auth/oauth/oauth-options.tsx",
-      "line": 55,
-      "kind": "jsx-text",
-      "text": "or"
-    },
-    {
       "file": "packages/blocks/src/auth/password/helper.tsx",
       "line": 22,
       "kind": "display-property",
@@ -12351,105 +7323,9 @@
     },
     {
       "file": "packages/editor/src/components/links/link-edit-view.tsx",
-      "line": 152,
+      "line": 158,
       "kind": "jsx-attribute",
       "text": "URL"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-edit-view.tsx",
-      "line": 152,
-      "kind": "jsx-attribute",
-      "text": "Enter or paste URL"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-edit-view.tsx",
-      "line": 153,
-      "kind": "jsx-attribute",
-      "text": "Text"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-edit-view.tsx",
-      "line": 153,
-      "kind": "jsx-attribute",
-      "text": "Enter Text to display"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-edit-view.tsx",
-      "line": 166,
-      "kind": "jsx-text",
-      "text": "Remove Link"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-preview.tsx",
-      "line": 47,
-      "kind": "jsx-attribute",
-      "text": "Copy link"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-preview.tsx",
-      "line": 58,
-      "kind": "jsx-attribute",
-      "text": "Edit link"
-    },
-    {
-      "file": "packages/editor/src/components/links/link-preview.tsx",
-      "line": 67,
-      "kind": "jsx-attribute",
-      "text": "Remove link"
-    },
-    {
-      "file": "packages/editor/src/components/menus/block-menu-options.tsx",
-      "line": 89,
-      "kind": "display-property",
-      "text": "Fit to width"
-    },
-    {
-      "file": "packages/editor/src/components/menus/block-menu.tsx",
-      "line": 157,
-      "kind": "display-property",
-      "text": "Delete"
-    },
-    {
-      "file": "packages/editor/src/components/menus/block-menu.tsx",
-      "line": 166,
-      "kind": "display-property",
-      "text": "Duplicate"
-    },
-    {
-      "file": "packages/editor/src/components/menus/bubble-menu/alignment-selector.tsx",
-      "line": 39,
-      "kind": "display-property",
-      "text": "Align left"
-    },
-    {
-      "file": "packages/editor/src/components/menus/bubble-menu/alignment-selector.tsx",
-      "line": 50,
-      "kind": "display-property",
-      "text": "Align center"
-    },
-    {
-      "file": "packages/editor/src/components/menus/bubble-menu/alignment-selector.tsx",
-      "line": 61,
-      "kind": "display-property",
-      "text": "Align right"
-    },
-    {
-      "file": "packages/editor/src/components/menus/bubble-menu/alignment-selector.tsx",
-      "line": 73,
-      "kind": "jsx-attribute",
-      "text": "Text alignment"
-    },
-    {
-      "file": "packages/editor/src/components/menus/bubble-menu/root.tsx",
-      "line": 227,
-      "kind": "jsx-attribute",
-      "text": "Formatting toolbar"
-    },
-    {
-      "file": "packages/editor/src/components/menus/bubble-menu/root.tsx",
-      "line": 248,
-      "kind": "jsx-attribute",
-      "text": "Text formatting"
     },
     {
       "file": "packages/editor/src/constants/common.ts",
@@ -12518,126 +7394,6 @@
       "text": "Mono"
     },
     {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/alignment.tsx",
-      "line": 43,
-      "kind": "jsx-attribute",
-      "text": "Align"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/alignment.tsx",
-      "line": 47,
-      "kind": "jsx-attribute",
-      "text": "Align image"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/alignment.tsx",
-      "line": 59,
-      "kind": "jsx-attribute",
-      "text": "Image alignment"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/download.tsx",
-      "line": 21,
-      "kind": "jsx-attribute",
-      "text": "Download"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/download.tsx",
-      "line": 27,
-      "kind": "jsx-attribute",
-      "text": "Download image"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 242,
-      "kind": "jsx-attribute",
-      "text": "Fullscreen image viewer"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 257,
-      "kind": "jsx-attribute",
-      "text": "Close image viewer"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 266,
-      "kind": "jsx-attribute",
-      "text": "Preview"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 281,
-      "kind": "jsx-attribute",
-      "text": "Image viewer controls"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 282,
-      "kind": "jsx-attribute",
-      "text": "Image zoom"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 295,
-      "kind": "jsx-attribute",
-      "text": "Zoom out"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 314,
-      "kind": "jsx-attribute",
-      "text": "Zoom in"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 326,
-      "kind": "jsx-attribute",
-      "text": "Download image"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/modal.tsx",
-      "line": 337,
-      "kind": "jsx-attribute",
-      "text": "Open image in new tab"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/root.tsx",
-      "line": 52,
-      "kind": "jsx-attribute",
-      "text": "View in full screen"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/full-screen/root.tsx",
-      "line": 63,
-      "kind": "jsx-attribute",
-      "text": "View image in full screen"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/toolbar/root.tsx",
-      "line": 47,
-      "kind": "jsx-attribute",
-      "text": "Image controls"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/uploader.tsx",
-      "line": 243,
-      "kind": "jsx-attribute",
-      "text": "Choose image"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/uploader.tsx",
-      "line": 255,
-      "kind": "jsx-attribute",
-      "text": "Retry"
-    },
-    {
-      "file": "packages/editor/src/extensions/custom-image/components/uploader.tsx",
-      "line": 256,
-      "kind": "jsx-attribute",
-      "text": "Retry duplication"
-    },
-    {
       "file": "packages/editor/src/extensions/custom-image/utils.ts",
       "line": 47,
       "kind": "display-property",
@@ -12654,264 +7410,6 @@
       "line": 57,
       "kind": "display-property",
       "text": "Right"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 67,
-      "kind": "display-property",
-      "text": "Text"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 68,
-      "kind": "display-property",
-      "text": "Just start typing with plain text."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 76,
-      "kind": "display-property",
-      "text": "Heading 1"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 77,
-      "kind": "display-property",
-      "text": "Big section heading."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 85,
-      "kind": "display-property",
-      "text": "Heading 2"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 86,
-      "kind": "display-property",
-      "text": "Medium section heading."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 94,
-      "kind": "display-property",
-      "text": "Heading 3"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 95,
-      "kind": "display-property",
-      "text": "Small section heading."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 103,
-      "kind": "display-property",
-      "text": "Heading 4"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 104,
-      "kind": "display-property",
-      "text": "Small section heading."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 112,
-      "kind": "display-property",
-      "text": "Heading 5"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 113,
-      "kind": "display-property",
-      "text": "Small section heading."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 121,
-      "kind": "display-property",
-      "text": "Heading 6"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 122,
-      "kind": "display-property",
-      "text": "Small section heading."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 131,
-      "kind": "display-property",
-      "text": "Numbered list"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 132,
-      "kind": "display-property",
-      "text": "Create a numbered list."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 140,
-      "kind": "display-property",
-      "text": "Bulleted list"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 141,
-      "kind": "display-property",
-      "text": "Create a bulleted list."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 149,
-      "kind": "display-property",
-      "text": "To-do list"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 150,
-      "kind": "display-property",
-      "text": "Create a to-do list."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 158,
-      "kind": "display-property",
-      "text": "Table"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 159,
-      "kind": "display-property",
-      "text": "Create a table"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 167,
-      "kind": "display-property",
-      "text": "Quote"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 168,
-      "kind": "display-property",
-      "text": "Capture a quote."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 176,
-      "kind": "display-property",
-      "text": "Code"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 177,
-      "kind": "display-property",
-      "text": "Capture a code snippet."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 185,
-      "kind": "display-property",
-      "text": "Callout"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 187,
-      "kind": "display-property",
-      "text": "Insert callout"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 194,
-      "kind": "display-property",
-      "text": "Divider"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 195,
-      "kind": "display-property",
-      "text": "Visually divide blocks."
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 203,
-      "kind": "display-property",
-      "text": "Emoji"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 204,
-      "kind": "display-property",
-      "text": "Insert an emoji"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 215,
-      "kind": "display-property",
-      "text": "Colors"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 220,
-      "kind": "display-property",
-      "text": "Default"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 221,
-      "kind": "display-property",
-      "text": "Change text color"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 232,
-      "kind": "display-property",
-      "text": "Change text color"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 251,
-      "kind": "display-property",
-      "text": "Background colors"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 256,
-      "kind": "display-property",
-      "text": "Default background"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 257,
-      "kind": "display-property",
-      "text": "Change background color"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 273,
-      "kind": "display-property",
-      "text": "Change background color"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 294,
-      "kind": "display-property",
-      "text": "Image"
-    },
-    {
-      "file": "packages/editor/src/extensions/slash-commands/command-items-list.tsx",
-      "line": 296,
-      "kind": "display-property",
-      "text": "Insert an image"
-    },
-    {
-      "file": "packages/editor/src/extensions/table/plugins/drag-handles/column/drag-handle.tsx",
-      "line": 234,
-      "kind": "jsx-attribute",
-      "text": "Column options"
     },
     {
       "file": "packages/editor/src/extensions/table/plugins/drag-handles/column/dropdown.tsx",
@@ -12944,12 +7442,6 @@
       "text": "editor_controls.delete"
     },
     {
-      "file": "packages/editor/src/extensions/table/plugins/drag-handles/row/drag-handle.tsx",
-      "line": 233,
-      "kind": "jsx-attribute",
-      "text": "Row options"
-    },
-    {
       "file": "packages/editor/src/extensions/table/plugins/drag-handles/row/dropdown.tsx",
       "line": 36,
       "kind": "display-property",
@@ -12978,12 +7470,6 @@
       "line": 69,
       "kind": "display-property",
       "text": "editor_controls.delete"
-    },
-    {
-      "file": "packages/editor/src/hooks/use-yjs-setup.ts",
-      "line": 68,
-      "kind": "display-property",
-      "text": "Authentication failed"
     }
   ]
 }

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // ui
 import { Button } from "@makeplane/propel/components/button";
@@ -27,6 +28,7 @@ type Props = {
 };
 
 export function ConfirmIssueDiscard(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, handleClose, onDiscard, onConfirm } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -65,9 +67,15 @@ export function ConfirmIssueDiscard(props: Props) {
         </DialogMain>
         <DialogActions>
           <DialogInfo>
-            <Button variant="secondary" size="sm" stretch="auto" onClick={onDiscard} label="Discard" />
+            <Button variant="secondary" size="sm" stretch="auto" onClick={onDiscard} label={t("discard")} />
           </DialogInfo>
-          <Button variant="secondary" size="sm" stretch="auto" onClick={onClose} label="Cancel" />
+          <Button
+            variant="secondary"
+            size="sm"
+            stretch="auto"
+            onClick={onClose}
+            label={t("sso.domain_management.verified_domains.delete_domain.secondary_button_text")}
+          />
           <Button
             variant="primary"
             size="sm"

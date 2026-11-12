@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { CycleGroupIcon } from "@plane/blocks/icons";
@@ -22,6 +23,7 @@ const getCycleStatus = (status: TCycleGroups | undefined) =>
   (status ? status.toLocaleLowerCase() : "draft") as TCycleGroups;
 
 export const FilterCycle = observer(function FilterCycle(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate } = props;
   // router
   const { projectId } = useParams();
@@ -46,6 +48,12 @@ export const FilterCycle = observer(function FilterCycle(props: Props) {
   });
 
   return (
-    <FilterSubmenu label="Cycle" options={options} appliedFilters={appliedFilters} onToggle={handleUpdate} searchable />
+    <FilterSubmenu
+      label={t("common.cycle")}
+      options={options}
+      appliedFilters={appliedFilters}
+      onToggle={handleUpdate}
+      searchable
+    />
   );
 });

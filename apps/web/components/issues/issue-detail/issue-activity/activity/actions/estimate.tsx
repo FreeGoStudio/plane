@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { EstimateOutline } from "@makeplane/propel/icons";
 // hooks
@@ -30,12 +31,13 @@ export const IssueEstimateActivity = observer(function IssueEstimateActivity(pro
       activityId={activityId}
       ends={ends}
     >
-      <>
-        {activity.new_value ? `set the estimate point to ` : `removed the estimate point`}
-        {activity.new_value ? activity.new_value : activity?.old_value}
-        {showIssue && (activity.new_value ? ` to ` : ` from `)}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.estimate_${activity.new_value ? "set" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: <span className="font-medium text-primary">{activity.new_value || activity.old_value}</span>,
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });

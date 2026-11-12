@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 // components
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export const FilterProjects = observer(function FilterProjects(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate } = props;
   // store hooks
   const { getProjectById, joinedProjectIds } = useProject();
@@ -39,7 +41,7 @@ export const FilterProjects = observer(function FilterProjects(props: Props) {
 
   return (
     <FilterSubmenu
-      label="Project"
+      label={t("automations.global_automations.table.scope.project.label")}
       options={options}
       appliedFilters={appliedFilters}
       onToggle={handleUpdate}

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { TextOutline } from "@makeplane/propel/icons";
 // hooks
@@ -29,7 +30,7 @@ export const IssueNameActivity = observer(function IssueNameActivity(props: TIss
       activityId={activityId}
       ends={ends}
     >
-      <>set the name to {activity.new_value}.</>
+      <LocalizedText messageKey={"work_item_activity.name"} components={{ value: <span>{activity.new_value}</span> }} />
     </IssueActivityBlockComponent>
   );
 });

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { AlignLeftOutline } from "@makeplane/propel/icons";
 // hooks
@@ -29,11 +30,10 @@ export const IssueDescriptionActivity = observer(function IssueDescriptionActivi
       activityId={activityId}
       ends={ends}
     >
-      <>
-        updated the description
-        {showIssue ? ` of ` : ``}
-        {showIssue && <IssueLink activityId={activityId} />}.
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.description_${showIssue ? "issue" : "self"}`}
+        components={{ issue: <IssueLink activityId={activityId} /> }}
+      />
     </IssueActivityBlockComponent>
   );
 });

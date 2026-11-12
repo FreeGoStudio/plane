@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
 import { useParams, useSearchParams } from "next/navigation";
@@ -33,6 +34,7 @@ type Props = {
 };
 
 export const AllIssueLayoutRoot = observer(function AllIssueLayoutRoot(props: Props) {
+  const { t } = useTranslation();
   const { isDefaultView, isLoading = false, toggleLoading } = props;
   // router
   const router = useAppRouter();
@@ -135,7 +137,7 @@ export const AllIssueLayoutRoot = observer(function AllIssueLayoutRoot(props: Pr
       <WorkspaceLevelWorkItemFiltersHOC
         enableSaveView
         saveViewOptions={{
-          label: "Save as",
+          label: t("rich_filters.view_controls.save_as"),
         }}
         enableUpdateView
         entityId={globalViewId}

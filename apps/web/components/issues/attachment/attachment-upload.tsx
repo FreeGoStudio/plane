@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useState } from "react";
 import { observer } from "mobx-react";
 import { useDropzone } from "react-dropzone";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, disabled = false, attachmentOperations } = props;
   // states
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +68,7 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
         ) : fileError ? (
           <p className="text-center text-danger-primary">{fileError}</p>
         ) : isLoading ? (
-          <p className="text-center">Uploading...</p>
+          <p className="text-center">{t("editor_ui.uploading")}</p>
         ) : (
           <p className="text-center">Click or drag a file here</p>
         )}

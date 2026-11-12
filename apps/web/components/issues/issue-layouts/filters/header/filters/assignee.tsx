@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // components
 import { MemberFilterSubmenu } from "@/components/common/filters/member-filter-submenu";
@@ -15,11 +16,12 @@ type Props = {
 };
 
 export const FilterAssignees = observer(function FilterAssignees(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate, memberIds } = props;
 
   return (
     <MemberFilterSubmenu
-      label="Assignee"
+      label={t("assignee")}
       memberIds={memberIds}
       appliedFilters={appliedFilters}
       onToggle={handleUpdate}

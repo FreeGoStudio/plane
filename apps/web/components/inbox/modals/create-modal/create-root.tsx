@@ -101,7 +101,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
     } else {
       setToast({
         type: "error",
-        title: "Error!",
+        title: t("sso.providers.saml.configure.toast.error_title"),
         message: "Editor is still processing changes. Please wait before proceeding.",
       });
       event.preventDefault(); // Prevent default action if editor is not ready to discard
@@ -133,7 +133,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
     if (!descriptionEditorRef.current?.isEditorReadyToDiscard()) {
       setToast({
         type: "error",
-        title: "Error!",
+        title: t("sso.providers.saml.configure.toast.error_title"),
         message: "Editor is still processing changes. Please wait before proceeding.",
       });
       return;
@@ -177,7 +177,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
         setToast({
           type: "error",
           title: `Error!`,
-          message: "Some error occurred. Please try again.",
+          message: t("common.error.message"),
         });
       });
     setFormSubmitting(false);
@@ -250,7 +250,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
                 } else {
                   setToast({
                     type: "error",
-                    title: "Error!",
+                    title: t("sso.providers.saml.configure.toast.error_title"),
                     message: "Editor is still processing changes. Please wait before proceeding.",
                   });
                 }

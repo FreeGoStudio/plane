@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { LabelsOutline } from "@makeplane/propel/icons";
 // hooks
@@ -33,15 +34,18 @@ export const IssueLabelActivity = observer(function IssueLabelActivity(props: TI
       activityId={activityId}
       ends={ends}
     >
-      <>
-        {activity.old_value === "" ? `added a new label ` : `removed the label `}
-        <LabelActivityChip
-          name={activity.old_value === "" ? activity.new_value : activity.old_value}
-          color={activity.old_value === "" ? newLabelColor : oldLabelColor}
-        />
-        {showIssue && (activity.old_value === "" ? ` to ` : ` from `)}
-        {showIssue && <IssueLink activityId={activityId} />}
-      </>
+      <LocalizedText
+        messageKey={`work_item_activity.label_${activity.old_value === "" ? "added" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: (
+            <LabelActivityChip
+              name={activity.old_value === "" ? activity.new_value : activity.old_value}
+              color={activity.old_value === "" ? newLabelColor : oldLabelColor}
+            />
+          ),
+          issue: <IssueLink activityId={activityId} />,
+        }}
+      />
     </IssueActivityBlockComponent>
   );
 });
