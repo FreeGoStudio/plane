@@ -8,19 +8,19 @@ import { sortBy } from "lodash-es";
 import { getWeekOfMonth, isValid } from "date-fns";
 import { CHART_X_AXIS_DATE_PROPERTIES, ChartXAxisDateGrouping, TO_CAPITALIZE_PROPERTIES } from "@plane/constants";
 import type { ChartXAxisProperty, TChart, TChartDatum } from "@plane/types";
-import {
-  capitalizeFirstLetter,
-  hexToHsl,
-  hslToHex,
-  renderFormattedDate,
-  renderFormattedDateWithoutYear,
-} from "@plane/utils";
+import { capitalizeFirstLetter, hexToHsl, hslToHex } from "@plane/utils";
 //
 
-const getDateGroupingName = (date: string, dateGrouping: ChartXAxisDateGrouping): string => {
+const getDateGroupingName = (
+  date: string,
+  dateGrouping: ChartXAxisDateGrouping,
+  formatter: import("@plane/utils").DateFormatter
+): string => {
+  const { renderFormattedDate, renderFormattedDateWithoutYear } = formatter;
   if (!date || ["none", "null"].includes(date.toLowerCase())) return "None";
 
-  const formattedData = new Date(date);
+  // Date-only buckets represent civil dates, not midnight UTC instants.
+  const formattedData = new Date(/^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T00:00:00` : date);
   const isValidDate = isValid(formattedData);
 
   if (!isValidDate) return date;
@@ -34,17 +34,19 @@ const getDateGroupingName = (date: string, dateGrouping: ChartXAxisDateGrouping)
 
   switch (dateGrouping) {
     case ChartXAxisDateGrouping.DAY:
-      if (isCurrentYear) parsedName = renderFormattedDateWithoutYear(formattedData);
-      else parsedName = renderFormattedDate(formattedData);
+      if (isCurrentYear) parsedName = renderFormattedDateWithoutYear(date);
+      else parsedName = renderFormattedDate(date);
       break;
     case ChartXAxisDateGrouping.WEEK: {
-      const month = renderFormattedDate(formattedData, "MMM");
-      parsedName = `${month}, Week ${getWeekOfMonth(formattedData)}`;
+      const month = renderFormattedDate(date, "MMM");
+      parsedName = formatter.locale.startsWith("zh")
+        ? `${month} 第 ${getWeekOfMonth(formattedData)} 周`
+        : `${month}, Week ${getWeekOfMonth(formattedData)}`;
       break;
     }
     case ChartXAxisDateGrouping.MONTH:
-      if (isCurrentYear) parsedName = renderFormattedDate(formattedData, "MMM");
-      else parsedName = renderFormattedDate(formattedData, "MMM, yyyy");
+      if (isCurrentYear) parsedName = renderFormattedDate(date, "MMM");
+      else parsedName = renderFormattedDate(date, "MMM, yyyy");
       break;
     case ChartXAxisDateGrouping.YEAR:
       parsedName = `${year}`;
@@ -60,7 +62,8 @@ export const parseChartData = (
   data: TChart | null | undefined,
   xAxisProperty: ChartXAxisProperty | null | undefined,
   groupByProperty: ChartXAxisProperty | null | undefined,
-  xAxisDateGrouping: ChartXAxisDateGrouping | null | undefined
+  xAxisDateGrouping: ChartXAxisDateGrouping | null | undefined,
+  formatter: import("@plane/utils").DateFormatter
 ): TChart => {
   if (!data) {
     return {
@@ -84,7 +87,7 @@ export const parseChartData = (
 
       // parse timestamp to visual date if xAxisProperty is in WIDGET_X_AXIS_DATE_PROPERTIES
       if (CHART_X_AXIS_DATE_PROPERTIES.includes(xAxisProperty)) {
-        datum.name = getDateGroupingName(datum.name, xAxisDateGrouping ?? ChartXAxisDateGrouping.DAY);
+        datum.name = getDateGroupingName(datum.name, xAxisDateGrouping ?? ChartXAxisDateGrouping.DAY, formatter);
       }
     }
 
@@ -102,7 +105,11 @@ export const parseChartData = (
 
     if (CHART_X_AXIS_DATE_PROPERTIES.includes(groupByProperty)) {
       Object.keys(updatedSchema).forEach((key) => {
-        updatedSchema[key] = getDateGroupingName(updatedSchema[key], xAxisDateGrouping ?? ChartXAxisDateGrouping.DAY);
+        updatedSchema[key] = getDateGroupingName(
+          updatedSchema[key],
+          xAxisDateGrouping ?? ChartXAxisDateGrouping.DAY,
+          formatter
+        );
       });
     }
   }

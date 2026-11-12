@@ -13,7 +13,7 @@ import { Avatar } from "@makeplane/propel/components/avatar";
 import { EmptyStateCompact } from "@plane/blocks/empty-state";
 import { Card } from "@plane/blocks/card";
 import { Loader } from "@plane/blocks/skeleton";
-import { calculateTimeAgo, getFileURL } from "@plane/utils";
+import { getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { ActivityMessage, IssueLink } from "@/components/core/activity";
 // constants
@@ -27,6 +27,7 @@ import { UserService } from "@/services/user.service";
 const userService = new UserService();
 
 export const ProfileActivity = observer(function ProfileActivity() {
+  const { calculateTimeAgo } = useDateFormatter();
   const { workspaceSlug, userId } = useParams();
   // store hooks
   const { data: currentUser } = useUser();

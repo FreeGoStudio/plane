@@ -17,7 +17,7 @@ import { IconButton } from "@makeplane/propel/components/icon-button";
 import { CloseOutline } from "@makeplane/propel/icons";
 import { useTranslation } from "@plane/i18n";
 import type { TPageVersion } from "@plane/types";
-import { cn, getFileURL, renderFormattedDate, renderFormattedTime } from "@plane/utils";
+import { cn, getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import type { TPageRootHandlers } from "@/components/pages/editor/page-root";
 // hooks
@@ -55,6 +55,7 @@ const getStartOfDay = (value: Date | string) => {
 };
 
 const VersionRow = observer(function VersionRow(props: VersionRowProps) {
+  const { renderFormattedDate, renderFormattedTime } = useDateFormatter();
   const { href, isActive, version } = props;
   // store hooks
   const { getUserDetails } = useMember();
@@ -98,6 +99,7 @@ const VersionRow = observer(function VersionRow(props: VersionRowProps) {
 export const PageNavigationPaneVersionHistoryPanel = observer(function PageNavigationPaneVersionHistoryPanel(
   props: Props
 ) {
+  const dateFormatter = useDateFormatter();
   const { handleClose, page, versionHistory } = props;
   // navigation
   const searchParams = useSearchParams();
@@ -130,14 +132,13 @@ export const PageNavigationPaneVersionHistoryPanel = observer(function PageNavig
     // Intl knows Ukrainian as "uk"; the app stores it as "ua"
     const intlLocale = currentLocale === "ua" ? "uk" : currentLocale;
     const relativeDayFormatter = new Intl.RelativeTimeFormat(intlLocale, { numeric: "auto" });
-    const dayFormatter = new Intl.DateTimeFormat(intlLocale, { weekday: "short", day: "numeric", month: "short" });
     const today = getStartOfDay(new Date());
 
     const getGroupLabel = (day: Date) => {
       const dayOffset = Math.round((day.getTime() - today.getTime()) / DAY_IN_MS);
       return dayOffset === 0 || dayOffset === -1
         ? relativeDayFormatter.format(dayOffset, "day")
-        : dayFormatter.format(day);
+        : dateFormatter.formatCalendarDate(day);
     };
 
     const groups = new Map<string, TVersionGroup>([
@@ -151,7 +152,7 @@ export const PageNavigationPaneVersionHistoryPanel = observer(function PageNavig
       groups.set(key, group);
     }
     return Array.from(groups.values());
-  }, [currentLocale, versionsList]);
+  }, [currentLocale, versionsList, dateFormatter]);
 
   return (
     <div className="flex h-full flex-col px-3.5">

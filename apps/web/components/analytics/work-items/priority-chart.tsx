@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useDateFormatter } from "@plane/utils";
 import { useMemo } from "react";
 import type { ColumnDef, Row, RowData, Table } from "@tanstack/react-table";
 import { observer } from "mobx-react";
@@ -51,6 +52,7 @@ interface Props {
 
 const analyticsService = new AnalyticsService();
 const PriorityChart = observer(function PriorityChart(props: Props) {
+  const dateFormatter = useDateFormatter();
   const { x_axis, y_axis, group_by } = props;
   const { t } = useTranslation();
   // store hooks
@@ -83,12 +85,12 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
     () =>
       priorityChartData &&
       localizeWorkItemChart(
-        parseChartData(priorityChartData, props.x_axis, props.group_by, props.x_axis_date_grouping),
+        parseChartData(priorityChartData, props.x_axis, props.group_by, props.x_axis_date_grouping, dateFormatter),
         props.x_axis,
         props.group_by,
         t
       ),
-    [priorityChartData, props.x_axis, props.group_by, props.x_axis_date_grouping, t]
+    [priorityChartData, props.x_axis, props.group_by, props.x_axis_date_grouping, dateFormatter, t]
   );
   const chart_model = props.group_by ? EChartModels.STACKED : EChartModels.BASIC;
 

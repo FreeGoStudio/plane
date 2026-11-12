@@ -14,7 +14,7 @@ import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/comp
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import { useTranslation } from "@plane/i18n";
 import type { IApiToken } from "@plane/types";
-import { cn, renderFormattedDate } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 // components
 import { DeleteApiTokenModal } from "@/components/api-token/delete-token-modal";
 import type { DataTableColumn } from "@/components/common/data-table";
@@ -58,6 +58,7 @@ type Props = {
 
 /** Personal access tokens as a table: name, status, created, expiry, last use and actions. */
 export function ApiTokensTable({ tokens }: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { t } = useTranslation();
 
   const columns: DataTableColumn<IApiToken>[] = [

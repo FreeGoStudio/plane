@@ -10,7 +10,7 @@ import type { TNotification } from "@plane/types";
 import {
   cn,
   convertMinutesToHoursMinutesString,
-  renderFormattedDate,
+  DateDisplay,
   sanitizeCommentForNotification,
   stripAndTruncateHTML,
 } from "@plane/utils";
@@ -60,12 +60,12 @@ export const BASE_NOTIFICATION_CONTENT_MAP: TNotificationContentMap = {
   }),
   start_date: ({ newValue }) => ({
     action: newValue !== "" ? "set start date" : "removed the start date",
-    value: renderFormattedDate(newValue),
+    value: <DateDisplay value={newValue} />,
     showConnector: false,
   }),
   target_date: ({ newValue }) => ({
     action: newValue !== "" ? "set due date" : "removed the due date",
-    value: renderFormattedDate(newValue),
+    value: <DateDisplay value={newValue} />,
     showConnector: false,
   }),
   labels: ({ newValue, oldValue }) => ({

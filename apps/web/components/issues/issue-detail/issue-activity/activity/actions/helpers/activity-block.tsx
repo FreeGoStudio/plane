@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 import { HierarchyOutline } from "@makeplane/propel/icons";
 // plane imports
 import { ActivityTimelineItem, ActivityTimelineTimestamp } from "@plane/blocks/activity";
-import { renderFormattedTime, renderFormattedDate, calculateTimeAgo } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { usePlatformOS } from "@/hooks/use-platform-os";
 // local imports
@@ -24,6 +24,7 @@ type TIssueActivityBlockComponent = {
 };
 
 export function IssueActivityBlockComponent(props: TIssueActivityBlockComponent) {
+  const { renderFormattedDate, renderFormattedTime, calculateTimeAgo } = useDateFormatter();
   const { icon, activityId, ends, children, customUserName } = props;
   // hooks
   const {

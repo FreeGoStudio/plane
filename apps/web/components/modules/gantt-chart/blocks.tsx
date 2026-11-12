@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useDateFormatter } from "@plane/utils";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export const ModuleGanttBlock = observer(function ModuleGanttBlock(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { moduleId } = props;
   // router
   const { workspaceSlug } = useParams();
@@ -36,7 +38,8 @@ export const ModuleGanttBlock = observer(function ModuleGanttBlock(props: Props)
 
   const { message, blockStyle } = getBlockViewDetails(
     moduleDetails,
-    MODULE_STATUS.find((s) => s.value === moduleDetails?.status)?.color ?? ""
+    MODULE_STATUS.find((s) => s.value === moduleDetails?.status)?.color ?? "",
+    renderFormattedDate
   );
 
   return (

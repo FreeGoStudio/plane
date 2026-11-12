@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { observer } from "mobx-react";
 // plane utils
-import { cn, renderFormattedDate } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 //helpers
 //
 //hooks
@@ -23,13 +23,14 @@ type RightResizableProps = {
   };
 };
 export const RightResizable = observer(function RightResizable(props: RightResizableProps) {
+  const { formatCalendarDate } = useDateFormatter();
   const { enableBlockRightResize, handleBlockDrag, isMoving, position } = props;
   const [isHovering, setIsHovering] = useState(false);
 
   const { getDateFromPositionOnGantt } = useTimeLineChartStore();
 
   const date = position ? getDateFromPositionOnGantt(position.marginLeft + position.width, -1) : undefined;
-  const dateString = date ? renderFormattedDate(date) : undefined;
+  const dateString = date ? formatCalendarDate(date) : undefined;
 
   const isRightResizing = isMoving === "right" || isMoving === "move";
 

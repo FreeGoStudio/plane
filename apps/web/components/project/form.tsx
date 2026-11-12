@@ -21,7 +21,7 @@ import { Tooltip } from "@makeplane/propel/components/tooltip";
 import { EFileAssetType } from "@plane/types";
 import type { IProject, IWorkspace } from "@plane/types";
 import { Select } from "@plane/blocks/select";
-import { renderFormattedDate } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 import { CoverImage } from "@/components/common/cover-image";
 import { ImagePickerPopover } from "@/components/core/image-picker-popover";
 import { TimezoneSelect } from "@/components/global";
@@ -44,6 +44,7 @@ export interface IProjectDetailsForm {
 const projectService = new ProjectService();
 
 export function ProjectDetailsForm(props: IProjectDetailsForm) {
+  const { renderFormattedDate } = useDateFormatter();
   const { project, workspaceSlug, projectId, isAdmin } = props;
   const { t } = useTranslation();
   // states

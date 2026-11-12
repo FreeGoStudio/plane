@@ -14,7 +14,7 @@ import { useTranslation } from "@plane/i18n";
 import { PriorityIcon } from "@plane/blocks/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import { Row } from "@plane/blocks/layout";
-import { cn, renderFormattedDate } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 // components
 import { ButtonAvatars } from "@/components/dropdowns/member/avatar";
 // hooks
@@ -34,6 +34,7 @@ type InboxIssueListItemProps = {
 };
 
 export const InboxIssueListItem = observer(function InboxIssueListItem(props: InboxIssueListItemProps) {
+  const { renderFormattedDate } = useDateFormatter();
   const { workspaceSlug, projectId, inboxIssueId, projectIdentifier, setIsMobileSidebar } = props;
   // plane hooks
   const { t } = useTranslation();

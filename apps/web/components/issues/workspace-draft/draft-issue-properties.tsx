@@ -27,7 +27,7 @@ import { ISSUE_PRIORITIES } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 // types
 import type { TIssuePriorities, TWorkspaceDraftIssue } from "@plane/types";
-import { getDate, getIssueDueDateClassName, renderFormattedDate, renderFormattedPayloadDate } from "@plane/utils";
+import { getDate, getIssueDueDateClassName, renderFormattedPayloadDate, useDateFormatter } from "@plane/utils";
 // components
 import { CycleSelect } from "@/components/dropdowns/cycle/cycle-select";
 import { EstimateSelect } from "@/components/dropdowns/estimate/estimate-select";
@@ -72,6 +72,7 @@ const handleEventPropagation = (e: React.MouseEvent) => {
 };
 
 export const DraftIssueProperties = observer(function DraftIssueProperties(props: IIssueProperties) {
+  const { renderFormattedDate } = useDateFormatter();
   const { issue, updateIssue, className, overflowBudgetPx } = props;
   const { t, currentLocale } = useTranslation();
   // store hooks

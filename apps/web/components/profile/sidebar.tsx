@@ -21,7 +21,7 @@ import { EditOutline } from "@makeplane/propel/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { IUserProfileProjectSegregation } from "@plane/types";
 import { Loader } from "@plane/blocks/skeleton";
-import { cn, renderFormattedDate, getFileURL } from "@plane/utils";
+import { cn, getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { CoverImage } from "@/components/common/cover-image";
 // hooks
@@ -39,6 +39,7 @@ type TProfileSidebar = {
 };
 
 export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSidebar) {
+  const { renderFormattedDate } = useDateFormatter();
   const { userProjectsData, className = "" } = props;
   // refs
   const ref = useRef<HTMLDivElement>(null);

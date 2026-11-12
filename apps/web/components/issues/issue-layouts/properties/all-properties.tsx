@@ -39,10 +39,10 @@ import type { TIssue, IIssueDisplayProperties, TIssuePriorities } from "@plane/t
 // ui
 import {
   getDate,
-  renderFormattedDate,
   renderFormattedPayloadDate,
   generateWorkItemLink,
   getIssueDueDateClassName,
+  useDateFormatter,
 } from "@plane/utils";
 // components
 import { CycleSelect } from "@/components/dropdowns/cycle/cycle-select";
@@ -92,6 +92,7 @@ export interface IIssueProperties {
 }
 
 export const IssueProperties = observer(function IssueProperties(props: IIssueProperties) {
+  const { renderFormattedDate } = useDateFormatter();
   const {
     issue,
     updateIssue,

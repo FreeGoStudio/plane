@@ -9,7 +9,7 @@ import { observer } from "mobx-react";
 import { Badge } from "@makeplane/propel/components/badge";
 import { Icon } from "@makeplane/propel/components/icon";
 import { ArchiveOutline } from "@makeplane/propel/icons";
-import { renderFormattedDate } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 // store
 import type { TPageInstance } from "@/store/pages/base-page";
 
@@ -18,6 +18,7 @@ type Props = {
 };
 
 export const PageArchivedBadge = observer(function PageArchivedBadge({ page }: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   if (!page.archived_at) return null;
 
   return (

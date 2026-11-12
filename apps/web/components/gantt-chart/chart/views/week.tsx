@@ -6,7 +6,7 @@
 
 import { observer } from "mobx-react";
 // plane utils
-import { cn } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 // hooks
 import { useTimeLineChartStore } from "@/hooks/use-timeline-chart";
 //
@@ -14,6 +14,7 @@ import { HEADER_HEIGHT, SIDEBAR_WIDTH } from "../../constants";
 import type { IWeekBlock } from "../../views";
 
 export const WeekChartView = observer(function WeekChartView(_props: any) {
+  const { formatCalendarDate, locale } = useDateFormatter();
   const { currentViewData, renderView } = useTimeLineChartStore();
   const weekBlocks: IWeekBlock[] = renderView;
 
@@ -40,10 +41,15 @@ export const WeekChartView = observer(function WeekChartView(_props: any) {
                     left: `${SIDEBAR_WIDTH}px`,
                   }}
                 >
-                  {block?.title}
+                  {[
+                    ...new Set([
+                      formatCalendarDate(block.startDate, "MMM yyyy"),
+                      formatCalendarDate(block.endDate, "MMM yyyy"),
+                    ]),
+                  ].join(" – ")}
                 </div>
                 <div className="sticky px-3 py-2 text-caption-sm-regular whitespace-nowrap text-placeholder capitalize">
-                  {block?.weekData?.title}
+                  {locale.startsWith("zh") ? `第 ${block.weekNumber} 周` : block.weekData.title}
                 </div>
               </div>
               {/** Days Sub title */}
@@ -60,7 +66,7 @@ export const WeekChartView = observer(function WeekChartView(_props: any) {
                     style={{ width: `${currentViewData?.data.dayWidth}px` }}
                   >
                     <div className="space-x-1 text-caption-sm-medium text-placeholder">
-                      {weekDay.dayData.abbreviation}
+                      {formatCalendarDate(weekDay.date, "EEE")}
                     </div>
                     <div className="space-x-1 text-caption-sm-medium">
                       <span

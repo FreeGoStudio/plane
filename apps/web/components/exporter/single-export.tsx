@@ -9,7 +9,7 @@ import { useState } from "react";
 import { Button } from "@makeplane/propel/components/button";
 import type { IExportData } from "@plane/types";
 // helpers
-import { getDate, renderFormattedDate } from "@plane/utils";
+import { getDate, useDateFormatter } from "@plane/utils";
 // types
 
 type Props = {
@@ -18,6 +18,7 @@ type Props = {
 };
 
 export function SingleExport({ service, refreshing }: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const provider = service.provider;
 
   const [isLoading] = useState(false);

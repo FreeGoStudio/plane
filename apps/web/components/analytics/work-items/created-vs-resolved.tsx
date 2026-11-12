@@ -13,7 +13,7 @@ import { useTranslation } from "@plane/i18n";
 import { AreaChart } from "@plane/blocks/charts/area-chart";
 import { EmptyStateCompact } from "@plane/blocks/empty-state";
 import type { IChartResponse, TChartData } from "@plane/types";
-import { cn, renderFormattedDate } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 // hooks
 import { useAnalytics } from "@/hooks/store/use-analytics";
 // services
@@ -25,6 +25,7 @@ import { ChartLoader } from "../loaders";
 
 const analyticsService = new AnalyticsService();
 const CreatedVsResolved = observer(function CreatedVsResolved() {
+  const { renderFormattedDate } = useDateFormatter();
   const {
     selectedDuration,
     selectedDurationLabel,
@@ -60,7 +61,7 @@ const CreatedVsResolved = observer(function CreatedVsResolved() {
       [datum.key]: datum.count,
       name: renderFormattedDate(datum.key) ?? datum.key,
     }));
-  }, [createdVsResolvedData]);
+  }, [createdVsResolvedData, renderFormattedDate]);
 
   const areas = useMemo(
     () => [

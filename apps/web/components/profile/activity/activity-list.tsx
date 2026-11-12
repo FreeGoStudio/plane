@@ -11,7 +11,7 @@ import { ChatOutline, HistoryOutline } from "@makeplane/propel/icons";
 import { Avatar } from "@makeplane/propel/components/avatar";
 // plane imports
 import type { IUserActivityResponse } from "@plane/types";
-import { calculateTimeAgo, getFileURL } from "@plane/utils";
+import { getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { ActivityIcon, ActivityMessage, IssueLink } from "@/components/core/activity";
 import { RichTextEditor } from "@/components/editor/rich-text";
@@ -25,6 +25,7 @@ type Props = {
 };
 
 export const ActivityList = observer(function ActivityList(props: Props) {
+  const { calculateTimeAgo } = useDateFormatter();
   const { activity } = props;
   // params
   const { workspaceSlug } = useParams();

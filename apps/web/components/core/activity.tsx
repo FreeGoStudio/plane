@@ -31,7 +31,7 @@ import {
 import { BlockedIcon, BlockerIcon } from "@plane/blocks/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { IIssueActivity } from "@plane/types";
-import { renderFormattedDate, generateWorkItemLink, capitalizeFirstLetter } from "@plane/utils";
+import { DateDisplay, generateWorkItemLink, capitalizeFirstLetter } from "@plane/utils";
 // helpers
 import { useLabel } from "@/hooks/store/use-label";
 import { usePlatformOS } from "@/hooks/use-platform-os";
@@ -685,7 +685,7 @@ const activityDetails: {
           <>
             set the start date to{" "}
             <span className="font-medium whitespace-nowrap text-primary">
-              {renderFormattedDate(activity.new_value)}
+              <DateDisplay value={activity.new_value} />
             </span>
             {showIssue && (
               <>
@@ -717,7 +717,7 @@ const activityDetails: {
           <>
             set the due date to{" "}
             <span className="font-medium whitespace-nowrap text-primary">
-              {renderFormattedDate(activity.new_value)}
+              <DateDisplay value={activity.new_value} />
             </span>
             {showIssue && (
               <>

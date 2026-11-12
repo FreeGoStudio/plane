@@ -13,7 +13,7 @@ import Link from "next/link";
 import { CloseOutline, WarningCircleOutline } from "@makeplane/propel/icons";
 // ui
 import { Tooltip } from "@makeplane/propel/components/tooltip";
-import { convertBytesToSize, getFileExtension, getFileName, getFileURL, renderFormattedDate } from "@plane/utils";
+import { convertBytesToSize, getFileExtension, getFileName, getFileURL, useDateFormatter } from "@plane/utils";
 // icons
 //
 import { getFileIcon } from "@/components/icons";
@@ -36,6 +36,7 @@ type TIssueAttachmentsDetail = {
 };
 
 export const IssueAttachmentsDetail = observer(function IssueAttachmentsDetail(props: TIssueAttachmentsDetail) {
+  const { renderFormattedDate } = useDateFormatter();
   const { t } = useTranslation();
   // props
   const { attachmentId, attachmentHelpers, disabled } = props;

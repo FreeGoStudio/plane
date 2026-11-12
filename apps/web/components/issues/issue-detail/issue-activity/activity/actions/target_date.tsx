@@ -8,7 +8,7 @@ import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { CalendarOutline } from "@makeplane/propel/icons";
 // hooks
-import { renderFormattedDate } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // components
 import { IssueActivityBlockComponent, IssueLink } from "./";
@@ -17,6 +17,7 @@ import { IssueActivityBlockComponent, IssueLink } from "./";
 type TIssueTargetDateActivity = { activityId: string; showIssue?: boolean; ends: "top" | "bottom" | undefined };
 
 export const IssueTargetDateActivity = observer(function IssueTargetDateActivity(props: TIssueTargetDateActivity) {
+  const { renderFormattedDate } = useDateFormatter();
   const { activityId, showIssue = true, ends } = props;
   // hooks
   const {

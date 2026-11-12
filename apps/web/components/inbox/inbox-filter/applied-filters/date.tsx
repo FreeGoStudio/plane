@@ -11,7 +11,7 @@ import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
 import { CloseOutline } from "@makeplane/propel/icons";
 import type { TInboxIssueFilterDateKeys } from "@plane/types";
-import { renderFormattedDate } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 import { useProjectInbox } from "@/hooks/store/use-project-inbox";
 import { APPLIED_FILTER_GROUP_CLASSNAME, RemovableChip } from "@/components/common/removable-chip";
 
@@ -23,6 +23,7 @@ type InboxIssueAppliedFiltersDateProps = {
 export const InboxIssueAppliedFiltersDate = observer(function InboxIssueAppliedFiltersDate(
   props: InboxIssueAppliedFiltersDateProps
 ) {
+  const { renderFormattedDate } = useDateFormatter();
   const { filterKey, label } = props;
   // hooks
   const { t } = useTranslation();

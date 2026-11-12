@@ -15,7 +15,7 @@ import { setToast } from "@plane/blocks/toast";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { ILinkDetails } from "@plane/types";
 // plane ui
-import { getIconForLink, copyTextToClipboard, calculateTimeAgo } from "@plane/utils";
+import { getIconForLink, copyTextToClipboard, useDateFormatter } from "@plane/utils";
 // helpers
 //
 // hooks
@@ -30,6 +30,7 @@ type Props = {
 };
 
 export const ModulesLinksListItem = observer(function ModulesLinksListItem(props: Props) {
+  const { calculateTimeAgo } = useDateFormatter();
   const { handleDeleteLink, handleEditLink, isEditingAllowed, link } = props;
   // plane hooks
   const { t } = useTranslation();

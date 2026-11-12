@@ -10,7 +10,7 @@ import { AnchorButton } from "@makeplane/propel/components/anchor-button";
 import { Icon } from "@makeplane/propel/components/icon";
 import { DownloadOutline } from "@makeplane/propel/icons";
 import type { IExportData } from "@plane/types";
-import { getDate, getFileURL, renderFormattedDate } from "@plane/utils";
+import { getDate, getFileURL, useDateFormatter } from "@plane/utils";
 
 type RowData = IExportData;
 const checkExpiry = (inputDateString: string) => {
@@ -21,6 +21,7 @@ const checkExpiry = (inputDateString: string) => {
   return expiryDate > currentDate;
 };
 export const useExportColumns = () => {
+  const { renderFormattedDate } = useDateFormatter();
   const columns = [
     {
       key: "Exported By",

@@ -12,7 +12,7 @@ import { AddOutline } from "@makeplane/propel/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { IBlockUpdateData, IGanttBlock } from "@plane/types";
 // helpers
-import { renderFormattedDate, renderFormattedPayloadDate } from "@plane/utils";
+import { renderFormattedPayloadDate, useDateFormatter } from "@plane/utils";
 // hooks
 import { usePlatformOS } from "@/hooks/use-platform-os";
 import { useTimeLineChartStore } from "@/hooks/use-timeline-chart";
@@ -24,6 +24,7 @@ type Props = {
 };
 
 export const ChartAddBlock = observer(function ChartAddBlock(props: Props) {
+  const { formatCalendarDate } = useDateFormatter();
   const { block, blockUpdateHandler } = props;
   // states
   const [isButtonVisible, setIsButtonVisible] = useState(false);
@@ -88,7 +89,7 @@ export const ChartAddBlock = observer(function ChartAddBlock(props: Props) {
     >
       <div ref={containerRef} className="h-full w-full" />
       {isButtonVisible && (
-        <Tooltip label={renderFormattedDate(buttonStartDate) ?? ""} disabled={isMobile}>
+        <Tooltip label={formatCalendarDate(buttonStartDate) ?? ""} disabled={isMobile}>
           <button
             type="button"
             className="absolute top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-sm border border-strong bg-layer-1 p-1.5 text-secondary hover:text-primary"

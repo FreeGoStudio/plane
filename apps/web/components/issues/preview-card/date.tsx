@@ -7,7 +7,7 @@
 import { CalendarOutline, DueDateOutline, StartDateOutline } from "@makeplane/propel/icons";
 // plane imports
 import type { TStateGroups } from "@plane/types";
-import { cn, getIssueDueDateClassName, renderFormattedDate } from "@plane/utils";
+import { cn, getIssueDueDateClassName, useDateFormatter } from "@plane/utils";
 
 type Props = {
   startDate: string | null;
@@ -16,6 +16,7 @@ type Props = {
 };
 
 export function WorkItemPreviewCardDate(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { startDate, stateGroup, targetDate } = props;
   // derived values
   const isDateRangeEnabled = Boolean(startDate && targetDate);

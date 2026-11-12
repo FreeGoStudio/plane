@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { addDays } from "date-fns";
 // ui
+import { useDateFormatter } from "@plane/utils";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { Calendar } from "@makeplane/propel/components/calendar";
@@ -33,6 +34,7 @@ export function InboxIssueSnoozeModal(props: InboxIssueSnoozeModalProps) {
   const [pickedDate, setPickedDate] = useState<Date | undefined>();
   //hooks
   const { t } = useTranslation();
+  const { dateLocale } = useDateFormatter();
   // derived values
   // A snooze ends at 00:00 of the picked day in the project timezone, so any day that has already
   // started there would lapse at once. The pick is cleared on close because this modal stays
@@ -57,6 +59,7 @@ export function InboxIssueSnoozeModal(props: InboxIssueSnoozeModalProps) {
         <DialogMain>
           <DialogBody>
             <Calendar
+              locale={dateLocale}
               selected={date}
               defaultMonth={date}
               onSelect={(selected: Date | undefined) => {

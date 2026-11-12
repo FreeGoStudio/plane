@@ -16,7 +16,7 @@ import { useHashScroll } from "@plane/hooks";
 import { GlobeOutline, LockOutline } from "@makeplane/propel/icons";
 import { EIssueCommentAccessSpecifier } from "@plane/types";
 import type { TCommentsOperations, TIssueComment } from "@plane/types";
-import { calculateTimeAgo, getFileURL, renderFormattedDate, renderFormattedTime } from "@plane/utils";
+import { getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { LiteTextEditor } from "@/components/editor/lite-text";
 // local imports
@@ -44,6 +44,7 @@ export type TCommentCardDisplayProps = {
 };
 
 export const CommentCardDisplay = observer(function CommentCardDisplay(props: TCommentCardDisplayProps) {
+  const { renderFormattedDate, renderFormattedTime, calculateTimeAgo } = useDateFormatter();
   const {
     activityOperations,
     comment,

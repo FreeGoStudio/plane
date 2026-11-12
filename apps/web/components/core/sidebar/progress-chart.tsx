@@ -8,7 +8,7 @@ import React from "react";
 // plane imports
 import { AreaChart } from "@plane/blocks/charts/area-chart";
 import type { TChartData, TModuleCompletionChartDistribution } from "@plane/types";
-import { renderFormattedDateWithoutYear } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 
 type Props = {
   distribution: TModuleCompletionChartDistribution;
@@ -18,6 +18,7 @@ type Props = {
 };
 
 function ProgressChart({ distribution, totalIssues, className = "", plotTitle = "work items" }: Props) {
+  const { renderFormattedDateWithoutYear } = useDateFormatter();
   const chartData: TChartData<string, string>[] = Object.keys(distribution ?? []).map((key, index) => ({
     name: renderFormattedDateWithoutYear(key),
     current: distribution[key] ?? 0,

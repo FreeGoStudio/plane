@@ -13,7 +13,7 @@ import { ChevronLeftOutline, ChevronRightOutline } from "@makeplane/propel/icons
 //hooks
 // icons
 // constants
-import { getDate } from "@plane/utils";
+import { getDate, useDateFormatter } from "@plane/utils";
 import { MONTHS_LIST } from "@plane/constants";
 import { useCalendarView } from "@/hooks/store/use-calendar-view";
 import type { ICycleIssuesFilter } from "@/store/issue/cycle";
@@ -26,6 +26,7 @@ interface Props {
   issuesFilterStore: IProjectIssuesFilter | IModuleIssuesFilter | ICycleIssuesFilter | IProjectViewIssuesFilter;
 }
 export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(props: Props) {
+  const { formatCalendarDate } = useDateFormatter();
   const { issuesFilterStore } = props;
   const { t } = useTranslation();
 
@@ -47,17 +48,9 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
 
     if (!firstDay || !lastDay) return "Week view";
 
-    if (firstDay.getMonth() === lastDay.getMonth() && firstDay.getFullYear() === lastDay.getFullYear())
-      return `${MONTHS_LIST[firstDay.getMonth() + 1].title} ${firstDay.getFullYear()}`;
-
-    if (firstDay.getFullYear() !== lastDay.getFullYear()) {
-      return `${MONTHS_LIST[firstDay.getMonth() + 1].shortTitle} ${firstDay.getFullYear()} - ${
-        MONTHS_LIST[lastDay.getMonth() + 1].shortTitle
-      } ${lastDay.getFullYear()}`;
-    } else
-      return `${MONTHS_LIST[firstDay.getMonth() + 1].shortTitle} - ${
-        MONTHS_LIST[lastDay.getMonth() + 1].shortTitle
-      } ${lastDay.getFullYear()}`;
+    const first = formatCalendarDate(firstDay, "MMMM yyyy");
+    const last = formatCalendarDate(lastDay, "MMMM yyyy");
+    return first === last ? first : `${first} – ${last}`;
   };
 
   const handleDateChange = (date: Date) => {
@@ -75,9 +68,7 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
             type="button"
             className="rounded-xs text-h5-semibold outline-none focus-visible:ring-2 focus-visible:ring-accent-strong"
           >
-            {calendarLayout === "month"
-              ? `${MONTHS_LIST[activeMonthDate.getMonth() + 1].title} ${activeMonthDate.getFullYear()}`
-              : getWeekLayoutHeader()}
+            {calendarLayout === "month" ? formatCalendarDate(activeMonthDate, "MMMM yyyy") : getWeekLayoutHeader()}
           </button>
         }
       />
@@ -111,8 +102,8 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
               <Toggle
                 key={month.shortTitle}
                 size="xs"
-                label={month.shortTitle}
-                aria-label={`${month.title} ${activeMonthDate.getFullYear()}`}
+                label={formatCalendarDate(new Date(activeMonthDate.getFullYear(), index, 1), "MMM")}
+                aria-label={formatCalendarDate(new Date(activeMonthDate.getFullYear(), index, 1), "MMMM yyyy")}
                 pressed={activeMonthDate.getMonth() === index}
                 onClick={() => {
                   const newDate = new Date(activeMonthDate.getFullYear(), index, 1);

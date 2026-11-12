@@ -10,7 +10,7 @@ import { endOfMonth, endOfWeek, endOfYear, startOfMonth, startOfWeek, startOfYea
 import { DURATION_FILTER_OPTIONS, EDurationFilters } from "@plane/constants";
 import type { TIssuesListTypes } from "@plane/types";
 // constants
-import { renderFormattedDate, renderFormattedPayloadDate } from "@plane/utils";
+import { renderFormattedPayloadDate } from "@plane/utils";
 
 // -------------------- DEPRECATED --------------------
 
@@ -87,7 +87,11 @@ export const getTabKey = (duration: EDurationFilters, tab: TIssuesListTypes | un
  * @param duration
  * @param customDates
  */
-export const getDurationFilterDropdownLabel = (duration: EDurationFilters, customDates: string[]): string => {
+export const getDurationFilterDropdownLabel = (
+  duration: EDurationFilters,
+  customDates: string[],
+  renderFormattedDate: import("@plane/utils").DateFormatter["renderFormattedDate"]
+): string => {
   if (duration !== "custom") return DURATION_FILTER_OPTIONS.find((option) => option.key === duration)?.label ?? "";
   else {
     const afterDate = customDates.find((date) => date.includes("after"))?.split(";")[0];

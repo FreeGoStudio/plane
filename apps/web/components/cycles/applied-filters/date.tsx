@@ -8,7 +8,7 @@ import { observer } from "mobx-react";
 // helpers
 import { DATE_AFTER_FILTER_OPTIONS } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
-import { renderFormattedDate, capitalizeFirstLetter } from "@plane/utils";
+import { capitalizeFirstLetter, useDateFormatter } from "@plane/utils";
 import { RemovableChip } from "@/components/common/removable-chip";
 // constants
 
@@ -19,6 +19,7 @@ type Props = {
 };
 
 export const AppliedDateFilters = observer(function AppliedDateFilters(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { editable, handleRemove, values } = props;
 
   const { t } = useTranslation();

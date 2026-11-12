@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useDateFormatter } from "@plane/utils";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // plane imports
@@ -33,6 +34,7 @@ type Props = {
 };
 
 export const IssueGanttBlock = observer(function IssueGanttBlock(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { issueId, isEpic } = props;
   // router
   const { workspaceSlug: routerWorkspaceSlug } = useParams();
@@ -51,7 +53,7 @@ export const IssueGanttBlock = observer(function IssueGanttBlock(props: Props) {
   const stateDetails =
     issueDetails && getProjectStates(issueDetails?.project_id)?.find((state) => state?.id == issueDetails?.state_id);
 
-  const { blockStyle } = getBlockViewDetails(issueDetails, stateDetails?.color ?? "");
+  const { blockStyle } = getBlockViewDetails(issueDetails, stateDetails?.color ?? "", renderFormattedDate);
 
   const handleIssuePeekOverview = () => handleRedirection(workspaceSlug, issueDetails, isMobile);
 

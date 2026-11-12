@@ -10,7 +10,7 @@ import { useParams } from "next/navigation";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { useTranslation } from "@plane/i18n";
-import { calculateTimeAgoShort, getFileURL, renderFormattedDate } from "@plane/utils";
+import { getFileURL, useDateFormatter } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 // store
@@ -21,6 +21,7 @@ type Props = {
 };
 
 export const PageNavigationPaneInfoTabActorsInfo = observer(function PageNavigationPaneInfoTabActorsInfo(props: Props) {
+  const { calculateTimeAgoShort, renderFormattedDate } = useDateFormatter();
   const { page } = props;
   // navigation
   const { workspaceSlug } = useParams();

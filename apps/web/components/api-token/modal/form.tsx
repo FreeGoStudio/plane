@@ -26,7 +26,7 @@ import { DateSelect } from "@plane/blocks/property-select";
 import { setToast } from "@plane/blocks/toast";
 import { useTranslation } from "@plane/i18n";
 import type { IApiToken } from "@plane/types";
-import { renderFormattedDate, renderFormattedTime } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 // hooks
 import { useUserProfile } from "@/hooks/store/user";
 // helpers
@@ -88,6 +88,7 @@ const getFormattedDate = (date: Date): Date => {
 };
 
 export function CreateApiTokenForm(props: Props) {
+  const { renderFormattedDate, renderFormattedTime } = useDateFormatter();
   const { handleClose, neverExpires, toggleNeverExpires, onSubmit } = props;
   // states
   const [customDate, setCustomDate] = useState<Date | null>(null);

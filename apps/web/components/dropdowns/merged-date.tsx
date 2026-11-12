@@ -7,7 +7,7 @@
 import React from "react";
 import { observer } from "mobx-react";
 // helpers
-import { formatDateRange, getDate } from "@plane/utils";
+import { getDate, useDateFormatter } from "@plane/utils";
 
 type Props = {
   startDate: Date | string | null | undefined;
@@ -23,6 +23,7 @@ type Props = {
  * - Different year: "Dec 28, 2024 - Jan 4, 2025"
  */
 export const MergedDateDisplay = observer(function MergedDateDisplay(props: Props) {
+  const { formatDateRange } = useDateFormatter();
   const { startDate, endDate, className = "" } = props;
 
   // Parse dates

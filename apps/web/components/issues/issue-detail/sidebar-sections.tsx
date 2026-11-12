@@ -18,7 +18,7 @@ import {
   UserOutline,
 } from "@makeplane/propel/icons";
 import { useTranslation } from "@plane/i18n";
-import { calculateTimeAgo, cn, renderFormattedDate } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 // components
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
 import { EstimateSelect } from "@/components/dropdowns/estimate/estimate-select";
@@ -47,14 +47,15 @@ type Props = {
 
 const AUDIT_DATE_FORMAT = "MMM d, yyyy h:mma";
 
-const formatAuditDate = (date: string | null | undefined) =>
-  date ? renderFormattedDate(new Date(date), AUDIT_DATE_FORMAT) : undefined;
-
 /**
  * Work item properties shared by the detail page sidebar and the peek overview: grouped into
  * collapsible "Details" and "Project structure" sections, followed by created/updated metadata.
  */
 export const IssueDetailSidebarSections = observer(function IssueDetailSidebarSections(props: Props) {
+  const { renderFormattedDate, calculateTimeAgo } = useDateFormatter();
+  const formatAuditDate = (date: string | null | undefined) =>
+    date ? renderFormattedDate(new Date(date), AUDIT_DATE_FORMAT) : undefined;
+
   const { workspaceSlug, projectId, issueId, issueOperations, disabled, showUpdatedMeta = false } = props;
   // hooks
   const { t } = useTranslation();

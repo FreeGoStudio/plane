@@ -6,7 +6,7 @@
 
 import { observer } from "mobx-react";
 import { EStartOfTheWeek } from "@plane/types";
-import { getOrderedDays } from "@plane/utils";
+import { getOrderedDays, useDateFormatter } from "@plane/utils";
 import { DAYS_LIST } from "@plane/constants";
 // helpers
 // hooks
@@ -18,6 +18,7 @@ type Props = {
 };
 
 export const CalendarWeekHeader = observer(function CalendarWeekHeader(props: Props) {
+  const { formatCalendarDate } = useDateFormatter();
   const { isLoading, showWeekends } = props;
   // hooks
   const { data } = useUserProfile();
@@ -41,7 +42,7 @@ export const CalendarWeekHeader = observer(function CalendarWeekHeader(props: Pr
 
         return (
           <div key={day.shortTitle} className="flex h-11 items-center justify-center bg-layer-1 px-4 md:justify-end">
-            {day.shortTitle}
+            {formatCalendarDate(new Date(2024, 0, 7 + day.value), "EEEE")}
           </div>
         );
       })}

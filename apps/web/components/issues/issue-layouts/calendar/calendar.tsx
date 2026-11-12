@@ -24,7 +24,7 @@ import { EIssuesStoreType, EIssueLayoutTypes } from "@plane/types";
 import { Spinner } from "@plane/blocks/spinner";
 import { renderFormattedPayloadDate, cn } from "@plane/utils";
 // constants
-import { MONTHS_LIST } from "@plane/constants";
+import { useDateFormatter } from "@plane/utils";
 // helpers
 // hooks
 import { useIssues } from "@/hooks/store/use-issues";
@@ -73,6 +73,7 @@ type Props = {
 };
 
 export const CalendarChart = observer(function CalendarChart(props: Props) {
+  const { formatCalendarDate } = useDateFormatter();
   const {
     issuesFilterStore,
     issues,
@@ -205,11 +206,7 @@ export const CalendarChart = observer(function CalendarChart(props: Props) {
 
             {/* mobile view */}
             <div className="md:hidden">
-              <p className="p-4 text-h5-semibold">
-                {`${selectedDate.getDate()} ${
-                  MONTHS_LIST[selectedDate.getMonth() + 1].title
-                }, ${selectedDate.getFullYear()}`}
-              </p>
+              <p className="p-4 text-h5-semibold">{formatCalendarDate(selectedDate)}</p>
               <CalendarIssueBlocks
                 date={selectedDate}
                 issueIdList={issueIdList}
@@ -233,11 +230,7 @@ export const CalendarChart = observer(function CalendarChart(props: Props) {
 
         {/* mobile view */}
         <div className="md:hidden">
-          <p className="p-4 text-h5-semibold">
-            {`${selectedDate.getDate()} ${
-              MONTHS_LIST[selectedDate.getMonth() + 1].title
-            }, ${selectedDate.getFullYear()}`}
-          </p>
+          <p className="p-4 text-h5-semibold">{formatCalendarDate(selectedDate)}</p>
           <CalendarIssueBlocks
             date={selectedDate}
             issueIdList={issueIdList}

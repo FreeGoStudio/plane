@@ -10,7 +10,7 @@ import { Menu, MenuContent, MenuGroup, MenuLabel, MenuTrigger } from "@makeplane
 import { ChevronDownOutline, HistoryOutline } from "@makeplane/propel/icons";
 import { useTranslation } from "@plane/i18n";
 import type { TDescriptionVersion } from "@plane/types";
-import { calculateTimeAgo, cn } from "@plane/utils";
+import { cn, useDateFormatter } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 // local imports
@@ -25,6 +25,7 @@ type Props = {
 };
 
 export const DescriptionVersionsDropdown = observer(function DescriptionVersionsDropdown(props: Props) {
+  const { calculateTimeAgo } = useDateFormatter();
   const { disabled, entityInformation, onVersionClick, versions } = props;
   // store hooks
   const { getUserDetails } = useMember();

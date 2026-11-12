@@ -23,7 +23,7 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from "@makepl
 import { setToast } from "@plane/blocks/toast";
 import { useTranslation } from "@plane/i18n";
 import type { IWebhook } from "@plane/types";
-import { renderFormattedDate } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 // components
 import type { DataTableColumn } from "@/components/common/data-table";
 import { DataTable } from "@/components/common/data-table";
@@ -101,6 +101,7 @@ const WebhookQuickActions = observer(function WebhookQuickActions(props: { works
 });
 
 export const WebhooksList = observer(function WebhooksList() {
+  const { renderFormattedDate } = useDateFormatter();
   // router
   const { workspaceSlug } = useParams();
   // plane hooks

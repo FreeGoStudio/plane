@@ -11,7 +11,7 @@ import { Avatar } from "@makeplane/propel/components/avatar";
 import { Icon } from "@makeplane/propel/components/icon";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import { FavoriteStar } from "@plane/blocks/common";
-import { renderFormattedDate, getFileURL } from "@plane/utils";
+import { getFileURL, useDateFormatter } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { usePageOperations } from "@/hooks/use-page-operations";
@@ -29,6 +29,7 @@ type Props = {
 };
 
 export const BlockItemAction = observer(function BlockItemAction(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { page, parentRef, storeType } = props;
   // store hooks
   const { getUserDetails } = useMember();

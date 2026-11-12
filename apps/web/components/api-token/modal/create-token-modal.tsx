@@ -11,7 +11,7 @@ import { Dialog, DialogContent } from "@makeplane/propel/components/dialog";
 import { setToast } from "@plane/blocks/toast";
 import { APITokenService } from "@plane/services";
 import type { IApiToken } from "@plane/types";
-import { renderFormattedDate, csvDownload } from "@plane/utils";
+import { csvDownload, useDateFormatter } from "@plane/utils";
 // constants
 import { API_TOKENS_LIST } from "@plane/constants";
 // local imports
@@ -27,6 +27,7 @@ type Props = {
 const apiTokenService = new APITokenService();
 
 export function CreateApiTokenModal(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { isOpen, onClose } = props;
   // states
   const [neverExpires, setNeverExpires] = useState<boolean>(false);

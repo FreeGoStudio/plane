@@ -20,7 +20,7 @@ import {
   DialogMain,
   DialogTitle,
 } from "@makeplane/propel/components/dialog";
-import { renderFormattedDate, renderFormattedTime, copyTextToClipboard } from "@plane/utils";
+import { copyTextToClipboard, useDateFormatter } from "@plane/utils";
 // hooks
 import { usePlatformOS } from "@/hooks/use-platform-os";
 
@@ -30,6 +30,7 @@ type Props = {
 };
 
 export function GeneratedTokenDetails(props: Props) {
+  const { renderFormattedDate, renderFormattedTime } = useDateFormatter();
   const { handleClose, tokenDetails } = props;
   const { isMobile } = usePlatformOS();
   const { t } = useTranslation();

@@ -26,7 +26,7 @@ import { setToast } from "@plane/blocks/toast";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { TDescriptionVersion } from "@plane/types";
 import { Loader } from "@plane/blocks/skeleton";
-import { calculateTimeAgo, cn, getFileURL } from "@plane/utils";
+import { cn, getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { RichTextEditor } from "@/components/editor/rich-text";
 // hooks
@@ -50,6 +50,7 @@ type Props = {
 };
 
 export const DescriptionVersionsModal = observer(function DescriptionVersionsModal(props: Props) {
+  const { calculateTimeAgo } = useDateFormatter();
   const {
     activeVersionDescription,
     activeVersionDetails,

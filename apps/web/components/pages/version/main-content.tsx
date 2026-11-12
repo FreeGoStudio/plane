@@ -16,7 +16,7 @@ import { EmptyStateCompact } from "@plane/blocks/empty-state";
 import { setToast } from "@plane/blocks/toast";
 import { useTranslation } from "@plane/i18n";
 import type { TPageVersion } from "@plane/types";
-import { renderFormattedDate, renderFormattedTime } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 // helpers
 import type { EPageStoreType } from "@/hooks/store";
 // local imports
@@ -34,6 +34,7 @@ type Props = {
 };
 
 export const PageVersionsMainContent = observer(function PageVersionsMainContent(props: Props) {
+  const { renderFormattedDate, renderFormattedTime } = useDateFormatter();
   const {
     activeVersion,
     editorComponent,

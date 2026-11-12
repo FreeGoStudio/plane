@@ -20,7 +20,7 @@ import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
 import { CloseOutline } from "@makeplane/propel/icons";
 import { useTranslation } from "@plane/i18n";
-import { renderFormattedPayloadDate, renderFormattedDate, getDate } from "@plane/utils";
+import { renderFormattedPayloadDate, getDate, useDateFormatter } from "@plane/utils";
 import { DateFilterSelect } from "./date-filter-select";
 type Props = {
   title: string;
@@ -42,6 +42,7 @@ const defaultValues: TFormValues = {
 };
 
 export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props) {
+  const { formatCalendarDate, dateLocale } = useDateFormatter();
   // plane hooks
   const { t } = useTranslation();
   const { handleSubmit, watch, control } = useForm<TFormValues>({
@@ -102,6 +103,7 @@ export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props)
                       const date2Value = getDate(watch("date2"));
                       return (
                         <Calendar
+                          locale={dateLocale}
                           selected={dateValue}
                           defaultMonth={dateValue}
                           onSelect={(date: Date | undefined) => {
@@ -124,6 +126,7 @@ export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props)
                         const date1Value = getDate(watch("date1"));
                         return (
                           <Calendar
+                            locale={dateLocale}
                             selected={dateValue}
                             defaultMonth={dateValue}
                             onSelect={(date: Date | undefined) => {
@@ -142,9 +145,9 @@ export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props)
                 {watch("filterType") === "range" && (
                   <h6 className="flex items-center gap-1 text-caption-sm-regular">
                     <span className="text-secondary">After:</span>
-                    <span>{renderFormattedDate(watch("date1"))}</span>
+                    <span>{formatCalendarDate(watch("date1"))}</span>
                     <span className="ml-1 text-secondary">Before:</span>
-                    {!isInvalid && <span>{renderFormattedDate(watch("date2"))}</span>}
+                    {!isInvalid && <span>{formatCalendarDate(watch("date2"))}</span>}
                   </h6>
                 )}
               </div>

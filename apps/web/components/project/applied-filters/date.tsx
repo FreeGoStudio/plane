@@ -7,7 +7,7 @@
 import { observer } from "mobx-react";
 import { PROJECT_CREATED_AT_FILTER_OPTIONS } from "@plane/constants";
 // helpers
-import { renderFormattedDate, capitalizeFirstLetter } from "@plane/utils";
+import { capitalizeFirstLetter, useDateFormatter } from "@plane/utils";
 import { RemovableChip } from "@/components/common/removable-chip";
 // constants
 
@@ -18,6 +18,7 @@ type Props = {
 };
 
 export const AppliedDateFilters = observer(function AppliedDateFilters(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { editable, handleRemove, values } = props;
 
   const getDateLabel = (value: string): string => {

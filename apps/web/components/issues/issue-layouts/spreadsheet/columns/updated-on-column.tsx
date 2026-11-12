@@ -10,13 +10,14 @@ import { observer } from "mobx-react";
 import type { TIssue } from "@plane/types";
 // helpers
 import { Row } from "@plane/blocks/layout";
-import { renderFormattedDate } from "@plane/utils";
+import { useDateFormatter } from "@plane/utils";
 
 type Props = {
   issue: TIssue;
 };
 
 export const SpreadsheetUpdatedOnColumn = observer(function SpreadsheetUpdatedOnColumn(props: Props) {
+  const { renderFormattedDate } = useDateFormatter();
   const { issue } = props;
 
   return (
