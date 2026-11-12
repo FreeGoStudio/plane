@@ -1,5 +1,10 @@
 {
   "automations": {
+    "time_range": {
+      "placeholder": "Enter Months",
+      "months": "Months",
+      "validation": "Select a month between 1 and 12."
+    },
     "settings": {
       "title": "Automazioni personalizzate",
       "create_automation": "Crea automazione"

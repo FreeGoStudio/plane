@@ -1,5 +1,10 @@
 {
   "automations": {
+    "time_range": {
+      "placeholder": "請輸入月數",
+      "months": "個月",
+      "validation": "請輸入 1～12 之間的月數。"
+    },
     "settings": {
       "title": "自訂自動化",
       "create_automation": "建立自動化"
