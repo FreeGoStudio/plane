@@ -68,13 +68,15 @@ export const ProfileActivity = observer(function ProfileActivity() {
                 <div className="flex min-h-6 min-w-0 flex-1 items-center break-words">
                   <p className="text-body-xs-regular text-secondary">
                     <span className="font-medium text-primary">
-                      {currentUser?.id === activity.actor_detail?.id ? "You" : activity.actor_detail?.display_name}{" "}
+                      {currentUser?.id === activity.actor_detail?.id
+                        ? t("you")
+                        : activity.actor_detail?.display_name}{" "}
                     </span>
                     {activity.field ? (
                       <ActivityMessage activity={activity} showIssue />
                     ) : (
                       <span>
-                        created <IssueLink activity={activity} />
+                        {t("created")} <IssueLink activity={activity} />
                       </span>
                     )}{" "}
                     <span className="text-caption-sm-regular whitespace-nowrap text-secondary">
