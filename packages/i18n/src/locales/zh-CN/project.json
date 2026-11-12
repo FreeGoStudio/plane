@@ -369,7 +369,7 @@
   "project": {
     "members_import": {
       "title": "从CSV导入成员",
-      "description": "上传包含以下列的CSV：电子邮箱和角色（5=访客，15=成员，20=管理员）。用户必须是工作区成员。",
+      "description": "上传包含以下列的CSV：电子邮箱和角色（5=访客，15=成员，20=管理员）。用户必须是工作空间成员。",
       "download_sample": "下载示例CSV",
       "dropzone": {
         "active": "将CSV文件放在这里",

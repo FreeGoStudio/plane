@@ -14,9 +14,9 @@
         "cta": "邀请他们加入"
       },
       "configure_workspace": {
-        "title": "设置您的工作区",
+        "title": "设置您的工作空间",
         "description": "开启或关闭功能，或进行更多设置。",
-        "cta": "配置此工作区"
+        "cta": "配置此工作空间"
       },
       "personalize_account": {
         "title": "让Plane更适合您",

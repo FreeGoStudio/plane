@@ -21,7 +21,7 @@
         "label": "创建模板",
         "no_permission": {
           "project": "联系您的项目管理员创建模板",
-          "workspace": "联系您的工作区管理员创建模板"
+          "workspace": "联系您的工作空间管理员创建模板"
         }
       },
       "use_template": {
@@ -32,7 +32,7 @@
       },
       "template_source": {
         "workspace": {
-          "info": "源自工作区"
+          "info": "源自工作空间"
         },
         "project": {
           "info": "源自项目"
@@ -260,7 +260,7 @@
       "create": {
         "success": {
           "title": "模板已创建",
-          "message": "{templateName}，{templateType}模板，现已可用于您的工作区。"
+          "message": "{templateName}，{templateType}模板，现已可用于您的工作空间。"
         },
         "error": {
           "title": "这次我们无法创建该模板。",
@@ -280,7 +280,7 @@
       "delete": {
         "success": {
           "title": "模板已删除",
-          "message": "{templateName}，{templateType}模板，已从您的工作区中删除。"
+          "message": "{templateName}，{templateType}模板，已从您的工作空间中删除。"
         },
         "error": {
           "title": "这次我们无法删除该模板。",

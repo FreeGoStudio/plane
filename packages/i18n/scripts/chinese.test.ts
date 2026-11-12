@@ -9,6 +9,39 @@ import type ICUPlugin from "i18next-icu";
 // The plugin's ESM entry assumes bundler default-import interop; Node uses its CJS entry.
 const ICU = createRequire(import.meta.url)("i18next-icu").default as typeof ICUPlugin;
 
+// Use the same ICU parser as the installed runtime plugin, including quoted literals.
+type MessageNode = {
+  type: number;
+  value?: string;
+  options?: Record<string, { value: MessageNode[] }>;
+  children?: MessageNode[];
+};
+const require = createRequire(import.meta.url);
+const { IntlMessageFormat } = createRequire(require.resolve("i18next-icu"))("intl-messageformat") as {
+  IntlMessageFormat: new (
+    message: string,
+    locale: string,
+    formats?: unknown,
+    options?: { ignoreTag: boolean }
+  ) => { getAst(): MessageNode[] };
+};
+const allowlist = JSON.parse(fs.readFileSync(new URL("./chinese-allowlist.json", import.meta.url), "utf8")) as Record<
+  string,
+  { value: string; reason: string }
+>;
+function argumentsOf(message: string): string[] {
+  const args = new Set<string>();
+  function walk(nodes: MessageNode[]) {
+    for (const node of nodes) {
+      if ([1, 2, 3, 4, 5, 6, 8].includes(node.type) && node.value) args.add(node.value);
+      for (const option of Object.values(node.options ?? {})) walk(option.value);
+      if (node.children) walk(node.children);
+    }
+  }
+  walk(new IntlMessageFormat(message, "en", undefined, { ignoreTag: true }).getAst());
+  return [...args].toSorted();
+}
+
 const root = path.resolve(import.meta.dirname, "../src/locales");
 
 test("test-email confirmation preserves the recipient in Chinese and English", async () => {
@@ -98,9 +131,15 @@ for (const file of fs.readdirSync(path.join(root, "en"))) {
     for (const [key, value] of Object.entries(en)) {
       assert.ok(Object.hasOwn(zh, key), `${file}: missing ${key}`);
       if (value) assert.ok(zh[key].trim(), `${file}: empty ${key}`);
-      const params = Object.fromEntries(
-        [...zh[key].matchAll(/\{([A-Za-z_]\w*)\s*[,}]/g)].map((match) => [match[1], 2])
-      );
+      const args = argumentsOf(value);
+      assert.deepEqual(argumentsOf(zh[key]), args, `${file}: interpolation mismatch at ${key}`);
+      if (value === zh[key] && /[A-Za-z]/.test(value)) {
+        const allowed = allowlist[`${file}:${key}`];
+        assert.equal(allowed?.value, value, `${file}: unreviewed English at ${key}`);
+        assert.ok(allowed.reason);
+      }
+      assert.ok(!zh[key].includes("工作区"), `${file}: inconsistent workspace terminology at ${key}`);
+      const params = Object.fromEntries(args.map((name) => [name, 2]));
       assert.equal(typeof instance.t(key, params), "string", `${file}: invalid ${key}`);
     }
   });

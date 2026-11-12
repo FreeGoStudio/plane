@@ -1,6 +1,6 @@
 {
   "workspace_settings": {
-    "label": "工作区设置",
+    "label": "工作空间设置",
     "page_label": "{workspace} - 常规设置",
     "key_created": "密钥已创建",
     "copy_key": "复制并将此密钥保存在 Plane Pages 中。关闭后您将无法看到此密钥。包含密钥的 CSV 文件已下载。",
@@ -10,29 +10,29 @@
         "title": "常规",
         "upload_logo": "上传标志",
         "edit_logo": "编辑标志",
-        "name": "工作区名称",
+        "name": "工作空间名称",
         "company_size": "公司规模",
-        "url": "工作区网址",
-        "workspace_timezone": "工作区时区",
-        "update_workspace": "更新工作区",
-        "delete_workspace": "删除此工作区",
-        "delete_workspace_description": "删除工作区时，该工作区内的所有数据和资源将被永久删除，且无法恢复。",
-        "delete_btn": "删除此工作区",
+        "url": "工作空间网址",
+        "workspace_timezone": "工作空间时区",
+        "update_workspace": "更新工作空间",
+        "delete_workspace": "删除此工作空间",
+        "delete_workspace_description": "删除工作空间时，该工作空间内的所有数据和资源将被永久删除，且无法恢复。",
+        "delete_btn": "删除此工作空间",
         "delete_modal": {
-          "title": "确定要删除此工作区吗？",
+          "title": "确定要删除此工作空间吗？",
           "description": "您目前正在试用我们的付费方案。请先取消试用后再继续。",
           "dismiss": "关闭",
           "cancel": "取消试用",
-          "success_title": "工作区已删除。",
+          "success_title": "工作空间已删除。",
           "success_message": "即将跳转到您的个人资料页面。",
           "error_title": "操作失败。",
           "error_message": "请重试。",
-          "confirm_description": "您即将删除工作区 {workspaceName}。您将无法再访问此工作区中的所有工作数据，且无法恢复。"
+          "confirm_description": "您即将删除工作空间 {workspaceName}。您将无法再访问此工作空间中的所有工作数据，且无法恢复。"
         },
         "errors": {
           "name": {
             "required": "名称为必填项",
-            "max_length": "工作区名称不应超过80个字符"
+            "max_length": "工作空间名称不应超过80个字符"
           },
           "company_size": {
             "required": "公司规模为必填项",
@@ -45,7 +45,7 @@
         "add_member": "添加成员",
         "pending_invites": "待处理邀请",
         "invitations_sent_successfully": "邀请发送成功",
-        "leave_confirmation": "您确定要离开工作区吗？您将无法再访问此工作区。此操作无法撤消。",
+        "leave_confirmation": "您确定要离开工作空间吗？您将无法再访问此工作空间。此操作无法撤消。",
         "details": {
           "full_name": "全名",
           "display_name": "显示名称",
@@ -56,7 +56,7 @@
         },
         "modal": {
           "title": "邀请人员协作",
-          "description": "邀请人员在您的工作区中协作。",
+          "description": "邀请人员在您的工作空间中协作。",
           "button": "发送邀请",
           "button_loading": "正在发送邀请",
           "placeholder": "name@company.com",
@@ -65,9 +65,9 @@
             "invalid": "电子邮件无效"
           }
         },
-        "leave_input_label": "输入此工作区的名称以继续。",
-        "description": "管理对此工作区的访问权限。",
-        "leave_title": "离开工作区？"
+        "leave_input_label": "输入此工作空间的名称以继续。",
+        "description": "管理对此工作空间的访问权限。",
+        "leave_title": "离开工作空间？"
       },
       "billing_and_plans": {
         "heading": "账单与计划",
@@ -187,7 +187,7 @@
         "heading": "集成",
         "description": "与流行的工具和服务连接，在整个工作流生态系统中同步您的工作。",
         "page_title": "在可用的应用或您自己的应用中使用您的 Plane 数据。",
-        "page_description": "查看此工作区或您正在使用的所有集成。"
+        "page_description": "查看此工作空间或您正在使用的所有集成。"
       },
       "imports": {
         "title": "导入",
@@ -287,7 +287,7 @@
       "relations": {
         "title": "关系",
         "heading": "关系",
-        "description": "创建和管理连接工作区中工作项的关系类型。"
+        "description": "创建和管理连接工作空间中工作项的关系类型。"
       },
       "cancel_trial": {
         "title": "请先取消试用期。",
@@ -320,7 +320,7 @@
         },
         "app_created": {
           "title": "应用已成功创建",
-          "description": "使用凭证将应用安装到 Plane 工作区中"
+          "description": "使用凭证将应用安装到 Plane 工作空间中"
         },
         "installed_apps": "已安装的应用",
         "all_apps": "所有应用",
@@ -332,7 +332,7 @@
         },
         "authorization_grant_type": {
           "title": "连接类型",
-          "description": "选择您的应用程序应该为工作区安装一次，还是让每个用户连接自己的账户"
+          "description": "选择您的应用程序应该为工作空间安装一次，还是让每个用户连接自己的账户"
         },
         "website": {
           "title": "网站",
@@ -351,7 +351,7 @@
         },
         "webhook_url": {
           "label": "Webhook URL",
-          "description": "我们将在此接收来自安装了您应用的工作区的 Webhook 事件和更新。",
+          "description": "我们将在此接收来自安装了您应用的工作空间的 Webhook 事件和更新。",
           "placeholder": "https://example.com/webhook"
         },
         "webhook_secret": {
@@ -429,7 +429,7 @@
         "invalid_categories_error": "无效的类别",
         "categories_description": "选择最能描述应用的类别",
         "supported_plans": "支持的方案",
-        "supported_plans_description": "选择可以安装此应用的工作区方案。留空以允许所有方案。",
+        "supported_plans_description": "选择可以安装此应用的工作空间方案。留空以允许所有方案。",
         "select_plans": "选择方案",
         "privacy_policy_url_title": "隐私政策URL",
         "privacy_policy_url_error": "隐私政策URL是必填项",
@@ -452,16 +452,16 @@
         "contact_email_error": "联系邮箱是必填项",
         "invalid_contact_email_error": "无效的联系邮箱",
         "upload_attachments": "上传附件",
-        "uploading_images": "上传 {count, plural, one {张图片} other {张图片}}",
+        "uploading_images": "正在上传 {count} 张图片",
         "drop_images_here": "将图片拖到这里",
         "click_to_upload_images": "点击上传图片",
         "invalid_file_or_exceeds_size_limit": "无效的文件或超过大小限制 ({size} MB)",
         "uploading": "上传中...",
         "upload_and_save": "上传并保存",
         "app_consent_no_access_title": "安装请求",
-        "app_consent_no_access_description": "此应用只能在工作区管理员安装后才能安装。请联系您的工作区管理员以继续。",
+        "app_consent_no_access_description": "此应用只能在工作空间管理员安装后才能安装。请联系您的工作空间管理员以继续。",
         "app_consent_unapproved_title": "此应用尚未经过 Plane 审核或批准。",
-        "app_consent_unapproved_description": "在将此应用连接到您的工作区之前，请确保您信任此应用。",
+        "app_consent_unapproved_description": "在将此应用连接到您的工作空间之前，请确保您信任此应用。",
         "go_to_app": "前往应用",
         "enable_app_mentions": "启用应用提及",
         "enable_app_mentions_tooltip": "启用此功能后，用户可以提及或分配工作项到此应用。",
@@ -477,7 +477,7 @@
         "scope_description": {
           "projects": "访问项目及所有项目相关实体",
           "wiki": "访问 Wiki 及所有 Wiki 相关实体",
-          "workspaces": "访问工作区及所有工作区相关实体",
+          "workspaces": "访问工作空间及所有工作空间相关实体",
           "stickies": "访问便签及所有便签相关实体",
           "profile": "访问用户资料信息",
           "agents": "访问代理以及所有代理相关实体",

@@ -28,8 +28,8 @@
         "minute": "分钟",
         "hour_suffix": "时",
         "minute_suffix": "分",
-        "am": "AM",
-        "pm": "PM",
+        "am": "上午",
+        "pm": "下午",
         "timezone": "时区",
         "timezone_placeholder": "选择时区",
         "frequency_daily": "每天",
@@ -245,18 +245,18 @@
         "label": "选择要运行此自动化的项目",
         "all_projects": {
           "label": "所有项目",
-          "description": "自动化将在工作区的所有项目中运行。"
+          "description": "自动化将在工作空间的所有项目中运行。"
         },
         "select_projects": {
           "label": "选择项目",
-          "description": "自动化将在工作区中所选的项目中运行。",
+          "description": "自动化将在工作空间中所选的项目中运行。",
           "placeholder": "选择项目"
         }
       },
       "settings": {
         "sidebar_label": "自动化",
         "title": "自动化",
-        "description": "通过全局自动化标准化工作区中的流程。"
+        "description": "通过全局自动化标准化工作空间中的流程。"
       },
       "table": {
         "scope": {

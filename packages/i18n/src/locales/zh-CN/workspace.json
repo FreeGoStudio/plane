@@ -1,52 +1,52 @@
 {
   "workspace_creation": {
-    "heading": "创建您的工作区",
-    "subheading": "要开始使用 Plane，您需要创建或加入一个工作区。",
+    "heading": "创建您的工作空间",
+    "subheading": "要开始使用 Plane，您需要创建或加入一个工作空间。",
     "form": {
       "name": {
-        "label": "为您的工作区命名",
+        "label": "为您的工作空间命名",
         "placeholder": "熟悉且易于识别的名称总是最好的。"
       },
       "url": {
-        "label": "设置您的工作区 URL",
+        "label": "设置您的工作空间 URL",
         "placeholder": "输入或粘贴 URL",
         "edit_slug": "您只能编辑 URL 的标识符部分"
       },
       "organization_size": {
-        "label": "有多少人将使用这个工作区？",
+        "label": "有多少人将使用这个工作空间？",
         "placeholder": "选择一个范围"
       }
     },
     "errors": {
       "creation_disabled": {
-        "title": "只有您的实例管理员可以创建工作区",
+        "title": "只有您的实例管理员可以创建工作空间",
         "description": "如果您知道实例管理员的电子邮件地址，请点击下方按钮与他们联系。",
         "request_button": "请求实例管理员"
       },
       "validation": {
-        "name_alphanumeric": "工作区名称只能包含 (' '), ('-'), ('_') 和字母数字字符。",
+        "name_alphanumeric": "工作空间名称只能包含 (' '), ('-'), ('_') 和字母数字字符。",
         "name_length": "名称限制在 80 个字符以内。",
         "url_alphanumeric": "URL 只能包含 ('-') 和字母数字字符。",
         "url_length": "URL 限制在 48 个字符以内。",
-        "url_already_taken": "工作区 URL 已被占用！"
+        "url_already_taken": "工作空间 URL 已被占用！"
       }
     },
     "request_email": {
-      "subject": "请求新工作区",
-      "body": "您好，实例管理员：\n\n请为 [创建工作区的目的] 创建一个 URL 为 [/workspace-name] 的新工作区。\n\n谢谢，\n{firstName} {lastName}\n{email}"
+      "subject": "请求新工作空间",
+      "body": "您好，实例管理员：\n\n请为 [创建工作空间的目的] 创建一个 URL 为 [/workspace-name] 的新工作空间。\n\n谢谢，\n{firstName} {lastName}\n{email}"
     },
     "button": {
-      "default": "创建工作区",
-      "loading": "正在创建工作区"
+      "default": "创建工作空间",
+      "loading": "正在创建工作空间"
     },
     "toast": {
       "success": {
         "title": "成功",
-        "message": "工作区创建成功"
+        "message": "工作空间创建成功"
       },
       "error": {
         "title": "错误",
-        "message": "工作区创建失败。请重试。"
+        "message": "工作空间创建失败。请重试。"
       }
     }
   },
@@ -106,7 +106,7 @@
     "trend_on_charts": "图表趋势",
     "active_projects": "活跃项目",
     "customized_insights": "自定义洞察",
-    "created_vs_resolved": "已创建 vs 已解决",
+    "created_vs_resolved": "已创建与已解决",
     "empty_state": {
       "project_insights": {
         "title": "暂无数据",
@@ -145,7 +145,7 @@
       }
     },
     "upgrade_to_plan": "升级到 {plan} 以解锁 {tab}",
-    "workitem_resolved_vs_pending": "已解决 vs 待处理的工作项",
+    "workitem_resolved_vs_pending": "已解决与待处理的工作项",
     "projects_by_status": "按状态分类的项目",
     "active_users": "活跃用户",
     "intake_trends": "入学趋势"
@@ -163,7 +163,7 @@
       },
       "public": {
         "title": "公开",
-        "description": "工作区中除访客外的任何人都可以加入"
+        "description": "工作空间中除访客外的任何人都可以加入"
       }
     },
     "error": {
@@ -359,7 +359,7 @@
         },
         "message": {
           "seat_limit": "由于席位限制，无法导入成员。",
-          "success": "成功将{count}名成员添加到工作区。",
+          "success": "成功将{count}名成员添加到工作空间。",
           "no_imports": "未从CSV文件导入任何成员。"
         },
         "stats": {
@@ -382,8 +382,8 @@
   },
   "instance_workspaces": {
     "empty_state": {
-      "title": "暂无工作区",
-      "description": "在此实例上创建的工作区将显示在这里。"
+      "title": "暂无工作空间",
+      "description": "在此实例上创建的工作空间将显示在这里。"
     }
   }
 }

@@ -392,7 +392,7 @@
           "complete": "Import Complete"
         },
         "message": {
-          "success": "Successfully imported {count} member{plural} to the project.",
+          "success": "Successfully imported {count} {count, plural, one {member} other {members}} to the project.",
           "no_imports": "No new members were imported from the CSV file."
         },
         "stats": {

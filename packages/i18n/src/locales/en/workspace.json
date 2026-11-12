@@ -359,7 +359,7 @@
         },
         "message": {
           "seat_limit": "Unable to import members due to seat limit restrictions.",
-          "success": "Successfully added {count} member{plural} to the workspace.",
+          "success": "Successfully added {count} {count, plural, one {member} other {members}} to the workspace.",
           "no_imports": "No members were imported from the CSV file."
         },
         "stats": {

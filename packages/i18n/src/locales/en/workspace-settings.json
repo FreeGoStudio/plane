@@ -452,7 +452,7 @@
         "contact_email_error": "Contact Email is required",
         "invalid_contact_email_error": "Invalid contact email",
         "upload_attachments": "Upload Attachments",
-        "uploading_images": "Uploading {count} Image{count, plural, one {s} other {s}}",
+        "uploading_images": "Uploading {count} {count, plural, one {image} other {images}}",
         "drop_images_here": "Drop images here",
         "click_to_upload_images": "Click to upload images",
         "invalid_file_or_exceeds_size_limit": "Invalid file or exceeds size limit ({size} MB)",

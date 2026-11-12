@@ -2,7 +2,7 @@
   "product_tour": {
     "workitems": {
       "step_zero": {
-        "title": "欢迎来到您的工作区",
+        "title": "欢迎来到您的工作空间",
         "description": "为了帮助您开始,我们为您创建了一个演示项目。让我们添加您的第一个工作项。"
       },
       "step_one": {
@@ -73,7 +73,7 @@
       },
       "step_one": {
         "title": "将页面设为公开或私密",
-        "description": "页面可以设置为公开，对工作区中的所有人可见，或设置为私密，仅您可以访问。"
+        "description": "页面可以设置为公开，对工作空间中的所有人可见，或设置为私密，仅您可以访问。"
       },
       "step_two": {
         "title": "使用 / 命令",
@@ -119,7 +119,7 @@
     "navigation": {
       "modal": {
         "title": "导航，重新想象",
-        "sub_title": "您的工作区现在通过更智能、更简化的导航更容易探索。",
+        "sub_title": "您的工作空间现在通过更智能、更简化的导航更容易探索。",
         "highlight_1": "简化的左侧面板结构，更快发现",
         "highlight_2": "改进的全局搜索，立即跳转到任何内容",
         "highlight_3": "更智能的类别分组，清晰和专注",
@@ -149,7 +149,7 @@
     },
     "seed_data": {
       "title": "这是您的演示项目",
-      "description": "项目让您可以管理团队、任务以及在工作区中完成工作所需的一切。"
+      "description": "项目让您可以管理团队、任务以及在工作空间中完成工作所需的一切。"
     }
   },
   "get_started": {
@@ -184,7 +184,7 @@
       "description": "邀请队友并开始一起构建。"
     },
     "integrations_section": {
-      "title": "增强您的工作区",
+      "title": "增强您的工作空间",
       "more_integrations": "浏览更多集成"
     },
     "switch_to_plane_section": {

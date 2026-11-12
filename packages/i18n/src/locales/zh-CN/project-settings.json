@@ -373,7 +373,7 @@
         },
         "in_app": {
           "title": "应用内",
-          "description": "从工作区成员和访客获取新的工作项，不影响现有工作项。"
+          "description": "从工作空间成员和访客获取新的工作项，不影响现有工作项。"
         },
         "email": {
           "title": "电子邮件",
@@ -382,11 +382,11 @@
         },
         "form": {
           "title": "表单",
-          "description": "让工作区外的人通过专用安全表单为您创建潜在的新工作项。",
+          "description": "让工作空间外的人通过专用安全表单为您创建潜在的新工作项。",
           "fieldName": "默认表单 URL",
           "create_forms": "使用工作项类型创建表单",
           "manage_forms": "管理表单",
-          "manage_forms_tooltip": "请工作区管理员代为管理。",
+          "manage_forms_tooltip": "请工作空间管理员代为管理。",
           "create_form": "创建表单",
           "edit_form": "编辑表单详情",
           "form_title": "表单标题",

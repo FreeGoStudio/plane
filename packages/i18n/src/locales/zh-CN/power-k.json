@@ -72,11 +72,11 @@
       "create_cycle": "新建周期",
       "create_module": "新建模块",
       "create_project": "新建项目",
-      "create_workspace": "新建工作区",
+      "create_workspace": "新建工作空间",
       "create_project_automation": "新建自动化"
     },
     "navigation_actions": {
-      "open_workspace": "打开工作区",
+      "open_workspace": "打开工作空间",
       "nav_home": "转到主页",
       "nav_inbox": "转到收件箱",
       "nav_your_work": "转到我的工作",
@@ -87,11 +87,11 @@
       "nav_assigned_workspace_work_items": "转到已分配工作项",
       "nav_created_workspace_work_items": "转到已创建工作项",
       "nav_subscribed_workspace_work_items": "转到已订阅工作项",
-      "nav_workspace_analytics": "转到工作区分析",
-      "nav_workspace_drafts": "转到工作区草稿",
-      "nav_workspace_archives": "转到工作区归档",
-      "open_workspace_setting": "打开工作区设置",
-      "nav_workspace_settings": "转到工作区设置",
+      "nav_workspace_analytics": "转到工作空间分析",
+      "nav_workspace_drafts": "转到工作空间草稿",
+      "nav_workspace_archives": "转到工作空间归档",
+      "open_workspace_setting": "打开工作空间设置",
+      "nav_workspace_settings": "转到工作空间设置",
       "nav_project_work_items": "转到工作项",
       "open_project_cycle": "打开周期",
       "nav_project_cycles": "转到周期",
@@ -109,7 +109,7 @@
     },
     "account_actions": {
       "sign_out": "退出登录",
-      "workspace_invites": "工作区邀请"
+      "workspace_invites": "工作空间邀请"
     },
     "miscellaneous_actions": {
       "toggle_app_sidebar": "切换应用侧边栏",
@@ -142,14 +142,14 @@
       "open_keyboard_shortcuts": "打开键盘快捷键",
       "open_plane_documentation": "打开 Plane 文档",
       "join_forum": "加入我们的论坛",
-      "report_bug": "报告 Bug",
+      "report_bug": "报告缺陷",
       "chat_with_us": "与我们聊天"
     },
     "page_placeholders": {
       "default": "输入命令或搜索",
-      "open_workspace": "打开工作区",
+      "open_workspace": "打开工作空间",
       "open_project": "打开项目",
-      "open_workspace_setting": "打开工作区设置",
+      "open_workspace_setting": "打开工作空间设置",
       "open_project_cycle": "打开周期",
       "open_project_module": "打开模块",
       "open_project_view": "打开项目视图",
@@ -174,7 +174,7 @@
       "go_to_advanced_search": "转到高级搜索"
     },
     "footer": {
-      "workspace_level": "工作区级别"
+      "workspace_level": "工作空间级别"
     },
     "shortcuts_modal": {
       "search_placeholder": "搜索键盘快捷键",

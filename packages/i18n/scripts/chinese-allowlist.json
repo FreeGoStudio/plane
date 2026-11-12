@@ -1,0 +1,182 @@
+{
+  "auth.json:sso.domain_management.verified_domains.add_domain.form.domain_placeholder": {
+    "value": "plane.so",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "auth.json:sso.providers.saml.setup_modal.mapping_table.table.idp": {
+    "value": "IdP",
+    "reason": "协议或技术标识"
+  },
+  "auth.json:sso.providers.saml.setup_modal.mapping_table.table.plane": {
+    "value": "Plane",
+    "reason": "品牌或产品名称"
+  },
+  "auth.json:auth.common.email.placeholder": {
+    "value": "name@company.com",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "automation.json:automations.trigger.schedule.schedule_mode_cron": {
+    "value": "Cron",
+    "reason": "协议或技术标识"
+  },
+  "automation.json:automations.trigger.schedule.main_content_cron_summary": {
+    "value": "{description} ({timezone}).",
+    "reason": "动态描述和时区原文，不包含英文固定文案"
+  },
+  "common.json:link.modal.url.text": {
+    "value": "URL",
+    "reason": "协议或技术标识"
+  },
+  "common.json:common.url": {
+    "value": "URL",
+    "reason": "协议或技术标识"
+  },
+  "common.json:exporter.csv.title": {
+    "value": "CSV",
+    "reason": "协议或技术标识"
+  },
+  "common.json:exporter.excel.title": {
+    "value": "Excel",
+    "reason": "品牌或产品名称"
+  },
+  "common.json:exporter.xlsx.title": {
+    "value": "Excel",
+    "reason": "品牌或产品名称"
+  },
+  "common.json:exporter.json.title": {
+    "value": "JSON",
+    "reason": "协议或技术标识"
+  },
+  "inbox.json:inbox_issue.order_by.id": {
+    "value": "ID",
+    "reason": "协议或技术标识"
+  },
+  "integration.json:github_integration.name": {
+    "value": "GitHub",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:gitlab_integration.name": {
+    "value": "Gitlab",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:gitlab_enterprise_integration.name": {
+    "value": "Gitlab Enterprise",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:slack_integration.name": {
+    "value": "Slack",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:sentry_integration.name": {
+    "value": "Sentry",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:bitbucket_dc_integration.name": {
+    "value": "Bitbucket Data Center",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:oauth_bridge_integration.name": {
+    "value": "OAuth Bridge",
+    "reason": "品牌或产品名称"
+  },
+  "integration.json:oauth_bridge_integration.provider_form.issuer_placeholder": {
+    "value": "https://login.microsoftonline.com/tenant-id/v2.0",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "integration.json:oauth_bridge_integration.provider_form.jwks_url_label": {
+    "value": "JWKS URL",
+    "reason": "协议或技术标识"
+  },
+  "integration.json:oauth_bridge_integration.provider_form.jwks_url_placeholder": {
+    "value": "https://login.microsoftonline.com/tenant-id/discovery/v2.0/keys",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "integration.json:oauth_bridge_integration.provider_form.audience_placeholder": {
+    "value": "api://my-app-id",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "integration.json:oauth_bridge_integration.provider_form.rate_limit_placeholder": {
+    "value": "120/minute",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "integration.json:github_enterprise_integration.name": {
+    "value": "GitHub Enterprise",
+    "reason": "品牌或产品名称"
+  },
+  "navigation.json:sidebar.plane_pro": {
+    "value": "Plane Pro",
+    "reason": "品牌或产品名称"
+  },
+  "template.json:templates.settings.form.publish.website.placeholder": {
+    "value": "https://plane.so",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "template.json:templates.settings.form.publish.company_name.placeholder": {
+    "value": "Plane",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "template.json:templates.settings.form.publish.contact_email.placeholder": {
+    "value": "help@plane.so",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "template.json:templates.settings.form.publish.privacy_policy_url.placeholder": {
+    "value": "https://planes.so/privacy-policy",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "template.json:templates.settings.form.publish.terms_of_service_url.placeholder": {
+    "value": "https://planes.so/terms-of-use",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "work-item.json:issue.display.properties.id": {
+    "value": "ID",
+    "reason": "协议或技术标识"
+  },
+  "workspace-settings.json:workspace_settings.settings.members.modal.placeholder": {
+    "value": "name@company.com",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "workspace-settings.json:workspace_settings.settings.webhooks.heading": {
+    "value": "Webhooks",
+    "reason": "协议或技术标识"
+  },
+  "workspace-settings.json:workspace_settings.settings.webhooks.title": {
+    "value": "Webhooks",
+    "reason": "协议或技术标识"
+  },
+  "workspace-settings.json:workspace_settings.settings.applications.website.placeholder": {
+    "value": "https://example.com",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "workspace-settings.json:workspace_settings.settings.applications.setup_url.placeholder": {
+    "value": "https://example.com/setup",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "workspace-settings.json:workspace_settings.settings.applications.webhook_url.label": {
+    "value": "Webhook URL",
+    "reason": "协议或技术标识"
+  },
+  "workspace-settings.json:workspace_settings.settings.applications.webhook_url.placeholder": {
+    "value": "https://example.com/webhook",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "workspace-settings.json:workspace_settings.settings.applications.redirect_uris.placeholder": {
+    "value": "https://example.com https://example.com/",
+    "reason": "邮箱、URL 或技术格式示例"
+  },
+  "workspace-settings.json:workspace_settings.settings.applications.webhook_url_title": {
+    "value": "Webhook URL",
+    "reason": "协议或技术标识"
+  },
+  "workspace-settings.json:workspace_settings.settings.plane-intelligence.title": {
+    "value": "Plane AI",
+    "reason": "品牌或产品名称"
+  },
+  "workspace-settings.json:workspace_settings.settings.plane-intelligence.heading": {
+    "value": "Plane AI",
+    "reason": "品牌或产品名称"
+  },
+  "workspace-settings.json:workspace_settings.settings.runners.title": {
+    "value": "Plane Runner",
+    "reason": "品牌或产品名称"
+  }
+}
