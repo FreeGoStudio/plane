@@ -8,12 +8,12 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { EUserPermissions, EUserPermissionsLevel, LOGIN_MEDIUM_LABELS } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
-import { renderFormattedDate } from "@plane/utils";
+import { formatPreferredDate } from "@/helpers/home-datetime";
 import { MemberHeaderColumn } from "@/components/project/member-header-column";
 import type { RowData } from "@/components/workspace/settings/member-columns";
 import { AccountTypeColumn, NameColumn } from "@/components/workspace/settings/member-columns";
 import { useMember } from "@/hooks/store/use-member";
-import { useUser, useUserPermissions } from "@/hooks/store/user";
+import { useUser, useUserPermissions, useUserProfile } from "@/hooks/store/user";
 import type { IMemberFilters } from "@/store/member/utils";
 
 export const useMemberColumns = () => {
@@ -23,13 +23,15 @@ export const useMemberColumns = () => {
   const { workspaceSlug } = useParams();
 
   const { data: currentUser } = useUser();
+  const { data: profile } = useUserProfile();
+  const dateOrder = profile?.theme?.homeDateOrder;
   const { allowPermissions } = useUserPermissions();
   const {
     workspace: {
       filtersStore: { filters, updateFilters },
     },
   } = useMember();
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
 
   // derived values
   const isAdmin = allowPermissions([EUserPermissions.ADMIN], EUserPermissionsLevel.WORKSPACE);
@@ -119,7 +121,11 @@ export const useMemberColumns = () => {
       key: "Joining date",
       content: t("workspace_settings.settings.members.details.joining_date"),
       tdRender: (rowData: RowData) =>
-        isSuspended(rowData) ? null : <div>{renderFormattedDate(rowData?.member?.joining_date)}</div>,
+        isSuspended(rowData) ? null : (
+          <div>
+            {formatPreferredDate(rowData?.member?.joining_date, currentLocale, currentUser?.user_timezone, dateOrder)}
+          </div>
+        ),
       thRender: () => (
         <MemberHeaderColumn
           property="joining_date"

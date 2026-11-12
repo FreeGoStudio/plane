@@ -16,6 +16,20 @@ export function formatHomeDate(date: Date, locale: string, timeZone: string, ord
     hourCycle: "h23",
     timeZone,
   }).format(date);
+  return `${formatPreferredDate(date, locale, timeZone, order)} ${weekday} ${time}`;
+}
+
+/** Shared date preference; date-only values retain their calendar day in every timezone. */
+export function formatPreferredDate(
+  value: Date | string | null | undefined,
+  locale: string,
+  timeZone?: string,
+  order: THomeDateOrder = "locale"
+) {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(value);
+  if (!isValid(date)) return "";
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) timeZone = "UTC";
   let calendarDate: string;
   if (order === "locale") {
     calendarDate = new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", timeZone }).format(
@@ -28,7 +42,7 @@ export function formatHomeDate(date: Date, locale: string, timeZone: string, ord
       day: "2-digit",
       timeZone,
     }).formatToParts(date);
-    const part = (type: string) => parts.find((value) => value.type === type)?.value ?? "";
+    const part = (type: string) => parts.find((datePart) => datePart.type === type)?.value ?? "";
     const fields =
       order === "mdy"
         ? ["month", "day", "year"]
@@ -37,7 +51,7 @@ export function formatHomeDate(date: Date, locale: string, timeZone: string, ord
           : ["year", "month", "day"];
     calendarDate = fields.map(part).join("/");
   }
-  return `${calendarDate} ${weekday} ${time}`;
+  return calendarDate;
 }
 
 export function getHomeGreetingPeriod(date: Date, timeZone: string) {

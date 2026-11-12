@@ -5,16 +5,17 @@
  */
 
 import { useState } from "react";
+import { useTranslation } from "@plane/i18n";
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import type { IWorkspaceMember, TProjectMembership } from "@plane/types";
-import { renderFormattedDate } from "@plane/utils";
+import { formatPreferredDate } from "@/helpers/home-datetime";
 // components
 import { MemberHeaderColumn } from "@/components/project/member-header-column";
 import { AccountTypeColumn, NameColumn } from "@/components/project/settings/member-columns";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
-import { useUser, useUserPermissions } from "@/hooks/store/user";
+import { useUser, useUserPermissions, useUserProfile } from "@/hooks/store/user";
 import type { IMemberFilters } from "@/store/member/utils";
 
 export interface RowData extends Pick<TProjectMembership, "original_role"> {
@@ -28,11 +29,14 @@ type TUseProjectColumnsProps = {
 
 export const useProjectColumns = (props: TUseProjectColumnsProps) => {
   const { projectId, workspaceSlug } = props;
+  const { currentLocale } = useTranslation();
   // states
   const [removeMemberModal, setRemoveMemberModal] = useState<RowData | null>(null);
 
   // store hooks
   const { data: currentUser } = useUser();
+  const { data: profile } = useUserProfile();
+  const dateOrder = profile?.theme?.homeDateOrder;
   const { allowPermissions, getProjectRoleByWorkspaceSlugAndProjectId } = useUserPermissions();
   const {
     project: {
@@ -131,7 +135,11 @@ export const useProjectColumns = (props: TUseProjectColumnsProps) => {
           handleDisplayFilterUpdate={handleDisplayFilterUpdate}
         />
       ),
-      tdRender: (rowData: RowData) => <div>{renderFormattedDate(rowData?.member?.joining_date)}</div>,
+      tdRender: (rowData: RowData) => (
+        <div>
+          {formatPreferredDate(rowData?.member?.joining_date, currentLocale, currentUser?.user_timezone, dateOrder)}
+        </div>
+      ),
     },
   ];
   return {

@@ -6,8 +6,8 @@
       "evening": "晚上好，{name}"
     },
     "date_display": {
-      "title": "首頁日期格式",
-      "description": "設定首頁日期中年、月、日的排列順序。",
+      "title": "日期格式",
+      "description": "設定首頁與成員加入日期中年、月、日的排列順序。",
       "locale": "跟隨語言",
       "ymd": "年 / 月 / 日",
       "mdy": "月 / 日 / 年",
