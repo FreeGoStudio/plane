@@ -107,7 +107,7 @@ export function ShortcutBadge({ shortcut }: { shortcut: string | undefined }) {
 
 type TKeySequenceBadgeProps = {
   sequence: string | undefined;
-  /** Translated connector rendered between keys, e.g. "then" in "G then M" */
+  /** Translated sequence connector for screen readers, e.g. "then" in "G then M" */
   separator: string;
 };
 
@@ -124,7 +124,14 @@ export function KeySequenceBadge({ sequence, separator }: TKeySequenceBadgeProps
           <kbd className="inline-flex h-5 items-center justify-center rounded-sm border border-strong bg-surface-1 px-1.5 font-code text-caption-xs-medium text-tertiary">
             {char.toUpperCase()}
           </kbd>
-          {index < chars.length - 1 && <span className="text-caption-xs-medium text-placeholder">{separator}</span>}
+          {index < chars.length - 1 && (
+            <>
+              <span aria-hidden="true" className="text-caption-xs-medium text-placeholder">
+                →
+              </span>
+              <span className="sr-only">{` ${separator} `}</span>
+            </>
+          )}
         </React.Fragment>
       ))}
     </div>
