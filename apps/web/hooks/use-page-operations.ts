@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useMemo } from "react";
 // plane imports
 import { IS_FAVORITE_MENU_OPEN } from "@plane/constants";
@@ -37,6 +38,7 @@ export const usePageOperations = (
   pageOperations: TPageOperations;
 } => {
   const { page } = props;
+  const { t } = useTranslation();
   // derived values
   const {
     access,
@@ -64,8 +66,8 @@ export const usePageOperations = (
         await copyUrlToClipboard(pageLink);
         setToast({
           type: "success",
-          title: "Link Copied!",
-          message: "Page link copied to clipboard.",
+          title: t("common.link_copied"),
+          message: t("wiki_collections.list.page_link_copied"),
         });
       },
       duplicate: async () => {
@@ -218,6 +220,7 @@ export const usePageOperations = (
     isFavoriteMenuOpen,
     removePageFromFavorites,
     toggleFavoriteMenu,
+    t,
   ]);
   return {
     pageOperations,

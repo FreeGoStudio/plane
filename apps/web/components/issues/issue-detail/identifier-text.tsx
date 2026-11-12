@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { TIdentifierTextProps, TIdentifierTextVariant, TIssueIdentifierSize } from "@plane/types";
@@ -27,6 +28,7 @@ const VARIANT_MAP: Record<TIdentifierTextVariant, string> = {
 
 export function IdentifierText(props: TIdentifierTextProps) {
   const { identifier, enableClickToCopyIdentifier = false, size = "lg", variant = "default" } = props;
+  const { t } = useTranslation();
   // handlers
   const handleCopyIssueIdentifier = () => {
     if (enableClickToCopyIdentifier) {
@@ -35,7 +37,7 @@ export function IdentifierText(props: TIdentifierTextProps) {
         .then(() => {
           setToast({
             type: "success",
-            title: "Work item ID copied to clipboard",
+            title: t("power_k.contextual_actions.work_item.copy_id_toast_success"),
           });
           return;
         })
@@ -59,7 +61,7 @@ export function IdentifierText(props: TIdentifierTextProps) {
   }
 
   return (
-    <Tooltip label="Click to copy" disabled={!enableClickToCopyIdentifier}>
+    <Tooltip label={t("common.tooltip.copy_to_clipboard")} disabled={!enableClickToCopyIdentifier}>
       <button
         type="button"
         className={cn("text-caption-md-medium whitespace-nowrap text-tertiary", textSizeClassName, variantClassName, {
