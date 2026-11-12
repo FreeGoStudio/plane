@@ -7,7 +7,7 @@
 import type { ReactNode } from "react";
 // plane imports
 import type { TAuthErrorInfo } from "@plane/constants";
-import { E_PASSWORD_STRENGTH, EErrorAlertType, EAuthErrorCodes } from "@plane/constants";
+import { E_PASSWORD_STRENGTH, PASSWORD_MIN_LENGTH, EErrorAlertType, EAuthErrorCodes } from "@plane/constants";
 
 /**
  * @description Password strength levels
@@ -28,7 +28,7 @@ export const getPasswordStrength = (password: string): E_PASSWORD_STRENGTH => {
     return E_PASSWORD_STRENGTH.EMPTY;
   }
 
-  if (password.length < 8) {
+  if (Array.from(password.normalize("NFC")).length < PASSWORD_MIN_LENGTH) {
     return E_PASSWORD_STRENGTH.LENGTH_NOT_VALID;
   }
 
@@ -47,8 +47,8 @@ export type PasswordCriteria = {
 export const getPasswordCriteria = (password: string): PasswordCriteria[] => [
   {
     key: "length",
-    label: "Min 8 characters",
-    isValid: password.length >= 8,
+    label: "Min 15 characters",
+    isValid: Array.from(password.normalize("NFC")).length >= PASSWORD_MIN_LENGTH,
   },
 ];
 
@@ -69,9 +69,13 @@ const errorCodeMessages: {
     title: `Invalid password`,
     message: () => `Invalid password. Please try again.`,
   },
+  [EAuthErrorCodes.PASSWORD_TOO_SHORT]: {
+    title: `Password is too short`,
+    message: () => `Use at least 15 characters. A longer passphrase is recommended.`,
+  },
   [EAuthErrorCodes.PASSWORD_TOO_WEAK]: {
-    title: `Password too weak`,
-    message: () => `Please use a stronger password.`,
+    title: `Password not allowed`,
+    message: () => `This password is common, compromised, or matches your account. Choose a different passphrase.`,
   },
   [EAuthErrorCodes.SMTP_NOT_CONFIGURED]: {
     title: `SMTP not configured`,
@@ -284,6 +288,8 @@ export const authErrorHandler = (errorCode: EAuthErrorCodes, email?: string): TA
     EAuthErrorCodes.EMAIL_REQUIRED,
     EAuthErrorCodes.SIGNUP_DISABLED,
     EAuthErrorCodes.INVALID_PASSWORD,
+    EAuthErrorCodes.PASSWORD_TOO_WEAK,
+    EAuthErrorCodes.PASSWORD_TOO_SHORT,
     EAuthErrorCodes.SMTP_NOT_CONFIGURED,
     EAuthErrorCodes.USER_ALREADY_EXIST,
     EAuthErrorCodes.AUTHENTICATION_FAILED_SIGN_UP,

@@ -25,7 +25,7 @@ from plane.settings.storage import S3Storage
 from plane.utils.exception_logger import log_exception
 from plane.utils.host import base_host
 from plane.utils.ip_address import get_client_ip
-from plane.authentication.utils.password import is_password_strong
+from plane.authentication.utils.password import password_validation_error
 
 from .error import AUTHENTICATION_ERROR_CODES, AuthenticationException
 
@@ -87,11 +87,11 @@ class Adapter:
 
     def validate_password(self, email):
         """Validate password strength"""
-        if not is_password_strong(self.code):
+        if password_error := password_validation_error(self.code, email=email):
             self.logger.warning("Password is not strong enough")
             raise AuthenticationException(
-                error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                error_message="PASSWORD_TOO_WEAK",
+                error_code=AUTHENTICATION_ERROR_CODES[password_error],
+                error_message=password_error,
                 payload={"email": email},
             )
         return

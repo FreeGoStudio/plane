@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 ## Module imports
 from plane.app.serializers import UserSerializer
 from plane.authentication.utils.login import user_login
-from plane.authentication.utils.password import is_password_strong
+from plane.authentication.utils.password import password_validation_error
 from plane.db.models import User
 from plane.authentication.adapter.error import (
     AuthenticationException,
@@ -82,11 +82,11 @@ class ChangePasswordEndpoint(APIView):
             )
             return Response(exc.get_error_dict(), status=status.HTTP_400_BAD_REQUEST)
 
-        # check the password score
-        if not is_password_strong(new_password):
+        # Check length and the whole-password blocklist
+        if password_error := password_validation_error(new_password, user=user):
             exc = AuthenticationException(
-                error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                error_message="PASSWORD_TOO_WEAK",
+                error_code=AUTHENTICATION_ERROR_CODES[password_error],
+                error_message=password_error,
             )
             return Response(exc.get_error_dict(), status=status.HTTP_400_BAD_REQUEST)
 
@@ -121,10 +121,10 @@ class SetUserPasswordEndpoint(APIView):
             )
             return Response(exc.get_error_dict(), status=status.HTTP_400_BAD_REQUEST)
 
-        if not is_password_strong(password):
+        if password_error := password_validation_error(password, user=user):
             exc = AuthenticationException(
-                error_code=AUTHENTICATION_ERROR_CODES["INVALID_PASSWORD"],
-                error_message="INVALID_PASSWORD",
+                error_code=AUTHENTICATION_ERROR_CODES[password_error],
+                error_message=password_error,
             )
             return Response(exc.get_error_dict(), status=status.HTTP_400_BAD_REQUEST)
 

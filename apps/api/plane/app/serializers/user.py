@@ -4,6 +4,7 @@
 
 # Third party imports
 from rest_framework import serializers
+from plane.authentication.utils.password import PasswordPolicyValidator
 
 # Module import
 from plane.db.models import Account, FileAsset, Profile, User, Workspace, WorkspaceMemberInvite
@@ -190,9 +191,13 @@ class ChangePasswordSerializer(serializers.Serializer):
     """
     Serializer for password change endpoint.
     """
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True, min_length=8)
-    confirm_password = serializers.CharField(required=True, min_length=8)
+    old_password = serializers.CharField(required=True, trim_whitespace=False)
+    new_password = serializers.CharField(
+        required=True, trim_whitespace=False, validators=[PasswordPolicyValidator().validate]
+    )
+    confirm_password = serializers.CharField(
+        required=True, trim_whitespace=False, validators=[PasswordPolicyValidator().validate]
+    )
 
     def validate(self, data):
         if data.get("old_password") == data.get("new_password"):
@@ -209,7 +214,9 @@ class ResetPasswordSerializer(serializers.Serializer):
     Serializer for password change endpoint.
     """
 
-    new_password = serializers.CharField(required=True, min_length=8)
+    new_password = serializers.CharField(
+        required=True, trim_whitespace=False, validators=[PasswordPolicyValidator().validate]
+    )
 
 
 class ProfileSerializer(BaseSerializer):

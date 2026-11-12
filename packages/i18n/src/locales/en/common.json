@@ -1175,8 +1175,9 @@
     "slug_characters": "Slug can only contain letters, numbers, hyphens, and underscores"
   },
   "password_strength": {
+    "blocklisted": "This password is common, compromised, or matches your account. Choose a different passphrase.",
     "criteria": {
-      "length": "Min 8 characters",
+      "length": "Min 15 characters",
       "uppercase": "Min 1 upper-case letter",
       "lowercase": "Min 1 lower-case letter",
       "number": "Min 1 number",
@@ -1186,7 +1187,7 @@
       "empty": "Please enter your password",
       "length_not_valid": "Password is too short",
       "strength_not_valid": "Password is weak",
-      "strength_valid": "Password is strong"
+      "strength_valid": "Length requirement met"
     }
   },
   "space_ui": {

@@ -9,7 +9,8 @@ import getpass
 from django.core.management import BaseCommand, CommandError
 
 # Module imports
-from plane.authentication.utils.password import is_password_strong
+from django.core.exceptions import ValidationError
+from plane.authentication.utils.password import PasswordPolicyValidator
 from plane.db.models import User
 
 
@@ -46,13 +47,10 @@ class Command(BaseCommand):
             self.stderr.write("Error: Your passwords didn't match.")
             return
 
-        # Blank passwords should not be allowed
-        if password.strip() == "":
-            self.stderr.write("Error: Blank passwords aren't allowed.")
-            return
-
-        if not is_password_strong(password):
-            raise CommandError("Password is too common please set a complex password")
+        try:
+            PasswordPolicyValidator().validate(password, user=user)
+        except ValidationError as exc:
+            raise CommandError(" ".join(exc.messages)) from exc
 
         # Set user password
         user.set_password(password)

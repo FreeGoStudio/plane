@@ -77,11 +77,11 @@ export const ResetPasswordForm = observer(function ResetPasswordForm() {
 
   const isButtonDisabled = useMemo(
     () =>
-      !!resetFormData.password &&
-      getPasswordStrength(resetFormData.password) === E_PASSWORD_STRENGTH.STRENGTH_VALID &&
-      resetFormData.password === resetFormData.confirm_password
-        ? false
-        : true,
+      !(
+        !!resetFormData.password &&
+        getPasswordStrength(resetFormData.password) === E_PASSWORD_STRENGTH.STRENGTH_VALID &&
+        resetFormData.password === resetFormData.confirm_password
+      ),
     [resetFormData]
   );
 
@@ -142,10 +142,11 @@ export const ResetPasswordForm = observer(function ResetPasswordForm() {
             value={resetFormData.password}
             onChange={(e) => handleFormChange("password", e.target.value)}
             placeholder={t("auth.common.password.placeholder")}
-            minLength={8}
+            minLength={15}
             onFocus={() => setIsPasswordInputFocused(true)}
             onBlur={() => setIsPasswordInputFocused(false)}
             autoComplete="new-password"
+            // oxlint-disable-next-line jsx-a11y/no-autofocus -- primary field on a dedicated password setup page
             autoFocus
             endIcon={
               <button

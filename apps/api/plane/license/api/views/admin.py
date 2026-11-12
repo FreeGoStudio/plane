@@ -34,7 +34,7 @@ from plane.utils.cache import cache_response, invalidate_cache
 from plane.authentication.utils.login import user_login
 from plane.authentication.utils.host import base_host, user_ip
 from plane.authentication.rate_limit import throttle_auth_redirect
-from plane.authentication.utils.password import is_password_strong
+from plane.authentication.utils.password import password_validation_error
 from plane.authentication.adapter.error import (
     AUTHENTICATION_ERROR_CODES,
     AuthenticationException,
@@ -194,10 +194,10 @@ class InstanceAdminSignUpEndpoint(View):
             )
             return HttpResponseRedirect(url)
         else:
-            if not is_password_strong(password):
+            if password_error := password_validation_error(password, email=email):
                 exc = AuthenticationException(
-                    error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                    error_message="PASSWORD_TOO_WEAK",
+                    error_code=AUTHENTICATION_ERROR_CODES[password_error],
+                    error_message=password_error,
                     payload={
                         "email": email,
                         "first_name": first_name,

@@ -7,7 +7,8 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { ChevronDownOutline, LockOutline } from "@makeplane/propel/icons";
 import { PasswordInput, PasswordStrengthIndicator } from "@plane/blocks/auth";
-import { cn } from "@plane/utils";
+import { E_PASSWORD_STRENGTH } from "@plane/constants";
+import { cn, getPasswordStrength } from "@plane/utils";
 
 interface PasswordState {
   password: string;
@@ -53,7 +54,7 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
 
   const isPasswordValid = useMemo(() => {
     const { password, confirmPassword } = passwordState;
-    return password.length >= 8 && password === confirmPassword;
+    return getPasswordStrength(password) === E_PASSWORD_STRENGTH.STRENGTH_VALID && password === confirmPassword;
   }, [passwordState]);
 
   const hasPasswordMismatch = useMemo(() => {
@@ -104,6 +105,7 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
           <PasswordInput
             id="password"
             label="Password"
+            autoComplete="new-password"
             value={passwordState.password}
             onChange={(value) => handlePasswordChange("password", value)}
             placeholder="Set a password"
@@ -118,6 +120,7 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
             <PasswordInput
               id="confirm-password"
               label="Confirm password"
+              autoComplete="new-password"
               value={passwordState.confirmPassword}
               onChange={(value) => handlePasswordChange("confirmPassword", value)}
               placeholder="Confirm password"

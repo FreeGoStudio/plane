@@ -293,9 +293,17 @@ else:
 
 # Password validations
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "plane.authentication.utils.password.PasswordPolicyValidator"},
+]
+
+# New passwords use NFC; retain Django's default hashers for legacy accounts.
+PASSWORD_HASHERS = [
+    "plane.authentication.utils.hashers.NFCPasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
+    "django.contrib.auth.hashers.Argon2PasswordHasher",
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.ScryptPasswordHasher",
 ]
 
 # Password reset time the number of seconds the uniquely generated uid will be valid

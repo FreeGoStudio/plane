@@ -27,7 +27,7 @@ from plane.license.models import Instance
 from plane.db.models import User
 from plane.license.utils.instance_value import get_configuration_value
 from plane.authentication.utils.host import base_host
-from plane.authentication.utils.password import is_password_strong
+from plane.authentication.utils.password import password_validation_error
 from plane.authentication.adapter.error import (
     AuthenticationException,
     AUTHENTICATION_ERROR_CODES,
@@ -141,11 +141,11 @@ class ResetPasswordEndpoint(View):
                 )
                 return HttpResponseRedirect(url)
 
-            # Check the password complexity
-            if not is_password_strong(password):
+            # Check length and the whole-password blocklist
+            if password_error := password_validation_error(password, user=user):
                 exc = AuthenticationException(
-                    error_code=AUTHENTICATION_ERROR_CODES["PASSWORD_TOO_WEAK"],
-                    error_message="PASSWORD_TOO_WEAK",
+                    error_code=AUTHENTICATION_ERROR_CODES[password_error],
+                    error_message=password_error,
                 )
                 url = urljoin(
                     base_host(request=request, is_app=True),

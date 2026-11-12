@@ -1175,8 +1175,9 @@
     "slug_characters": "地址标识只能包含英文字母、数字、连字符和下划线。"
   },
   "password_strength": {
+    "blocklisted": "该密码属于常见、已泄露或与账号相同的密码，请选择不同的长密码短语。",
     "criteria": {
-      "length": "至少 8 个字符",
+      "length": "至少 15 个字符",
       "uppercase": "至少 1 个大写字母",
       "lowercase": "至少 1 个小写字母",
       "number": "至少 1 个数字",
@@ -1186,7 +1187,7 @@
       "empty": "请输入密码",
       "length_not_valid": "密码太短",
       "strength_not_valid": "密码强度较弱",
-      "strength_valid": "密码强度较高"
+      "strength_valid": "已满足长度要求"
     }
   },
   "space_ui": {

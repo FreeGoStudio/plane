@@ -49,6 +49,7 @@ export enum EAuthenticationErrorCodes {
   // Password strength
   INVALID_PASSWORD = "5020",
   PASSWORD_TOO_WEAK = "5021",
+  PASSWORD_TOO_SHORT = "5022",
   SMTP_NOT_CONFIGURED = "5025",
   // Sign Up
   USER_ALREADY_EXIST = "5030",
@@ -150,9 +151,13 @@ const errorCodeMessages: {
     title: `Invalid password`,
     message: () => `Invalid password. Please try again.`,
   },
+  [EAuthenticationErrorCodes.PASSWORD_TOO_SHORT]: {
+    title: `Password is too short`,
+    message: () => `Use at least 15 characters. A longer passphrase is recommended.`,
+  },
   [EAuthenticationErrorCodes.PASSWORD_TOO_WEAK]: {
-    title: `Password too weak`,
-    message: () => `Please use a stronger password.`,
+    title: `Password not allowed`,
+    message: () => `This password is common, compromised, or matches your account. Choose a different passphrase.`,
   },
   [EAuthenticationErrorCodes.SMTP_NOT_CONFIGURED]: {
     title: `SMTP not configured`,
@@ -431,6 +436,7 @@ export const authErrorHandler = (errorCode: EAuthenticationErrorCodes, email?: s
     EAuthenticationErrorCodes.ADMIN_USER_DEACTIVATED,
     EAuthenticationErrorCodes.RATE_LIMIT_EXCEEDED,
     EAuthenticationErrorCodes.PASSWORD_TOO_WEAK,
+    EAuthenticationErrorCodes.PASSWORD_TOO_SHORT,
   ];
 
   if (bannerAlertErrorCodes.includes(errorCode))
@@ -446,5 +452,6 @@ export const authErrorHandler = (errorCode: EAuthenticationErrorCodes, email?: s
 
 export const passwordErrors = [
   EAuthenticationErrorCodes.PASSWORD_TOO_WEAK,
+  EAuthenticationErrorCodes.PASSWORD_TOO_SHORT,
   EAuthenticationErrorCodes.INVALID_NEW_PASSWORD,
 ];

@@ -117,6 +117,10 @@ export function InstanceSetupForm() {
           };
         case EErrorCodes.INVALID_EMAIL:
           return { type: EErrorCodes.INVALID_EMAIL, message: t("admin_access.error_invalid_email") };
+        case "5022":
+          return { type: EErrorCodes.INVALID_PASSWORD, message: t("password_strength.criteria.length") };
+        case "5021":
+          return { type: EErrorCodes.INVALID_PASSWORD, message: t("password_strength.blocklisted") };
         case EErrorCodes.INVALID_PASSWORD:
           return { type: EErrorCodes.INVALID_PASSWORD, message: t("admin_access.error_invalid_password") };
         case EErrorCodes.USER_ALREADY_EXISTS:
