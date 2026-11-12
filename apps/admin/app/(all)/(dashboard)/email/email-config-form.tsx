@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useId, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 // types
@@ -27,13 +28,13 @@ type EmailFormValues = Record<TInstanceEmailConfigurationKeys, string>;
 
 type TEmailSecurityKeys = "EMAIL_USE_TLS" | "EMAIL_USE_SSL" | "NONE";
 
-const EMAIL_SECURITY_OPTIONS: { [key in TEmailSecurityKeys]: string } = {
-  EMAIL_USE_TLS: "TLS",
-  EMAIL_USE_SSL: "SSL",
-  NONE: "No email security",
-};
-
 export function InstanceEmailForm(props: IInstanceEmailForm) {
+  const { t } = useTranslation();
+  const EMAIL_SECURITY_OPTIONS: { [key in TEmailSecurityKeys]: string } = {
+    EMAIL_USE_TLS: "TLS",
+    EMAIL_USE_SSL: "SSL",
+    NONE: t("admin_email.no_security"),
+  };
   const { config } = props;
   const emailSecurityLabelId = useId();
   // states
@@ -64,7 +65,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
     {
       key: "EMAIL_HOST",
       type: "text",
-      label: "Host",
+      label: t("admin_email.host"),
       placeholder: "email.google.com",
       error: Boolean(errors.EMAIL_HOST),
       required: true,
@@ -72,7 +73,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
     {
       key: "EMAIL_PORT",
       type: "text",
-      label: "Port",
+      label: t("admin_email.port"),
       placeholder: "8080",
       error: Boolean(errors.EMAIL_PORT),
       required: true,
@@ -80,9 +81,8 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
     {
       key: "EMAIL_FROM",
       type: "text",
-      label: "Sender's email address",
-      description:
-        "This is the email address your users will see when getting emails from this instance. You will need to verify this address.",
+      label: t("admin_email.sender"),
+      description: t("admin_email.sender_hint"),
       placeholder: "no-reply@projectplane.so",
       error: Boolean(errors.EMAIL_FROM),
       required: true,
@@ -93,7 +93,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
     {
       key: "EMAIL_HOST_USER",
       type: "text",
-      label: "Username",
+      label: t("admin_email.username"),
       placeholder: "getitdone@projectplane.so",
       error: Boolean(errors.EMAIL_HOST_USER),
       required: false,
@@ -101,8 +101,8 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
     {
       key: "EMAIL_HOST_PASSWORD",
       type: "password",
-      label: "Password",
-      placeholder: "Password",
+      label: t("admin_email.password"),
+      placeholder: t("admin_email.password"),
       error: Boolean(errors.EMAIL_HOST_PASSWORD),
       required: false,
     },
@@ -117,8 +117,8 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
       reset(payload);
       setToast({
         type: "success",
-        title: "Success",
-        message: "Email Settings updated successfully",
+        title: t("success"),
+        message: t("admin_email.updated"),
       });
     } catch (err) {
       console.error(err);
@@ -168,7 +168,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
           ))}
           <div className="flex flex-col gap-1">
             <span id={emailSecurityLabelId} className="text-body-xs-medium text-primary">
-              Email security
+              {t("admin_email.security")}
             </span>
             <Select
               items={EMAIL_SECURITY_OPTIONS}
@@ -178,7 +178,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
               <SelectTrigger
                 variant="secondary"
                 size="lg"
-                placeholder="Select email security"
+                placeholder={t("admin_email.security_placeholder")}
                 aria-labelledby={emailSecurityLabelId}
               />
               <SelectContent>
@@ -195,10 +195,8 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
           <div className="flex w-full max-w-xl flex-col gap-y-10 px-1">
             <div className="mr-8 flex items-center gap-10 pt-4">
               <div className="grow">
-                <div className="text-body-xs-medium text-primary">Authentication</div>
-                <div className="text-caption-sm-regular text-tertiary">
-                  This is optional, but we recommend setting up a username and a password for your SMTP server.
-                </div>
+                <div className="text-body-xs-medium text-primary">{t("admin_email.authentication")}</div>
+                <div className="text-caption-sm-regular text-tertiary">{t("admin_email.authentication_hint")}</div>
               </div>
             </div>
           </div>
@@ -227,7 +225,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
           onClick={handleSubmit(onSubmit)}
           loading={isSubmitting}
           disabled={!isValid || !isDirty}
-          label={isSubmitting ? "Saving" : "Save changes"}
+          label={isSubmitting ? t("saving") : t("save_changes")}
         />
         <Button
           variant="secondary"
@@ -236,7 +234,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
           onClick={() => setIsSendTestEmailModalOpen(true)}
           loading={isSubmitting}
           disabled={!isValid}
-          label="Send test email"
+          label={t("admin_email.test")}
         />
       </div>
     </div>

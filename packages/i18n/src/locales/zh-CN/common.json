@@ -905,5 +905,37 @@
       "save_as": "另存为",
       "hide_filters": "隐藏筛选"
     }
+  },
+  "admin_email": {
+    "title": "通过自有实例安全发送邮件",
+    "description": "Plane 可通过你的实例向你和用户发送邮件，无需经过 Plane 的在线服务。",
+    "setup_hint": "请在下方配置，并在保存前测试设置。",
+    "misconfiguration": "配置错误可能导致退信或发送失败。",
+    "enable": "启用 SMTP 邮件",
+    "disabled_title": "邮件功能已停用",
+    "disabled_message": "已停用邮件功能。",
+    "disable_error_title": "停用邮件失败",
+    "disable_error_message": "无法停用邮件功能，请重试。",
+    "host": "服务器地址",
+    "port": "端口",
+    "sender": "发件人邮箱地址",
+    "sender_hint": "用户收到此实例发送的邮件时将看到此发件地址。你需要验证该地址。",
+    "username": "用户名",
+    "password": "密码",
+    "security": "邮件安全",
+    "security_placeholder": "选择邮件安全方式",
+    "no_security": "不使用加密",
+    "authentication": "身份验证",
+    "authentication_hint": "此项可选，建议为 SMTP 服务器设置用户名和密码。",
+    "updated": "邮件设置已更新。",
+    "test": "发送测试邮件",
+    "recipient": "收件人邮箱",
+    "sent_title": "邮件已发送",
+    "failed_title": "发送失败",
+    "send_failed": "邮件发送失败",
+    "sent_message": "测试邮件已发送至 {email}。如果未收到，请检查垃圾邮件文件夹。",
+    "retry_hint": "如果仍未收到，请检查 SMTP 配置后重新发送测试邮件。",
+    "sending": "正在发送邮件",
+    "send": "发送邮件"
   }
 }

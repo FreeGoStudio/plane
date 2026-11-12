@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -20,6 +21,7 @@ import type { Route } from "./+types/page";
 import { InstanceEmailForm } from "./email-config-form";
 
 const InstanceEmailPage = observer(function InstanceEmailPage(_props: Route.ComponentProps) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, disableEmail } = useInstance();
 
@@ -35,14 +37,14 @@ const InstanceEmailPage = observer(function InstanceEmailPage(_props: Route.Comp
         await disableEmail();
         setIsSMTPEnabled(false);
         setToast({
-          title: "Email feature disabled",
-          message: "Email feature has been disabled",
+          title: t("admin_email.disabled_title"),
+          message: t("admin_email.disabled_message"),
           type: "success",
         });
       } catch (_error) {
         setToast({
-          title: "Error disabling email",
-          message: "Failed to disable email feature. Please try again.",
+          title: t("admin_email.disable_error_title"),
+          message: t("admin_email.disable_error_message"),
           type: "error",
         });
       } finally {
@@ -61,13 +63,13 @@ const InstanceEmailPage = observer(function InstanceEmailPage(_props: Route.Comp
   return (
     <PageWrapper
       header={{
-        title: "Secure emails from your own instance",
+        title: t("admin_email.title"),
         description: (
           <>
-            Plane can send useful emails to you and your users from your own instance without talking to the Internet.
+            {t("admin_email.description")}
             <div className="text-body-xs-regular text-tertiary">
-              Set it up below and please test your settings before you save them.&nbsp;
-              <span className="text-danger-primary">Misconfigs can lead to email bounces and errors.</span>
+              {t("admin_email.setup_hint")}
+              <span className="text-danger-primary">{t("admin_email.misconfiguration")}</span>
             </div>
           </>
         ),
@@ -77,7 +79,7 @@ const InstanceEmailPage = observer(function InstanceEmailPage(_props: Route.Comp
           </Skeleton>
         ) : (
           <Switch
-            aria-label="Enable SMTP email"
+            aria-label={t("admin_email.enable")}
             checked={isSMTPEnabled}
             onCheckedChange={handleToggle}
             size="sm"

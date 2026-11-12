@@ -905,5 +905,37 @@
       "save_as": "Save as",
       "hide_filters": "Hide filters"
     }
+  },
+  "admin_email": {
+    "title": "Secure emails from your own instance",
+    "description": "Plane can send useful emails to you and your users from your own instance without talking to the Internet.",
+    "setup_hint": "Set it up below and please test your settings before you save them.",
+    "misconfiguration": "Misconfigs can lead to email bounces and errors.",
+    "enable": "Enable SMTP email",
+    "disabled_title": "Email feature disabled",
+    "disabled_message": "Email feature has been disabled",
+    "disable_error_title": "Error disabling email",
+    "disable_error_message": "Failed to disable email feature. Please try again.",
+    "host": "Host",
+    "port": "Port",
+    "sender": "Sender's email address",
+    "sender_hint": "This is the email address your users will see when getting emails from this instance. You will need to verify this address.",
+    "username": "Username",
+    "password": "Password",
+    "security": "Email security",
+    "security_placeholder": "Select email security",
+    "no_security": "No email security",
+    "authentication": "Authentication",
+    "authentication_hint": "This is optional, but we recommend setting up a username and a password for your SMTP server.",
+    "updated": "Email Settings updated successfully",
+    "test": "Send test email",
+    "recipient": "Receiver email",
+    "sent_title": "Email sent",
+    "failed_title": "Failed",
+    "send_failed": "Failed to send email",
+    "sent_message": "We have sent the test email to {email}. Please check your spam folder if you cannot find it.",
+    "retry_hint": "If you still cannot find it, recheck your SMTP configuration and trigger a new test email.",
+    "sending": "Sending email",
+    "send": "Send email"
   }
 }

@@ -10,6 +10,30 @@ import type ICUPlugin from "i18next-icu";
 const ICU = createRequire(import.meta.url)("i18next-icu").default as typeof ICUPlugin;
 
 const root = path.resolve(import.meta.dirname, "../src/locales");
+
+test("test-email confirmation preserves the recipient in Chinese and English", async () => {
+  const instance = createInstance().use(ICU);
+  const resources = Object.fromEntries(
+    ["en", "zh-CN"].map((language) => [
+      language,
+      {
+        translation: JSON.parse(fs.readFileSync(path.join(root, language, "common.json"), "utf8")),
+      },
+    ])
+  );
+  await instance.init({ lng: "zh-CN", fallbackLng: false, resources });
+  const email = "person+test@example.com";
+  assert.equal(
+    instance.t("admin_email.sent_message", { email }),
+    `测试邮件已发送至 ${email}。如果未收到，请检查垃圾邮件文件夹。`
+  );
+  await instance.changeLanguage("en");
+  assert.equal(
+    instance.t("admin_email.sent_message", { email }),
+    `We have sent the test email to ${email}. Please check your spam folder if you cannot find it.`
+  );
+});
+
 function flatten(data: Record<string, unknown>, prefix = ""): Record<string, string> {
   return Object.fromEntries(
     Object.entries(data).flatMap(([key, value]) => {
