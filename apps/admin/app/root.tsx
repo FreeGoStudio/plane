@@ -16,16 +16,19 @@ import globalStyles from "@/styles/globals.css?url";
 import { AppProviders } from "@/providers";
 import type { Route } from "./+types/root";
 // fonts
-import "@fontsource-variable/inter";
+import interStyles from "@fontsource-variable/inter/index.css?url";
+import symbolStyles from "@fontsource/material-symbols-rounded/index.css?url";
+import monoStyles from "@fontsource/ibm-plex-mono/index.css?url";
 import interVariableWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
-import "@fontsource/material-symbols-rounded";
-import "@fontsource/ibm-plex-mono";
 
 const APP_TITLE = "Plane | Simple, extensible, open-source project management tool.";
 const APP_DESCRIPTION =
   "Open-source project management tool to manage work items, sprints, and product roadmaps with peace of mind.";
 
 export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: interStyles },
+  { rel: "stylesheet", href: symbolStyles },
+  { rel: "stylesheet", href: monoStyles },
   { rel: "apple-touch-icon", sizes: "180x180", href: appleTouchIcon },
   { rel: "icon", type: "image/png", sizes: "32x32", href: favicon32 },
   { rel: "icon", type: "image/png", sizes: "16x16", href: favicon16 },

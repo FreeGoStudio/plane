@@ -127,6 +127,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "plane.middleware.language.UserLanguageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "crum.CurrentRequestUserMiddleware",
     "django.middleware.gzip.GZipMiddleware",
@@ -311,7 +312,7 @@ MEDIA_ROOT = "mediafiles"
 MEDIA_URL = "/media/"
 
 # Internationalization
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "zh-hans"
 USE_I18N = True
 
 # Timezones

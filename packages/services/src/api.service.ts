@@ -7,6 +7,7 @@
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
 import { create } from "axios";
 import { normalizeAPIRequestURL } from "./helpers/url";
+import { getRequestLanguage } from "./helpers/language";
 
 /**
  * Abstract base class for making HTTP requests using axios
@@ -28,6 +29,8 @@ export abstract class APIService {
     });
 
     this.axiosInstance.interceptors.request.use((config) => {
+      const language = getRequestLanguage();
+      if (language && !config.headers.has("Accept-Language")) config.headers.set("Accept-Language", language);
       try {
         if (config.url) {
           config.url = normalizeAPIRequestURL(config.url, this.baseURL);
