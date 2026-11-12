@@ -238,6 +238,7 @@ export const TopNavPowerK = observer(() => {
             onFocus={handleFocus}
             onKeyDown={handleKeyDown}
             placeholder={t("power_k.search_commands")}
+            aria-label={t("power_k.search_commands")}
             className="placeholder-text-placeholder min-w-0 flex-1 bg-transparent text-body-xs-regular text-primary outline-none"
           />
           {searchTerm && (
