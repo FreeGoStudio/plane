@@ -82,7 +82,7 @@ export const PagesListHeader = observer(function PagesListHeader() {
           <Breadcrumbs.Item
             component={
               <BreadcrumbLink
-                label="Pages"
+                label={t("sidebar.pages")}
                 href={`/${workspaceSlug}/projects/${currentProjectDetails?.id}/pages/`}
                 icon={<PagesOutline className="h-4 w-4 text-tertiary" />}
                 isLast

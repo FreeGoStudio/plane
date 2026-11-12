@@ -145,7 +145,7 @@ export const ProjectViewIssuesHeader = observer(function ProjectViewIssuesHeader
           <Breadcrumbs.Item
             component={
               <BreadcrumbLink
-                label="Views"
+                label={t("sidebar.views")}
                 href={`/${workspaceSlug}/projects/${projectId}/views/`}
                 icon={<ViewsOutline className="h-4 w-4 text-tertiary" />}
               />

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // plane imports
@@ -19,6 +20,7 @@ import { useStickyOperations } from "@/components/stickies/sticky/use-operations
 import { useSticky } from "@/hooks/use-stickies";
 
 export const WorkspaceStickyHeader = observer(function WorkspaceStickyHeader() {
+  const { t } = useTranslation();
   const { workspaceSlug } = useParams();
   // hooks
   const { creatingSticky, toggleShowNewSticky } = useSticky();
@@ -32,7 +34,10 @@ export const WorkspaceStickyHeader = observer(function WorkspaceStickyHeader() {
             <Breadcrumbs>
               <Breadcrumbs.Item
                 component={
-                  <BreadcrumbLink label="Stickies" icon={<MultipleStickyOutline className="size-4 text-tertiary" />} />
+                  <BreadcrumbLink
+                    label={t("sidebar.stickies")}
+                    icon={<MultipleStickyOutline className="size-4 text-tertiary" />}
+                  />
                 }
               />
             </Breadcrumbs>

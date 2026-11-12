@@ -5,6 +5,7 @@
  */
 
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // icons
@@ -52,6 +53,7 @@ import { CommonProjectBreadcrumbs } from "@/components/breadcrumbs/common";
 import { useProjectCrumbProps } from "@/components/breadcrumbs/use-project-crumb-props";
 
 export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
+  const { t } = useTranslation();
   // refs
   const parentRef = useRef<HTMLDivElement>(null);
   // states
@@ -133,7 +135,7 @@ export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
               <Breadcrumbs.Item
                 component={
                   <BreadcrumbLink
-                    label="Modules"
+                    label={t("sidebar.modules")}
                     href={`/${workspaceSlug}/projects/${projectId}/modules/`}
                     icon={<ModuleOutline className="h-4 w-4 text-tertiary" />}
                     isLast

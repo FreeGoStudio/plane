@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // ui
@@ -22,6 +23,7 @@ import { CommonProjectBreadcrumbs } from "@/components/breadcrumbs/common";
 import { useProjectCrumbProps } from "@/components/breadcrumbs/use-project-crumb-props";
 
 export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId } = useParams();
   const projectCrumb = useProjectCrumbProps(workspaceSlug?.toString(), projectId?.toString());
   // store hooks
@@ -41,7 +43,7 @@ export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
             <Breadcrumbs.Item
               component={
                 <BreadcrumbLink
-                  label="Views"
+                  label={t("sidebar.views")}
                   href={`/${workspaceSlug}/projects/${projectId}/views/`}
                   icon={<ViewsOutline className="h-4 w-4 text-tertiary" />}
                   isLast
