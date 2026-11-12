@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "İş öğesi başlığı, açıklama oluşturmak için yeterli bilgi içermiyor. Lütfen farklı bir başlık deneyin.",
+      "ai_request_limit": "Kullanıcı başına aylık {limit} istek sınırına ulaştınız.",
+      "remove_from_cycle": "Döngüden kaldır",
+      "remove_from_module": "Modülden kaldır",
+      "module_added": "İş öğeleri modüle eklendi.",
+      "module_add_failed": "Seçilen iş öğeleri modüle eklenemedi. Lütfen tekrar deneyin.",
+      "cycle_add_failed": "Seçilen iş öğeleri döngüye eklenemedi. Lütfen tekrar deneyin.",
+      "move_failed": "İş öğesi projeye taşınamadı. Lütfen tekrar deneyin.",
+      "editor_busy": "Düzenleyici hâlâ değişiklikleri işliyor. Devam etmeden önce lütfen bekleyin.",
+      "invalid_due_date": "Bitiş tarihi, iş öğesinin başlangıç tarihinden önce olamaz.",
+      "dates_update_failed": "İş öğesi tarihleri güncellenirken hata oluştu. Lütfen daha sonra tekrar deneyin.",
+      "move_unavailable": "İş öğesi taşınamıyor",
+      "move_not_allowed": "Bu iş öğesini taşıma izniniz yok.",
+      "drag_disabled": "Geçerli gruplama için sürükle ve bırak devre dışı.",
+      "action_unavailable": "İşlem kullanılamıyor",
+      "action_not_implemented": "“{actionName}” işlemi uygulanmamış.",
+      "markdown_copied": "Markdown panoya kopyalandı."
+    },
     "label": "{count, plural, one {İş öğesi} other {İş öğeleri}}",
     "all": "Tüm İş Öğeleri",
     "edit": "İş öğesini düzenle",

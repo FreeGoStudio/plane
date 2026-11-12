@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "El título del elemento de trabajo no contiene información suficiente para generar la descripción. Pruebe con otro título.",
+      "ai_request_limit": "Ha alcanzado el límite de {limit} solicitudes por mes y por usuario.",
+      "remove_from_cycle": "Quitar del ciclo",
+      "remove_from_module": "Quitar del módulo",
+      "module_added": "Los elementos de trabajo se añadieron al módulo.",
+      "module_add_failed": "No se pudieron añadir los elementos de trabajo seleccionados al módulo. Inténtelo de nuevo.",
+      "cycle_add_failed": "No se pudieron añadir los elementos de trabajo seleccionados al ciclo. Inténtelo de nuevo.",
+      "move_failed": "No se pudo mover el elemento de trabajo al proyecto. Inténtelo de nuevo.",
+      "editor_busy": "El editor sigue procesando los cambios. Espere antes de continuar.",
+      "invalid_due_date": "La fecha de vencimiento no puede ser anterior a la fecha de inicio del elemento de trabajo.",
+      "dates_update_failed": "Error al actualizar las fechas del elemento de trabajo. Inténtelo de nuevo más tarde.",
+      "move_unavailable": "No se puede mover el elemento de trabajo",
+      "move_not_allowed": "No tiene permiso para mover este elemento de trabajo.",
+      "drag_disabled": "Arrastrar y soltar está desactivado para la agrupación actual.",
+      "action_unavailable": "Acción no disponible",
+      "action_not_implemented": "La acción «{actionName}» no está implementada.",
+      "markdown_copied": "Markdown copiado al portapapeles."
+    },
     "label": "{count, plural, one {Elemento de trabajo} other {Elementos de trabajo}}",
     "all": "Todos los elementos de trabajo",
     "edit": "Editar elemento de trabajo",

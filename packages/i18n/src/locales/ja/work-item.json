@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "作業項目のタイトルに説明を生成するための情報が不足しています。別のタイトルでお試しください。",
+      "ai_request_limit": "ユーザーごとの月間リクエスト上限である{limit}回に達しました。",
+      "remove_from_cycle": "サイクルから削除",
+      "remove_from_module": "モジュールから削除",
+      "module_added": "作業項目をモジュールに追加しました。",
+      "module_add_failed": "選択した作業項目をモジュールに追加できませんでした。もう一度お試しください。",
+      "cycle_add_failed": "選択した作業項目をサイクルに追加できませんでした。もう一度お試しください。",
+      "move_failed": "作業項目をプロジェクトに移動できませんでした。もう一度お試しください。",
+      "editor_busy": "エディターが変更を処理しています。しばらく待ってから続行してください。",
+      "invalid_due_date": "期限は作業項目の開始日より前に設定できません。",
+      "dates_update_failed": "作業項目の日付の更新中にエラーが発生しました。後でもう一度お試しください。",
+      "move_unavailable": "作業項目を移動できません",
+      "move_not_allowed": "この作業項目を移動する権限がありません。",
+      "drag_disabled": "現在のグループ化ではドラッグ＆ドロップが無効です。",
+      "action_unavailable": "操作を利用できません",
+      "action_not_implemented": "「{actionName}」操作は実装されていません。",
+      "markdown_copied": "Markdownをクリップボードにコピーしました。"
+    },
     "label": "{count, plural, one {作業項目} other {作業項目}}",
     "all": "すべての作業項目",
     "edit": "作業項目を編集",

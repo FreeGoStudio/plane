@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Le titre de l’élément de travail ne contient pas assez d’informations pour générer la description. Veuillez essayer un autre titre.",
+      "ai_request_limit": "Vous avez atteint la limite de {limit} requêtes par mois et par utilisateur.",
+      "remove_from_cycle": "Retirer du cycle",
+      "remove_from_module": "Retirer du module",
+      "module_added": "Les éléments de travail ont été ajoutés au module.",
+      "module_add_failed": "Les éléments de travail sélectionnés n’ont pas pu être ajoutés au module. Veuillez réessayer.",
+      "cycle_add_failed": "Les éléments de travail sélectionnés n’ont pas pu être ajoutés au cycle. Veuillez réessayer.",
+      "move_failed": "L’élément de travail n’a pas pu être déplacé vers le projet. Veuillez réessayer.",
+      "editor_busy": "L’éditeur traite encore les modifications. Veuillez patienter avant de continuer.",
+      "invalid_due_date": "La date d’échéance ne peut pas précéder la date de début de l’élément de travail.",
+      "dates_update_failed": "Erreur lors de la mise à jour des dates de l’élément de travail. Veuillez réessayer plus tard.",
+      "move_unavailable": "Impossible de déplacer l’élément de travail",
+      "move_not_allowed": "Vous n’êtes pas autorisé à déplacer cet élément de travail.",
+      "drag_disabled": "Le glisser-déposer est désactivé pour le regroupement actuel.",
+      "action_unavailable": "Action indisponible",
+      "action_not_implemented": "L’action « {actionName} » n’est pas implémentée.",
+      "markdown_copied": "Markdown copié dans le presse-papiers."
+    },
     "label": "{count, plural, one {Élément de travail} other {Éléments de travail}}",
     "all": "Tous les éléments de travail",
     "edit": "Modifier l’élément de travail",

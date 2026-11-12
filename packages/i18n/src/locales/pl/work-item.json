@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Tytuł elementu pracy nie zawiera wystarczających informacji do wygenerowania opisu. Proszę spróbować z innym tytułem.",
+      "ai_request_limit": "Osiągnięto miesięczny limit żądań na użytkownika: {limit}.",
+      "remove_from_cycle": "Usuń z cyklu",
+      "remove_from_module": "Usuń z modułu",
+      "module_added": "Elementy pracy zostały dodane do modułu.",
+      "module_add_failed": "Nie udało się dodać wybranych elementów pracy do modułu. Proszę spróbować ponownie.",
+      "cycle_add_failed": "Nie udało się dodać wybranych elementów pracy do cyklu. Proszę spróbować ponownie.",
+      "move_failed": "Nie udało się przenieść elementu pracy do projektu. Proszę spróbować ponownie.",
+      "editor_busy": "Edytor nadal przetwarza zmiany. Proszę poczekać przed kontynuowaniem.",
+      "invalid_due_date": "Termin wykonania nie może poprzedzać daty rozpoczęcia elementu pracy.",
+      "dates_update_failed": "Błąd podczas aktualizacji dat elementu pracy. Proszę spróbować ponownie później.",
+      "move_unavailable": "Nie można przenieść elementu pracy",
+      "move_not_allowed": "Brak uprawnień do przeniesienia tego elementu pracy.",
+      "drag_disabled": "Przeciąganie i upuszczanie jest wyłączone dla bieżącego grupowania.",
+      "action_unavailable": "Akcja niedostępna",
+      "action_not_implemented": "Akcja „{actionName}” nie jest zaimplementowana.",
+      "markdown_copied": "Markdown skopiowano do schowka."
+    },
     "label": "{count, plural, one {Element pracy} few {Elementy pracy} other {Elementów pracy}}",
     "all": "Wszystkie elementy pracy",
     "edit": "Edytuj element pracy",

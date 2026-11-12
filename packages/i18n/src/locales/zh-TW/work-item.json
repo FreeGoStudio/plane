@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "工作項目標題資訊不足，無法產生描述，請嘗試使用其他標題。",
+      "ai_request_limit": "您已達到每位使用者每月 {limit} 次請求的上限。",
+      "remove_from_cycle": "從週期中移除",
+      "remove_from_module": "從模組中移除",
+      "module_added": "工作項目已成功新增至模組。",
+      "module_add_failed": "無法將所選工作項目新增至模組，請重試。",
+      "cycle_add_failed": "無法將所選工作項目新增至週期，請重試。",
+      "move_failed": "無法將工作項目移至專案，請重試。",
+      "editor_busy": "編輯器仍在處理變更，請稍候再繼續。",
+      "invalid_due_date": "截止日期不能早於工作項目的開始日期。",
+      "dates_update_failed": "更新工作項目日期時發生錯誤，請稍後重試。",
+      "move_unavailable": "無法移動工作項目",
+      "move_not_allowed": "您無權移動此工作項目。",
+      "drag_disabled": "目前的分組不支援拖放。",
+      "action_unavailable": "操作無法使用",
+      "action_not_implemented": "尚未實作「{actionName}」操作。",
+      "markdown_copied": "Markdown 已複製到剪貼簿。"
+    },
     "label": "{count, plural, one {工作事項} other {工作事項}}",
     "all": "所有工作事項",
     "edit": "編輯工作事項",

@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Work item title is not informative enough to generate the description. Please try with a different title.",
+      "ai_request_limit": "You have reached the limit of {limit} requests per month per user.",
+      "remove_from_cycle": "Remove from cycle",
+      "remove_from_module": "Remove from module",
+      "module_added": "Work items added to the module successfully.",
+      "module_add_failed": "Selected work items could not be added to the module. Please try again.",
+      "cycle_add_failed": "Selected work items could not be added to the cycle. Please try again.",
+      "move_failed": "Failed to move work item to project. Please try again.",
+      "editor_busy": "Editor is still processing changes. Please wait before proceeding.",
+      "invalid_due_date": "Due date cannot be before the start date of the work item.",
+      "dates_update_failed": "Error while updating work item dates. Please try again later.",
+      "move_unavailable": "Cannot move work item",
+      "move_not_allowed": "You are not allowed to move this work item.",
+      "drag_disabled": "Drag and drop is disabled for the current grouping.",
+      "action_unavailable": "Action not available",
+      "action_not_implemented": "The {actionName} action is not implemented.",
+      "markdown_copied": "Markdown copied to clipboard."
+    },
     "label": "{count, plural, one {Work item} other {Work items}}",
     "all": "All Work items",
     "edit": "Edit work item",

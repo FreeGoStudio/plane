@@ -97,7 +97,7 @@ export const CalendarDayTile = observer(function CalendarDayTile(props: Props) {
         setToast({
           type: "error",
           title: t("sso.providers.saml.configure.toast.error_title"),
-          message: "Due date cannot be before the start date of the work item.",
+          message: t("issue.notifications.invalid_due_date"),
         });
         return false;
       }

@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Il titolo dell’elemento di lavoro non contiene informazioni sufficienti per generare la descrizione. Provi con un altro titolo.",
+      "ai_request_limit": "È stato raggiunto il limite di richieste per mese e per utente: {limit}.",
+      "remove_from_cycle": "Rimuovere dal ciclo",
+      "remove_from_module": "Rimuovere dal modulo",
+      "module_added": "Gli elementi di lavoro sono stati aggiunti al modulo.",
+      "module_add_failed": "Non è stato possibile aggiungere gli elementi di lavoro selezionati al modulo. Riprovi.",
+      "cycle_add_failed": "Non è stato possibile aggiungere gli elementi di lavoro selezionati al ciclo. Riprovi.",
+      "move_failed": "Non è stato possibile spostare l’elemento di lavoro nel progetto. Riprovi.",
+      "editor_busy": "L’editor sta ancora elaborando le modifiche. Attenda prima di continuare.",
+      "invalid_due_date": "La data di scadenza non può precedere la data di inizio dell’elemento di lavoro.",
+      "dates_update_failed": "Errore durante l’aggiornamento delle date dell’elemento di lavoro. Riprovi più tardi.",
+      "move_unavailable": "Impossibile spostare l’elemento di lavoro",
+      "move_not_allowed": "Non dispone dell’autorizzazione per spostare questo elemento di lavoro.",
+      "drag_disabled": "Il trascinamento è disabilitato per il raggruppamento attuale.",
+      "action_unavailable": "Azione non disponibile",
+      "action_not_implemented": "L’azione «{actionName}» non è implementata.",
+      "markdown_copied": "Markdown copiato negli appunti."
+    },
     "label": "{count, plural, one {Elemento di lavoro} other {Elementi di lavoro}}",
     "all": "Tutti gli elementi di lavoro",
     "edit": "Modifica elemento di lavoro",

@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Judul item pekerjaan tidak memuat cukup informasi untuk membuat deskripsi. Silakan coba judul lain.",
+      "ai_request_limit": "Anda telah mencapai batas {limit} permintaan per bulan per pengguna.",
+      "remove_from_cycle": "Hapus dari siklus",
+      "remove_from_module": "Hapus dari modul",
+      "module_added": "Item pekerjaan berhasil ditambahkan ke modul.",
+      "module_add_failed": "Item pekerjaan yang dipilih tidak dapat ditambahkan ke modul. Silakan coba lagi.",
+      "cycle_add_failed": "Item pekerjaan yang dipilih tidak dapat ditambahkan ke siklus. Silakan coba lagi.",
+      "move_failed": "Item pekerjaan tidak dapat dipindahkan ke proyek. Silakan coba lagi.",
+      "editor_busy": "Editor masih memproses perubahan. Harap tunggu sebelum melanjutkan.",
+      "invalid_due_date": "Tanggal jatuh tempo tidak boleh sebelum tanggal mulai item pekerjaan.",
+      "dates_update_failed": "Terjadi kesalahan saat memperbarui tanggal item pekerjaan. Silakan coba lagi nanti.",
+      "move_unavailable": "Item pekerjaan tidak dapat dipindahkan",
+      "move_not_allowed": "Anda tidak diizinkan memindahkan item pekerjaan ini.",
+      "drag_disabled": "Seret dan lepas dinonaktifkan untuk pengelompokan saat ini.",
+      "action_unavailable": "Tindakan tidak tersedia",
+      "action_not_implemented": "Tindakan “{actionName}” belum diterapkan.",
+      "markdown_copied": "Markdown disalin ke papan klip."
+    },
     "label": "{count, plural, one {Item Kerja} other {Item Kerja}}",
     "all": "Semua Item Kerja",
     "edit": "Edit item kerja",

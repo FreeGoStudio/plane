@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "De titel van het werkitem bevat onvoldoende informatie om de beschrijving te genereren. Probeer een andere titel.",
+      "ai_request_limit": "U hebt de limiet van {limit} aanvragen per maand per gebruiker bereikt.",
+      "remove_from_cycle": "Uit cyclus verwijderen",
+      "remove_from_module": "Uit module verwijderen",
+      "module_added": "Werkitems zijn aan de module toegevoegd.",
+      "module_add_failed": "De geselecteerde werkitems konden niet aan de module worden toegevoegd. Probeer het opnieuw.",
+      "cycle_add_failed": "De geselecteerde werkitems konden niet aan de cyclus worden toegevoegd. Probeer het opnieuw.",
+      "move_failed": "Het werkitem kon niet naar het project worden verplaatst. Probeer het opnieuw.",
+      "editor_busy": "De editor verwerkt de wijzigingen nog. Wacht voordat u doorgaat.",
+      "invalid_due_date": "De vervaldatum mag niet vóór de startdatum van het werkitem liggen.",
+      "dates_update_failed": "Fout bij het bijwerken van de datums van het werkitem. Probeer het later opnieuw.",
+      "move_unavailable": "Werkitem kan niet worden verplaatst",
+      "move_not_allowed": "U mag dit werkitem niet verplaatsen.",
+      "drag_disabled": "Slepen en neerzetten is uitgeschakeld voor de huidige groepering.",
+      "action_unavailable": "Actie niet beschikbaar",
+      "action_not_implemented": "De actie “{actionName}” is niet geïmplementeerd.",
+      "markdown_copied": "Markdown is naar het klembord gekopieerd."
+    },
     "label": "{count, plural, one {Werkitem} other {Werkitems}}",
     "all": "Alle werkitems",
     "edit": "Werkitem bewerken",

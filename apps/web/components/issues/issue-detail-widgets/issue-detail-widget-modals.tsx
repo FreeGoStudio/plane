@@ -114,7 +114,7 @@ export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals
       setToast({
         type: "error",
         title: t("sso.providers.saml.configure.toast.error_title"),
-        message: "Please select at least one work item.",
+        message: t("issue.select.error"),
       });
       return;
     }

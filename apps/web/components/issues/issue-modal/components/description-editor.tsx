@@ -99,7 +99,7 @@ export const IssueDescriptionEditor = observer(function IssueDescriptionEditor(p
       setToast({
         type: "error",
         title: t("sso.providers.saml.configure.toast.error_title"),
-        message: "Editor is still processing changes. Please wait before proceeding.",
+        message: t("issue.notifications.editor_busy"),
       });
       event.preventDefault(); // Prevent default action if editor is not ready to discard
     }
@@ -129,8 +129,7 @@ export const IssueDescriptionEditor = observer(function IssueDescriptionEditor(p
           setToast({
             type: "error",
             title: t("sso.providers.saml.configure.toast.error_title"),
-            message:
-              "Work item title isn't informative enough to generate the description. Please try with a different title.",
+            message: t("issue.notifications.description_title_insufficient"),
           });
         else handleAiAssistance(res.response_html);
         return undefined;
@@ -142,13 +141,13 @@ export const IssueDescriptionEditor = observer(function IssueDescriptionEditor(p
           setToast({
             type: "error",
             title: t("sso.providers.saml.configure.toast.error_title"),
-            message: error || "You have reached the maximum number of requests of 50 requests per month per user.",
+            message: error || t("issue.notifications.ai_request_limit", { limit: 50 }),
           });
         else
           setToast({
             type: "error",
             title: t("sso.providers.saml.configure.toast.error_title"),
-            message: error || "Some error occurred. Please try again.",
+            message: error || t("something_went_wrong_please_try_again"),
           });
       })
       .finally(() => setIAmFeelingLucky(false));

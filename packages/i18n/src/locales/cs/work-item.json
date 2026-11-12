@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Název pracovní položky neobsahuje dostatek informací k vygenerování popisu. Zkuste prosím jiný název.",
+      "ai_request_limit": "Byl dosažen měsíční limit požadavků na uživatele: {limit}.",
+      "remove_from_cycle": "Odebrat z cyklu",
+      "remove_from_module": "Odebrat z modulu",
+      "module_added": "Pracovní položky byly přidány do modulu.",
+      "module_add_failed": "Vybrané pracovní položky se nepodařilo přidat do modulu. Zkuste to prosím znovu.",
+      "cycle_add_failed": "Vybrané pracovní položky se nepodařilo přidat do cyklu. Zkuste to prosím znovu.",
+      "move_failed": "Pracovní položku se nepodařilo přesunout do projektu. Zkuste to prosím znovu.",
+      "editor_busy": "Editor stále zpracovává změny. Před pokračováním prosím počkejte.",
+      "invalid_due_date": "Termín dokončení nemůže předcházet datu zahájení pracovní položky.",
+      "dates_update_failed": "Chyba při aktualizaci dat pracovní položky. Zkuste to prosím později znovu.",
+      "move_unavailable": "Pracovní položku nelze přesunout",
+      "move_not_allowed": "Nemáte oprávnění přesunout tuto pracovní položku.",
+      "drag_disabled": "Přetahování je pro aktuální seskupení zakázáno.",
+      "action_unavailable": "Akce není dostupná",
+      "action_not_implemented": "Akce „{actionName}“ není implementována.",
+      "markdown_copied": "Markdown byl zkopírován do schránky."
+    },
     "label": "{count, plural, one {Pracovní položka} few {Pracovní položky} other {Pracovních položek}}",
     "all": "Všechny pracovní položky",
     "edit": "Upravit pracovní položku",

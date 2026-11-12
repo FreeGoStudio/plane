@@ -53,14 +53,14 @@ export const ModuleEmptyState = observer(function ModuleEmptyState() {
         setToast({
           type: "success",
           title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
-          message: "Work items added to the module successfully.",
+          message: t("issue.notifications.module_added"),
         })
       )
       .catch(() =>
         setToast({
           type: "error",
           title: t("sso.providers.saml.configure.toast.error_title"),
-          message: "Selected work items could not be added to the module. Please try again.",
+          message: t("issue.notifications.module_add_failed"),
         })
       );
   };

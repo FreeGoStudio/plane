@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Der Titel des Arbeitselements enthält nicht genügend Informationen, um eine Beschreibung zu generieren. Bitte versuchen Sie es mit einem anderen Titel.",
+      "ai_request_limit": "Sie haben das Limit von {limit} Anfragen pro Monat und Benutzer erreicht.",
+      "remove_from_cycle": "Aus Zyklus entfernen",
+      "remove_from_module": "Aus Modul entfernen",
+      "module_added": "Arbeitselemente wurden dem Modul hinzugefügt.",
+      "module_add_failed": "Die ausgewählten Arbeitselemente konnten dem Modul nicht hinzugefügt werden. Bitte versuchen Sie es erneut.",
+      "cycle_add_failed": "Die ausgewählten Arbeitselemente konnten dem Zyklus nicht hinzugefügt werden. Bitte versuchen Sie es erneut.",
+      "move_failed": "Das Arbeitselement konnte nicht in das Projekt verschoben werden. Bitte versuchen Sie es erneut.",
+      "editor_busy": "Der Editor verarbeitet noch Änderungen. Bitte warten Sie, bevor Sie fortfahren.",
+      "invalid_due_date": "Das Fälligkeitsdatum darf nicht vor dem Startdatum des Arbeitselements liegen.",
+      "dates_update_failed": "Fehler beim Aktualisieren der Arbeitselementdaten. Bitte versuchen Sie es später erneut.",
+      "move_unavailable": "Arbeitselement kann nicht verschoben werden",
+      "move_not_allowed": "Sie dürfen dieses Arbeitselement nicht verschieben.",
+      "drag_disabled": "Ziehen und Ablegen ist für die aktuelle Gruppierung deaktiviert.",
+      "action_unavailable": "Aktion nicht verfügbar",
+      "action_not_implemented": "Die Aktion „{actionName}“ ist nicht implementiert.",
+      "markdown_copied": "Markdown wurde in die Zwischenablage kopiert."
+    },
     "label": "{count, plural, one {Arbeitselement} few {Arbeitselemente} other {Arbeitselemente}}",
     "all": "Alle Arbeitselemente",
     "edit": "Arbeitselement bearbeiten",

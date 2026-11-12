@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Tiêu đề mục công việc không đủ thông tin để tạo mô tả. Vui lòng thử tiêu đề khác.",
+      "ai_request_limit": "Bạn đã đạt giới hạn {limit} yêu cầu mỗi tháng cho mỗi người dùng.",
+      "remove_from_cycle": "Xóa khỏi chu kỳ",
+      "remove_from_module": "Xóa khỏi mô-đun",
+      "module_added": "Đã thêm các mục công việc vào mô-đun.",
+      "module_add_failed": "Không thể thêm các mục công việc đã chọn vào mô-đun. Vui lòng thử lại.",
+      "cycle_add_failed": "Không thể thêm các mục công việc đã chọn vào chu kỳ. Vui lòng thử lại.",
+      "move_failed": "Không thể chuyển mục công việc sang dự án. Vui lòng thử lại.",
+      "editor_busy": "Trình soạn thảo vẫn đang xử lý các thay đổi. Vui lòng đợi trước khi tiếp tục.",
+      "invalid_due_date": "Ngày đến hạn không thể trước ngày bắt đầu của mục công việc.",
+      "dates_update_failed": "Lỗi khi cập nhật ngày của mục công việc. Vui lòng thử lại sau.",
+      "move_unavailable": "Không thể di chuyển mục công việc",
+      "move_not_allowed": "Bạn không có quyền di chuyển mục công việc này.",
+      "drag_disabled": "Kéo và thả bị tắt đối với cách nhóm hiện tại.",
+      "action_unavailable": "Thao tác không khả dụng",
+      "action_not_implemented": "Thao tác “{actionName}” chưa được triển khai.",
+      "markdown_copied": "Đã sao chép Markdown vào bộ nhớ tạm."
+    },
     "label": "{count, plural, one {mục công việc} other {mục công việc}}",
     "all": "Tất cả mục công việc",
     "edit": "Chỉnh sửa mục công việc",

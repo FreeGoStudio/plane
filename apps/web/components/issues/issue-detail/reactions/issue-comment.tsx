@@ -47,15 +47,15 @@ export const IssueCommentReaction = observer(function IssueCommentReaction(props
           if (!workspaceSlug || !projectId || !commentId) throw new Error("Missing fields");
           await createCommentReaction(workspaceSlug, projectId, commentId, reaction);
           setToast({
-            title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
+            title: t("updates.reaction.create.success.title"),
             type: "success",
-            message: "Reaction created successfully",
+            message: t("updates.reaction.create.success.message"),
           });
         } catch (_error) {
           setToast({
-            title: t("sso.providers.saml.configure.toast.error_title"),
+            title: t("updates.reaction.create.error.title"),
             type: "error",
-            message: "Reaction creation failed",
+            message: t("updates.reaction.create.error.message"),
           });
         }
       },
@@ -64,15 +64,15 @@ export const IssueCommentReaction = observer(function IssueCommentReaction(props
           if (!workspaceSlug || !projectId || !commentId || !currentUser?.id) throw new Error("Missing fields");
           removeCommentReaction(workspaceSlug, projectId, commentId, reaction, currentUser.id);
           setToast({
-            title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
+            title: t("updates.reaction.remove.success.title"),
             type: "success",
-            message: "Reaction removed successfully",
+            message: t("updates.reaction.remove.success.message"),
           });
         } catch (_error) {
           setToast({
-            title: t("sso.providers.saml.configure.toast.error_title"),
+            title: t("updates.reaction.remove.error.title"),
             type: "error",
-            message: "Reaction remove failed",
+            message: t("updates.reaction.remove.error.message"),
           });
         }
       },

@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "Titlul elementului de lucru nu conține suficiente informații pentru a genera descrierea. Încercați un alt titlu.",
+      "ai_request_limit": "A fost atins numărul maxim de solicitări pe lună pentru fiecare utilizator: {limit}.",
+      "remove_from_cycle": "Eliminare din ciclu",
+      "remove_from_module": "Eliminare din modul",
+      "module_added": "Elementele de lucru au fost adăugate în modul.",
+      "module_add_failed": "Elementele de lucru selectate nu au putut fi adăugate în modul. Încercați din nou.",
+      "cycle_add_failed": "Elementele de lucru selectate nu au putut fi adăugate în ciclu. Încercați din nou.",
+      "move_failed": "Elementul de lucru nu a putut fi mutat în proiect. Încercați din nou.",
+      "editor_busy": "Editorul încă procesează modificările. Așteptați înainte de a continua.",
+      "invalid_due_date": "Data scadentă nu poate fi anterioară datei de început a elementului de lucru.",
+      "dates_update_failed": "Eroare la actualizarea datelor elementului de lucru. Încercați din nou mai târziu.",
+      "move_unavailable": "Elementul de lucru nu poate fi mutat",
+      "move_not_allowed": "Nu aveți permisiunea de a muta acest element de lucru.",
+      "drag_disabled": "Glisarea și fixarea sunt dezactivate pentru gruparea curentă.",
+      "action_unavailable": "Acțiune indisponibilă",
+      "action_not_implemented": "Acțiunea „{actionName}” nu este implementată.",
+      "markdown_copied": "Markdown a fost copiat în clipboard."
+    },
     "label": "{count, plural, one {Activitate} other {Activități}}",
     "all": "Toate activitățile",
     "edit": "Editează activitatea",

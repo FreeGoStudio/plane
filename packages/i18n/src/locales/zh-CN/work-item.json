@@ -1,5 +1,24 @@
 {
   "issue": {
+    "notifications": {
+      "description_title_insufficient": "工作项标题信息不足，无法生成描述，请尝试使用其他标题。",
+      "ai_request_limit": "您已达到每位用户每月 {limit} 次请求的上限。",
+      "remove_from_cycle": "从周期中移除",
+      "remove_from_module": "从模块中移除",
+      "module_added": "工作项已成功添加到模块。",
+      "module_add_failed": "无法将所选工作项添加到模块，请重试。",
+      "cycle_add_failed": "无法将所选工作项添加到周期，请重试。",
+      "move_failed": "无法将工作项移动到项目，请重试。",
+      "editor_busy": "编辑器仍在处理更改，请稍候再继续。",
+      "invalid_due_date": "截止日期不能早于工作项的开始日期。",
+      "dates_update_failed": "更新工作项日期时出错，请稍后重试。",
+      "move_unavailable": "无法移动工作项",
+      "move_not_allowed": "您无权移动此工作项。",
+      "drag_disabled": "当前分组不支持拖放。",
+      "action_unavailable": "操作不可用",
+      "action_not_implemented": "尚未实现“{actionName}”操作。",
+      "markdown_copied": "Markdown 已复制到剪贴板。"
+    },
     "label": "{count, plural, one {工作项} other {工作项}}",
     "all": "所有工作项",
     "edit": "编辑工作项",

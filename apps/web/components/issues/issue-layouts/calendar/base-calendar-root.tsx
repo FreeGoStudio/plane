@@ -125,7 +125,7 @@ export const BaseCalendarRoot = observer(function BaseCalendarRoot(props: IBaseC
       setToast({
         title: t("sso.providers.saml.configure.toast.error_title"),
         type: "error",
-        message: err?.detail ?? "Failed to perform this action",
+        message: err?.detail ?? t("something_went_wrong_please_try_again"),
       });
     });
   };

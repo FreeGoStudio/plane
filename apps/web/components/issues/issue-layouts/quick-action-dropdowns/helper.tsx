@@ -16,7 +16,7 @@ import {
   RestoreOutline,
 } from "@makeplane/propel/icons";
 // plane imports
-import { useTranslation } from "@plane/i18n";
+import { translate, useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
 import type { EIssuesStoreType, TIssue } from "@plane/types";
 import type { TContextMenuItem } from "@plane/blocks/context-menu";
@@ -81,8 +81,8 @@ export function handleOptionalAction<T>(
   } else {
     setToast({
       type: "error",
-      title: "Action not available",
-      message: `${actionName} action is not implemented.`,
+      title: translate("issue.notifications.action_unavailable"),
+      message: translate("issue.notifications.action_not_implemented", { actionName }),
     });
   }
 }
@@ -146,7 +146,7 @@ export const useIssueActionHandlers = (props: MenuItemFactoryProps) => {
 
   const handleIssueRestore = async () => {
     if (!handleRestore) {
-      handleOptionalAction(handleRestore, "Restore");
+      handleOptionalAction(handleRestore, translate("restore"));
       return;
     }
     await handleRestore()
@@ -245,17 +245,17 @@ export const useMenuItemFactory = (props: MenuItemFactoryProps) => {
 
   const createRemoveFromCycleMenuItem = (): TContextMenuItem => ({
     key: "remove-from-cycle",
-    title: "Remove from cycle",
+    title: translate("issue.notifications.remove_from_cycle"),
     icon: CloseCircleOutline,
-    action: () => handleOptionalAction(handleRemoveFromView, "Remove from cycle"),
+    action: () => handleOptionalAction(handleRemoveFromView, translate("issue.notifications.remove_from_cycle")),
     shouldRender: isEditingAllowed,
   });
 
   const createRemoveFromModuleMenuItem = (): TContextMenuItem => ({
     key: "remove-from-module",
-    title: "Remove from module",
+    title: translate("issue.notifications.remove_from_module"),
     icon: CloseCircleOutline,
-    action: () => handleOptionalAction(handleRemoveFromView, "Remove from module"),
+    action: () => handleOptionalAction(handleRemoveFromView, translate("issue.notifications.remove_from_module")),
     shouldRender: isEditingAllowed,
   });
 
@@ -264,7 +264,7 @@ export const useMenuItemFactory = (props: MenuItemFactoryProps) => {
     title: t("common.actions.archive"),
     description: isInArchivableGroup ? undefined : t("issue.archive.description"),
     icon: ArchiveOutline,
-    action: () => handleOptionalAction(setArchiveIssueModal, "Archive", true),
+    action: () => handleOptionalAction(setArchiveIssueModal, translate("archive"), true),
     disabled: !isInArchivableGroup,
     shouldRender: isArchivingAllowed,
   });

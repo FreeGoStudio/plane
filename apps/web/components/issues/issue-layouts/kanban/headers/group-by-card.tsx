@@ -77,13 +77,15 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
       setToast({
         type: "success",
         title: t("sso.domain_management.verified_domains.add_domain.toast.success_title"),
-        message: "Work items added to the cycle successfully.",
+        message: moduleId
+          ? t("issue.notifications.module_added")
+          : t("issue.add.cycle.success", { count: issues.length }),
       });
     } catch (_error) {
       setToast({
         type: "error",
         title: t("sso.providers.saml.configure.toast.error_title"),
-        message: "Selected work items could not be added to the cycle. Please try again.",
+        message: t(moduleId ? "issue.notifications.module_add_failed" : "issue.notifications.cycle_add_failed"),
       });
     }
   };

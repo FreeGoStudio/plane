@@ -85,8 +85,8 @@ export const IssueAttachmentActionButton = observer(function IssueAttachmentActi
         title: t("sso.providers.saml.configure.toast.error_title"),
         message:
           totalAttachedFiles > 1
-            ? "Only one file can be uploaded at a time."
-            : `File must be of ${maxFileSize / 1024 / 1024}MB or less in size.`,
+            ? t("attachment.only_one_file_allowed")
+            : t("attachment.file_size_limit", { size: maxFileSize / 1024 / 1024 }),
       });
       return;
     },
