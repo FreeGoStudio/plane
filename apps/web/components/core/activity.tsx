@@ -5,7 +5,7 @@
  */
 
 import { useEffect } from "react";
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { LocalizedText, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -26,6 +26,7 @@ import {
   LinkOutline,
   MembersOutline,
   ModuleOutline,
+  NewTabOutline,
   PriorityMedium,
   RelatesToOutline,
   WorkItemsOutline,
@@ -234,6 +235,21 @@ function LocalizedActivity({
   );
 }
 
+/** Keeps the external-link icon alongside the translated link label. */
+function ActivityExternalLink({ href, children }: { href: string; children?: ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 font-medium text-accent-primary underline underline-offset-2"
+    >
+      {children}
+      <NewTabOutline width={14} height={14} aria-hidden="true" />
+    </a>
+  );
+}
+
 const activityDetails: {
   [key: string]: {
     message: (activity: IIssueActivity, showIssue: boolean, workspaceSlug: string) => React.ReactNode;
@@ -313,14 +329,7 @@ const activityDetails: {
         messageKey={`work_item_activity.link_${activity.verb === "created" ? "added" : activity.verb === "updated" ? "updated" : "removed"}_${showIssue ? "issue" : "self"}`}
         components={{
           value: (
-            <a
-              href={`${activity.verb === "created" ? activity.new_value : activity.old_value}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              <LocalizedText messageKey="link" />
-            </a>
+            <ActivityExternalLink href={`${activity.verb === "created" ? activity.new_value : activity.old_value}`} />
           ),
           issue: <IssueLink activity={activity} />,
         }}

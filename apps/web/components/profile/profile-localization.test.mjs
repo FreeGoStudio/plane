@@ -110,6 +110,8 @@ test("profile screenshot activity branches translate without changing values or 
         assert.ok(html.includes(`href="${verb === "created" ? newValue : oldValue}"`), html);
         assert.ok(html.includes(chinese ? "链接" : "link"), html);
         assert.ok(html.includes('rel="noopener noreferrer"'), html);
+        assert.ok(html.includes("text-accent-primary underline underline-offset-2"), html);
+        assert.match(html, /<svg[^>]*aria-hidden="true"/);
       }
       assert.deepEqual(activity, original);
     }
