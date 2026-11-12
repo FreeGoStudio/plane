@@ -46,19 +46,19 @@ type Props = {
 type TCommentAccessType = {
   icon: IconGlyph | React.FC<ISvgIcons>;
   key: EIssueCommentAccessSpecifier;
-  label: "Private" | "Public";
+  label: "private" | "public";
 };
 
 const COMMENT_ACCESS_SPECIFIERS: TCommentAccessType[] = [
   {
     icon: LockOutline,
     key: EIssueCommentAccessSpecifier.INTERNAL,
-    label: "Private",
+    label: "private",
   },
   {
     icon: GlobeOutline,
     key: EIssueCommentAccessSpecifier.EXTERNAL,
-    label: "Public",
+    label: "public",
   },
 ];
 
@@ -70,6 +70,17 @@ const preserveEditorFocus = (e: React.MouseEvent) => e.preventDefault();
 
 export function IssueCommentToolbar(props: Props) {
   const { t } = useTranslation();
+  const itemLabel = (item: ToolbarMenuItem) => {
+    const keys: Record<string, string> = {
+      "text-align-left": "align_left",
+      "text-align-center": "align_center",
+      "text-align-right": "align_right",
+      "bulleted-list": "bulleted_list",
+      "numbered-list": "numbered_list",
+      "to-do-list": "todo_list",
+    };
+    return t(`editor_ui.${keys[item.renderKey] ?? item.itemKey}`);
+  };
   const {
     accessSpecifier,
     executeCommand,
@@ -129,9 +140,9 @@ export function IssueCommentToolbar(props: Props) {
               <>
                 <ToolbarGroup>
                   {COMMENT_ACCESS_SPECIFIERS.map((access) => (
-                    <Tooltip key={access.key} label={access.label}>
+                    <Tooltip key={access.key} label={t(access.label)}>
                       <ToolbarToggle
-                        aria-label={access.label}
+                        aria-label={t(access.label)}
                         render={<button className="data-pressed:text-icon-secondary!" />}
                         icon={<Icon icon={<access.icon />} />}
                         pressed={accessSpecifier === access.key}
@@ -149,17 +160,17 @@ export function IssueCommentToolbar(props: Props) {
                 {index > 0 && <ToolbarSeparator />}
                 <ToolbarGroup>
                   {toolbarItems[key].map((item) => (
-                    <Tooltip key={item.renderKey} label={item.name} shortcut={item.shortcut?.join(" + ")}>
+                    <Tooltip key={item.renderKey} label={itemLabel(item)} shortcut={item.shortcut?.join(" + ")}>
                       {key === "complex" ? (
                         <ToolbarButton
-                          aria-label={item.name}
+                          aria-label={itemLabel(item)}
                           icon={<Icon icon={item.icon} />}
                           onMouseDown={preserveEditorFocus}
                           onClick={() => executeCommand(item)}
                         />
                       ) : (
                         <ToolbarToggle
-                          aria-label={item.name}
+                          aria-label={itemLabel(item)}
                           render={<button className="data-pressed:text-icon-secondary!" />}
                           icon={<Icon icon={item.icon} />}
                           pressed={!!activeStates[item.renderKey]}

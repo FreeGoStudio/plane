@@ -92,6 +92,7 @@
       "backlog": "Backlog"
     },
     "comments": {
+      "commented": "přidal(a) komentář",
       "placeholder": "Přidat komentář",
       "switch": {
         "private": "Přepnout na soukromý komentář",

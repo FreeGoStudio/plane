@@ -92,6 +92,7 @@
       "backlog": "Backlog"
     },
     "comments": {
+      "commented": "heeft gereageerd",
       "placeholder": "Reactie toevoegen",
       "switch": {
         "private": "Naar privéreactie schakelen",

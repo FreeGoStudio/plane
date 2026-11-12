@@ -92,6 +92,7 @@
       "backlog": "Backlog"
     },
     "comments": {
+      "commented": "a commenté",
       "placeholder": "Ajouter un commentaire",
       "switch": {
         "private": "Passer en commentaire privé",

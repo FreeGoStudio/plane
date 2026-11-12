@@ -92,6 +92,7 @@
       "backlog": "Bekleme Listesi"
     },
     "comments": {
+      "commented": "yorum yaptı",
       "placeholder": "Yorum ekle",
       "switch": {
         "private": "Özel yoruma geç",

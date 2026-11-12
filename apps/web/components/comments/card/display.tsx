@@ -12,6 +12,7 @@ import { usePathname } from "next/navigation";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { ActivityCommentCard, ActivityCommentHeader, ActivityTimelineTimestamp } from "@plane/blocks/activity";
 import type { EditorRefApi } from "@plane/editor";
+import { useTranslation } from "@plane/i18n";
 import { useHashScroll } from "@plane/hooks";
 import { GlobeOutline, LockOutline } from "@makeplane/propel/icons";
 import { EIssueCommentAccessSpecifier } from "@plane/types";
@@ -44,6 +45,7 @@ export type TCommentCardDisplayProps = {
 };
 
 export const CommentCardDisplay = observer(function CommentCardDisplay(props: TCommentCardDisplayProps) {
+  const { t } = useTranslation();
   const { renderFormattedDate, renderFormattedTime, calculateTimeAgo } = useDateFormatter();
   const {
     activityOperations,
@@ -125,7 +127,7 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
       header={
         <ActivityCommentHeader
           author={displayName}
-          action="commented"
+          action={t("issue.comments.commented")}
           visibilityIcon={
             showAccessSpecifier ? (
               comment.access === EIssueCommentAccessSpecifier.INTERNAL ? (
@@ -137,10 +139,10 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
           }
           timestamp={
             <ActivityTimelineTimestamp
-              tooltip={`${renderFormattedDate(comment.created_at)} at ${renderFormattedTime(comment.created_at)}`}
+              tooltip={`${renderFormattedDate(comment.created_at)} ${renderFormattedTime(comment.created_at)}`}
             >
               {calculateTimeAgo(comment.created_at)}
-              {comment.edited_at && " (edited)"}
+              {comment.edited_at && ` (${t("edited")})`}
             </ActivityTimelineTimestamp>
           }
           actions={

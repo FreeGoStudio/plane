@@ -92,6 +92,7 @@
       "backlog": "Restante"
     },
     "comments": {
+      "commented": "a comentat",
       "placeholder": "Adaugă comentariu",
       "switch": {
         "private": "Comută pe comentariu privat",

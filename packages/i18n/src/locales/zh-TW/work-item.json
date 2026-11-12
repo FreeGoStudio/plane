@@ -92,6 +92,7 @@
       "backlog": "待辦事項"
     },
     "comments": {
+      "commented": "發表了留言",
       "placeholder": "新增留言",
       "switch": {
         "private": "切換為私人留言",

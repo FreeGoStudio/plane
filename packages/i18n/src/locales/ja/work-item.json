@@ -92,6 +92,7 @@
       "backlog": "バックログ"
     },
     "comments": {
+      "commented": "がコメントしました",
       "placeholder": "コメントを追加",
       "switch": {
         "private": "プライベートコメントに切り替え",

@@ -92,6 +92,7 @@
       "backlog": "待办"
     },
     "comments": {
+      "commented": "发表了评论",
       "placeholder": "添加评论",
       "switch": {
         "private": "切换为私密评论",

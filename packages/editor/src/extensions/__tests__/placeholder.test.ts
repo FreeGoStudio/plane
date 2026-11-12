@@ -47,6 +47,29 @@ it("refreshes a sticky placeholder in place when switching from Chinese to Engli
   expect(editor.getJSON()).toEqual(original);
   expect(editor.state.selection.toJSON()).toEqual(selection);
 });
+it("refreshes the comment placeholder without changing the document or selection", async () => {
+  await setLanguage("zh-CN");
+  editor = new Editor({
+    element: document.createElement("div"),
+    content: "<p></p>",
+    extensions: [
+      StarterKit,
+      CustomPlaceholderExtension({
+        placeholder: () => t("issue.comments.placeholder"),
+        showPlaceholderOnEmpty: true,
+      }),
+    ],
+  });
+  const original = editor.getJSON();
+  const selection = editor.state.selection.toJSON();
+  expect(placeholders()).toEqual([t("issue.comments.placeholder")]);
+  await setLanguage("en");
+  editor.view.dispatch(editor.state.tr.setMeta("locale", "en"));
+  expect(placeholders()).toEqual(["Add comment"]);
+  expect(editor.getJSON()).toEqual(original);
+  expect(editor.state.selection.toJSON()).toEqual(selection);
+});
+
 afterEach(() => editor.destroy());
 
 describe("CustomPlaceholderExtension", () => {

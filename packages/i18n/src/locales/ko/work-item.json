@@ -92,6 +92,7 @@
       "backlog": "백로그"
     },
     "comments": {
+      "commented": "님이 댓글을 남겼습니다",
       "placeholder": "댓글 추가",
       "switch": {
         "private": "비공개 댓글로 전환",

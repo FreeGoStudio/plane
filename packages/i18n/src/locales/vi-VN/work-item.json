@@ -92,6 +92,7 @@
       "backlog": "Tồn đọng"
     },
     "comments": {
+      "commented": "đã bình luận",
       "placeholder": "Thêm bình luận",
       "switch": {
         "private": "Chuyển sang bình luận riêng tư",

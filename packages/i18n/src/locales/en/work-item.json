@@ -92,6 +92,7 @@
       "backlog": "Backlog"
     },
     "comments": {
+      "commented": "commented",
       "placeholder": "Add comment",
       "switch": {
         "private": "Switch to private comment",

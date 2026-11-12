@@ -92,6 +92,7 @@
       "backlog": "Backlog"
     },
     "comments": {
+      "commented": "berkomentar",
       "placeholder": "Tambah komentar",
       "switch": {
         "private": "Beralih ke komentar pribadi",

@@ -10,7 +10,7 @@ import type { EIssueCommentAccessSpecifier } from "@plane/constants";
 // plane imports
 import { LiteTextEditorWithRef } from "@plane/editor";
 import type { EditorRefApi, ILiteTextEditorProps, TFileHandler } from "@plane/editor";
-import { useTranslation } from "@plane/i18n";
+import { translate as t } from "@plane/i18n";
 import type { MakeOptional } from "@plane/types";
 import { cn, isCommentEmpty } from "@plane/utils";
 // components
@@ -56,11 +56,14 @@ type LiteTextEditorWrapperProps = MakeOptional<
       }
   );
 
+function isMutableRefObject<T>(ref: React.ForwardedRef<T>): ref is React.MutableRefObject<T | null> {
+  return !!ref && typeof ref === "object" && "current" in ref;
+}
+
 export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
   props: LiteTextEditorWrapperProps,
   ref: React.ForwardedRef<EditorRefApi>
 ) {
-  const { t } = useTranslation();
   const {
     containerClassName,
     editable,
@@ -76,7 +79,7 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
     showToolbarInitially = true,
     variant = "full",
     parentClassName = "",
-    placeholder = t("issue.comments.placeholder"),
+    placeholder = () => t("issue.comments.placeholder"),
     disabledExtensions: additionalDisabledExtensions = [],
     editorClassName = "",
     showPlaceholderOnEmpty = true,
@@ -111,9 +114,6 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
   });
   // editor config
   const { getEditorFileHandlers } = useEditorConfig();
-  function isMutableRefObject<T>(ref: React.ForwardedRef<T>): ref is React.MutableRefObject<T | null> {
-    return !!ref && typeof ref === "object" && "current" in ref;
-  }
   // derived values
   const isEmpty = isCommentEmpty(props.initialValue);
 
