@@ -1,0 +1,42 @@
+msgid ""
+msgstr "Language: zh_Hans\nContent-Type: text/plain; charset=UTF-8\nPlural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Your unique Plane login code is %(code)s"
+msgstr "你的 Plane 登录验证码是 %(code)s"
+
+msgid "A new password to your Plane account has been requested"
+msgstr "你的 Plane 账号收到密码重置请求"
+
+msgid "Your Plane login code"
+msgstr "你的 Plane 登录验证码"
+
+msgid "Your login code for Plane"
+msgstr "你的 Plane 登录验证码"
+
+msgid "Your Plane login code %(code)s is valid for 10 minutes."
+msgstr "你的 Plane 登录验证码 %(code)s 在 10 分钟内有效。"
+
+msgid "This code is valid for the next 10 minutes. Enter it on the sign-in page to complete your login."
+msgstr "此验证码在 10 分钟内有效。请在登录页面输入验证码以完成登录。"
+
+msgid "Note: This email was sent to %(email)s. If you were not expecting a sign-in code, you can safely ignore this message."
+msgstr "此邮件发送至 %(email)s。如果你未请求登录验证码，请忽略此邮件。"
+
+msgid "Reset your Plane password"
+msgstr "重置你的 Plane 密码"
+
+msgid "Reset your Plane password with this secure link."
+msgstr "通过此安全链接重置你的 Plane 密码。"
+
+msgid "We received a request to reset your Plane password. To reset your password, click the button below."
+msgstr "我们收到了重置你的 Plane 密码的请求。请点击下方按钮重置密码。"
+
+msgid "Reset password"
+msgstr "重置密码"
+
+msgid "If the button doesn’t work, copy and paste this link into your browser:"
+msgstr "如果按钮无法使用，请复制此链接并粘贴到浏览器中："
+
+msgid "Note: This email was sent to %(email)s. If you weren’t expecting a password reset, you can safely ignore this email."
+msgstr "此邮件发送至 %(email)s。如果你未请求重置密码，请忽略此邮件。"
+

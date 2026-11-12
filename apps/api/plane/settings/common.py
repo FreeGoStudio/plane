@@ -314,6 +314,7 @@ MEDIA_URL = "/media/"
 # Internationalization
 LANGUAGE_CODE = "zh-hans"
 USE_I18N = True
+LOCALE_PATHS = [os.path.join(BASE_DIR, "locale")]
 
 # Timezones
 USE_TZ = True

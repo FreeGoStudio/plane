@@ -11,11 +11,11 @@ from celery import shared_task
 # Django imports
 # Third party imports
 from django.core.mail import EmailMultiAlternatives, get_connection
-from django.template.loader import render_to_string
+from django.utils.translation import gettext_noop
 
 # Module imports
 from plane.license.utils.instance_value import get_email_configuration
-from plane.utils.email import generate_plain_text_from_html
+from plane.utils.email import generate_plain_text_from_html, render_localized_email
 from plane.utils.exception_logger import log_exception
 
 
@@ -33,10 +33,12 @@ def magic_link(email, key, token):
         ) = get_email_configuration()
 
         # Send the mail
-        subject = f"Your unique Plane login code is {token}"
+        subject = gettext_noop("Your unique Plane login code is %(code)s")
         context = {"code": token, "email": email}
 
-        html_content = render_to_string("emails/auth/magic_signin.html", context)
+        subject, html_content = render_localized_email(
+            "emails/auth/magic_signin.html", context, email, subject, {"code": token}
+        )
         text_content = generate_plain_text_from_html(html_content)
 
         connection = get_connection(

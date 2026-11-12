@@ -8,9 +8,27 @@ import re
 
 # Django imports
 from django.utils.html import strip_tags
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils import translation
+
+from plane.utils.language import normalize_language
 
 _STYLE_OPEN_RE = re.compile(r"<style", re.IGNORECASE)
 _STYLE_CLOSE_RE = re.compile(r"</style>", re.IGNORECASE)
+
+
+def render_localized_email(template, context, email, subject, subject_params=None):
+    """Render each recipient independently; never leak a Celery worker's previous language."""
+    from plane.db.models import Profile
+
+    preference = Profile.objects.filter(user__email__iexact=email).values_list("language", flat=True).first()
+    language = normalize_language(preference) or settings.LANGUAGE_CODE
+    with translation.override(language):
+        localized_subject = translation.gettext(subject)
+        if subject_params:
+            localized_subject %= subject_params
+        return localized_subject, render_to_string(template, context)
 
 
 def _remove_style_blocks(html_content):
