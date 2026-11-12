@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { setLanguage } from "@plane/i18n";
+import { setLanguage, translate as t } from "@plane/i18n";
 import { Editor } from "@tiptap/core";
 import { StarterKit } from "@tiptap/starter-kit";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -26,6 +26,26 @@ const placeholders = () =>
 
 beforeEach(async () => {
   await setLanguage("en");
+});
+
+it("refreshes a sticky placeholder in place when switching from Chinese to English", async () => {
+  await setLanguage("zh-CN");
+  editor = new Editor({
+    element: document.createElement("div"),
+    content: "<p></p>",
+    extensions: [
+      StarterKit,
+      CustomPlaceholderExtension({ placeholder: () => t("stickies.placeholder"), showPlaceholderOnEmpty: true }),
+    ],
+  });
+  const original = editor.getJSON();
+  const selection = editor.state.selection.toJSON();
+  expect(placeholders()).toEqual(["点击此处输入"]);
+  await setLanguage("en");
+  editor.view.dispatch(editor.state.tr.setMeta("locale", "en"));
+  expect(placeholders()).toEqual(["click to type here"]);
+  expect(editor.getJSON()).toEqual(original);
+  expect(editor.state.selection.toJSON()).toEqual(selection);
 });
 afterEach(() => editor.destroy());
 
