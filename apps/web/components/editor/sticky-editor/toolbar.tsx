@@ -15,6 +15,7 @@ import { Tooltip, TooltipProvider } from "@makeplane/propel/components/tooltip";
 import { DeleteOutline, PaletteOutline } from "@makeplane/propel/icons";
 import type { EditorRefApi, ToolbarMenuItem } from "@plane/editor";
 import { TOOLBAR_ITEMS } from "@plane/editor";
+import { useTranslation } from "@plane/i18n";
 import type { TSticky } from "@plane/types";
 // local imports
 import { ColorPalette } from "./color-palette";
@@ -33,6 +34,9 @@ const toolbarItems = TOOLBAR_ITEMS.sticky;
 const preserveEditorFocus = (e: React.MouseEvent) => e.preventDefault();
 
 export function StickyEditorToolbar(props: Props) {
+  const { t } = useTranslation();
+  const itemLabel = (item: ToolbarMenuItem) =>
+    t(`editor_ui.${item.itemKey === "to-do-list" ? "todo_list" : item.itemKey}`);
   const { executeCommand, editorRef, handleColorChange, handleDelete } = props;
 
   // State to manage active states of toolbar items
@@ -67,14 +71,14 @@ export function StickyEditorToolbar(props: Props) {
     <TooltipProvider>
       <div className="flex h-full w-full items-center justify-between">
         <div className="-ml-2.5 flex items-center">
-          <Toolbar size="sm" elevation="flat" aria-label="Formatting toolbar">
+          <Toolbar size="sm" elevation="flat" aria-label={t("editor_ui.formatting_toolbar")}>
             {/* color palette */}
             <Popover open={showColorPalette} onOpenChange={setShowColorPalette}>
-              <Tooltip label="Background color">
+              <Tooltip label={t("editor_ui.background_color")}>
                 <PopoverTrigger
                   render={
                     <ToolbarButton
-                      aria-label="Background color"
+                      aria-label={t("editor_ui.background_color")}
                       icon={<Icon icon={PaletteOutline} />}
                       onMouseDown={preserveEditorFocus}
                     />
@@ -88,9 +92,9 @@ export function StickyEditorToolbar(props: Props) {
             {Object.keys(toolbarItems).map((key) => (
               <ToolbarGroup key={key}>
                 {toolbarItems[key].map((item) => (
-                  <Tooltip key={item.renderKey} label={item.name} shortcut={item.shortcut?.join(" + ")}>
+                  <Tooltip key={item.renderKey} label={itemLabel(item)} shortcut={item.shortcut?.join(" + ")}>
                     <ToolbarToggle
-                      aria-label={item.name}
+                      aria-label={itemLabel(item)}
                       render={<button className="data-pressed:text-icon-secondary!" />}
                       icon={<Icon icon={item.icon} />}
                       pressed={!!activeStates[item.renderKey]}
@@ -108,7 +112,7 @@ export function StickyEditorToolbar(props: Props) {
           <IconButton
             variant="ghost"
             size="sm"
-            aria-label="Delete"
+            aria-label={t("editor_controls.delete")}
             icon={<Icon icon={DeleteOutline} />}
             onClick={handleDelete}
           />

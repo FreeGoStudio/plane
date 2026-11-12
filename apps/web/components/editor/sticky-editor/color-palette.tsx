@@ -5,6 +5,7 @@
  */
 
 import type { TSticky } from "@plane/types";
+import { useTranslation } from "@plane/i18n";
 
 export const STICKY_COLORS_LIST: {
   key: string;
@@ -58,16 +59,17 @@ type TProps = {
 };
 
 export function ColorPalette(props: TProps) {
+  const { t } = useTranslation();
   const { handleUpdate } = props;
   return (
     <div className="space-y-1.5">
-      <p className="text-caption-sm-semibold text-tertiary">Background colors</p>
-      <div role="group" aria-label="Background colors" className="flex items-center gap-2">
+      <p className="text-caption-sm-semibold text-tertiary">{t("editor_controls.background_colors")}</p>
+      <div role="group" aria-label={t("editor_controls.background_colors")} className="flex items-center gap-2">
         {STICKY_COLORS_LIST.map((color) => (
           <button
             key={color.key}
             type="button"
-            aria-label={color.label}
+            aria-label={t(`editor_controls.colors.${color.key}`)}
             onClick={() => {
               handleUpdate({
                 background_color: color.key,
