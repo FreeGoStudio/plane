@@ -5,6 +5,8 @@
  */
 
 import React from "react";
+import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 import { AccentureLogo, DolbyLogo, SonyLogo, ZerodhaLogo } from "@plane/blocks/icons";
 
 const BRAND_LOGOS: {
@@ -29,11 +31,12 @@ const BRAND_LOGOS: {
   },
 ];
 
-export function AuthFooter() {
+export const AuthFooter = observer(function AuthFooter() {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center gap-6">
-      <span className="text-body-xs-regular whitespace-nowrap text-tertiary">
-        Join 10,000+ teams building with Plane
+      <span className="text-center text-body-xs-regular text-tertiary">
+        {t("auth.common.teams_building", { count: 10000 })}
       </span>
       <div className="flex w-full flex-wrap items-center justify-center gap-x-10 gap-y-4">
         {BRAND_LOGOS.map((brand) => (
@@ -44,4 +47,4 @@ export function AuthFooter() {
       </div>
     </div>
   );
-}
+});

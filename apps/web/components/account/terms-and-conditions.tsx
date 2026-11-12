@@ -5,6 +5,8 @@
  */
 
 import React from "react";
+import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 import Link from "next/link";
 import { EAuthModes } from "@plane/constants";
 
@@ -19,8 +21,8 @@ const LEGAL_LINKS = {
 } as const;
 
 const MESSAGES = {
-  [EAuthModes.SIGN_UP]: "By creating an account",
-  [EAuthModes.SIGN_IN]: "By signing in",
+  [EAuthModes.SIGN_UP]: "space_ui.signup_terms",
+  [EAuthModes.SIGN_IN]: "space_ui.signin_terms",
 } as const;
 
 // Reusable link component to reduce duplication
@@ -32,14 +34,17 @@ function LegalLink({ href, children }: { href: string; children: React.ReactNode
   );
 }
 
-export function TermsAndConditions({ authType = EAuthModes.SIGN_IN }: TermsAndConditionsProps) {
+export const TermsAndConditions = observer(function TermsAndConditions({
+  authType = EAuthModes.SIGN_IN,
+}: TermsAndConditionsProps) {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center justify-center">
       <p className="text-center text-body-xs-regular whitespace-pre-line text-tertiary">
-        {`${MESSAGES[authType]}, you understand and agree to \n our `}
-        <LegalLink href={LEGAL_LINKS.termsOfService}>Terms of Service</LegalLink> and{" "}
-        <LegalLink href={LEGAL_LINKS.privacyPolicy}>Privacy Policy</LegalLink>.
+        {t(MESSAGES[authType])} <LegalLink href={LEGAL_LINKS.termsOfService}>{t("space_ui.terms")}</LegalLink>
+        {" · "}
+        <LegalLink href={LEGAL_LINKS.privacyPolicy}>{t("space_ui.privacy")}</LegalLink>
       </p>
     </div>
   );
-}
+});
