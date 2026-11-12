@@ -7,7 +7,7 @@
     },
     "date_display": {
       "title": "Date format",
-      "description": "Choose the order of year, month and day on your home page and member joining dates.",
+      "description": "Choose the order of year, month and day throughout the app.",
       "locale": "Follow language",
       "ymd": "Year / Month / Day",
       "mdy": "Month / Day / Year",

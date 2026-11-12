@@ -6,6 +6,7 @@
 
 import { formatDistanceToNow, isValid } from "date-fns";
 import { zhCN, zhTW } from "date-fns/locale";
+import { createDateFormatter } from "@plane/utils";
 import type { THomeDateOrder } from "@plane/types";
 
 export function formatHomeDate(date: Date, locale: string, timeZone: string, order: THomeDateOrder = "locale") {
@@ -26,32 +27,7 @@ export function formatPreferredDate(
   timeZone?: string,
   order: THomeDateOrder = "locale"
 ) {
-  if (!value) return "";
-  const date = value instanceof Date ? value : new Date(value);
-  if (!isValid(date)) return "";
-  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) timeZone = "UTC";
-  let calendarDate: string;
-  if (order === "locale") {
-    calendarDate = new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric", timeZone }).format(
-      date
-    );
-  } else {
-    const parts = new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      timeZone,
-    }).formatToParts(date);
-    const part = (type: string) => parts.find((datePart) => datePart.type === type)?.value ?? "";
-    const fields =
-      order === "mdy"
-        ? ["month", "day", "year"]
-        : order === "dmy"
-          ? ["day", "month", "year"]
-          : ["year", "month", "day"];
-    calendarDate = fields.map(part).join("/");
-  }
-  return calendarDate;
+  return createDateFormatter({ locale, order, timeZone }).renderFormattedDate(value) ?? "";
 }
 
 export function getHomeGreetingPeriod(date: Date, timeZone: string) {

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useDateDisplayContext } from "@plane/utils";
 import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@makeplane/propel/components/calendar";
@@ -90,6 +91,7 @@ function mergeRangeLabel(range: DateRangeValue, from: string, to: string, format
  * it — the two-month side-by-side layout needs the upstream prop before it can come back.
  */
 export function DateRangeSelect(props: DateRangeSelectProps) {
+  const dateFormatter = useDateDisplayContext();
   const {
     value,
     onChange,
@@ -110,12 +112,20 @@ export function DateRangeSelect(props: DateRangeSelectProps) {
   // sees a range it did not ask for.
   const [draft, setDraft] = useState<DateRangeValue | null>(null);
   // derived values
-  const from = value.from ? format(value.from, formatToken) : "";
-  const to = value.to ? format(value.to, formatToken) : "";
+  const from = dateFormatter
+    ? dateFormatter.formatCalendarDate(value.from, formatToken)
+    : value.from
+      ? format(value.from, formatToken)
+      : "";
+  const to = dateFormatter
+    ? dateFormatter.formatCalendarDate(value.to, formatToken)
+    : value.to
+      ? format(value.to, formatToken)
+      : "";
   const joined = from && to ? `${from} - ${to}` : from || to;
   const formatted = props.formatLabel
     ? props.formatLabel(value, { from, to })
-    : props.mergeDates
+    : props.mergeDates && !dateFormatter
       ? mergeRangeLabel(value, from, to, formatToken)
       : joined;
   const isEmpty = !value.from && !value.to;
@@ -144,6 +154,7 @@ export function DateRangeSelect(props: DateRangeSelectProps) {
       }}
     >
       <Calendar
+        locale={dateFormatter?.dateLocale}
         mode="range"
         selected={shown.from ? { from: shown.from, to: shown.to ?? undefined } : undefined}
         defaultMonth={value.from ?? defaultMonth}

@@ -11,6 +11,7 @@ import { WEB_SWR_CONFIG } from "@plane/constants";
 import { TranslationProvider } from "@plane/i18n";
 import { PlaneToastProvider } from "@plane/blocks/toast";
 // mobx store provider
+import { UserDateDisplayProvider } from "@/components/date-display-provider";
 import { StoreProvider } from "@/lib/store-context";
 
 // lazy imports
@@ -40,15 +41,17 @@ export function AppProvider(props: IAppProvider) {
         <TranslationProvider>
           {/* The toast viewport is a provider that calls `useTranslation`, so it sits inside
               TranslationProvider and wraps everything that can raise a toast. */}
-          <PlaneToastProvider>
-            <StoreWrapper>
-              <InstanceWrapper>
-                <Suspense>
-                  <SWRConfig value={WEB_SWR_CONFIG}>{children}</SWRConfig>
-                </Suspense>
-              </InstanceWrapper>
-            </StoreWrapper>
-          </PlaneToastProvider>
+          <UserDateDisplayProvider>
+            <PlaneToastProvider>
+              <StoreWrapper>
+                <InstanceWrapper>
+                  <Suspense>
+                    <SWRConfig value={WEB_SWR_CONFIG}>{children}</SWRConfig>
+                  </Suspense>
+                </InstanceWrapper>
+              </StoreWrapper>
+            </PlaneToastProvider>
+          </UserDateDisplayProvider>
         </TranslationProvider>
       </>
     </StoreProvider>

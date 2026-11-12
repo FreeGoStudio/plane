@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useDateDisplayContext } from "@plane/utils";
 import { useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "@makeplane/propel/components/calendar";
@@ -24,6 +25,7 @@ export type DateSelectProps = DateSelectCommonProps & {
  * `formatToken` — this block owns only the picker.
  */
 export function DateSelect(props: DateSelectProps) {
+  const dateFormatter = useDateDisplayContext();
   const {
     value,
     onChange,
@@ -39,7 +41,11 @@ export function DateSelect(props: DateSelectProps) {
   // states
   const [isOpen, setIsOpen] = useState(props.defaultOpen ?? false);
   // derived values
-  const formatted = value ? format(value, formatToken) : "";
+  const formatted = dateFormatter
+    ? dateFormatter.formatCalendarDate(value, formatToken)
+    : value
+      ? format(value, formatToken)
+      : "";
   const disabledMatchers = buildDisabledMatchers(minDate, maxDate);
 
   const handleOpenChange = (open: boolean) => {
@@ -62,6 +68,7 @@ export function DateSelect(props: DateSelectProps) {
       }}
     >
       <Calendar
+        locale={dateFormatter?.dateLocale}
         mode="single"
         selected={value ?? undefined}
         defaultMonth={value ?? defaultMonth}
