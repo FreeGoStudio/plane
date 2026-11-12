@@ -34,13 +34,13 @@ export const InboxIssueAppliedFilters = observer(function InboxIssueAppliedFilte
       {/* assignees */}
       <InboxIssueAppliedFiltersMember filterKey="assignees" label={t("assignees")} />
       {/* created_by */}
-      <InboxIssueAppliedFiltersMember filterKey="created_by" label="Created By" />
+      <InboxIssueAppliedFiltersMember filterKey="created_by" label={t("common.created_by")} />
       {/* label */}
       <InboxIssueAppliedFiltersLabel />
       {/* created_at */}
       <InboxIssueAppliedFiltersDate filterKey="created_at" label={t("common.date_filter.created_date")} />
       {/* updated_at */}
-      <InboxIssueAppliedFiltersDate filterKey="updated_at" label="Updated date" />
+      <InboxIssueAppliedFiltersDate filterKey="updated_at" label={t("common.sort.updated_on")} />
     </Header>
   );
 });

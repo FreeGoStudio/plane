@@ -33,13 +33,13 @@ export const InboxIssueFilterSelection = observer(function InboxIssueFilterSelec
       {/* assignees */}
       <FilterMember filterKey="assignees" label={t("assignees")} memberIds={projectMemberIds ?? []} />
       {/* Created By */}
-      <FilterMember filterKey="created_by" label="Created By" memberIds={projectMemberIds ?? []} />
+      <FilterMember filterKey="created_by" label={t("common.created_by")} memberIds={projectMemberIds ?? []} />
       {/* Labels */}
       <FilterLabels labels={projectLabels ?? []} />
       {/* Created at */}
       <FilterDate filterKey="created_at" label={t("common.date_filter.created_date")} />
       {/* Updated at */}
-      <FilterDate filterKey="updated_at" label="Last updated date" />
+      <FilterDate filterKey="updated_at" label={t("common.sort.updated_on")} />
     </>
   );
 });

@@ -15,15 +15,14 @@ import { FilterSubmenu } from "@/components/common/filters/filter-submenu";
 // hooks
 import { useProjectInbox } from "@/hooks/store/use-project-inbox";
 
-const PRIORITY_OPTIONS = ISSUE_PRIORITIES.map((priority) => ({
-  value: priority.key,
-  label: priority.title,
-  icon: <PriorityIcon priority={priority.key} className="h-3.5 w-3.5" />,
-}));
-
 export const FilterPriority = observer(function FilterPriority() {
   // hooks
   const { t } = useTranslation();
+  const priorityOptions = ISSUE_PRIORITIES.map((priority) => ({
+    value: priority.key,
+    label: t(priority.key),
+    icon: <PriorityIcon priority={priority.key} className="h-3.5 w-3.5" />,
+  }));
   const { inboxFilters, handleInboxIssueFilters } = useProjectInbox();
   // derived values
   const filterValue = inboxFilters?.priority || [];
@@ -37,7 +36,7 @@ export const FilterPriority = observer(function FilterPriority() {
   return (
     <FilterSubmenu
       label={t("common.priority")}
-      options={PRIORITY_OPTIONS}
+      options={priorityOptions}
       appliedFilters={filterValue}
       onToggle={handleToggle}
     />

@@ -42,8 +42,8 @@ export const InboxIssueAppliedFiltersPriority = observer(function InboxIssueAppl
             key={value}
             variant="soft"
             icon={<PriorityIcon priority={optionDetail.key} className="h-3 w-3" />}
-            label={optionDetail.title}
-            ariaLabel={optionDetail.title}
+            label={t(optionDetail.key)}
+            ariaLabel={t(optionDetail.key)}
             onRemove={() => handleInboxIssueFilters("priority", handleFilterValue(optionDetail?.key))}
           />
         );
