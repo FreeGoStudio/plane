@@ -5,6 +5,7 @@
  */
 
 // plane constants
+import { useTranslation } from "@plane/i18n";
 import type { TAdminAuthErrorInfo } from "@plane/constants";
 import { Banner } from "@makeplane/propel/components/banner";
 
@@ -14,6 +15,7 @@ type TAuthBanner = {
 };
 
 export function AuthBanner(props: TAuthBanner) {
+  const { t } = useTranslation();
   const { bannerData, handleBannerData } = props;
 
   if (!bannerData) return <></>;
@@ -22,7 +24,7 @@ export function AuthBanner(props: TAuthBanner) {
       placement="inline"
       variant="info"
       description={<>{bannerData.message}</>}
-      dismissLabel="Dismiss banner"
+      dismissLabel={t("admin_access.dismiss")}
       onDismiss={() => handleBannerData && handleBannerData(undefined)}
     />
   );

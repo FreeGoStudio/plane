@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import type { TTranslationStore } from "@plane/i18n";
 import Link from "next/link";
 // plane packages
 import type { TAdminAuthErrorInfo } from "@plane/constants";
@@ -17,65 +18,56 @@ export enum EErrorAlertType {
   INLINE_EMAIL_CODE = "INLINE_EMAIL_CODE",
 }
 
-const errorCodeMessages: {
-  [key in EAdminAuthErrorCodes]: { title: string; message: (email?: string) => React.ReactNode };
-} = {
-  // admin
-  [EAdminAuthErrorCodes.ADMIN_ALREADY_EXIST]: {
-    title: `Admin already exists`,
-    message: () => `Admin already exists. Please try again.`,
-  },
-  [EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD_FIRST_NAME]: {
-    title: `Email, password and first name required`,
-    message: () => `Email, password and first name required. Please try again.`,
-  },
-  [EAdminAuthErrorCodes.INVALID_ADMIN_EMAIL]: {
-    title: `Invalid admin email`,
-    message: () => `Invalid admin email. Please try again.`,
-  },
-  [EAdminAuthErrorCodes.INVALID_ADMIN_PASSWORD]: {
-    title: `Invalid admin password`,
-    message: () => `Invalid admin password. Please try again.`,
-  },
-  [EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD]: {
-    title: `Email and password required`,
-    message: () => `Email and password required. Please try again.`,
-  },
-  [EAdminAuthErrorCodes.ADMIN_AUTHENTICATION_FAILED]: {
-    title: `Authentication failed`,
-    message: () => `Authentication failed. Please try again.`,
-  },
-  [EAdminAuthErrorCodes.ADMIN_USER_ALREADY_EXIST]: {
-    title: `Admin user already exists`,
-    message: () => (
-      <div>
-        Admin user already exists.&nbsp;
-        <Link className="font-medium underline underline-offset-4 transition-all hover:font-bold" href={`/admin`}>
-          Sign In
+export const authErrorHandler = (
+  errorCode: EAdminAuthErrorCodes,
+  t: TTranslationStore["t"]
+): TAdminAuthErrorInfo | undefined => {
+  const errorCodeMessages: Record<EAdminAuthErrorCodes, { title: string; message: React.ReactNode }> = {
+    [EAdminAuthErrorCodes.ADMIN_ALREADY_EXIST]: {
+      title: t("admin_access.admin_exists"),
+      message: t("admin_access.error_admin_already_exist"),
+    },
+    [EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD_FIRST_NAME]: {
+      title: t("admin_access.required_fields"),
+      message: t("admin_access.error_required_email_password_first_name"),
+    },
+    [EAdminAuthErrorCodes.INVALID_ADMIN_EMAIL]: {
+      title: t("admin_access.invalid_email"),
+      message: t("admin_access.error_invalid_email"),
+    },
+    [EAdminAuthErrorCodes.INVALID_ADMIN_PASSWORD]: {
+      title: t("admin_access.invalid_password"),
+      message: t("admin_access.error_invalid_password"),
+    },
+    [EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD]: {
+      title: t("admin_access.required_fields"),
+      message: t("admin_access.error_required_email_password"),
+    },
+    [EAdminAuthErrorCodes.ADMIN_AUTHENTICATION_FAILED]: {
+      title: t("admin_access.auth_failed"),
+      message: t("admin_access.error_authentication_failed"),
+    },
+    [EAdminAuthErrorCodes.ADMIN_USER_ALREADY_EXIST]: {
+      title: t("admin_access.admin_exists"),
+      message: (
+        <Link className="font-medium underline underline-offset-4 transition-all hover:font-bold" href="/admin">
+          {t("admin_access.admin_exists_sign_in")}
         </Link>
-        &nbsp;now.
-      </div>
-    ),
-  },
-  [EAdminAuthErrorCodes.ADMIN_USER_DOES_NOT_EXIST]: {
-    title: `Admin user does not exist`,
-    message: () => (
-      <div>
-        Admin user does not exist.&nbsp;
-        <Link className="font-medium underline underline-offset-4 transition-all hover:font-bold" href={`/admin`}>
-          Sign In
+      ),
+    },
+    [EAdminAuthErrorCodes.ADMIN_USER_DOES_NOT_EXIST]: {
+      title: t("admin_access.admin_missing"),
+      message: (
+        <Link className="font-medium underline underline-offset-4 transition-all hover:font-bold" href="/admin">
+          {t("admin_access.admin_missing_sign_in")}
         </Link>
-        &nbsp;now.
-      </div>
-    ),
-  },
-  [EAdminAuthErrorCodes.ADMIN_USER_DEACTIVATED]: {
-    title: `User account deactivated`,
-    message: () => `User account deactivated. Please contact ${SUPPORT_EMAIL ? SUPPORT_EMAIL : "administrator"}.`,
-  },
-};
-
-export const authErrorHandler = (errorCode: EAdminAuthErrorCodes, email?: string): TAdminAuthErrorInfo | undefined => {
+      ),
+    },
+    [EAdminAuthErrorCodes.ADMIN_USER_DEACTIVATED]: {
+      title: t("admin_access.deactivated"),
+      message: t("admin_access.deactivated_help", { contact: SUPPORT_EMAIL || t("admin_access.administrator") }),
+    },
+  };
   const bannerAlertErrorCodes = [
     EAdminAuthErrorCodes.ADMIN_ALREADY_EXIST,
     EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD_FIRST_NAME,
@@ -92,8 +84,8 @@ export const authErrorHandler = (errorCode: EAdminAuthErrorCodes, email?: string
     return {
       type: EErrorAlertType.BANNER_ALERT,
       code: errorCode,
-      title: errorCodeMessages[errorCode]?.title || "Error",
-      message: errorCodeMessages[errorCode]?.message(email) || "Something went wrong. Please try again.",
+      title: errorCodeMessages[errorCode]?.title || t("admin_access.error"),
+      message: errorCodeMessages[errorCode]?.message || t("admin_access.generic_error"),
     };
 
   return undefined;

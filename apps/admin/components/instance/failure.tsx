@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
 import { Button } from "@makeplane/propel/components/button";
@@ -17,6 +18,7 @@ const handleRetry = () => {
 };
 
 export const InstanceFailureView = observer(function InstanceFailureView() {
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
 
   const instanceImage = resolvedTheme === "dark" ? InstanceFailureDarkImage : InstanceFailureImage;
@@ -27,14 +29,12 @@ export const InstanceFailureView = observer(function InstanceFailureView() {
       <div className="mt-10 flex w-full flex-grow flex-col items-center justify-center py-6">
         <div className="relative flex w-full max-w-[22.5rem] flex-col gap-6">
           <div className="relative flex flex-col items-center justify-center space-y-4">
-            <img src={instanceImage} alt="Instance failure illustration" />
-            <h3 className="text-center text-h4-medium text-on-color">Unable to fetch instance details.</h3>
-            <p className="text-center text-body-sm-medium">
-              We were unable to fetch the details of the instance. Fret not, it might just be a connectivity issue.
-            </p>
+            <img src={instanceImage} alt={t("admin_access.failure_image")} />
+            <h3 className="text-center text-h4-medium text-on-color">{t("admin_access.failure_title")}</h3>
+            <p className="text-center text-body-sm-medium">{t("admin_access.failure_description")}</p>
           </div>
           <div className="flex justify-center">
-            <Button variant="primary" size="md" stretch="auto" onClick={handleRetry} label="Retry" />
+            <Button variant="primary" size="md" stretch="auto" onClick={handleRetry} label={t("admin_access.retry")} />
           </div>
         </div>
       </div>

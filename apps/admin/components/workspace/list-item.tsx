@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 
 // plane internal packages
@@ -20,6 +21,7 @@ type TWorkspaceListItemProps = {
 };
 
 export const WorkspaceListItem = observer(function WorkspaceListItem({ workspaceId }: TWorkspaceListItemProps) {
+  const { t } = useTranslation();
   // store hooks
   const { getWorkspaceById } = useWorkspace();
   // derived values
@@ -49,7 +51,7 @@ export const WorkspaceListItem = observer(function WorkspaceListItem({ workspace
             </h3>
             <div className="flex max-w-full min-w-0 items-center gap-2.5">
               <span className="shrink-0">/</span>
-              <Tooltip label="The unique URL of your workspace">
+              <Tooltip label={t("admin_access.workspace_url")}>
                 <h4 className="min-w-0 truncate text-body-xs-regular text-tertiary" title={workspace.slug}>
                   [{workspace.slug}]
                 </h4>
@@ -58,7 +60,7 @@ export const WorkspaceListItem = observer(function WorkspaceListItem({ workspace
           </div>
           {workspace.owner.email && (
             <div className="flex w-full min-w-0 items-center gap-1 text-caption-sm-regular">
-              <h3 className="shrink-0 font-medium text-secondary">Owned by:</h3>
+              <h3 className="shrink-0 font-medium text-secondary">{t("admin_access.owner")}</h3>
               <h4 className="truncate text-tertiary" title={workspace.owner.email}>
                 {workspace.owner.email}
               </h4>
@@ -67,7 +69,7 @@ export const WorkspaceListItem = observer(function WorkspaceListItem({ workspace
           <div className="flex flex-wrap items-center gap-2.5 gap-y-1 text-caption-sm-regular">
             {workspace.total_projects !== null && (
               <span className="flex items-center gap-1">
-                <h3 className="font-medium text-secondary">Total projects:</h3>
+                <h3 className="font-medium text-secondary">{t("admin_access.project_count")}</h3>
                 <h4 className="text-tertiary">{workspace.total_projects}</h4>
               </span>
             )}
@@ -75,7 +77,7 @@ export const WorkspaceListItem = observer(function WorkspaceListItem({ workspace
               <span className="flex items-center gap-2.5">
                 •
                 <span className="flex items-center gap-1">
-                  <h3 className="font-medium text-secondary">Total members:</h3>
+                  <h3 className="font-medium text-secondary">{t("admin_access.member_count")}</h3>
                   <h4 className="text-tertiary">{workspace.total_members}</h4>
                 </span>
               </span>

@@ -28,3 +28,5 @@ export {
   LANGUAGE_STORAGE_KEY,
   resolveLanguage,
 } from "./constants/language";
+
+export { translateValidationMessage } from "./validation";

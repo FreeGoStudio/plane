@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { WEB_BASE_URL, ORGANIZATION_SIZE, RESTRICTED_URLS } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { InputField } from "@makeplane/propel/components/input-field";
 import { Select, SelectContent, SelectItem, SelectList, SelectTrigger } from "@makeplane/propel/components/select";
@@ -68,25 +68,27 @@ export function WorkspaceCreateForm() {
             .then(async () => {
               setToast({
                 type: "success",
-                title: "Success!",
-                message: "Workspace created successfully.",
+                title: t("admin_access.success"),
+                message: t("admin_access.workspace_created"),
               });
               router.push(`/workspace`);
+              return undefined;
             })
             .catch(() => {
               setToast({
                 type: "error",
-                title: "Error!",
-                message: "Workspace could not be created. Please try again.",
+                title: t("admin_access.error"),
+                message: t("admin_access.workspace_create_failed"),
               });
             });
         } else setSlugError(true);
+        return undefined;
       })
       .catch(() => {
         setToast({
           type: "error",
-          title: "Error!",
-          message: "Some error occurred while creating workspace. Please try again.",
+          title: t("admin_access.error"),
+          message: t("admin_access.workspace_create_error"),
         });
       });
   };
@@ -106,7 +108,7 @@ export function WorkspaceCreateForm() {
           control={control}
           name="name"
           rules={{
-            validate: (value) => validateWorkspaceName(value, true),
+            validate: (value) => translateValidationMessage(validateWorkspaceName(value, true), t),
           }}
           render={({ field: { value, ref, onChange } }) => (
             <InputField
@@ -125,7 +127,7 @@ export function WorkspaceCreateForm() {
                 });
               }}
               ref={ref}
-              placeholder="Something familiar and recognizable is always best."
+              placeholder={t("admin_access.workspace_name_placeholder")}
               error={errors.name?.message}
             />
           )}
@@ -134,7 +136,7 @@ export function WorkspaceCreateForm() {
           control={control}
           name="slug"
           rules={{
-            validate: (value) => validateSlug(value),
+            validate: (value) => translateValidationMessage(validateSlug(value), t),
           }}
           render={({ field: { onChange, value, ref } }) => (
             <InputField
@@ -157,9 +159,9 @@ export function WorkspaceCreateForm() {
               placeholder="workspace-name"
               error={
                 slugError
-                  ? "This URL is taken. Try something else."
+                  ? t("admin_access.url_taken")
                   : invalidSlug
-                    ? "URLs can contain only ( - ), ( _ ) and alphanumeric characters."
+                    ? t("admin_access.url_invalid")
                     : errors.slug?.message
               }
             />
@@ -176,7 +178,7 @@ export function WorkspaceCreateForm() {
             <Controller
               name="organization_size"
               control={control}
-              rules={{ required: "This is a required field." }}
+              rules={{ required: t("admin_access.required_field") }}
               render={({ field: { value, onChange } }) => (
                 <Select value={value} onValueChange={onChange}>
                   <SelectTrigger
@@ -214,7 +216,7 @@ export function WorkspaceCreateForm() {
           onClick={handleSubmit(handleCreateWorkspace)}
           disabled={!isValid}
           loading={isSubmitting}
-          label={isSubmitting ? "Creating workspace" : "Create workspace"}
+          label={isSubmitting ? t("admin_access.creating_workspace") : t("admin_access.create_workspace")}
         />
         <Button
           variant="secondary"
@@ -222,7 +224,7 @@ export function WorkspaceCreateForm() {
           stretch="auto"
           nativeButton={false}
           render={<Link href="/workspace" />}
-          label="Go back"
+          label={t("admin_access.back")}
         />
       </div>
     </div>

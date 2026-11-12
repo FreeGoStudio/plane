@@ -4,20 +4,22 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Link } from "react-router";
 // plane imports
 import { Button } from "@makeplane/propel/components/button";
 import { EmptyStateDetailed } from "@plane/blocks/empty-state";
 
 function PageNotFound() {
+  const { t } = useTranslation();
   return (
     <div className="h-screen w-full overflow-hidden bg-surface-1 p-4">
       <EmptyStateDetailed
         align="center"
         assetKey="error-404"
         assetClassName="size-40"
-        title="Oops! Something went wrong."
-        description="Sorry, the page you are looking for cannot be found. It may have been removed, had its name changed, or is temporarily unavailable."
+        title={t("admin_access.not_found_title")}
+        description={t("admin_access.not_found_description")}
         customButton={
           <Button
             variant="primary"
@@ -25,7 +27,7 @@ function PageNotFound() {
             stretch="auto"
             nativeButton={false}
             render={<Link to="/general/" />}
-            label="Go to general settings"
+            label={t("admin_access.general_settings")}
           />
         }
       />

@@ -58,20 +58,21 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving configuration",
+      loading: t("admin_access.saving"),
       success: {
-        title: "Success",
-        message: () => "Configuration saved successfully",
+        title: t("admin_access.success"),
+        message: () => t("admin_access.saved"),
       },
       error: {
-        title: "Error",
-        message: () => "Failed to save configuration",
+        title: t("admin_access.error"),
+        message: () => t("admin_access.save_failed"),
       },
     });
 
     await updateConfigPromise
       .then(() => {
         setIsSubmitting(false);
+        return undefined;
       })
       .catch((err) => {
         console.error(err);
@@ -82,8 +83,8 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
   return (
     <PageWrapper
       header={{
-        title: "Workspaces on this instance",
-        description: "See all workspaces and control who can create them.",
+        title: t("admin_access.workspaces_title"),
+        description: t("admin_access.workspaces_description"),
       }}
     >
       <div className="space-y-3">
@@ -92,10 +93,10 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
             <div className="flex min-w-0 grow items-center gap-4">
               <div className="min-w-0 grow">
                 <div className="pb-1 text-body-sm-medium text-primary">
-                  Prevent anyone else from creating a workspace.
+                  {t("admin_access.prevent_creation_description")}
                 </div>
                 <div className="text-body-xs-regular leading-5 text-tertiary">
-                  Toggling this on will let only you create workspaces. You will have to invite users to new workspaces.
+                  {t("admin_access.prevent_creation_help")}
                 </div>
               </div>
             </div>
@@ -111,7 +112,7 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
                     }
                   }}
                   size="sm"
-                  aria-label="Prevent anyone else from creating a workspace"
+                  aria-label={t("admin_access.prevent_creation")}
                   disabled={isSubmitting}
                 />
               </div>
@@ -127,14 +128,13 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
             <div className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col items-start gap-x-2">
                 <div className="flex items-center gap-2 text-body-md-medium">
-                  All workspaces on this instance <span className="text-tertiary">• {workspaceIds.length}</span>
+                  {t("admin_access.all_workspaces")} <span className="text-tertiary">• {workspaceIds.length}</span>
                   {workspaceLoader && ["mutation", "pagination"].includes(workspaceLoader) && (
                     <LoaderIcon className="h-4 w-4 animate-spin" />
                   )}
                 </div>
                 <div className="text-body-xs-regular leading-5 text-tertiary">
-                  You can&apos;t yet delete workspaces and you can only go to the workspace if you are an Admin or a
-                  Member.
+                  {t("admin_access.workspace_access_help")}
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -144,7 +144,7 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
                   stretch="auto"
                   nativeButton={false}
                   render={<Link href="/workspace/create" />}
-                  label="Create workspace"
+                  label={t("admin_access.create_workspace")}
                 />
               </div>
             </div>
@@ -168,7 +168,7 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
                   stretch="auto"
                   onClick={() => fetchNextWorkspaces()}
                   loading={workspaceLoader === "pagination"}
-                  label="Load more"
+                  label={t("admin_access.load_more")}
                 />
               </div>
             )}
@@ -186,6 +186,6 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "Workspace Management - God Mode" }];
+export const meta: Route.MetaFunction = () => [{ title: "Plane" }];
 
 export default WorkspaceManagementPage;

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 // icons
@@ -60,6 +61,7 @@ const defaultFromData: TFormData = {
 };
 
 export function InstanceSetupForm() {
+  const { t } = useTranslation();
   // search params
   const searchParams = useSearchParams();
   const firstNameParam = searchParams?.get("first_name") || undefined;
@@ -102,22 +104,28 @@ export function InstanceSetupForm() {
     if (errorCode && errorMessage) {
       switch (errorCode) {
         case EErrorCodes.INSTANCE_NOT_CONFIGURED:
-          return { type: EErrorCodes.INSTANCE_NOT_CONFIGURED, message: errorMessage };
+          return {
+            type: EErrorCodes.INSTANCE_NOT_CONFIGURED,
+            message: t("admin_access.error_instance_not_configured"),
+          };
         case EErrorCodes.ADMIN_ALREADY_EXIST:
-          return { type: EErrorCodes.ADMIN_ALREADY_EXIST, message: errorMessage };
+          return { type: EErrorCodes.ADMIN_ALREADY_EXIST, message: t("admin_access.error_admin_already_exist") };
         case EErrorCodes.REQUIRED_EMAIL_PASSWORD_FIRST_NAME:
-          return { type: EErrorCodes.REQUIRED_EMAIL_PASSWORD_FIRST_NAME, message: errorMessage };
+          return {
+            type: EErrorCodes.REQUIRED_EMAIL_PASSWORD_FIRST_NAME,
+            message: t("admin_access.error_required_email_password_first_name"),
+          };
         case EErrorCodes.INVALID_EMAIL:
-          return { type: EErrorCodes.INVALID_EMAIL, message: errorMessage };
+          return { type: EErrorCodes.INVALID_EMAIL, message: t("admin_access.error_invalid_email") };
         case EErrorCodes.INVALID_PASSWORD:
-          return { type: EErrorCodes.INVALID_PASSWORD, message: errorMessage };
+          return { type: EErrorCodes.INVALID_PASSWORD, message: t("admin_access.error_invalid_password") };
         case EErrorCodes.USER_ALREADY_EXISTS:
-          return { type: EErrorCodes.USER_ALREADY_EXISTS, message: errorMessage };
+          return { type: EErrorCodes.USER_ALREADY_EXISTS, message: t("admin_access.error_user_already_exists") };
         default:
           return { type: undefined, message: undefined };
       }
     } else return { type: undefined, message: undefined };
-  }, [errorCode, errorMessage]);
+  }, [errorCode, errorMessage, t]);
 
   const isButtonDisabled = useMemo(
     () =>
@@ -140,10 +148,7 @@ export function InstanceSetupForm() {
       <AuthHeader />
       <div className="mt-10 flex w-full flex-grow flex-col items-center justify-center py-6">
         <div className="relative flex w-full max-w-[22.5rem] flex-col gap-6">
-          <FormHeader
-            heading="Setup your Plane Instance"
-            subHeading="Post setup you will be able to manage this Plane instance."
-          />
+          <FormHeader heading={t("admin_access.setup_title")} subHeading={t("admin_access.setup_description")} />
           {errorData.type &&
             errorData?.message &&
             ![EErrorCodes.INVALID_EMAIL, EErrorCodes.INVALID_PASSWORD].includes(errorData.type) && (
@@ -166,7 +171,7 @@ export function InstanceSetupForm() {
                   id="first_name"
                   name="first_name"
                   type="text"
-                  placeholder="Wilber"
+                  placeholder={t("admin_access.first_name_placeholder")}
                   value={formData.first_name}
                   onChange={(e) => {
                     const validation = validatePersonName(e.target.value);
@@ -179,7 +184,7 @@ export function InstanceSetupForm() {
                   autoFocus
                   maxLength={50}
                   orientation="vertical"
-                  label="First name"
+                  label={t("admin_access.first_name")}
                   required
                 />
               </div>
@@ -189,7 +194,7 @@ export function InstanceSetupForm() {
                   id="last_name"
                   name="last_name"
                   type="text"
-                  placeholder="Wright"
+                  placeholder={t("admin_access.last_name_placeholder")}
                   value={formData.last_name}
                   onChange={(e) => {
                     const validation = validatePersonName(e.target.value);
@@ -200,7 +205,7 @@ export function InstanceSetupForm() {
                   autoComplete="off"
                   maxLength={50}
                   orientation="vertical"
-                  label="Last name"
+                  label={t("admin_access.last_name")}
                   required
                 />
               </div>
@@ -217,7 +222,7 @@ export function InstanceSetupForm() {
               aria-invalid={errorData.type === EErrorCodes.INVALID_EMAIL}
               autoComplete="off"
               orientation="vertical"
-              label="Email"
+              label={t("admin_access.email")}
               required
               error={errorData.type === EErrorCodes.INVALID_EMAIL && errorData.message ? errorData.message : undefined}
             />
@@ -227,7 +232,7 @@ export function InstanceSetupForm() {
               id="company_name"
               name="company_name"
               type="text"
-              placeholder="Company name"
+              placeholder={t("admin_access.company")}
               value={formData.company_name}
               onChange={(e) => {
                 const validation = validateCompanyName(e.target.value, false);
@@ -237,7 +242,7 @@ export function InstanceSetupForm() {
               }}
               maxLength={80}
               orientation="vertical"
-              label="Company name"
+              label={t("admin_access.company")}
               required
             />
 
@@ -247,7 +252,7 @@ export function InstanceSetupForm() {
                 id="password"
                 name="password"
                 type={showPassword.password ? "text" : "password"}
-                placeholder="New password"
+                placeholder={t("admin_access.new_password")}
                 value={formData.password}
                 onChange={(e) => handleFormChange("password", e.target.value)}
                 aria-invalid={errorData.type === EErrorCodes.INVALID_PASSWORD}
@@ -255,7 +260,7 @@ export function InstanceSetupForm() {
                 onBlur={() => setIsPasswordInputFocused(false)}
                 autoComplete="new-password"
                 orientation="vertical"
-                label="Set a password"
+                label={t("admin_access.set_password")}
                 required
                 error={
                   errorData.type === EErrorCodes.INVALID_PASSWORD && errorData.message ? errorData.message : undefined
@@ -265,7 +270,9 @@ export function InstanceSetupForm() {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    aria-label={showPassword.password ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword.password ? t("admin_access.hide_password") : t("admin_access.show_password")
+                    }
                     aria-pressed={showPassword.password}
                     icon={<Icon icon={showPassword.password ? HideOutline : ShowOutline} />}
                     onClick={() => handleShowPassword("password")}
@@ -283,19 +290,21 @@ export function InstanceSetupForm() {
                 name="confirm_password"
                 value={formData.confirm_password}
                 onChange={(e) => handleFormChange("confirm_password", e.target.value)}
-                placeholder="Confirm password"
+                placeholder={t("admin_access.confirm_password")}
                 onFocus={() => setIsRetryPasswordInputFocused(true)}
                 onBlur={() => setIsRetryPasswordInputFocused(false)}
                 autoComplete="new-password"
                 orientation="vertical"
-                label="Confirm password"
+                label={t("admin_access.confirm_password")}
                 required
                 endIcon={
                   <IconButton
                     type="button"
                     variant="ghost"
                     size="sm"
-                    aria-label={showPassword.retypePassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword.retypePassword ? t("admin_access.hide_password") : t("admin_access.show_password")
+                    }
                     aria-pressed={showPassword.retypePassword}
                     icon={<Icon icon={showPassword.retypePassword ? HideOutline : ShowOutline} />}
                     onClick={() => handleShowPassword("retypePassword")}
@@ -305,7 +314,9 @@ export function InstanceSetupForm() {
               {!!formData.confirm_password &&
                 formData.password !== formData.confirm_password &&
                 renderPasswordMatchError && (
-                  <span className="text-body-xs-regular text-danger-primary">Passwords don{"'"}t match</span>
+                  <span className="text-body-xs-regular text-danger-primary">
+                    {t("admin_access.password_mismatch")}
+                  </span>
                 )}
             </div>
 
@@ -313,20 +324,20 @@ export function InstanceSetupForm() {
               <div>
                 <Checkbox
                   id="is_telemetry_enabled"
-                  aria-label="Allow Plane to anonymously collect usage events"
+                  aria-label={t("admin_access.telemetry")}
                   onCheckedChange={(checked) => handleFormChange("is_telemetry_enabled", checked)}
                   checked={formData.is_telemetry_enabled}
                 />
               </div>
               <label className="cursor-pointer text-body-xs-medium text-tertiary" htmlFor="is_telemetry_enabled">
-                Allow Plane to anonymously collect usage events.{" "}
+                {t("admin_access.telemetry_description")}{" "}
                 <a
                   href="https://developers.plane.so/self-hosting/telemetry"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="shrink-0 text-body-xs-medium text-accent-primary hover:underline"
                 >
-                  See More
+                  {t("admin_access.learn_more")}
                 </a>
               </label>
             </div>
@@ -339,7 +350,7 @@ export function InstanceSetupForm() {
                 stretch="full"
                 disabled={isButtonDisabled}
                 loading={isSubmitting}
-                label="Continue"
+                label={t("admin_access.continue")}
               />
             </div>
           </form>

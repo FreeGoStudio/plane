@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { E_PASSWORD_STRENGTH } from "@plane/constants";
 import { cn, getPasswordStrength, getPasswordCriteria } from "@plane/utils";
@@ -21,6 +22,7 @@ export function PasswordStrengthIndicator({
   showCriteria = true,
   isFocused = false,
 }: PasswordStrengthIndicatorProps) {
+  const { t } = useTranslation();
   const strength = getPasswordStrength(password);
   const criteria = getPasswordCriteria(password);
   const strengthInfo = getStrengthInfo(strength);
@@ -49,7 +51,9 @@ export function PasswordStrengthIndicator({
 
         {/* Strength Message */}
         {password && (
-          <p className={cn("!text-body-xs-medium font-medium", strengthInfo.textColor)}>{strengthInfo.message}</p>
+          <p className={cn("!text-body-xs-medium font-medium", strengthInfo.textColor)}>
+            {t(`password_strength.status.${strength}`)}
+          </p>
         )}
       </div>
 
@@ -72,7 +76,7 @@ export function PasswordStrengthIndicator({
                   "text-primary": !criterion.isValid,
                 })}
               >
-                {criterion.label}
+                {t(`password_strength.criteria.${criterion.key}`)}
               </span>
             </div>
           ))}

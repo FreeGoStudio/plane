@@ -4,7 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { useEffect } from "react";
+
 export function FormHeader({ heading, subHeading }: { heading: string; subHeading: string }) {
+  useEffect(() => {
+    document.title = `${heading} - Plane`;
+  }, [heading]);
   return (
     <div className="flex flex-col gap-1">
       <span className="text-h4-semibold leading-7 text-primary">{heading}</span>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { HideOutline, ShowOutline } from "@makeplane/propel/icons";
@@ -49,6 +50,7 @@ const defaultFromData: TFormData = {
 };
 
 export function InstanceSignInForm() {
+  const { t } = useTranslation();
   // search params
   const searchParams = useSearchParams();
   const emailParam = searchParams.get("email") || undefined;
@@ -73,20 +75,26 @@ export function InstanceSignInForm() {
     if (errorCode && errorMessage) {
       switch (errorCode) {
         case EErrorCodes.INSTANCE_NOT_CONFIGURED:
-          return { type: EErrorCodes.INSTANCE_NOT_CONFIGURED, message: errorMessage };
+          return {
+            type: EErrorCodes.INSTANCE_NOT_CONFIGURED,
+            message: t("admin_access.error_instance_not_configured"),
+          };
         case EErrorCodes.REQUIRED_EMAIL_PASSWORD:
-          return { type: EErrorCodes.REQUIRED_EMAIL_PASSWORD, message: errorMessage };
+          return {
+            type: EErrorCodes.REQUIRED_EMAIL_PASSWORD,
+            message: t("admin_access.error_required_email_password"),
+          };
         case EErrorCodes.INVALID_EMAIL:
-          return { type: EErrorCodes.INVALID_EMAIL, message: errorMessage };
+          return { type: EErrorCodes.INVALID_EMAIL, message: t("admin_access.error_invalid_email") };
         case EErrorCodes.USER_DOES_NOT_EXIST:
-          return { type: EErrorCodes.USER_DOES_NOT_EXIST, message: errorMessage };
+          return { type: EErrorCodes.USER_DOES_NOT_EXIST, message: t("admin_access.error_user_does_not_exist") };
         case EErrorCodes.AUTHENTICATION_FAILED:
-          return { type: EErrorCodes.AUTHENTICATION_FAILED, message: errorMessage };
+          return { type: EErrorCodes.AUTHENTICATION_FAILED, message: t("admin_access.error_authentication_failed") };
         default:
           return { type: undefined, message: undefined };
       }
     } else return { type: undefined, message: undefined };
-  }, [errorCode, errorMessage]);
+  }, [errorCode, errorMessage, t]);
 
   const isButtonDisabled = useMemo(
     () => isSubmitting || !csrfToken || !formData.email || !formData.password,
@@ -95,22 +103,19 @@ export function InstanceSignInForm() {
 
   useEffect(() => {
     if (errorCode) {
-      const errorDetail = authErrorHandler(errorCode?.toString() as EAdminAuthErrorCodes);
+      const errorDetail = authErrorHandler(errorCode?.toString() as EAdminAuthErrorCodes, t);
       if (errorDetail) {
         setErrorInfo(errorDetail);
       }
     }
-  }, [errorCode]);
+  }, [errorCode, t]);
 
   return (
     <>
       <AuthHeader />
       <div className="mt-10 flex w-full flex-grow flex-col items-center justify-center py-6">
         <div className="relative flex w-full max-w-[22.5rem] flex-col gap-6">
-          <FormHeader
-            heading="Manage your Plane instance"
-            subHeading="Configure instance-wide settings to secure your instance"
-          />
+          <FormHeader heading={t("admin_access.sign_in_title")} subHeading={t("admin_access.sign_in_description")} />
           <form
             className="space-y-4"
             method="POST"
@@ -137,7 +142,7 @@ export function InstanceSignInForm() {
               // oxlint-disable-next-line jsx-a11y/no-autofocus -- sole primary field of a dedicated sign-in page
               autoFocus
               orientation="vertical"
-              label="Email"
+              label={t("admin_access.email")}
               required
             />
 
@@ -146,19 +151,19 @@ export function InstanceSignInForm() {
               id="password"
               name="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder={t("admin_access.enter_password")}
               value={formData.password}
               onChange={(e) => handleFormChange("password", e.target.value)}
               autoComplete="off"
               orientation="vertical"
-              label="Password"
+              label={t("admin_access.password")}
               required
               endIcon={
                 <IconButton
                   type="button"
                   variant="ghost"
                   size="sm"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? t("admin_access.hide_password") : t("admin_access.show_password")}
                   aria-pressed={showPassword}
                   icon={<Icon icon={showPassword ? HideOutline : ShowOutline} />}
                   onClick={() => setShowPassword((visible) => !visible)}
@@ -173,7 +178,7 @@ export function InstanceSignInForm() {
                 stretch="full"
                 disabled={isButtonDisabled}
                 loading={isSubmitting}
-                label="Sign in"
+                label={t("admin_access.sign_in")}
               />
             </div>
           </form>
