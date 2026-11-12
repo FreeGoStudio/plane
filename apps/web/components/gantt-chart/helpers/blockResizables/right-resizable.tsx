@@ -43,11 +43,12 @@ export const RightResizable = observer(function RightResizable(props: RightResiz
         </div>
       )}
       <div
+        role="presentation"
         onMouseDown={(e) => handleBlockDrag(e, "right")}
-        onMouseOver={() => {
+        onMouseEnter={() => {
           setIsHovering(true);
         }}
-        onMouseOut={() => {
+        onMouseLeave={() => {
           setIsHovering(false);
         }}
         className="absolute top-1/2 -right-1.5 z-[6] h-full w-3 -translate-y-1/2 cursor-col-resize rounded-md"

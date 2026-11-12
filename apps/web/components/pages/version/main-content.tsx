@@ -68,7 +68,7 @@ export const PageVersionsMainContent = observer(function PageVersionsMainContent
           type: "success",
           title: t("page_navigation_pane.tabs.version_history.restore_success"),
         });
-        handleClose();
+        return handleClose();
       })
       .catch(() =>
         setToast({

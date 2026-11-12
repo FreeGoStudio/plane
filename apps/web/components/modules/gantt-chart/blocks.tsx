@@ -17,7 +17,6 @@ import { getBlockViewDetails } from "@/components/issues/issue-layouts/utils";
 // constants
 // hooks
 import { useModule } from "@/hooks/store/use-module";
-import { useAppRouter } from "@/hooks/use-app-router";
 import { usePlatformOS } from "@/hooks/use-platform-os";
 
 type Props = {
@@ -27,7 +26,6 @@ type Props = {
 export const ModuleGanttBlock = observer(function ModuleGanttBlock(props: Props) {
   const { moduleId } = props;
   // router
-  const router = useAppRouter();
   const { workspaceSlug } = useParams();
   // store hooks
   const { getModuleById } = useModule();
@@ -48,14 +46,11 @@ export const ModuleGanttBlock = observer(function ModuleGanttBlock(props: Props)
       align="start"
       disabled={isMobile}
     >
-      <div
+      <Link
+        draggable={false}
         className="relative flex h-full w-full cursor-pointer items-center rounded-sm"
         style={blockStyle}
-        onClick={() =>
-          router.push(
-            `/${workspaceSlug?.toString()}/projects/${moduleDetails?.project_id}/modules/${moduleDetails?.id}`
-          )
-        }
+        href={`/${workspaceSlug?.toString()}/projects/${moduleDetails?.project_id}/modules/${moduleDetails?.id}`}
       >
         <div className="absolute top-0 left-0 h-full w-full bg-surface-1/50" />
         <div
@@ -64,7 +59,7 @@ export const ModuleGanttBlock = observer(function ModuleGanttBlock(props: Props)
         >
           {moduleDetails?.name}
         </div>
-      </div>
+      </Link>
     </Tooltip>
   );
 });

@@ -60,7 +60,7 @@ export function CreateApiTokenModal(props: Props) {
         setGeneratedToken(res);
         downloadSecretKey(res);
 
-        mutate<IApiToken[]>(
+        return mutate<IApiToken[]>(
           API_TOKENS_LIST,
           (prevData) => {
             if (!prevData) return;

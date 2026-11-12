@@ -23,7 +23,7 @@ export const QuarterChartView = observer(function QuarterChartView(_props: any) 
   return (
     <div className={`absolute top-0 left-0 flex h-max min-h-full w-max`}>
       {currentViewData &&
-        quarterBlocks?.map((quarterBlock, rootIndex) => (
+        quarterBlocks?.map((quarterBlock) => (
           <div key={`month-${quarterBlock.quarterNumber}-${quarterBlock.year}`} className="relative flex flex-col">
             {/** Header Div */}
             <div
@@ -55,9 +55,9 @@ export const QuarterChartView = observer(function QuarterChartView(_props: any) 
               </div>
               {/** Months Sub title */}
               <div className="flex h-5 w-full">
-                {quarterBlock?.children?.map((monthBlock, index) => (
+                {quarterBlock?.children?.map((monthBlock) => (
                   <div
-                    key={`sub-title-${rootIndex}-${index}`}
+                    key={`sub-title-${monthBlock.year}-${monthBlock.month}`}
                     className={cn(
                       "flex flex-shrink-0 justify-center border-r-[0.5px] border-subtle-1 text-center capitalize",
                       {
@@ -81,9 +81,9 @@ export const QuarterChartView = observer(function QuarterChartView(_props: any) 
             </div>
             {/** Month Columns */}
             <div className="flex h-full w-full flex-grow">
-              {quarterBlock?.children?.map((monthBlock, index) => (
+              {quarterBlock?.children?.map((monthBlock) => (
                 <div
-                  key={`column-${rootIndex}-${index}`}
+                  key={`column-${monthBlock.year}-${monthBlock.month}`}
                   className={cn("h-full overflow-hidden border-r-[0.5px] border-subtle-1", {
                     "bg-accent-primary/20": monthBlock.today,
                   })}
