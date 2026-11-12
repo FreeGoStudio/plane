@@ -155,10 +155,6 @@ export const useEditor = (props: TEditorHookProps) => {
     [editor, getEditorMetaData, provider]
   );
 
-  if (!editor) {
-    return null;
-  }
-
   useEffect(() => {
     if (editor && !editor.isDestroyed) editor.view.dispatch(editor.state.tr.setMeta("locale", currentLocale));
   }, [editor, currentLocale]);
