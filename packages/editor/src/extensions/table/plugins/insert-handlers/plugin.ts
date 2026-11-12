@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { translate as translateLabel } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
 // local imports
@@ -86,6 +87,16 @@ export const TableInsertPlugin = (editor: Editor): Plugin => {
 
       return {
         update(view, prevState) {
+          tableMap.forEach(({ columnButtonElement, rowButtonElement }) => {
+            if (columnButtonElement) {
+              columnButtonElement.title = translateLabel("editor_ui.insert_columns");
+              columnButtonElement.ariaLabel = columnButtonElement.title;
+            }
+            if (rowButtonElement) {
+              rowButtonElement.title = translateLabel("editor_ui.insert_rows");
+              rowButtonElement.ariaLabel = rowButtonElement.title;
+            }
+          });
           // Update when document changes
           if (!prevState.doc.eq(view.state.doc)) {
             updateAllTables();

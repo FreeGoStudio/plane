@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Node } from "@tiptap/pm/model";
 import { InputField } from "@makeplane/propel/components/input-field";
 import { Icon } from "@makeplane/propel/components/icon";
@@ -35,6 +36,8 @@ function InputView({ label, value, placeholder, onChange, autoFocus }: InputView
         onClick={(e) => e.stopPropagation()}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        // Focus the field only when the user opens the link editor.
+        // oxlint-disable-next-line jsx-a11y/no-autofocus
         autoFocus={autoFocus}
       />
     </div>
@@ -47,6 +50,7 @@ type LinkEditViewProps = {
 };
 
 export function LinkEditView({ viewProps }: LinkEditViewProps) {
+  const { t } = useTranslation();
   const { editor, from, to, url: initialUrl, text: initialText, closeLinkView } = viewProps;
 
   // State
@@ -142,6 +146,7 @@ export function LinkEditView({ viewProps }: LinkEditViewProps) {
 
   return (
     <div
+      role="group"
       onKeyDown={handleKeyDown}
       className="shadow-md animate-in fade-in flex translate-y-1 flex-col gap-3 rounded-sm border-2 border-subtle bg-layer-1 p-2"
       style={{
@@ -149,8 +154,14 @@ export function LinkEditView({ viewProps }: LinkEditViewProps) {
       }}
       tabIndex={0}
     >
-      <InputView label="URL" placeholder="Enter or paste URL" value={localUrl} onChange={setLocalUrl} autoFocus />
-      <InputView label="Text" placeholder="Enter Text to display" value={localText} onChange={handleTextChange} />
+      {/* oxlint-disable-next-line jsx-a11y/no-autofocus -- user-opened link editor */}
+      <InputView label="URL" placeholder={t("editor_ui.enter_url")} value={localUrl} onChange={setLocalUrl} autoFocus />
+      <InputView
+        label={t("editor_ui.text")}
+        placeholder={t("editor_ui.display_text")}
+        value={localText}
+        onChange={handleTextChange}
+      />
       <div className="bg-strong mb-1 h-[1px] w-full gap-2" />
       <Button
         type="button"
@@ -163,7 +174,7 @@ export function LinkEditView({ viewProps }: LinkEditViewProps) {
         }}
       >
         <Icon icon={UnlinkOutline} />
-        Remove Link
+        {t("editor_ui.remove_link")}
       </Button>
     </div>
   );

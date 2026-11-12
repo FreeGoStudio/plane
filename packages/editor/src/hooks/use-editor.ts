@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEditorState, useEditor as useTiptapEditor } from "@tiptap/react";
 import { useImperativeHandle, useEffect } from "react";
 import type { MarkdownStorage } from "tiptap-markdown";
@@ -23,6 +24,7 @@ declare module "@tiptap/core" {
 }
 
 export const useEditor = (props: TEditorHookProps) => {
+  const { currentLocale } = useTranslation();
   const {
     autofocus = false,
     disabledExtensions,
@@ -156,6 +158,10 @@ export const useEditor = (props: TEditorHookProps) => {
   if (!editor) {
     return null;
   }
+
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) editor.view.dispatch(editor.state.tr.setMeta("locale", currentLocale));
+  }, [editor, currentLocale]);
 
   return editor;
 };

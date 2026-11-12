@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import {
   shift,
   flip,
@@ -53,6 +54,7 @@ export type ColumnDragHandleProps = {
 };
 
 export function ColumnDragHandle(props: ColumnDragHandleProps) {
+  const { t } = useTranslation();
   const { col, editor } = props;
   // states
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -131,19 +133,19 @@ export function ColumnDragHandle(props: ColumnDragHandleProps) {
       activeListenersRef.current.mouseup = undefined;
       activeListenersRef.current.mousemove = undefined;
 
-      const table = findTable(editor.state.selection);
-      if (!table) return;
+      const selectedTable = findTable(editor.state.selection);
+      if (!selectedTable) return;
 
-      editor.view.dispatch(selectColumn(table, col, editor.state.tr));
+      editor.view.dispatch(selectColumn(selectedTable, col, editor.state.tr));
 
       // drag column
-      const tableWidthPx = getTableWidthPx(table, editor);
-      const columns = getTableColumnNodesInfo(table, editor);
+      const tableWidthPx = getTableWidthPx(selectedTable, editor);
+      const columns = getTableColumnNodesInfo(selectedTable, editor);
 
       let dropIndex = col;
       const startLeft = columns[col].left ?? 0;
       const startX = e.clientX;
-      const tableElement = editor.view.nodeDOM(table.pos);
+      const tableElement = editor.view.nodeDOM(selectedTable.pos);
 
       const dropMarker = tableElement instanceof HTMLElement ? getDropMarker(tableElement) : null;
       const dragMarker = tableElement instanceof HTMLElement ? getColDragMarker(tableElement) : null;
@@ -162,9 +164,9 @@ export function ColumnDragHandle(props: ColumnDragHandleProps) {
           let tr = editor.state.tr;
           const selection = editor.state.selection;
           if (isCellSelection(selection)) {
-            const table = findTable(selection);
-            if (table) {
-              tr = moveSelectedColumns(editor, table, selection, dropIndex, tr);
+            const dropTable = findTable(selection);
+            if (dropTable) {
+              tr = moveSelectedColumns(editor, dropTable, selection, dropIndex, tr);
             }
           }
           editor.view.dispatch(tr);
@@ -184,8 +186,8 @@ export function ColumnDragHandle(props: ColumnDragHandleProps) {
         dropIndex = calculateColumnDropIndex(col, columns, currentLeft);
 
         if (!pseudoColumn) {
-          pseudoColumn = constructColumnDragPreview(editor, editor.state.selection, table);
-          const tableHeightPx = getTableHeightPx(table, editor);
+          pseudoColumn = constructColumnDragPreview(editor, editor.state.selection, selectedTable);
+          const tableHeightPx = getTableHeightPx(selectedTable, editor);
           if (pseudoColumn) {
             pseudoColumn.style.height = `${tableHeightPx}px`;
           }
@@ -231,7 +233,7 @@ export function ColumnDragHandle(props: ColumnDragHandleProps) {
           {...getReferenceProps()}
           type="button"
           onMouseDown={handleMouseDown}
-          aria-label="Column options"
+          aria-label={t("editor_ui.column_options")}
           className={cn(
             "rounded-sm border border-strong-1 bg-layer-1 px-1 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-inset",
             {

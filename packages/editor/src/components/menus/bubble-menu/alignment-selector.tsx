@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import type { ComponentType, SVGProps } from "react";
 import { AlignCenterOutline, AlignLeftOutline, AlignRightOutline } from "@makeplane/propel/icons";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export function TextAlignmentSelector(props: Props) {
+  const { t } = useTranslation();
   const { editor, editorState } = props;
   const menuItem = TextAlignItem(editor);
 
@@ -36,7 +38,7 @@ export function TextAlignmentSelector(props: Props) {
     {
       itemKey: "text-align",
       renderKey: "text-align-left",
-      label: "Align left",
+      label: t("editor_ui.align_left"),
       icon: AlignLeftOutline,
       command: () =>
         menuItem.command({
@@ -47,7 +49,7 @@ export function TextAlignmentSelector(props: Props) {
     {
       itemKey: "text-align",
       renderKey: "text-align-center",
-      label: "Align center",
+      label: t("editor_ui.align_center"),
       icon: AlignCenterOutline,
       command: () =>
         menuItem.command({
@@ -58,7 +60,7 @@ export function TextAlignmentSelector(props: Props) {
     {
       itemKey: "text-align",
       renderKey: "text-align-right",
-      label: "Align right",
+      label: t("editor_ui.align_right"),
       icon: AlignRightOutline,
       command: () =>
         menuItem.command({
@@ -70,7 +72,7 @@ export function TextAlignmentSelector(props: Props) {
   if (editorState.code) return null;
 
   return (
-    <ToolbarGroup role="group" aria-label="Text alignment">
+    <ToolbarGroup role="group" aria-label={t("editor_ui.text_alignment")}>
       {textAlignmentOptions.map((item) => (
         <ToolbarButton
           key={item.renderKey}

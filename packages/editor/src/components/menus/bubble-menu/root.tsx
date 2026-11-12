@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { isNodeSelection } from "@tiptap/core";
 import type { Editor } from "@tiptap/core";
 import { PluginKey } from "@tiptap/pm/state";
@@ -79,6 +80,7 @@ type Props = {
 };
 
 export function EditorBubbleMenu(props: Props) {
+  const { t } = useTranslation();
   const { editor } = props;
   // states
   const [isSelecting, setIsSelecting] = useState(false);
@@ -224,7 +226,7 @@ export function EditorBubbleMenu(props: Props) {
     >
       {!isSelecting && (
         <div ref={menuRef} className="horizontal-scrollbar scrollbar-xs flex overflow-x-scroll">
-          <Toolbar size="sm" elevation="raised" role="group" aria-label="Formatting toolbar">
+          <Toolbar size="sm" elevation="raised" role="group" aria-label={t("editor_ui.formatting_toolbar")}>
             <div className="h-(--control-height-sm) px-2">
               <BubbleMenuNodeSelector editor={editor} />
             </div>
@@ -245,7 +247,7 @@ export function EditorBubbleMenu(props: Props) {
               </>
             )}
             <ToolbarSeparator aria-hidden="true" />
-            <ToolbarGroup role="group" aria-label="Text formatting">
+            <ToolbarGroup role="group" aria-label={t("editor_ui.text_formatting")}>
               {basicFormattingOptions.map((item) => (
                 <ToolbarButton
                   key={item.key}

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { DownloadOutline } from "@makeplane/propel/icons";
 // plane imports
 import { Icon } from "@makeplane/propel/components/icon";
@@ -15,16 +16,17 @@ type Props = {
 };
 
 export function ImageDownloadAction(props: Props) {
+  const { t } = useTranslation();
   const { src } = props;
 
   return (
-    <Tooltip label="Download">
+    <Tooltip label={t("editor_ui.download")}>
       <ToolbarButton
         type="button"
         size="sm"
         labeled={false}
         onClick={() => window.open(src, "_blank")}
-        aria-label="Download image"
+        aria-label={t("editor_ui.download_image")}
       >
         <Icon icon={DownloadOutline} />
       </ToolbarButton>

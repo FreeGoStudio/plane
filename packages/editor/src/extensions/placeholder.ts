@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { translate as t } from "@plane/i18n";
 import { isNodeEmpty } from "@tiptap/core";
 import { Placeholder } from "@tiptap/extensions";
 import { Plugin, PluginKey } from "@tiptap/pm/state";
@@ -69,7 +70,7 @@ export const CustomPlaceholderExtension = (args: TArgs) => {
     placeholder: ({ editor, node }) => {
       if (!editor.isEditable) return "";
 
-      if (node.type.name === CORE_EXTENSIONS.HEADING) return `Heading ${node.attrs.level}`;
+      if (node.type.name === CORE_EXTENSIONS.HEADING) return t("editor_ui.heading_level", { level: node.attrs.level });
 
       const isUploadInProgress = editor.storage.utility?.uploadInProgress;
 
@@ -95,7 +96,7 @@ export const CustomPlaceholderExtension = (args: TArgs) => {
         else return placeholder(editor.isFocused, editor.getHTML());
       }
 
-      return "Press '/' for commands...";
+      return t("editor_ui.placeholder");
     },
     includeChildren: true,
   });

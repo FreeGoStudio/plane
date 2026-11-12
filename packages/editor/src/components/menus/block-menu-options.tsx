@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { translate as t } from "@plane/i18n";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { TableMap } from "@tiptap/pm/tables";
 import type { Editor } from "@tiptap/react";
@@ -86,7 +87,7 @@ export const getNodeOptions = (editor: Editor): BlockMenuOption[] => [
   {
     icon: DragDropOutline,
     key: "table-full-width",
-    label: "Fit to width",
+    label: t("editor_ui.fit_width"),
     isDisabled: !editor.isActive(CORE_EXTENSIONS.TABLE),
     onClick: () => setTableToFullWidth(editor),
   },

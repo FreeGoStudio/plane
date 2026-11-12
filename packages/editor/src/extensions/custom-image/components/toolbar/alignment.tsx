@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useId, useRef, useState } from "react";
 // plane imports
 import { Icon } from "@makeplane/propel/components/icon";
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export function ImageAlignmentAction(props: Props) {
+  const { t } = useTranslation();
   const { activeAlignment, handleChange, isTouchDevice, toggleToolbarViewStatus } = props;
   // states
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -40,11 +42,11 @@ export function ImageAlignmentAction(props: Props) {
 
   return (
     <div ref={dropdownRef} className="relative h-full">
-      <Tooltip disabled={isTouchDevice} label="Align">
+      <Tooltip disabled={isTouchDevice} label={t("editor_ui.align")}>
         <ToolbarMenuTriggerButton
           type="button"
           size="sm"
-          aria-label="Align image"
+          aria-label={t("editor_ui.align_image")}
           aria-expanded={isDropdownOpen}
           aria-controls={isDropdownOpen ? dropdownId : undefined}
           data-popup-open={isDropdownOpen ? "" : undefined}
@@ -56,14 +58,20 @@ export function ImageAlignmentAction(props: Props) {
       </Tooltip>
       {isDropdownOpen && (
         <div className="absolute top-full left-1/2 mt-2.5 -translate-x-1/2">
-          <Toolbar id={dropdownId} size="sm" elevation="raised" role="group" aria-label="Image alignment">
+          <Toolbar
+            id={dropdownId}
+            size="sm"
+            elevation="raised"
+            role="group"
+            aria-label={t("editor_ui.image_alignment")}
+          >
             {IMAGE_ALIGNMENT_OPTIONS.map((option) => (
-              <Tooltip disabled={isTouchDevice} key={option.value} label={option.label}>
+              <Tooltip disabled={isTouchDevice} key={option.value} label={t(`editor_ui.image_align_${option.value}`)}>
                 <ToolbarButton
                   type="button"
                   size="sm"
                   labeled={false}
-                  aria-label={`Align image ${option.value}`}
+                  aria-label={t(`editor_ui.image_align_${option.value}`)}
                   aria-pressed={option.value === activeAlignment}
                   data-pressed={option.value === activeAlignment ? "" : undefined}
                   onClick={() => {

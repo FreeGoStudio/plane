@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { ImageOutline, RefreshOutline } from "@makeplane/propel/icons";
 import type { ChangeEvent } from "react";
@@ -31,6 +32,7 @@ type CustomImageUploaderProps = CustomImageNodeViewProps & {
 };
 
 export function CustomImageUploader(props: CustomImageUploaderProps) {
+  const { t } = useTranslation();
   const {
     editor,
     extension,
@@ -185,19 +187,19 @@ export function CustomImageUploader(props: CustomImageUploaderProps) {
   const getDisplayMessage = useCallback(() => {
     const isUploading = isImageBeingUploaded;
     if (isErrorState) {
-      return "Error loading image";
+      return t("editor_ui.image_error");
     }
 
     if (isUploading) {
-      return "Uploading...";
+      return t("editor_ui.uploading");
     }
 
     if (draggedInside && editor.isEditable) {
-      return "Drop image here";
+      return t("editor_ui.drop_image");
     }
 
-    return "Add an image";
-  }, [draggedInside, editor.isEditable, isErrorState, isImageBeingUploaded]);
+    return t("editor_ui.add_image");
+  }, [draggedInside, editor.isEditable, isErrorState, isImageBeingUploaded, t]);
 
   const handleRetryClick = useCallback(
     (e: React.MouseEvent) => {
@@ -211,6 +213,7 @@ export function CustomImageUploader(props: CustomImageUploaderProps) {
 
   return (
     <div
+      role="presentation"
       className={cn(
         "image-upload-component flex cursor-default items-center justify-start gap-2 rounded-lg border border-dashed bg-layer-3 px-2 py-3 text-tertiary transition-all duration-200 ease-in-out",
         {
@@ -240,7 +243,7 @@ export function CustomImageUploader(props: CustomImageUploaderProps) {
       <div className="flex-1 text-body-sm-medium">{getDisplayMessage()}</div>
       {!failedToLoadImage && editor.isEditable && !hasDuplicationFailed && (
         <Button
-          label="Choose image"
+          label={t("editor_ui.choose_image")}
           variant="secondary"
           size="sm"
           stretch="auto"
@@ -252,8 +255,8 @@ export function CustomImageUploader(props: CustomImageUploaderProps) {
       )}
       {hasDuplicationFailed && editor.isEditable && (
         <Button
-          label="Retry"
-          aria-label="Retry duplication"
+          label={t("editor_ui.retry")}
+          aria-label={t("editor_ui.retry_duplicate")}
           variant="secondary"
           size="sm"
           stretch="auto"

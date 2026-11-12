@@ -4,11 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { translate as t, useTranslation } from "@plane/i18n";
 import type { HocuspocusProvider } from "@hocuspocus/provider";
 import type { Extensions } from "@tiptap/core";
 import { Placeholder } from "@tiptap/extensions";
 import { useEditor } from "@tiptap/react";
-import { useImperativeHandle } from "react";
+import { useImperativeHandle, useEffect } from "react";
 // constants
 import { CORE_EDITOR_META } from "@/constants/meta";
 // extensions
@@ -38,6 +39,7 @@ type TUseTitleEditorProps = {
  * Uses the same Y.Doc as the main editor but a different field
  */
 export const useTitleEditor = (props: TUseTitleEditorProps) => {
+  const { currentLocale } = useTranslation();
   const {
     editable = true,
     id,
@@ -64,7 +66,7 @@ export const useTitleEditor = (props: TUseTitleEditorProps) => {
         ...TitleExtensions,
         ...(extensions ?? []),
         Placeholder.configure({
-          placeholder: () => "Untitled",
+          placeholder: () => t("editor_ui.untitled"),
           includeChildren: true,
           showOnlyWhenEditable: false,
         }),
@@ -92,6 +94,10 @@ export const useTitleEditor = (props: TUseTitleEditorProps) => {
       editor?.commands.setContent(content, { emitUpdate: false });
     },
   }));
+
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) editor.view.dispatch(editor.state.tr.setMeta("locale", currentLocale));
+  }, [editor, currentLocale]);
 
   return editor;
 };

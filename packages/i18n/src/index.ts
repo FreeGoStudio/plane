@@ -30,3 +30,5 @@ export {
 } from "./constants/language";
 
 export { translateValidationMessage } from "./validation";
+
+export { translate } from "./core/translate";

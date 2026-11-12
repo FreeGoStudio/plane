@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
 import { CopyOutline, EditOutline, GlobeOutline, UnlinkOutline } from "@makeplane/propel/icons";
@@ -17,6 +18,7 @@ export function LinkPreview({
   viewProps: LinkViewProps;
   switchView: (view: LinkViews) => void;
 }) {
+  const { t } = useTranslation();
   const { editor, from, to, url } = viewProps;
 
   const removeLink = () => {
@@ -44,7 +46,7 @@ export function LinkPreview({
             type="button"
             variant="ghost"
             size="sm"
-            aria-label="Copy link"
+            aria-label={t("editor_ui.copy_link")}
             showTooltip={false}
             onClick={copyLinkToClipboard}
             icon={<Icon icon={CopyOutline} />}
@@ -55,7 +57,7 @@ export function LinkPreview({
                 type="button"
                 variant="ghost"
                 size="sm"
-                aria-label="Edit link"
+                aria-label={t("editor_ui.edit_link")}
                 showTooltip={false}
                 onClick={() => switchView("LinkEditView")}
                 icon={<Icon icon={EditOutline} />}
@@ -64,7 +66,7 @@ export function LinkPreview({
                 type="button"
                 variant="ghost"
                 size="sm"
-                aria-label="Remove link"
+                aria-label={t("editor_ui.remove_link")}
                 showTooltip={false}
                 onClick={removeLink}
                 icon={<Icon icon={UnlinkOutline} />}

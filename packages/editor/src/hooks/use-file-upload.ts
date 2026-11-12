@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { translate as t } from "@plane/i18n";
 import type { Editor, NodeViewProps } from "@tiptap/core";
 import type { DragEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
@@ -56,22 +57,22 @@ export const useUploader = (args: TUploaderArgs) => {
       try {
         if (loadFileFromFileSystem) {
           const reader = new FileReader();
-          reader.onload = () => {
+          reader.addEventListener("load", () => {
             if (reader.result) {
               loadFileFromFileSystem(reader.result as string);
             } else {
               console.error("Failed to read the file: reader.result is null");
             }
-          };
-          reader.onerror = () => {
+          });
+          reader.addEventListener("error", () => {
             console.error("Error reading file");
-          };
+          });
           reader.readAsDataURL(file);
         }
         const url = await editorCommand(file);
 
         if (!url) {
-          throw new Error("Something went wrong while uploading the file.");
+          throw new Error(t("editor_ui.upload_failed"));
         }
         onUpload(url, file);
       } catch {

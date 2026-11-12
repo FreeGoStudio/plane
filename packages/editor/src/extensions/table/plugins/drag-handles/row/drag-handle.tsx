@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import {
   autoUpdate,
   flip,
@@ -53,6 +54,7 @@ export type RowDragHandleProps = {
 };
 
 export function RowDragHandle(props: RowDragHandleProps) {
+  const { t } = useTranslation();
   const { editor, row } = props;
   // states
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -131,19 +133,19 @@ export function RowDragHandle(props: RowDragHandleProps) {
       activeListenersRef.current.mouseup = undefined;
       activeListenersRef.current.mousemove = undefined;
 
-      const table = findTable(editor.state.selection);
-      if (!table) return;
+      const selectedTable = findTable(editor.state.selection);
+      if (!selectedTable) return;
 
-      editor.view.dispatch(selectRow(table, row, editor.state.tr));
+      editor.view.dispatch(selectRow(selectedTable, row, editor.state.tr));
 
       // drag row
-      const tableHeightPx = getTableHeightPx(table, editor);
-      const rows = getTableRowNodesInfo(table, editor);
+      const tableHeightPx = getTableHeightPx(selectedTable, editor);
+      const rows = getTableRowNodesInfo(selectedTable, editor);
 
       let dropIndex = row;
       const startTop = rows[row].top ?? 0;
       const startY = e.clientY;
-      const tableElement = editor.view.nodeDOM(table.pos);
+      const tableElement = editor.view.nodeDOM(selectedTable.pos);
 
       const dropMarker = tableElement instanceof HTMLElement ? getDropMarker(tableElement) : null;
       const dragMarker = tableElement instanceof HTMLElement ? getRowDragMarker(tableElement) : null;
@@ -162,9 +164,9 @@ export function RowDragHandle(props: RowDragHandleProps) {
           let tr = editor.state.tr;
           const selection = editor.state.selection;
           if (isCellSelection(selection)) {
-            const table = findTable(selection);
-            if (table) {
-              tr = moveSelectedRows(editor, table, selection, dropIndex, tr);
+            const dropTable = findTable(selection);
+            if (dropTable) {
+              tr = moveSelectedRows(editor, dropTable, selection, dropIndex, tr);
             }
           }
           editor.view.dispatch(tr);
@@ -184,8 +186,8 @@ export function RowDragHandle(props: RowDragHandleProps) {
         dropIndex = calculateRowDropIndex(row, rows, cursorTop);
 
         if (!pseudoRow) {
-          pseudoRow = constructRowDragPreview(editor, editor.state.selection, table);
-          const tableWidthPx = getTableWidthPx(table, editor);
+          pseudoRow = constructRowDragPreview(editor, editor.state.selection, selectedTable);
+          const tableWidthPx = getTableWidthPx(selectedTable, editor);
           if (pseudoRow) {
             pseudoRow.style.width = `${tableWidthPx}px`;
           }
@@ -230,7 +232,7 @@ export function RowDragHandle(props: RowDragHandleProps) {
           {...getReferenceProps()}
           type="button"
           onMouseDown={handleMouseDown}
-          aria-label="Row options"
+          aria-label={t("editor_ui.row_options")}
           className={cn(
             "rounded-sm border border-strong-1 bg-layer-1 py-1 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-inset",
             {

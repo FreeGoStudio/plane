@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Editor } from "@tiptap/react";
 
 import { ChevronDownOutline, TickOutline } from "@makeplane/propel/icons";
@@ -37,6 +38,7 @@ type Props = {
 };
 
 export function BubbleMenuNodeSelector(props: Props) {
+  const { t } = useTranslation();
   const { editor } = props;
   // floating ui
   const { options, getReferenceProps, getFloatingProps } = useFloatingMenu({});
@@ -56,8 +58,8 @@ export function BubbleMenuNodeSelector(props: Props) {
     CodeItem(editor),
   ] as EditorMenuItem<TEditorCommands>[];
 
-  const activeItem = items.filter((item) => item.isActive()).pop() ?? {
-    name: "Multiple",
+  const activeItem = items.findLast((item) => item.isActive()) ?? {
+    name: t("editor_ui.multiple"),
   };
 
   return (

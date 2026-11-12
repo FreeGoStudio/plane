@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { FloatingFocusManager, FloatingOverlay, useFloating } from "@floating-ui/react";
 import type { KeyboardEvent as ReactKeyboardEvent, RefObject } from "react";
 import { AddOutline, CloseOutline, DownloadOutline, MinusOutline, NewTabOutline } from "@makeplane/propel/icons";
@@ -32,6 +33,7 @@ type Props = {
 };
 
 function ImageFullScreenModalWithoutPortal(props: Props) {
+  const { t } = useTranslation();
   const { aspectRatio, isFullScreenEnabled, isTouchDevice, downloadSrc, src, toggleFullScreenMode, width, openerRef } =
     props;
   const {
@@ -97,7 +99,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
         targetZoom = ZOOM_STEPS.find((step) => step > prev) ?? MAX_ZOOM;
       } else {
         // Reverse the array to find the next lower step
-        targetZoom = [...ZOOM_STEPS].reverse().find((step) => step < prev) ?? MIN_ZOOM;
+        targetZoom = ZOOM_STEPS.findLast((step) => step < prev) ?? MIN_ZOOM;
       }
 
       // Reset position when zoom matches initial magnification
@@ -239,7 +241,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
           ref={setModalRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Fullscreen image viewer"
+          aria-label={t("editor_ui.fullscreen_viewer")}
           onKeyDown={handleKeyDown}
           onMouseDown={(e) => {
             if (e.target !== modalRef.current) return;
@@ -254,7 +256,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
               type="button"
               variant="secondary"
               size="md"
-              aria-label="Close image viewer"
+              aria-label={t("editor_ui.close_viewer")}
               showTooltip={false}
               icon={<Icon icon={CloseOutline} />}
               onClick={handleClose}
@@ -263,7 +265,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
           <img
             ref={setImageRef}
             src={src}
-            alt="Preview"
+            alt={t("editor_ui.preview")}
             className="read-only-image rounded-lg"
             style={{
               width: `${widthInNumber * initialMagnification}px`,
@@ -278,8 +280,8 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
             onMouseDown={handleMouseDown}
           />
           <div className="fixed bottom-10 left-1/2 z-10 -translate-x-1/2">
-            <Toolbar size="md" elevation="raised" role="group" aria-label="Image viewer controls">
-              <ToolbarGroup role="group" aria-label="Image zoom">
+            <Toolbar size="md" elevation="raised" role="group" aria-label={t("editor_ui.image_controls")}>
+              <ToolbarGroup role="group" aria-label={t("editor_ui.image_zoom")}>
                 <ToolbarButton
                   type="button"
                   size="md"
@@ -292,7 +294,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
                     handleMagnification("decrease");
                   }}
                   disabled={magnification <= MIN_ZOOM}
-                  aria-label="Zoom out"
+                  aria-label={t("editor_ui.zoom_out")}
                 >
                   <Icon icon={MinusOutline} />
                 </ToolbarButton>
@@ -311,7 +313,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
                     handleMagnification("increase");
                   }}
                   disabled={magnification >= MAX_ZOOM}
-                  aria-label="Zoom in"
+                  aria-label={t("editor_ui.zoom_in")}
                 >
                   <Icon icon={AddOutline} />
                 </ToolbarButton>
@@ -323,7 +325,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
                   size="md"
                   labeled={false}
                   onClick={() => window.open(downloadSrc, "_blank")}
-                  aria-label="Download image"
+                  aria-label={t("editor_ui.download_image")}
                 >
                   <Icon icon={DownloadOutline} />
                 </ToolbarButton>
@@ -334,7 +336,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
                   size="md"
                   labeled={false}
                   onClick={() => window.open(src, "_blank")}
-                  aria-label="Open image in new tab"
+                  aria-label={t("editor_ui.open_image")}
                 >
                   <Icon icon={NewTabOutline} />
                 </ToolbarButton>

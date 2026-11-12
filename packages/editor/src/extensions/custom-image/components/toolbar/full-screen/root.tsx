@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { FullScreenOutline } from "@makeplane/propel/icons";
 import { useEffect, useRef, useState } from "react";
 // plane imports
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export function ImageFullScreenActionRoot(props: Props) {
+  const { t } = useTranslation();
   const { image, isTouchDevice, toggleToolbarViewStatus } = props;
   const openerRef = useRef<HTMLButtonElement>(null);
   // states
@@ -49,7 +51,7 @@ export function ImageFullScreenActionRoot(props: Props) {
         width={width}
         toggleFullScreenMode={setIsFullScreenEnabled}
       />
-      <Tooltip label="View in full screen" disabled={isTouchDevice}>
+      <Tooltip label={t("editor_ui.fullscreen")} disabled={isTouchDevice}>
         <ToolbarButton
           ref={openerRef}
           type="button"
@@ -60,7 +62,7 @@ export function ImageFullScreenActionRoot(props: Props) {
             e.stopPropagation();
             setIsFullScreenEnabled(true);
           }}
-          aria-label="View image in full screen"
+          aria-label={t("editor_ui.fullscreen_image")}
         >
           <Icon icon={FullScreenOutline} />
         </ToolbarButton>

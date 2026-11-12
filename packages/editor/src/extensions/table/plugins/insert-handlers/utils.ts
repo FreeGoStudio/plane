@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { translate as t } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { addColumn, removeColumn, addRow, removeRow, TableMap } from "@tiptap/pm/tables";
@@ -31,8 +32,8 @@ export const createColumnInsertButton = (editor: Editor, tableInfo: TableInfo): 
   const button = document.createElement("button");
   button.type = "button";
   button.className = "table-column-insert-button";
-  button.title = "Insert columns";
-  button.ariaLabel = "Insert columns";
+  button.title = t("editor_ui.insert_columns");
+  button.ariaLabel = t("editor_ui.insert_columns");
 
   const icon = document.createElement("span");
   icon.innerHTML = addSvg;
@@ -129,8 +130,8 @@ export const createRowInsertButton = (editor: Editor, tableInfo: TableInfo): HTM
   const button = document.createElement("button");
   button.type = "button";
   button.className = "table-row-insert-button";
-  button.title = "Insert rows";
-  button.ariaLabel = "Insert rows";
+  button.title = t("editor_ui.insert_rows");
+  button.ariaLabel = t("editor_ui.insert_rows");
 
   const icon = document.createElement("span");
   icon.innerHTML = addSvg;
@@ -270,7 +271,7 @@ export const findAllTables = (editor: Editor): TableInfo[] => {
 const getCurrentTableInfo = (editor: Editor, tableInfo: TableInfo): TableInfo => {
   // Refresh table info to get latest state
   const tables = findAllTables(editor);
-  const updated = tables.find((t) => t.tableElement === tableInfo.tableElement);
+  const updated = tables.find((item) => item.tableElement === tableInfo.tableElement);
   return updated || tableInfo;
 };
 

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
 import ts from "highlight.js/lib/languages/typescript";
@@ -25,6 +26,7 @@ type Props = {
 };
 
 export function CodeBlockComponent({ node }: Props) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   // derived values
   const attrs = node.attrs as TCodeBlockAttributes;
@@ -45,7 +47,7 @@ export function CodeBlockComponent({ node }: Props) {
     <NodeViewWrapper key={attrs[ECodeBlockAttributeNames.ID]} className="code-block group/code relative">
       <div className="pointer-events-none absolute top-2 right-2 z-10 opacity-0 transition-opacity group-focus-within/code:pointer-events-auto group-focus-within/code:opacity-100 group-hover/code:pointer-events-auto group-hover/code:opacity-100">
         <IconButton
-          aria-label={copied ? "Copied code" : "Copy code"}
+          aria-label={copied ? t("editor_ui.copied_code") : t("editor_ui.copy_code")}
           variant="secondary"
           size="lg"
           icon={copied ? <TickOutline className="text-success-primary" /> : <CopyOutline />}

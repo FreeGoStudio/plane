@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import { useState } from "react";
 // plane imports
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export function ImageToolbarRoot(props: Props) {
+  const { t } = useTranslation();
   const { alignment, editor, downloadSrc, handleAlignmentChange, isTouchDevice } = props;
   // states
   const [shouldShowToolbar, setShouldShowToolbar] = useState(false);
@@ -44,7 +46,7 @@ export function ImageToolbarRoot(props: Props) {
           }
         )}
       >
-        <Toolbar size="sm" elevation="raised" role="group" aria-label="Image controls">
+        <Toolbar size="sm" elevation="raised" role="group" aria-label={t("editor_ui.image_toolbar")}>
           {!isTouchDevice && <ImageDownloadAction src={downloadSrc} />}
           {isEditable && (
             <ImageAlignmentAction

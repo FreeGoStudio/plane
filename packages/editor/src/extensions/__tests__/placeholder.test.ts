@@ -4,9 +4,10 @@
  * See the LICENSE file for details.
  */
 
+import { setLanguage } from "@plane/i18n";
 import { Editor } from "@tiptap/core";
 import { StarterKit } from "@tiptap/starter-kit";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { CustomPlaceholderExtension } from "../placeholder";
 
 let editor: Editor;
@@ -23,6 +24,9 @@ const placeholders = () =>
     element.getAttribute("data-placeholder")
   );
 
+beforeEach(async () => {
+  await setLanguage("en");
+});
 afterEach(() => editor.destroy());
 
 describe("CustomPlaceholderExtension", () => {
@@ -47,4 +51,19 @@ describe("CustomPlaceholderExtension", () => {
     editor.commands.setTextSelection(1);
     expect(placeholders()).toEqual(["Heading 2"]);
   });
+});
+
+it("refreshes translated headings without modifying the document or selection", async () => {
+  createEditor("<h2></h2><p>用户原文 English</p>");
+  editor.commands.setTextSelection(1);
+  const original = editor.getJSON();
+  const selection = editor.state.selection.toJSON();
+  await setLanguage("zh-CN");
+  editor.view.dispatch(editor.state.tr.setMeta("locale", "zh-CN"));
+  expect(placeholders()).toEqual(["2 级标题"]);
+  expect(editor.getJSON()).toEqual(original);
+  expect(editor.state.selection.toJSON()).toEqual(selection);
+  await setLanguage("en");
+  editor.view.dispatch(editor.state.tr.setMeta("locale", "en"));
+  expect(placeholders()).toEqual(["Heading 2"]);
 });
