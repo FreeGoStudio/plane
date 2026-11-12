@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "Třídění",
     "status": {
       "pending": {
         "title": "Čekající",

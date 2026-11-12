@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "待分流",
     "status": {
       "pending": {
         "title": "待處理",

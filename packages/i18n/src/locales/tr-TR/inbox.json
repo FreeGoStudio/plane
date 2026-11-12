@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "Ön değerlendirme",
     "status": {
       "pending": {
         "title": "Beklemede",

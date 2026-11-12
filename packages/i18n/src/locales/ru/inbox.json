@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "Разбор",
     "status": {
       "pending": {
         "title": "Ожидание",

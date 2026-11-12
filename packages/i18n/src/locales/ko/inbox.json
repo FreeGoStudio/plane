@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "분류 대기",
     "status": {
       "pending": {
         "title": "보류 중",

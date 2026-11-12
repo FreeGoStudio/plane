@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "Triaj",
     "status": {
       "pending": {
         "title": "În așteptare",

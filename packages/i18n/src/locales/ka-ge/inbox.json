@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "ტრიაჟი",
     "status": {
       "pending": {
         "title": "მომლოდინე",

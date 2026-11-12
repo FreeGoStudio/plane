@@ -29,9 +29,9 @@ type IntakeStateSelectProps = {
   tabIndex?: number;
 };
 
-const mapIntakeStateToOption = (state: IIntakeState): IntakeStateOption => ({
+const mapIntakeStateToOption = (state: IIntakeState, t: (key: string) => string): IntakeStateOption => ({
   id: state.id,
-  name: state.name,
+  name: state.group === "triage" ? t("inbox_issue.triage") : state.name,
   color: state.color,
   group: state.group,
 });
@@ -59,7 +59,7 @@ export const IntakeStateSelect = observer(function IntakeStateSelect(props: Inta
   // store hooks
   const { fetchProjectIntakeState, getIntakeStateById, getProjectIntakeState } = useProjectState();
   // translation
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
 
   const resolvedPlaceholder = placeholder ?? t("state");
 
@@ -67,17 +67,18 @@ export const IntakeStateSelect = observer(function IntakeStateSelect(props: Inta
     async (_params: SelectPaginationParams): Promise<TPaginatedResponse<IntakeStateOption[]>> => {
       if (!workspaceSlug || !projectId) return { results: [] };
       const state = getProjectIntakeState(projectId) ?? (await fetchProjectIntakeState(workspaceSlug, projectId));
-      return { results: state ? [mapIntakeStateToOption(state)] : [], next_page_results: false };
+      return { results: state ? [mapIntakeStateToOption(state, t)] : [], next_page_results: false };
     },
-    [workspaceSlug, projectId, getProjectIntakeState, fetchProjectIntakeState]
+    [workspaceSlug, projectId, getProjectIntakeState, fetchProjectIntakeState, t]
   );
 
   // Resolved in the observer render (not in a memo) so MobX re-renders when the state loads.
   const selectedState = (value ? getIntakeStateById(value) : undefined) ?? getProjectIntakeState(projectId);
-  const selected = selectedState ? mapIntakeStateToOption(selectedState) : null;
+  const selected = selectedState ? mapIntakeStateToOption(selectedState, t) : null;
 
   return (
     <IntakeStateSelectBlock
+      key={currentLocale}
       getValues={getValues}
       value={selected}
       onChange={onChange}

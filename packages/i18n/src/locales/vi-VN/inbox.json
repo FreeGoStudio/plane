@@ -1,5 +1,6 @@
 {
   "inbox_issue": {
+    "triage": "Phân loại",
     "status": {
       "pending": {
         "title": "Đang chờ xử lý",
