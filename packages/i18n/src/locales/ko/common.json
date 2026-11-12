@@ -908,5 +908,12 @@
       "save_as": "다른 이름으로 저장",
       "hide_filters": "필터 숨기기"
     }
+  },
+  "profile_activity": {
+    "created": "created <issue/>.",
+    "deleted": "deleted <issue/>.",
+    "converted_to_epic": "converted <issue/> to an epic.",
+    "completion_percentage": "Completion percentage",
+    "pending": "Due"
   }
 }

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -24,7 +25,9 @@ type Props = {
   activity: IUserActivityResponse | undefined;
 };
 
+/** Renders profile comments and activity messages with their original actor and work item data. */
 export const ActivityList = observer(function ActivityList(props: Props) {
+  const { t } = useTranslation();
   const { calculateTimeAgo } = useDateFormatter();
   const { activity } = props;
   // params
@@ -100,7 +103,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
               ) &&
               !activityItem.field ? (
                 <span>
-                  created <IssueLink activity={activityItem} />
+                  {t("created")} <IssueLink activity={activityItem} />
                 </span>
               ) : (
                 <ActivityMessage activity={activityItem} showIssue />

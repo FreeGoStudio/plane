@@ -5,6 +5,7 @@
  */
 
 import { useEffect } from "react";
+import { LocalizedText, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // store hooks
@@ -37,9 +38,11 @@ import { useLabel } from "@/hooks/store/use-label";
 import { usePlatformOS } from "@/hooks/use-platform-os";
 // types
 
+/** Renders the original work item identity or a localized deleted-item fallback. */
 export function IssueLink({ activity }: { activity: IIssueActivity }) {
   // router params
   const { workspaceSlug } = useParams();
+  const { t } = useTranslation();
   const { isMobile } = usePlatformOS();
 
   const workItemLink = generateWorkItemLink({
@@ -52,7 +55,7 @@ export function IssueLink({ activity }: { activity: IIssueActivity }) {
 
   return (
     <Tooltip
-      label={activity?.issue_detail ? activity.issue_detail.name : "This work item has been deleted"}
+      label={activity?.issue_detail ? activity.issue_detail.name : t("work_item_activity.deleted_item_hint")}
       layout="stacked"
       disabled={isMobile}
     >
@@ -69,7 +72,7 @@ export function IssueLink({ activity }: { activity: IIssueActivity }) {
         </a>
       ) : (
         <span className="inline-flex items-center gap-1 font-medium whitespace-nowrap text-primary">
-          {" a work item"}{" "}
+          {t("common.work_item")}
         </span>
       )}
     </Tooltip>
@@ -272,26 +275,12 @@ const activityDetails: {
     icon: <EstimateOutline width={12} height={12} className="text-secondary" aria-hidden="true" />,
   },
   issue: {
-    message: (activity) => {
-      if (activity.verb === "created")
-        return (
-          <>
-            created <IssueLink activity={activity} />
-          </>
-        );
-      else if (activity.verb === "converted")
-        return (
-          <>
-            converted <IssueLink activity={activity} /> to an epic
-          </>
-        );
-      else
-        return (
-          <>
-            deleted <IssueLink activity={activity} />
-          </>
-        );
-    },
+    message: (activity) => (
+      <LocalizedText
+        messageKey={`profile_activity.${activity.verb === "created" ? "created" : activity.verb === "converted" ? "converted_to_epic" : "deleted"}`}
+        components={{ issue: <IssueLink activity={activity} /> }}
+      />
+    ),
     icon: <WorkItemsOutline width={12} height={12} className="text-secondary" aria-hidden="true" />,
   },
   epic: {
@@ -318,105 +307,46 @@ const activityDetails: {
     icon: <EpicOutline width={12} height={12} className="text-secondary" aria-hidden="true" />,
   },
   labels: {
-    message: (activity, showIssue, workspaceSlug) => {
-      if (activity.old_value === "")
-        return (
-          <span className="overflow-hidden">
-            added a new label{" "}
+    message: (activity, showIssue, workspaceSlug) => (
+      <LocalizedText
+        messageKey={`work_item_activity.label_${activity.old_value === "" ? "added" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: (
             <span className="inline-flex items-center gap-2 rounded-full border border-strong px-2 py-0.5 text-caption-sm-regular">
-              <LabelPill labelId={activity.new_identifier ?? ""} workspaceSlug={workspaceSlug} />
-              <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">{activity.new_value}</span>
-            </span>
-            {showIssue && (
-              <span className="">
-                {" "}
-                to <IssueLink activity={activity} />
+              <LabelPill
+                labelId={(activity.old_value === "" ? activity.new_identifier : activity.old_identifier) ?? ""}
+                workspaceSlug={workspaceSlug}
+              />
+              <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">
+                {activity.old_value === "" ? activity.new_value : activity.old_value}
               </span>
-            )}
-          </span>
-        );
-      else
-        return (
-          <>
-            removed the label{" "}
-            <span className="inline-flex items-center gap-2 rounded-full border border-strong px-2 py-0.5 text-caption-sm-regular">
-              <LabelPill labelId={activity.old_identifier ?? ""} workspaceSlug={workspaceSlug} />
-              <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">{activity.old_value}</span>
             </span>
-            {showIssue && (
-              <span>
-                {" "}
-                from <IssueLink activity={activity} />
-              </span>
-            )}
-          </>
-        );
-    },
+          ),
+          issue: <IssueLink activity={activity} />,
+        }}
+      />
+    ),
     icon: <LabelsOutline width={12} height={12} className="text-secondary" aria-hidden="true" />,
   },
   link: {
-    message: (activity, showIssue) => {
-      if (activity.verb === "created")
-        return (
-          <>
-            added this{" "}
+    message: (activity, showIssue) => (
+      <LocalizedText
+        messageKey={`work_item_activity.link_${activity.verb === "created" ? "added" : activity.verb === "updated" ? "updated" : "removed"}_${showIssue ? "issue" : "self"}`}
+        components={{
+          value: (
             <a
-              href={`${activity.new_value}`}
+              href={`${activity.verb === "created" ? activity.new_value : activity.old_value}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              link
+              <LocalizedText messageKey="link" />
             </a>
-            {showIssue && (
-              <>
-                {" "}
-                to <IssueLink activity={activity} />
-              </>
-            )}
-          </>
-        );
-      else if (activity.verb === "updated")
-        return (
-          <>
-            updated the{" "}
-            <a
-              href={`${activity.old_value}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              link
-            </a>
-            {showIssue && (
-              <>
-                {" "}
-                from <IssueLink activity={activity} />
-              </>
-            )}
-          </>
-        );
-      else
-        return (
-          <>
-            removed this{" "}
-            <a
-              href={`${activity.old_value}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              link
-            </a>
-            {showIssue && (
-              <>
-                {" "}
-                from <IssueLink activity={activity} />
-              </>
-            )}
-          </>
-        );
-    },
+          ),
+          issue: <IssueLink activity={activity} />,
+        }}
+      />
+    ),
     icon: <LinkOutline width={12} height={12} className="text-secondary" aria-hidden="true" />,
   },
   cycles: {

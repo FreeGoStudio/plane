@@ -1795,5 +1795,12 @@
     "intake_duplicate": "将此工作项标记为重复，并从收件箱中拒绝。",
     "intake_updated": "更新了收件箱工作项状态。",
     "deleted_item_hint": "此工作项已删除"
+  },
+  "profile_activity": {
+    "created": "创建了 <issue/>。",
+    "deleted": "删除了 <issue/>。",
+    "converted_to_epic": "将 <issue/> 转换为史诗。",
+    "completion_percentage": "完成率",
+    "pending": "待完成"
   }
 }

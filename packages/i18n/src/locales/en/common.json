@@ -1795,5 +1795,12 @@
     "intake_duplicate": "declined this work item from intake by marking a duplicate work item.",
     "intake_updated": "updated intake work item status.",
     "deleted_item_hint": "This work item has been deleted"
+  },
+  "profile_activity": {
+    "created": "created <issue/>.",
+    "deleted": "deleted <issue/>.",
+    "converted_to_epic": "converted <issue/> to an epic.",
+    "completion_percentage": "Completion percentage",
+    "pending": "Due"
   }
 }

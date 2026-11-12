@@ -908,5 +908,12 @@
       "save_as": "Zapisz jako",
       "hide_filters": "Ukryj filtry"
     }
+  },
+  "profile_activity": {
+    "created": "created <issue/>.",
+    "deleted": "deleted <issue/>.",
+    "converted_to_epic": "converted <issue/> to an epic.",
+    "completion_percentage": "Completion percentage",
+    "pending": "Due"
   }
 }
