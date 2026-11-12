@@ -56,6 +56,10 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
   const { isOAuthEnabled, oAuthOptions } = useOAuthConfig(oAuthActionText);
   const isEmailBasedAuthEnabled = config?.is_email_password_enabled || config?.is_magic_login_enabled;
   const noAuthMethodsAvailable = !isOAuthEnabled && !isEmailBasedAuthEnabled;
+  const currentAuthStep =
+    authMode === EAuthModes.SIGN_IN && config?.is_email_password_enabled && authStep === EAuthSteps.EMAIL
+      ? EAuthSteps.PASSWORD
+      : authStep;
 
   useEffect(() => {
     if (!authMode && currentAuthMode) setAuthMode(currentAuthMode);
@@ -133,24 +137,24 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
         invitationId={invitation_id?.toString() || undefined}
         invitationEmail={email || undefined}
         authMode={authMode}
-        currentAuthStep={authStep}
+        currentAuthStep={currentAuthStep}
       />
       {isOAuthEnabled && (
         <OAuthOptions
           options={oAuthOptions}
-          compact={authStep === EAuthSteps.PASSWORD}
+          compact={currentAuthStep === EAuthSteps.PASSWORD}
           showDivider={isEmailBasedAuthEnabled}
         />
       )}
       {isEmailBasedAuthEnabled && (
         <AuthFormRoot
-          authStep={authStep}
+          authStep={currentAuthStep}
           authMode={authMode}
           email={email}
-          setEmail={(email) => setEmail(email)}
-          setAuthMode={(authMode) => setAuthMode(authMode)}
-          setAuthStep={(authStep) => setAuthStep(authStep)}
-          setErrorInfo={(errorInfo) => setErrorInfo(errorInfo)}
+          setEmail={setEmail}
+          setAuthMode={setAuthMode}
+          setAuthStep={setAuthStep}
+          setErrorInfo={setErrorInfo}
           currentAuthMode={currentAuthMode}
         />
       )}

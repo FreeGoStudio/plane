@@ -53,7 +53,7 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
   const handleEmailVerification = async (data: IEmailCheckData) => {
     setEmail(data.email);
     setErrorInfo(undefined);
-    await authService
+    return await authService
       .emailCheck(data)
       .then(async (response) => {
         if (response.existing) {
@@ -74,10 +74,12 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
           }
         }
         setIsExistingEmail(response.existing);
+        return response.existing && response.status === "CREDENTIAL";
       })
       .catch((error) => {
         const errorhandler = authErrorHandler(error?.error_code?.toString(), data?.email || undefined);
         if (errorhandler?.type) setErrorInfo(errorhandler);
+        return false;
       });
   };
 
@@ -90,9 +92,9 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
   };
 
   // generating the unique code
-  const generateEmailUniqueCode = async (email: string): Promise<{ code: string } | undefined> => {
+  const generateEmailUniqueCode = async (targetEmail: string): Promise<{ code: string } | undefined> => {
     if (!isSMTPConfigured) return;
-    const payload = { email: email };
+    const payload = { email: targetEmail };
     return await authService
       .generateUniqueCode(payload)
       .then(() => ({ code: "" }))
@@ -104,7 +106,14 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
   };
 
   if (authStep === EAuthSteps.EMAIL) {
-    return <AuthEmailForm defaultEmail={email} onSubmit={handleEmailVerification} />;
+    return (
+      <AuthEmailForm
+        defaultEmail={email}
+        onSubmit={async (data) => {
+          await handleEmailVerification(data);
+        }}
+      />
+    );
   }
   if (authStep === EAuthSteps.UNIQUE_CODE) {
     return (
@@ -121,12 +130,15 @@ export const AuthFormRoot = observer(function AuthFormRoot(props: TAuthFormRoot)
   if (authStep === EAuthSteps.PASSWORD) {
     return (
       <AuthPasswordForm
+        key={authMode}
         mode={authMode}
         isSMTPConfigured={isSMTPConfigured}
         email={email}
         handleEmailClear={handleEmailClear}
-        handleAuthStep={(step: EAuthSteps) => {
-          if (step === EAuthSteps.UNIQUE_CODE) generateEmailUniqueCode(email);
+        onBeforeSignIn={handleEmailVerification}
+        handleAuthStep={(step: EAuthSteps, currentEmail: string) => {
+          setEmail(currentEmail);
+          if (step === EAuthSteps.UNIQUE_CODE) generateEmailUniqueCode(currentEmail);
           setAuthStep(step);
         }}
         nextPath={nextPath || undefined}

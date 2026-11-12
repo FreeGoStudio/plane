@@ -17,7 +17,8 @@ import { API_BASE_URL, E_PASSWORD_STRENGTH } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { PasswordStrengthIndicator } from "@plane/blocks/auth";
-import { getPasswordStrength } from "@plane/utils";
+import type { IEmailCheckData } from "@plane/types";
+import { checkEmailValidity, getPasswordStrength } from "@plane/utils";
 // helpers
 import { EAuthModes, EAuthSteps } from "@/helpers/authentication.helper";
 // services
@@ -28,7 +29,8 @@ type Props = {
   isSMTPConfigured: boolean;
   mode: EAuthModes;
   handleEmailClear: () => void;
-  handleAuthStep: (step: EAuthSteps) => void;
+  onBeforeSignIn: (data: IEmailCheckData) => Promise<boolean>;
+  handleAuthStep: (step: EAuthSteps, email: string) => void;
   nextPath: string | undefined;
 };
 
@@ -46,7 +48,7 @@ const defaultValues: TPasswordFormValues = {
 const authService = new AuthService();
 
 export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props) {
-  const { email, isSMTPConfigured, handleAuthStep, handleEmailClear, mode, nextPath } = props;
+  const { email, isSMTPConfigured, handleAuthStep, handleEmailClear, onBeforeSignIn, mode, nextPath } = props;
   // plane imports
   const { t } = useTranslation();
   // ref
@@ -80,7 +82,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
   }, [csrfPromise]);
 
   const redirectToUniqueCodeSignIn = async () => {
-    handleAuthStep(EAuthSteps.UNIQUE_CODE);
+    handleAuthStep(EAuthSteps.UNIQUE_CODE, passwordFormData.email);
   };
 
   const passwordSupport =
@@ -88,7 +90,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
       <div className="mt-1.5 flex w-full flex-col gap-6">
         {isSMTPConfigured ? (
           <Link
-            href={`/accounts/forgot-password?email=${encodeURIComponent(email)}`}
+            href={`/accounts/forgot-password?email=${encodeURIComponent(passwordFormData.email)}`}
             className="w-fit text-caption-md-medium leading-none text-accent-primary"
           >
             {t("auth.common.forgot_password")}
@@ -125,12 +127,11 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
 
   const isButtonDisabled = useMemo(
     () =>
-      !isSubmitting &&
-      !!passwordFormData.password &&
-      (mode === EAuthModes.SIGN_UP ? passwordFormData.password === passwordFormData.confirm_password : true)
-        ? false
-        : true,
-    [isSubmitting, mode, passwordFormData.confirm_password, passwordFormData.password]
+      isSubmitting ||
+      !checkEmailValidity(passwordFormData.email) ||
+      !passwordFormData.password ||
+      (mode === EAuthModes.SIGN_UP && passwordFormData.password !== passwordFormData.confirm_password),
+    [isSubmitting, mode, passwordFormData.email, passwordFormData.confirm_password, passwordFormData.password]
   );
 
   const password = passwordFormData?.password ?? "";
@@ -167,6 +168,14 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
         action={`${API_BASE_URL}/auth/${mode === EAuthModes.SIGN_IN ? "sign-in" : "sign-up"}/`}
         onSubmit={async (event) => {
           event.preventDefault(); // Prevent form from submitting by default
+          if (mode === EAuthModes.SIGN_IN) {
+            setIsSubmitting(true);
+            const canSignIn = await onBeforeSignIn({ email: passwordFormData.email });
+            if (!canSignIn) {
+              setIsSubmitting(false);
+              return;
+            }
+          }
           await handleCSRFToken();
           const isPasswordValid =
             mode === EAuthModes.SIGN_UP
@@ -184,7 +193,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
         }}
       >
         <input type="hidden" name="csrfmiddlewaretoken" />
-        <input type="hidden" value={passwordFormData.email} name="email" />
+        {mode === EAuthModes.SIGN_UP && <input type="hidden" value={passwordFormData.email} name="email" />}
         {nextPath && <input type="hidden" value={nextPath} name="next_path" />}
         <InputField
           size="xl"
@@ -196,12 +205,17 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
           value={passwordFormData.email}
           onChange={(e) => handleFormChange("email", e.target.value)}
           placeholder={t("auth.common.email.placeholder")}
-          disabled
+          autoComplete="username"
+          required
+          disabled={mode === EAuthModes.SIGN_UP}
           endIcon={
             passwordFormData.email.length > 0 && (
               <button
                 type="button"
-                onClick={handleEmailClear}
+                onClick={() => {
+                  if (mode === EAuthModes.SIGN_IN) handleFormChange("email", "");
+                  else handleEmailClear();
+                }}
                 className="grid size-5 shrink-0 place-items-center"
                 aria-label={t("aria_labels.auth_forms.clear_email")}
               >
@@ -228,8 +242,8 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
               placeholder={t("auth.common.password.placeholder")}
               onFocus={() => setIsPasswordInputFocused(true)}
               onBlur={() => setIsPasswordInputFocused(false)}
-              autoComplete="off"
-              autoFocus
+              autoComplete={mode === EAuthModes.SIGN_IN ? "current-password" : "new-password"}
+              required
               endIcon={
                 <button
                   type="button"
@@ -308,6 +322,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
                 <Button
                   type="button"
                   onClick={redirectToUniqueCodeSignIn}
+                  disabled={!checkEmailValidity(passwordFormData.email) || isSubmitting}
                   variant="secondary"
                   size="lg"
                   stretch="full"
