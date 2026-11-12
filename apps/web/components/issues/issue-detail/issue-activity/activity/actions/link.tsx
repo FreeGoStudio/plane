@@ -4,9 +4,10 @@
  * See the LICENSE file for details.
  */
 
-import { LocalizedText, useTranslation } from "@plane/i18n";
+import type { ReactNode } from "react";
+import { LocalizedText } from "@plane/i18n";
 import { observer } from "mobx-react";
-import { ChatOutline } from "@makeplane/propel/icons";
+import { ChatOutline, NewTabOutline } from "@makeplane/propel/icons";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // components
@@ -14,8 +15,21 @@ import { IssueActivityBlockComponent, IssueLink } from "./";
 
 type TIssueLinkActivity = { activityId: string; showIssue?: boolean; ends: "top" | "bottom" | undefined };
 
+function ActivityExternalLink({ href, children }: { href: string; children?: ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 font-medium text-accent-primary underline underline-offset-2"
+    >
+      {children}
+      <NewTabOutline width={14} height={14} aria-hidden="true" />
+    </a>
+  );
+}
+
 export const IssueLinkActivity = observer(function IssueLinkActivity(props: TIssueLinkActivity) {
-  const { t } = useTranslation();
   const { activityId, showIssue = false, ends } = props;
   // hooks
   const {
@@ -35,14 +49,9 @@ export const IssueLinkActivity = observer(function IssueLinkActivity(props: TIss
         messageKey={`work_item_activity.link_${activity.verb === "created" ? "added" : activity.verb === "updated" ? "updated" : "removed"}_${showIssue ? "issue" : "self"}`}
         components={{
           value: (
-            <a
+            <ActivityExternalLink
               href={activity.verb === "created" ? `${activity.new_value}` : `${activity.old_value}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
-            >
-              {t("link")}
-            </a>
+            />
           ),
           issue: <IssueLink activityId={activityId} />,
         }}
