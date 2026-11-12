@@ -114,10 +114,10 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
 
     const addToFavoritePromise = addProjectToFavorites(workspaceSlug.toString(), project.id);
     setPromiseToast(addToFavoritePromise, {
-      loading: "Adding project to favorites...",
+      loading: t("project_ui.adding_project_to_favorites"),
       success: {
-        title: "Success!",
-        message: () => "Project added to favorites.",
+        title: t("success"),
+        message: () => t("project_ui.project_added_to_favorites"),
         // propel: the callback exists for its side effect; a toast action is data, and there is
         // none here, so it returns an empty list rather than an empty fragment.
         actionItems: () => {
@@ -126,8 +126,8 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
         },
       },
       error: {
-        title: "Error!",
-        message: () => "Couldn't add the project to favorites. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.couldn_t_add_the_project_to_favorites_please_try_again"),
       },
     });
   };
@@ -137,14 +137,14 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
 
     const removeFromFavoritePromise = removeProjectFromFavorites(workspaceSlug.toString(), project.id);
     setPromiseToast(removeFromFavoritePromise, {
-      loading: "Removing project from favorites...",
+      loading: t("project_ui.removing_project_from_favorites"),
       success: {
-        title: "Success!",
-        message: () => "Project removed from favorites.",
+        title: t("success"),
+        message: () => t("project_ui.project_removed_from_favorites"),
       },
       error: {
-        title: "Error!",
-        message: () => "Couldn't remove the project from favorites. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.couldn_t_remove_the_project_from_favorites_please_try_again"),
       },
     });
   };
@@ -154,8 +154,8 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
     copyUrlToClipboard(projectLink).then(() =>
       setToast({
         type: "info",
-        title: "Link Copied!",
-        message: "Project link copied to clipboard.",
+        title: t("project_ui.link_copied"),
+        message: t("project_ui.project_link_copied_to_clipboard"),
       })
     );
   const handleOpenInNewTab = () => window.open(`/${projectLink}`, "_blank");

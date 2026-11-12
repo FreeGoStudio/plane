@@ -46,6 +46,11 @@ type Props = {
   moduleId: string;
 };
 
+const handleEventPropagation = (e: SyntheticEvent<HTMLDivElement>) => {
+  e.stopPropagation();
+  e.preventDefault();
+};
+
 export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
   const { moduleId } = props;
   const { t } = useTranslation();
@@ -81,18 +86,20 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
     const addToFavoritePromise = addModuleToFavorites(workspaceSlug.toString(), projectId.toString(), moduleId).then(
       () => {
         if (!storedValue) toggleFavoriteMenu(true);
+
+        return undefined;
       }
     );
 
     setPromiseToast(addToFavoritePromise, {
-      loading: "Adding module to favorites...",
+      loading: t("project_ui.adding_module_to_favorites"),
       success: {
-        title: "Success!",
-        message: () => "Module added to favorites.",
+        title: t("success"),
+        message: () => t("project_ui.module_added_to_favorites"),
       },
       error: {
-        title: "Error!",
-        message: () => "Couldn't add the module to favorites. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.couldn_t_add_the_module_to_favorites_please_try_again"),
       },
     });
   };
@@ -109,21 +116,16 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
     );
 
     setPromiseToast(removeFromFavoritePromise, {
-      loading: "Removing module from favorites...",
+      loading: t("project_ui.removing_module_from_favorites"),
       success: {
-        title: "Success!",
-        message: () => "Module removed from favorites.",
+        title: t("success"),
+        message: () => t("project_ui.module_removed_from_favorites"),
       },
       error: {
-        title: "Error!",
-        message: () => "Couldn't remove the module from favorites. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.couldn_t_remove_the_module_from_favorites_please_try_again"),
       },
     });
-  };
-
-  const handleEventPropagation = (e: SyntheticEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
   };
 
   const handleModuleDetailsChange = async (payload: Partial<IModule>) => {
@@ -133,15 +135,17 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
       .then(() => {
         setToast({
           type: "success",
-          title: "Success!",
-          message: "Module updated successfully.",
+          title: t("success"),
+          message: t("project_ui.module_updated_successfully"),
         });
+
+        return undefined;
       })
       .catch((err) => {
         setToast({
           type: "error",
-          title: "Error!",
-          message: err?.detail ?? "Module could not be updated. Please try again.",
+          title: t("error"),
+          message: err?.detail ?? t("project_ui.module_could_not_be_updated_please_try_again"),
         });
       });
   };
@@ -177,8 +181,8 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
     ? !moduleTotalIssues || moduleTotalIssues === 0
       ? `0 work items`
       : moduleTotalIssues === moduleCompletedIssues
-        ? `${moduleTotalIssues} Work item${moduleTotalIssues > 1 ? `s` : ``}`
-        : `${moduleCompletedIssues}/${moduleTotalIssues} Work items`
+        ? t("project_ui.work_item_count", { count: moduleTotalIssues })
+        : t("project_ui.work_item_progress", { count: moduleCompletedIssues, total: moduleTotalIssues })
     : `0 work items`;
 
   const moduleLeadDetails = moduleDetails.lead_id ? getUserDetails(moduleDetails.lead_id) : undefined;
@@ -243,7 +247,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
               {moduleLeadDetails ? (
                 <ButtonAvatars showTooltip={false} userIds={moduleLeadDetails?.id} />
               ) : (
-                <Tooltip label="No lead">
+                <Tooltip label={t("workspace_projects.card.no_lead")}>
                   <span className="grid size-5 place-items-center text-tertiary">
                     <LeadOutline className="size-4" />
                   </span>

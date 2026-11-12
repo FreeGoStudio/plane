@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState } from "react";
 import { mutate } from "swr";
 // types
@@ -34,6 +35,7 @@ type CycleModalProps = {
 const cycleService = new CycleService();
 
 export function CycleCreateUpdateModal(props: CycleModalProps) {
+  const { t } = useTranslation();
   const { isOpen, handleClose, data, workspaceSlug, projectId } = props;
   // states
   const [activeProject, setActiveProject] = useState<string | null>(null);
@@ -62,15 +64,17 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
 
         setToast({
           type: "success",
-          title: "Success!",
-          message: "Cycle created successfully.",
+          title: t("success"),
+          message: t("project_ui.cycle_created_successfully"),
         });
+
+        return undefined;
       })
       .catch((err) => {
         setToast({
           type: "error",
-          title: "Error!",
-          message: err?.detail ?? "Error in creating cycle. Please try again.",
+          title: t("error"),
+          message: err?.detail ?? t("project_ui.error_in_creating_cycle_please_try_again"),
         });
       });
   };
@@ -83,24 +87,28 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
       .then((_res) => {
         setToast({
           type: "success",
-          title: "Success!",
-          message: "Cycle updated successfully.",
+          title: t("success"),
+          message: t("project_cycles.action.update.success.description"),
         });
+
+        return undefined;
       })
       .catch((err) => {
         setToast({
           type: "error",
-          title: "Error!",
-          message: err?.detail ?? "Error in updating cycle. Please try again.",
+          title: t("error"),
+          message: err?.detail ?? t("project_ui.error_in_updating_cycle_please_try_again"),
         });
       });
   };
 
-  const dateChecker = async (projectId: string, payload: CycleDateCheckData) => {
+  const dateChecker = async (targetProjectId: string, payload: CycleDateCheckData) => {
     let status = false;
 
-    await cycleService.cycleDateCheck(workspaceSlug, projectId, payload).then((res) => {
+    await cycleService.cycleDateCheck(workspaceSlug, targetProjectId, payload).then((res) => {
       status = res.status;
+
+      return undefined;
     });
 
     return status;
@@ -145,14 +153,18 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
       else {
         await handleCreateCycle(payload).then(() => {
           setCycleTab("all");
+
+          return undefined;
         });
       }
       handleClose();
     } else
       setToast({
         type: "error",
-        title: "Error!",
-        message: "You already have a cycle on the given dates, if you want to create a draft cycle, remove the dates.",
+        title: t("error"),
+        message: t(
+          "project_ui.you_already_have_a_cycle_on_the_given_dates_if_you_want_to_create_a_draft_cycle_remove_the_dates"
+        ),
       });
   };
 

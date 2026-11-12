@@ -46,8 +46,8 @@ export const ModulesLinksListItem = observer(function ModulesLinksListItem(props
     copyTextToClipboard(text).then(() =>
       setToast({
         type: "success",
-        title: "Copied to clipboard",
-        message: "The URL has been successfully copied to your clipboard",
+        title: t("copied_to_clipboard"),
+        message: t("copied_to_clipboard_description"),
       })
     );
   };
@@ -71,10 +71,14 @@ export const ModulesLinksListItem = observer(function ModulesLinksListItem(props
           </a>
         </Tooltip>
         <p className="truncate text-caption-md-regular text-placeholder">
-          Added {calculateTimeAgo(link.created_at)}{" "}
-          {createdByDetails && (
-            <>by {createdByDetails?.is_bot ? createdByDetails?.first_name + " Bot" : createdByDetails?.display_name}</>
-          )}
+          {createdByDetails
+            ? t("project_ui.link_added_by", {
+                time: calculateTimeAgo(link.created_at),
+                name: createdByDetails.is_bot
+                  ? t("project_ui.bot_name", { name: createdByDetails.first_name })
+                  : createdByDetails.display_name,
+              })
+            : t("project_ui.link_added", { time: calculateTimeAgo(link.created_at) })}
         </p>
       </div>
       {/* Revealed on hover or focus; always shown on touch screens, which have no hover. */}

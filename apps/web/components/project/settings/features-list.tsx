@@ -93,14 +93,14 @@ export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: 
     const updateProjectPromise = updateProject(workspaceSlug, projectId, settingsPayload);
 
     setPromiseToast(updateProjectPromise, {
-      loading: "Updating project feature...",
+      loading: t("project_ui.updating_project_feature"),
       success: {
-        title: "Success!",
-        message: () => "Project feature updated successfully.",
+        title: t("success"),
+        message: () => t("project_ui.project_feature_updated_successfully"),
       },
       error: {
-        title: "Error!",
-        message: () => "Something went wrong while updating project feature. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.something_went_wrong_while_updating_project_feature_please_try_again"),
       },
     });
   };
@@ -115,14 +115,10 @@ export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: 
       {Object.entries(PROJECT_FEATURES_LIST).map(([featureItemKey, featureItem]) => (
         <SettingsBoxedControlItem
           key={featureItemKey}
-          title={
-            <span>
-              {t("common.actions.enable")} <span className="lowercase">{t(featureItem.key)}</span>
-            </span>
-          }
+          title={t("project_ui.enable_feature", { feature: t(featureItem.key) })}
           titleAccessory={
             featureItem.isPro ? (
-              <Tooltip label="Pro feature">
+              <Tooltip label={t("project_ui.pro_feature")}>
                 <UpgradeBadge className="rounded-sm" />
               </Tooltip>
             ) : undefined

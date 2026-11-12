@@ -35,9 +35,9 @@ export const StateQuickActions = observer(function StateQuickActions(props: TSta
   // derived values
   const isDeleteDisabled = !!state.default || totalStates === 1;
   const deleteDisabledReason = state.default
-    ? "Cannot delete the default state."
+    ? t("project_ui.cannot_delete_the_default_state")
     : totalStates === 1
-      ? "Cannot have an empty group."
+      ? t("project_ui.cannot_have_an_empty_group")
       : undefined;
 
   const handleMarkAsDefault = async () => {
@@ -61,11 +61,13 @@ export const StateQuickActions = observer(function StateQuickActions(props: TSta
       const errorStatus = error as { status: number; data: { error: string } };
       setToast({
         type: "error",
-        title: "Error!",
+        title: t("error"),
         message:
           errorStatus.status === 400
-            ? "This state contains some work items within it, please move them to some other state to delete this state."
-            : "State could not be deleted. Please try again.",
+            ? t(
+                "project_ui.this_state_contains_some_work_items_within_it_please_move_them_to_some_other_state_to_delete_this_state"
+              )
+            : t("project_ui.state_could_not_be_deleted_please_try_again"),
       });
     } finally {
       setIsDeleting(false);
@@ -79,13 +81,8 @@ export const StateQuickActions = observer(function StateQuickActions(props: TSta
         handleSubmit={handleDeleteState}
         isSubmitting={isDeleting}
         isOpen={isDeleteModalOpen}
-        title="Delete State"
-        content={
-          <>
-            Are you sure you want to delete state- <span className="font-medium text-primary">{state?.name}</span>? All
-            of the data related to the state will be permanently removed. This action cannot be undone.
-          </>
-        }
+        title={t("project_ui.delete_state")}
+        content={t("project_ui.delete_state_confirmation", { name: state?.name ?? "" })}
       />
       <Menu>
         <MenuTrigger
@@ -104,7 +101,7 @@ export const StateQuickActions = observer(function StateQuickActions(props: TSta
           {!state.default && (
             <MenuItem
               icon={<Icon icon={DefaultTabOutline} />}
-              label={isMarkingAsDefault ? "Marking as default" : "Mark as default"}
+              label={isMarkingAsDefault ? t("project_ui.marking_as_default") : t("project_ui.mark_as_default")}
               disabled={isMarkingAsDefault}
               onClick={() => void handleMarkAsDefault()}
             />

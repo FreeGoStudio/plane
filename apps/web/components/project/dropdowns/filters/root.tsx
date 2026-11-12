@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { MenuCheckboxItem, MenuSeparator } from "@makeplane/propel/components/menu";
@@ -24,12 +25,13 @@ type Props = {
 };
 
 export const ProjectFiltersSelection = observer(function ProjectFiltersSelection(props: Props) {
+  const { t } = useTranslation();
   const { displayFilters, filters, handleFiltersUpdate, handleDisplayFiltersUpdate, memberIds } = props;
 
   return (
     <>
       <MenuCheckboxItem
-        label="My projects"
+        label={t("workspace_projects.scope.my_projects")}
         checked={!!displayFilters.my_projects}
         onCheckedChange={(checked) => handleDisplayFiltersUpdate({ my_projects: checked })}
       />
@@ -44,7 +46,7 @@ export const ProjectFiltersSelection = observer(function ProjectFiltersSelection
 
       {/* lead */}
       <MemberFilterSubmenu
-        label="Lead"
+        label={t("lead")}
         memberIds={memberIds}
         appliedFilters={filters.lead}
         onToggle={(val) => handleFiltersUpdate("lead", val)}
@@ -52,7 +54,7 @@ export const ProjectFiltersSelection = observer(function ProjectFiltersSelection
 
       {/* members */}
       <MemberFilterSubmenu
-        label="Members"
+        label={t("members")}
         memberIds={memberIds}
         appliedFilters={filters.members}
         onToggle={(val) => handleFiltersUpdate("members", val)}
@@ -60,7 +62,7 @@ export const ProjectFiltersSelection = observer(function ProjectFiltersSelection
 
       {/* created date */}
       <DateFilterSubmenu
-        label="Created date"
+        label={t("common.date_filter.created_date")}
         options={PROJECT_CREATED_AT_FILTER_OPTIONS}
         appliedFilters={filters.created_at}
         onToggleOption={(val) => handleFiltersUpdate("created_at", val)}

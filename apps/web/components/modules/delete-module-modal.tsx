@@ -51,8 +51,8 @@ export const DeleteModuleModal = observer(function DeleteModuleModal(props: Prop
       if (moduleId || peekModule) router.push(`/${workspaceSlug}/projects/${data.project_id}/modules`);
       setToast({
         type: "success",
-        title: "Success!",
-        message: "Module deleted successfully.",
+        title: t("success"),
+        message: t("project_ui.module_deleted_successfully"),
       });
     } catch (errors) {
       const isPermissionError =
@@ -77,14 +77,8 @@ export const DeleteModuleModal = observer(function DeleteModuleModal(props: Prop
       handleSubmit={handleDeletion}
       isSubmitting={isDeleteLoading}
       isOpen={isOpen}
-      title="Delete module"
-      content={
-        <>
-          Are you sure you want to delete module-{" "}
-          <span className="font-medium break-all text-primary">{data?.name}</span>? All of the data related to the
-          module will be permanently removed. This action cannot be undone.
-        </>
-      }
+      title={t("project_module.delete_module")}
+      content={t("project_ui.delete_module_confirmation", { name: data?.name ?? "" })}
     />
   );
 });

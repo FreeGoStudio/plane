@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 import useSWR, { mutate } from "swr";
 import { setToast } from "@plane/blocks/toast";
@@ -26,11 +27,11 @@ type Props = {
 const integrationDetails: { [key: string]: any } = {
   github: {
     logo: GithubLogo,
-    description: "Select GitHub repository to enable sync.",
+    description: "project_ui.select_github_repository_to_enable_sync",
   },
   slack: {
     logo: SlackLogo,
-    description: "Get regular updates and control which notification you want to receive.",
+    description: "project_ui.get_regular_updates_and_control_which_notification_you_want_to_receive",
   },
 };
 
@@ -38,6 +39,7 @@ const integrationDetails: { [key: string]: any } = {
 const projectService = new ProjectService();
 
 export function IntegrationCard({ integration }: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId } = useParams();
 
   const { data: syncedGithubRepository } = useSWR(projectId ? PROJECT_GITHUB_REPOSITORY(projectId) : null, () =>
@@ -68,16 +70,18 @@ export function IntegrationCard({ integration }: Props) {
 
         setToast({
           type: "success",
-          title: "Success!",
-          message: `${login}/${name} repository synced with the project successfully.`,
+          title: t("success"),
+          message: t("project_ui.repository_synced", { repository: `${login}/${name}` }),
         });
+
+        return undefined;
       })
       .catch((err) => {
         console.error(err);
         setToast({
           type: "error",
-          title: "Error!",
-          message: "Repository could not be synced with the project. Please try again.",
+          title: t("error"),
+          message: t("project_ui.repository_could_not_be_synced_with_the_project_please_try_again"),
         });
       });
   };
@@ -97,7 +101,7 @@ export function IntegrationCard({ integration }: Props) {
             <div>
               <h3 className="flex items-center gap-4 text-body-xs-medium">{integration.integration_detail.title}</h3>
               <p className="text-body-xs-regular tracking-tight text-secondary">
-                {integrationDetails[integration.integration_detail.provider].description}
+                {t(integrationDetails[integration.integration_detail.provider].description)}
               </p>
             </div>
           </div>
@@ -112,7 +116,7 @@ export function IntegrationCard({ integration }: Props) {
               label={
                 syncedGithubRepository && syncedGithubRepository.length > 0
                   ? `${syncedGithubRepository[0].repo_detail.owner}/${syncedGithubRepository[0].repo_detail.name}`
-                  : "Select Repository"
+                  : t("project_ui.select_repository")
               }
               onChange={handleChange}
             />

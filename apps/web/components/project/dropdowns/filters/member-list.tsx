@@ -32,16 +32,16 @@ type Props = {
 };
 
 const PROJECT_ROLE_OPTIONS: IRoleOption[] = [
-  { value: String(EUserProjectRoles.ADMIN), label: "Admin" },
-  { value: String(EUserProjectRoles.MEMBER), label: "Member" },
-  { value: String(EUserProjectRoles.GUEST), label: "Guest" },
+  { value: String(EUserProjectRoles.ADMIN), label: "role_details.admin.title" },
+  { value: String(EUserProjectRoles.MEMBER), label: "role_details.member.title" },
+  { value: String(EUserProjectRoles.GUEST), label: "role_details.guest.title" },
 ];
 
 const WORKSPACE_ROLE_OPTIONS: IRoleOption[] = [
-  { value: String(EUserWorkspaceRoles.ADMIN), label: "Admin" },
-  { value: String(EUserWorkspaceRoles.MEMBER), label: "Member" },
-  { value: String(EUserWorkspaceRoles.GUEST), label: "Guest" },
-  { value: "suspended", label: "Suspended" },
+  { value: String(EUserWorkspaceRoles.ADMIN), label: "role_details.admin.title" },
+  { value: String(EUserWorkspaceRoles.MEMBER), label: "role_details.member.title" },
+  { value: String(EUserWorkspaceRoles.GUEST), label: "role_details.guest.title" },
+  { value: "suspended", label: "workspace_ui.suspended" },
 ];
 
 // Dropdown component for member list filters
@@ -73,11 +73,13 @@ export const MemberListFiltersDropdown = observer(function MemberListFiltersDrop
       </div>
       <MenuContent side="bottom" align="start">
         <MenuGroup>
-          <MenuLabel meta={appliedFiltersCount > 0 ? String(appliedFiltersCount) : undefined}>Roles</MenuLabel>
+          <MenuLabel meta={appliedFiltersCount > 0 ? String(appliedFiltersCount) : undefined}>
+            {t("project_ui.roles")}
+          </MenuLabel>
           {roleOptions.map((role) => (
             <MenuCheckboxItem
               key={`role-${role.value}`}
-              label={role.label}
+              label={t(role.label)}
               checked={appliedFilterSet.has(role.value)}
               onCheckedChange={() => handleUpdate(role.value)}
             />

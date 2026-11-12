@@ -64,9 +64,18 @@ export const ActiveCycleProductivity = observer(function ActiveCycleProductivity
             <div className="h-full w-full px-2">
               <div className="flex items-center justify-end gap-4 py-1 text-caption-sm-regular text-tertiary">
                 {estimateType === "points" ? (
-                  <span>{`Pending points - ${cycle.backlog_estimate_points + cycle.unstarted_estimate_points + cycle.started_estimate_points}`}</span>
+                  <span>
+                    {t("project_ui.pending_points", {
+                      count:
+                        cycle.backlog_estimate_points + cycle.unstarted_estimate_points + cycle.started_estimate_points,
+                    })}
+                  </span>
                 ) : (
-                  <span>{`Pending work items - ${cycle.backlog_issues + cycle.unstarted_issues + cycle.started_issues}`}</span>
+                  <span>
+                    {t("project_ui.pending_work_items", {
+                      count: cycle.backlog_issues + cycle.unstarted_issues + cycle.started_issues,
+                    })}
+                  </span>
                 )}
               </div>
 

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { DATE_AFTER_FILTER_OPTIONS } from "@plane/constants";
@@ -16,11 +17,12 @@ type Props = {
 };
 
 export const FilterStartDate = observer(function FilterStartDate(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate } = props;
 
   return (
     <DateFilterSubmenu
-      label="Start date"
+      label={t("start_date")}
       options={DATE_AFTER_FILTER_OPTIONS}
       appliedFilters={appliedFilters}
       onToggleOption={handleUpdate}

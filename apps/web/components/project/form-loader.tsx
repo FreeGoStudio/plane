@@ -5,9 +5,11 @@
  */
 
 // components
+import { useTranslation } from "@plane/i18n";
 import { Loader } from "@plane/blocks/skeleton";
 
 export function ProjectDetailsFormLoader() {
+  const { t } = useTranslation();
   return (
     <>
       <div className="relative mt-6 h-44 w-full">
@@ -31,26 +33,26 @@ export function ProjectDetailsFormLoader() {
       </div>
       <div className="my-8 flex flex-col gap-8">
         <div className="flex flex-col gap-1">
-          <h4 className="text-body-xs-regular">Project name</h4>
+          <h4 className="text-body-xs-regular">{t("project_name")}</h4>
           <Loader>
             <Loader.Item height="46px" width="100%" />
           </Loader>
         </div>
         <div className="flex flex-col gap-1">
-          <h4 className="text-body-xs-regular">Description</h4>
+          <h4 className="text-body-xs-regular">{t("description")}</h4>
           <Loader className="w-full">
             <Loader.Item height="102px" width="full" />
           </Loader>
         </div>
         <div className="flex w-full items-center justify-between gap-10">
           <div className="flex w-1/2 flex-col gap-1">
-            <h4 className="text-body-xs-regular">Identifier</h4>
+            <h4 className="text-body-xs-regular">{t("project_ui.identifier")}</h4>
             <Loader>
               <Loader.Item height="36px" width="100%" />
             </Loader>
           </div>
           <div className="flex w-1/2 flex-col gap-1">
-            <h4 className="text-body-xs-regular">Network</h4>
+            <h4 className="text-body-xs-regular">{t("workspace_projects.network.label")}</h4>
             <Loader className="w-full">
               <Loader.Item height="46px" width="100%" />
             </Loader>

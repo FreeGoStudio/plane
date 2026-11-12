@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { Fragment } from "react";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
 // plane imports
@@ -56,9 +57,10 @@ export const ActiveCycleProgress = observer(function ActiveCycleProgress(props: 
           <h3 className="text-body-sm-semibold text-tertiary">{t("project_cycles.active_cycle.progress")}</h3>
           {cycle.total_issues > 0 && (
             <span className="flex gap-1 rounded-xs px-3 py-1 text-body-xs-medium whitespace-nowrap text-placeholder">
-              {`${cycle.completed_issues + cycle.cancelled_issues}/${cycle.total_issues - cycle.cancelled_issues} ${
-                cycle.completed_issues + cycle.cancelled_issues > 1 ? "Work items" : "Work item"
-              } closed`}
+              {t("project_ui.closed_work_items", {
+                count: cycle.completed_issues + cycle.cancelled_issues,
+                total: cycle.total_issues - cycle.cancelled_issues,
+              })}
             </span>
           )}
         </div>
@@ -70,10 +72,11 @@ export const ActiveCycleProgress = observer(function ActiveCycleProgress(props: 
       {cycle.total_issues > 0 ? (
         <div className="flex flex-col gap-5">
           {Object.keys(groupedIssues).map((group, index) => (
-            <>
+            <Fragment key={group}>
               {groupedIssues[group] > 0 && (
-                <div key={index}>
+                <div>
                   <div
+                    role="presentation"
                     className="flex cursor-pointer items-center justify-between gap-2 text-body-xs-regular"
                     onClick={() => {
                       handleFiltersUpdate([{ property: "state_group", operator: "in", value: [group] }]);
@@ -86,23 +89,21 @@ export const ActiveCycleProgress = observer(function ActiveCycleProgress(props: 
                           backgroundColor: PROGRESS_STATE_GROUPS_DETAILS[index].color,
                         }}
                       />
-                      <span className="w-16 font-medium text-tertiary capitalize">{group}</span>
+                      <span className="w-16 font-medium text-tertiary capitalize">
+                        {t(`workspace_projects.state.${group}`)}
+                      </span>
                     </div>
-                    <span className="text-tertiary">{`${groupedIssues[group]} ${
-                      groupedIssues[group] > 1 ? "Work items" : "Work item"
-                    }`}</span>
+                    <span className="text-tertiary">
+                      {t("project_ui.work_item_count", { count: groupedIssues[group] })}
+                    </span>
                   </div>
                 </div>
               )}
-            </>
+            </Fragment>
           ))}
           {cycle.cancelled_issues > 0 && (
             <span className="flex items-center gap-2 text-body-xs-regular text-tertiary">
-              <span>
-                {`${cycle.cancelled_issues} cancelled ${
-                  cycle.cancelled_issues > 1 ? "work items are" : "work item is"
-                } excluded from this report.`}{" "}
-              </span>
+              <span>{t("project_ui.cancelled_excluded", { count: cycle.cancelled_issues })}</span>
             </span>
           )}
         </div>

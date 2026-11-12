@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 import type { TCycleEstimateType } from "@plane/types";
@@ -23,6 +24,7 @@ type TProps = {
 };
 
 export const EstimateTypeDropdown = observer(function EstimateTypeDropdown(props: TProps) {
+  const { t } = useTranslation();
   const { value, onChange, projectId, cycleId, showDefault = false } = props;
   const { getIsPointsDataAvailable } = useCycle();
   const { areEstimateEnabledByProjectId, currentProjectEstimateType } = useProjectEstimates();
@@ -35,10 +37,10 @@ export const EstimateTypeDropdown = observer(function EstimateTypeDropdown(props
         value={cycleEstimateOptions.find((v) => v.value === value) ?? null}
         onChange={(next) => void onChange(next as TCycleEstimateType)}
         getOptionValue={(option) => option.value}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={(option) => t(option.value === "points" ? "common.estimates" : "work_items")}
         showSearch={false}
         pinSelected={false}
-        placeholder="None"
+        placeholder={t("none")}
       >
         <Select.Trigger variant="select-ghost-md" appendIcon={null}>
           <Select.Value />
@@ -46,6 +48,6 @@ export const EstimateTypeDropdown = observer(function EstimateTypeDropdown(props
       </Select>
     </div>
   ) : showDefault ? (
-    <span className="capitalize">{cycleEstimateOptions.find((v) => v.value === value)?.label ?? value}</span>
+    <span className="capitalize">{t(value === "points" ? "common.estimates" : "work_items")}</span>
   ) : null;
 });

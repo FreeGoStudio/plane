@@ -100,6 +100,8 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
           title: t("toast.success"),
           message: t("project_settings.general.toast.success"),
         });
+
+        return undefined;
       })
       .catch((err) => {
         try {
@@ -195,6 +197,8 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
         .then(async (res) => {
           if (res.exists) setError("identifier", { message: t("common.identifier_already_exists") });
           else await handleUpdateChange(payload);
+
+          return undefined;
         });
     else await handleUpdateChange(payload);
     setTimeout(() => {
@@ -206,7 +210,7 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="relative h-44 w-full">
         <div className="absolute inset-0 rounded-md bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
-        <CoverImage src={coverImage} alt="Project cover image" className="h-44 w-full rounded-md" />
+        <CoverImage src={coverImage} alt={t("project_cover_image_alt")} className="h-44 w-full rounded-md" />
         <div className="absolute bottom-4 z-5 flex w-full items-end justify-between gap-3 px-4">
           <div className="flex flex-grow gap-3 truncate">
             <Controller
@@ -282,7 +286,7 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
             required: t("name_is_required"),
             maxLength: {
               value: 255,
-              message: "Project name should be less than 255 characters",
+              message: t("project_ui.project_name_should_be_less_than_255_characters"),
             },
           }}
           render={({ field: { value, onChange, ref } }) => (
@@ -346,7 +350,7 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
                   id="identifier"
                   name="identifier"
                   type="text"
-                  label="Project ID"
+                  label={t("project_id")}
                   value={value}
                   onChange={handleIdentifierChange}
                   ref={ref}
@@ -430,8 +434,8 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
                     fieldLabel={t("common.project_timezone")}
                     errorMessage={errors.timezone?.message}
                     value={value}
-                    onChange={(value: string) => {
-                      onChange(value);
+                    onChange={(timezoneValue: string) => {
+                      onChange(timezoneValue);
                     }}
                     label={t("common.project_timezone")}
                     error={Boolean(errors.timezone)}

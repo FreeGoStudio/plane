@@ -121,6 +121,7 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
 
                       return (
                         <div
+                          role="presentation"
                           key={issue.id}
                           className="group flex cursor-pointer items-center justify-between gap-2 rounded-md p-1 hover:bg-layer-1"
                           onClick={() => {
@@ -155,7 +156,11 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                               tooltip
                             />
                             {issue.target_date && (
-                              <Tooltip label={`Target Date: ${renderFormattedDate(issue.target_date) ?? ""}`}>
+                              <Tooltip
+                                label={t("project_ui.target_date", {
+                                  date: renderFormattedDate(issue.target_date) ?? "",
+                                })}
+                              >
                                 <div className="flex h-full cursor-pointer items-center gap-1.5 truncate rounded-sm bg-layer-1 px-2 py-0.5 text-caption-md-regular group-hover:bg-layer-1-hover">
                                   <CompletedAtOutline className="h-3 w-3 flex-shrink-0" />
                                   <span className="truncate text-caption-sm-regular">
@@ -196,7 +201,7 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
           <div className="vertical-scrollbar scrollbar-sm flex h-52 w-full flex-col gap-1 overflow-y-auto text-secondary">
             {cycle && !isEmpty(cycle.distribution) ? (
               cycle?.distribution?.assignees && cycle.distribution.assignees.length > 0 ? (
-                cycle.distribution?.assignees?.map((assignee, index) => {
+                cycle.distribution?.assignees?.map((assignee) => {
                   if (assignee.assignee_id)
                     return (
                       <SingleProgressStats
@@ -227,11 +232,17 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                   else
                     return (
                       <SingleProgressStats
-                        key={`unassigned-${index}`}
+                        key="unassigned"
                         title={
                           <div className="flex items-center gap-2">
                             <div className="h-5 w-5 rounded-full border-2 border-subtle bg-layer-1">
-                              <img src={userImage} height="100%" width="100%" className="rounded-full" alt="User" />
+                              <img
+                                src={userImage}
+                                height="100%"
+                                width="100%"
+                                className="rounded-full"
+                                alt={t("space_ui.user")}
+                              />
                             </div>
                             <span>{t("no_assignee")}</span>
                           </div>
@@ -259,9 +270,9 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
           <div className="vertical-scrollbar scrollbar-sm flex h-52 w-full flex-col gap-1 overflow-y-auto text-secondary">
             {cycle && !isEmpty(cycle.distribution) ? (
               cycle?.distribution?.labels && cycle.distribution.labels.length > 0 ? (
-                cycle.distribution.labels?.map((label, index) => (
+                cycle.distribution.labels?.map((label) => (
                   <SingleProgressStats
-                    key={label.label_id ?? `no-label-${index}`}
+                    key={label.label_id ?? "no-label"}
                     title={
                       <div className="flex items-center gap-2 truncate">
                         <span
@@ -271,7 +282,7 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                           }}
                         />
                         <span className="truncate text-caption-sm-regular text-ellipsis">
-                          {label.label_name ?? "No labels"}
+                          {label.label_name ?? t("project_ui.no_labels")}
                         </span>
                       </div>
                     }

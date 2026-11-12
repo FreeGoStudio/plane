@@ -57,7 +57,7 @@ export function StateForm(props: TStateForm) {
     const name = formData?.name || undefined;
     if (!formData || !name) {
       let currentErrors: Partial<Record<keyof IState, string>> = {};
-      if (!name) currentErrors = { ...currentErrors, name: "Name is required" };
+      if (!name) currentErrors = { ...currentErrors, name: t("project_ui.name_is_required") };
       setErrors(currentErrors);
       return;
     }
@@ -101,10 +101,12 @@ export function StateForm(props: TStateForm) {
               type="text"
               name="name"
               aria-label={t("name")}
-              placeholder="Name"
+              placeholder={t("name")}
               value={formData?.name}
               onChange={(e) => handleFormData("name", e.target.value)}
               maxLength={100}
+              // Retain focus when the user opens the state form.
+              // oxlint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
               error={errors?.name || undefined}
             />
@@ -120,7 +122,7 @@ export function StateForm(props: TStateForm) {
           id="description"
           name="description"
           aria-label={t("description")}
-          placeholder="Describe this state for your members."
+          placeholder={t("project_settings.states.describe_this_state_for_your_members")}
           value={formData?.description ?? ""}
           onChange={(e) => handleFormData("description", e.target.value)}
           error={errors?.description || undefined}
@@ -132,7 +134,7 @@ export function StateForm(props: TStateForm) {
           variant="secondary"
           size="md"
           stretch="auto"
-          label="Cancel"
+          label={t("cancel")}
           disabled={buttonDisabled}
           onClick={onCancel}
         />

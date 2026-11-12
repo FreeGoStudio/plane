@@ -101,11 +101,11 @@ export function ModuleAppliedFiltersList(props: Props) {
         {!isArchived && isFavoriteFilterApplied && (
           <div key="module_display_filters" className={APPLIED_FILTER_GROUP_CLASSNAME}>
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-caption-sm-regular text-tertiary capitalize">Modules</span>
+              <span className="text-caption-sm-regular text-tertiary capitalize">{t("modules")}</span>
               <RemovableChip
                 variant="soft"
-                label="Favorite"
-                ariaLabel="Favorite"
+                label={t("project_ui.favorite")}
+                ariaLabel={t("project_ui.favorite")}
                 onRemove={
                   isEditingAllowed
                     ? () =>

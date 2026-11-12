@@ -37,21 +37,51 @@ function scan(directory: string) {
 scan(root);
 scan(path.resolve(root, "../workspace/settings"));
 scan(path.resolve(root, "../workspace/views"));
-test("onboarding and workspace messages resolve in both languages and preserve interpolated user content", async () => {
+for (const section of ["project", "project-states", "cycles", "modules"]) scan(path.resolve(root, "..", section));
+test("web workflow messages resolve in both languages and preserve interpolated user content", async () => {
   for (const locale of ["zh-CN", "en"] as const) {
     // The shared instance must finish one language before the next assertion set.
     // oxlint-disable-next-line no-await-in-loop
     await setLanguage(locale);
-    for (const key of keys)
-      assert.notEqual(translate(key, { name: "用户 原名", email: "User@example.com", current: 2, total: 5 }), key, key);
+    const unresolved = [...keys].filter(
+      (key) =>
+        translate(key, {
+          name: "用户 原名",
+          email: "User@example.com",
+          current: 2,
+          total: 5,
+          count: 2,
+          entity: "项目",
+          feature: "周期",
+        }) === key
+    );
+    assert.deepEqual(unresolved, []);
     assert.ok(translate("workspace_ui.remove_member_description", { name: "成员 Original" }).includes("成员 Original"));
+    for (const key of [
+      "delete_cycle_confirmation",
+      "delete_module_confirmation",
+      "delete_state_confirmation",
+      "archive_project_title",
+      "restore_project_title",
+      "join_project_confirmation",
+    ]) {
+      assert.ok(translate(`project_ui.${key}`, { name: "名称 Original <保留>" }).includes("名称 Original <保留>"));
+    }
+    assert.equal(
+      translate("project_ui.work_item_count", { count: 1 }),
+      locale === "zh-CN" ? "1 个工作项" : "1 work item"
+    );
+    assert.equal(
+      translate("project_ui.work_item_count", { count: 2 }),
+      locale === "zh-CN" ? "2 个工作项" : "2 work items"
+    );
     const welcome = translate("onboarding_ui.welcome", { name: "用户 原名" });
     assert.ok(welcome.includes("用户 原名"));
     assert.ok(
       translate("onboarding_ui.switch_account_description", { email: "User@example.com" }).includes("User@example.com")
     );
     assert.equal(
-      translate("onboarding_ui.step_progress", { current: 2, total: 5 }),
+      translate("onboarding_ui.step_progress", { current: 2, total: 5, count: 2, entity: "项目", feature: "周期" }),
       locale === "zh-CN" ? "第 2 步，共 5 步" : "Step 2 of 5"
     );
     for (const role of ["guest", "member", "admin"])

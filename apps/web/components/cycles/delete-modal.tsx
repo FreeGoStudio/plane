@@ -49,9 +49,11 @@ export const CycleDeleteModal = observer(function CycleDeleteModal(props: ICycle
           if (cycleId || peekCycle) router.push(`/${workspaceSlug}/projects/${projectId}/cycles`);
           setToast({
             type: "success",
-            title: "Success!",
-            message: "Cycle deleted successfully.",
+            title: t("success"),
+            message: t("project_ui.cycle_deleted_successfully"),
           });
+
+          return undefined;
         })
         .catch((errors) => {
           const isPermissionError = errors?.error === "You don't have the required permissions.";
@@ -68,8 +70,8 @@ export const CycleDeleteModal = observer(function CycleDeleteModal(props: ICycle
     } catch {
       setToast({
         type: "error",
-        title: "Warning!",
-        message: "Something went wrong please try again later.",
+        title: t("project_ui.warning"),
+        message: t("project_ui.something_went_wrong_please_try_again_later"),
       });
     }
 
@@ -82,14 +84,8 @@ export const CycleDeleteModal = observer(function CycleDeleteModal(props: ICycle
       handleSubmit={formSubmit}
       isSubmitting={loader}
       isOpen={isOpen}
-      title="Delete cycle"
-      content={
-        <>
-          Are you sure you want to delete cycle{' "'}
-          <span className="font-medium break-words text-primary">{cycle?.name}</span>
-          {'"'}? All of the data related to the cycle will be permanently removed. This action cannot be undone.
-        </>
-      }
+      title={t("project_ui.delete_cycle")}
+      content={t("project_ui.delete_cycle_confirmation", { name: cycle?.name ?? "" })}
     />
   );
 });

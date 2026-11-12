@@ -67,18 +67,20 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
       () => {
         // open favorites menu if closed
         if (!storedValue) toggleFavoriteMenu(true);
+
+        return undefined;
       }
     );
 
     setPromiseToast(addToFavoritePromise, {
-      loading: "Adding module to favorites...",
+      loading: t("project_ui.adding_module_to_favorites"),
       success: {
-        title: "Success!",
-        message: () => "Module added to favorites.",
+        title: t("success"),
+        message: () => t("project_ui.module_added_to_favorites"),
       },
       error: {
-        title: "Error!",
-        message: () => "Couldn't add the module to favorites. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.couldn_t_add_the_module_to_favorites_please_try_again"),
       },
     });
   };
@@ -95,14 +97,14 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
     );
 
     setPromiseToast(removeFromFavoritePromise, {
-      loading: "Removing module from favorites...",
+      loading: t("project_ui.removing_module_from_favorites"),
       success: {
-        title: "Success!",
-        message: () => "Module removed from favorites.",
+        title: t("success"),
+        message: () => t("project_ui.module_removed_from_favorites"),
       },
       error: {
-        title: "Error!",
-        message: () => "Couldn't remove the module from favorites. Please try again.",
+        title: t("error"),
+        message: () => t("project_ui.couldn_t_remove_the_module_from_favorites_please_try_again"),
       },
     });
   };
@@ -114,15 +116,17 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
       .then(() => {
         setToast({
           type: "success",
-          title: "Success!",
-          message: "Module updated successfully.",
+          title: t("success"),
+          message: t("project_ui.module_updated_successfully"),
         });
+
+        return undefined;
       })
       .catch((err) => {
         setToast({
           type: "error",
-          title: "Error!",
-          message: err?.detail ?? "Module could not be updated. Please try again.",
+          title: t("error"),
+          message: err?.detail ?? t("project_ui.module_could_not_be_updated_please_try_again"),
         });
       });
   };
@@ -164,7 +168,7 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
         {moduleLeadDetails ? (
           <ButtonAvatars showTooltip={false} userIds={moduleLeadDetails?.id} />
         ) : (
-          <Tooltip label="No lead">
+          <Tooltip label={t("workspace_projects.card.no_lead")}>
             <LeadOutline className="size-4 shrink-0 text-tertiary" />
           </Tooltip>
         )}

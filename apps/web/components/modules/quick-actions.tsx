@@ -65,9 +65,11 @@ export const ModuleQuickActions = observer(function ModuleQuickActions(props: Pr
     copyUrlToClipboard(moduleLink).then(() => {
       setToast({
         type: "success",
-        title: "Link Copied!",
-        message: "Module link copied to clipboard.",
+        title: t("project_ui.link_copied"),
+        message: t("project_ui.module_link_copied_to_clipboard"),
       });
+
+      return undefined;
     });
   const handleOpenInNewTab = () => window.open(`/${moduleLink}`, "_blank");
 
@@ -76,15 +78,15 @@ export const ModuleQuickActions = observer(function ModuleQuickActions(props: Pr
       await restoreModule(workspaceSlug, projectId, moduleId);
       setToast({
         type: "success",
-        title: "Restore success",
-        message: "Your module can be found in project modules.",
+        title: t("issue.restore.success.title"),
+        message: t("project_ui.your_module_can_be_found_in_project_modules"),
       });
       router.push(`/${workspaceSlug}/projects/${projectId}/archives/modules`);
     } catch (_error) {
       setToast({
         type: "error",
-        title: "Error!",
-        message: "Module could not be restored. Please try again.",
+        title: t("error"),
+        message: t("project_ui.module_could_not_be_restored_please_try_again"),
       });
     }
   };

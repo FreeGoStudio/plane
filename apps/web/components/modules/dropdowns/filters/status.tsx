@@ -29,5 +29,12 @@ export const FilterStatus = observer(function FilterStatus(props: Props) {
     icon: <ModuleStatusIcon status={status.value} />,
   }));
 
-  return <FilterSubmenu label="Status" options={options} appliedFilters={appliedFilters} onToggle={handleUpdate} />;
+  return (
+    <FilterSubmenu
+      label={t("sso.domain_management.verified_domains.list.status")}
+      options={options}
+      appliedFilters={appliedFilters}
+      onToggle={handleUpdate}
+    />
+  );
 });

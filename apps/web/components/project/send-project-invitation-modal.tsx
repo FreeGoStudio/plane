@@ -105,10 +105,12 @@ export const SendProjectInvitationModal = observer(function SendProjectInvitatio
         if (onSuccess) onSuccess();
         onClose();
         setToast({
-          title: "Success!",
+          title: t("success"),
           type: "success",
-          message: "Members added successfully.",
+          message: t("project_ui.members_added_successfully"),
         });
+
+        return undefined;
       })
       .catch((error) => {
         console.error(error);
@@ -199,14 +201,14 @@ export const SendProjectInvitationModal = observer(function SendProjectInvitatio
                       <Controller
                         control={control}
                         name={`members.${index}.member_id`}
-                        rules={{ required: "Please select a member" }}
+                        rules={{ required: t("project_ui.please_select_a_member") }}
                         render={({ field: { value, onChange } }) => (
                           <MemberSelect
                             value={value || null}
                             onChange={(val: string) => handleMemberChange(index, val, onChange)}
                             variant="select-lg"
                             memberIds={uninvitedPeople}
-                            placeholder="Select co-worker"
+                            placeholder={t("project_settings.members.invite_members.select_co_worker")}
                           />
                         )}
                       />
@@ -222,7 +224,7 @@ export const SendProjectInvitationModal = observer(function SendProjectInvitatio
                         <Controller
                           name={`members.${index}.role`}
                           control={control}
-                          rules={{ required: "Select Role" }}
+                          rules={{ required: t("project_ui.select_role") }}
                           render={({ field: { value, onChange } }) => {
                             const roleOptions = getRoleOptions(watch(`members.${index}.member_id`));
                             return (
@@ -233,17 +235,17 @@ export const SendProjectInvitationModal = observer(function SendProjectInvitatio
                                   onChange={(key) => onChange(parseInt(key))}
                                   getOptionValue={(role) => String(role.key)}
                                   getOptionLabel={(role) => role.label}
-                                  placeholder="Select role"
+                                  placeholder={t("project_ui.select_role")}
                                   showSearch={false}
                                   pinSelected={false}
                                 >
                                   <Select.Trigger<TRoleOption>
                                     variant="pill-md"
                                     appendIcon={<ChevronDownOutline />}
-                                    tooltip={{ emptyContent: "Select role" }}
+                                    tooltip={{ emptyContent: t("project_ui.select_role") }}
                                   >
                                     <span className="min-w-0 grow truncate text-left capitalize">
-                                      {value ? ROLE[value] : "Select role"}
+                                      {value ? ROLE[value] : t("project_ui.select_role")}
                                     </span>
                                   </Select.Trigger>
                                 </Select>
