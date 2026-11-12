@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { MouseEvent } from "react";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
@@ -63,6 +64,7 @@ function AdminSidebarMenuItem(props: TAdminSidebarMenuItemProps) {
 }
 
 export const AdminSidebarMenu = observer(function AdminSidebarMenu() {
+  const { t } = useTranslation();
   // router
   const pathName = usePathname();
   // store hooks
@@ -77,7 +79,7 @@ export const AdminSidebarMenu = observer(function AdminSidebarMenu() {
 
   return (
     <ScrollArea orientation="vertical" size="sm">
-      <nav aria-label="Instance settings" className="px-3 py-4">
+      <nav aria-label={t("admin_ui.instance_settings")} className="px-3 py-4">
         <List>
           {sidebarMenu.map((item) => (
             <AdminSidebarMenuItem

@@ -5,16 +5,17 @@
  */
 
 // local imports
-import { coreSidebarMenuLinks } from "./core";
+import { useTranslation } from "@plane/i18n";
+import { coreSidebarMenuLinks, type TCoreSidebarMenuKey } from "./core";
 import type { TSidebarMenuItem } from "./types";
 
 export function useSidebarMenu(): TSidebarMenuItem[] {
-  return [
-    coreSidebarMenuLinks.general,
-    coreSidebarMenuLinks.email,
-    coreSidebarMenuLinks.authentication,
-    coreSidebarMenuLinks.workspace,
-    coreSidebarMenuLinks.ai,
-    coreSidebarMenuLinks.image,
-  ];
+  const { t } = useTranslation();
+  const keys: TCoreSidebarMenuKey[] = ["general", "email", "authentication", "workspace", "ai", "image"];
+  return keys.map((key) => ({
+    Icon: coreSidebarMenuLinks[key].Icon,
+    href: coreSidebarMenuLinks[key].href,
+    name: t(`admin_ui.nav.${key}`),
+    description: t(`admin_ui.nav_description.${key}`),
+  }));
 }

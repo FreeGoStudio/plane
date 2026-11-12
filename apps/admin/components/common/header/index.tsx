@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, type TTranslationStore } from "@plane/i18n";
 import type { ReactNode } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -22,13 +23,14 @@ import { CORE_HEADER_SEGMENT_LABELS } from "./core";
 import { EXTENDED_HEADER_SEGMENT_LABELS } from "./extended";
 
 export const HamburgerToggle = observer(function HamburgerToggle() {
+  const { t } = useTranslation();
   const { isSidebarCollapsed, toggleSidebar } = useTheme();
   return (
     <div className="shrink-0 md:hidden">
       <IconButton
         variant="ghost"
         size="md"
-        aria-label="Toggle sidebar"
+        aria-label={t("admin_ui.toggle_sidebar")}
         aria-expanded={!isSidebarCollapsed}
         aria-controls="admin-sidebar"
         icon={<Icon icon={MenuOutline} />}
@@ -44,14 +46,16 @@ const HEADER_SEGMENT_LABELS = {
 };
 
 // Function to dynamically generate breadcrumb items based on pathname
-const generateBreadcrumbItems = (pathname: string) => {
+const generateBreadcrumbItems = (pathname: string, t: TTranslationStore["t"]) => {
   const pathSegments = pathname.split("/").filter(Boolean);
 
   let currentUrl = "";
   const breadcrumbItems = pathSegments.map((segment) => {
     currentUrl += "/" + segment;
     return {
-      title: HEADER_SEGMENT_LABELS[segment] ?? segment.toUpperCase(),
+      title: HEADER_SEGMENT_LABELS[segment]?.startsWith("admin_ui.")
+        ? t(HEADER_SEGMENT_LABELS[segment])
+        : (HEADER_SEGMENT_LABELS[segment] ?? segment.toUpperCase()),
       href: currentUrl,
     };
   });
@@ -88,12 +92,13 @@ function HeaderCrumb(props: THeaderCrumbProps) {
 }
 
 export const AdminHeader = observer(function AdminHeader() {
+  const { t } = useTranslation();
   const pathName = usePathname();
   // collapsed crumbs render as plain anchors, so their links need the app's base path
   const baseHref = useHref("/");
   const resolveCrumbHref = (path: string) => `${baseHref.replace(/\/+$/, "")}/${path.replace(/^\/+|\/+$/g, "")}/`;
 
-  const breadcrumbItems = generateBreadcrumbItems(pathName || "").filter((item) => item.title);
+  const breadcrumbItems = generateBreadcrumbItems(pathName || "", t).filter((item) => item.title);
 
   return (
     <header className="relative z-10 flex h-header w-full shrink-0 items-center gap-2 border-b border-subtle bg-surface-1 px-4">
@@ -101,10 +106,14 @@ export const AdminHeader = observer(function AdminHeader() {
       <div className="min-w-0 flex-1">
         <Breadcrumbs>
           <Breadcrumbs.Item
-            crumbLabel="Settings"
+            crumbLabel={t("admin_ui.settings")}
             crumbHref={resolveCrumbHref("/general/")}
             component={
-              <HeaderCrumb label="Settings" href="/general/" icon={<SettingsOutline className="text-tertiary" />} />
+              <HeaderCrumb
+                label={t("admin_ui.settings")}
+                href="/general/"
+                icon={<SettingsOutline className="text-tertiary" />}
+              />
             }
           />
           {breadcrumbItems.map((item, index) => {

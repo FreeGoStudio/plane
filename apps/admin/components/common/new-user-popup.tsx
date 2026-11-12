@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useTheme as useNextTheme } from "next-themes";
@@ -17,6 +18,7 @@ import { useTheme } from "@/hooks/store";
 // icons
 
 export const NewUserPopup = observer(function NewUserPopup() {
+  const { t } = useTranslation();
   // hooks
   const { isNewUserPopup, toggleNewUserPopup } = useTheme();
   // theme
@@ -27,11 +29,8 @@ export const NewUserPopup = observer(function NewUserPopup() {
     <div className="shadow-md absolute right-8 bottom-8 w-96 rounded-lg border border-subtle bg-surface-1 p-6">
       <div className="flex gap-4">
         <div className="grow">
-          <div className="text-body-sm-semibold">Create workspace</div>
-          <div className="py-2 text-body-xs-medium text-tertiary">
-            Instance setup done! Welcome to Plane instance portal. Start your journey with by creating your first
-            workspace.
-          </div>
+          <div className="text-body-sm-semibold">{t("admin_ui.create_workspace")}</div>
+          <div className="py-2 text-body-xs-medium text-tertiary">{t("admin_ui.welcome")}</div>
           <div className="flex items-center gap-4 pt-2">
             <Button
               variant="primary"
@@ -39,9 +38,15 @@ export const NewUserPopup = observer(function NewUserPopup() {
               stretch="auto"
               nativeButton={false}
               render={<Link href="/workspace/create" />}
-              label="Create workspace"
+              label={t("admin_ui.create_workspace")}
             />
-            <Button variant="secondary" size="md" stretch="auto" onClick={toggleNewUserPopup} label="Close" />
+            <Button
+              variant="secondary"
+              size="md"
+              stretch="auto"
+              onClick={toggleNewUserPopup}
+              label={t("admin_ui.close")}
+            />
           </div>
         </div>
         <div className="flex shrink-0 items-center justify-center">

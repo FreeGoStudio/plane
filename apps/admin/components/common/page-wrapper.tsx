@@ -5,7 +5,7 @@
  */
 
 import type { ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // plane imports
 import { ScrollArea } from "@makeplane/propel/components/scroll-area";
 import { cn } from "@plane/utils";
@@ -23,6 +23,10 @@ type TPageWrapperProps = {
 
 export const PageWrapper = (props: TPageWrapperProps) => {
   const { children, header, customHeader, size = "md" } = props;
+  const pageTitle = header?.title;
+  useEffect(() => {
+    if (pageTitle) document.title = `${pageTitle} - Plane`;
+  }, [pageTitle]);
   const viewportRef = useRef<HTMLDivElement>(null);
   const [isViewportFocusVisible, setIsViewportFocusVisible] = useState(false);
   const updateViewportFocusVisible = (target: EventTarget) =>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // components
 import { PageWrapper } from "@/components/common/page-wrapper";
@@ -15,14 +16,14 @@ import { GeneralConfigurationForm } from "./form";
 import type { Route } from "./+types/page";
 
 function GeneralPage() {
+  const { t } = useTranslation();
   const { instance, instanceAdmins } = useInstance();
 
   return (
     <PageWrapper
       header={{
-        title: "General settings",
-        description:
-          "Change the name of your instance and instance admin e-mail addresses. Enable or disable telemetry in your instance.",
+        title: t("admin_ui.general_title"),
+        description: t("admin_ui.general_description"),
       }}
     >
       {instance && instanceAdmins && <GeneralConfigurationForm instance={instance} instanceAdmins={instanceAdmins} />}

@@ -5,15 +5,15 @@
  */
 
 export const CORE_HEADER_SEGMENT_LABELS: Record<string, string> = {
-  general: "General",
-  ai: "Artificial Intelligence",
-  email: "Email",
-  authentication: "Authentication",
-  image: "Image",
+  general: "admin_ui.nav.general",
+  ai: "admin_ui.nav.ai",
+  email: "admin_ui.nav.email",
+  authentication: "admin_ui.nav.authentication",
+  image: "admin_ui.nav.image",
   google: "Google",
   github: "GitHub",
   gitlab: "GitLab",
   gitea: "Gitea",
-  workspace: "Workspace",
-  create: "Create",
+  workspace: "admin_ui.nav.workspace",
+  create: "admin_ui.nav.create",
 };

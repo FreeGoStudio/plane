@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme as useNextTheme } from "next-themes";
@@ -31,6 +32,7 @@ import { useTheme, useUser } from "@/hooks/store";
 const authService = new AuthService();
 
 export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
+  const { t } = useTranslation();
   // store hooks
   const { isSidebarCollapsed } = useTheme();
   const { currentUser, signOut } = useUser();
@@ -57,7 +59,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
         <MenuLabel>{currentUser?.email}</MenuLabel>
         <MenuItem
           icon={<Icon icon={PaletteOutline} />}
-          label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+          label={t(resolvedTheme === "dark" ? "admin_ui.switch_light" : "admin_ui.switch_dark")}
           onClick={handleThemeSwitch}
         />
       </MenuGroup>
@@ -65,7 +67,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
       <MenuItem
         variant="danger"
         icon={<Icon icon={LogOutOutline} />}
-        label="Sign out"
+        label={t("admin_ui.sign_out")}
         onClick={() => signOutFormRef.current?.requestSubmit()}
       />
     </MenuContent>
@@ -92,7 +94,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
           <Menu>
             <MenuTrigger
               render={
-                <IconButton variant="ghost" size="lg" type="button" aria-label="Instance admin menu">
+                <IconButton variant="ghost" size="lg" type="button" aria-label={t("admin_ui.instance_admin_menu")}>
                   <Icon icon={UserCogOutline} />
                 </IconButton>
               }
@@ -105,14 +107,14 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
           <div className="grid size-8 shrink-0 place-items-center rounded-md bg-layer-1" aria-hidden="true">
             <UserCogOutline className="size-5 text-primary" />
           </div>
-          <h4 className="min-w-0 flex-1 truncate text-body-md-medium text-primary">Instance admin</h4>
+          <h4 className="min-w-0 flex-1 truncate text-body-md-medium text-primary">{t("admin_ui.instance_admin")}</h4>
           {currentUser && (
             <Menu>
               <MenuTrigger
                 render={
-                  <IconButton variant="ghost" size="lg" type="button" aria-label="Account menu">
+                  <IconButton variant="ghost" size="lg" type="button" aria-label={t("admin_ui.account_menu")}>
                     <Avatar
-                      alt={currentUser.display_name ?? "Admin user"}
+                      alt={currentUser.display_name ?? t("admin_ui.admin_user")}
                       fallback={currentUser.display_name?.[0]?.toUpperCase()}
                       src={getFileURL(currentUser.avatar_url)}
                       size="sm"
