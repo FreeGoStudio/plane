@@ -7,6 +7,7 @@
 import type { TLanguage, ILanguageOption } from "../types";
 
 export const FALLBACK_LANGUAGE: TLanguage = "en";
+export const DEFAULT_LANGUAGE: TLanguage = "zh-CN";
 
 export const SUPPORTED_LANGUAGES: ILanguageOption[] = [
   { label: "English", value: "en" },
@@ -34,3 +35,8 @@ export const SUPPORTED_LANGUAGES: ILanguageOption[] = [
 ];
 
 export const LANGUAGE_STORAGE_KEY = "userLanguage";
+
+/** Resolve persisted preferences without allowing unsupported resource paths. */
+export function resolveLanguage(value: string | null | undefined): TLanguage {
+  return SUPPORTED_LANGUAGES.find((language) => language.value === value)?.value ?? DEFAULT_LANGUAGE;
+}

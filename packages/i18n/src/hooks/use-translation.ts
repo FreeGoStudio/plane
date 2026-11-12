@@ -6,7 +6,7 @@
 
 import { useCallback } from "react";
 import { useTranslation as useI18nextTranslation } from "react-i18next";
-import { SUPPORTED_LANGUAGES, LANGUAGE_STORAGE_KEY } from "../constants/language";
+import { SUPPORTED_LANGUAGES, LANGUAGE_STORAGE_KEY, resolveLanguage } from "../constants/language";
 import type { TLanguage, ILanguageOption } from "../types";
 
 export type TTranslationStore = {
@@ -44,6 +44,7 @@ export function useTranslation(): TTranslationStore {
 
   const changeLanguage = useCallback(
     (lng: TLanguage) => {
+      lng = resolveLanguage(lng);
       void (async () => {
         try {
           await i18n.changeLanguage(lng);

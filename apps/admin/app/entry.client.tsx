@@ -5,14 +5,17 @@
  */
 
 import { startTransition, StrictMode } from "react";
+import { initPromise } from "@plane/i18n";
 import { hydrateRoot } from "react-dom/client";
 import { HydratedRouter } from "react-router/dom";
 
-startTransition(() => {
-  hydrateRoot(
-    document,
-    <StrictMode>
-      <HydratedRouter />
-    </StrictMode>
-  );
-});
+void initPromise.then(() =>
+  startTransition(() => {
+    hydrateRoot(
+      document,
+      <StrictMode>
+        <HydratedRouter />
+      </StrictMode>
+    );
+  })
+);

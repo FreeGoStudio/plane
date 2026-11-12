@@ -10,7 +10,7 @@ import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { InputField } from "@makeplane/propel/components/input-field";
-import { useTranslation } from "@plane/i18n";
+import { DEFAULT_LANGUAGE, useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { setPromiseToast, setToast } from "@plane/blocks/toast";
 import { EFileAssetType } from "@plane/types";
@@ -77,7 +77,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       display_name: user.display_name || "",
       email: user.email || "",
       role: profile.role || "Product / Project Manager",
-      language: profile.language || "en",
+      language: profile.language || DEFAULT_LANGUAGE,
       user_timezone: user.user_timezone || "Asia/Kolkata",
     },
   });
