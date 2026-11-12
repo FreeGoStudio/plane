@@ -38,7 +38,8 @@ export function createDateFormatter({ locale, order = "locale", timeZone }: Date
     const year = !token || /y/i.test(token);
     const month = !token || /M|L/.test(token);
     const day = !token || /d/.test(token);
-    const weekday = token && /E|c/.test(token) ? ("long" as const) : undefined;
+    const weekday: Intl.DateTimeFormatOptions["weekday"] =
+      token && /E|c/.test(token) ? (/E{4}|c{4}/.test(token) ? "long" : "short") : undefined;
     const hasTime = token && /H|h|m|s/.test(token);
     let result = "";
     if (year || month || day || weekday) {
@@ -50,7 +51,10 @@ export function createDateFormatter({ locale, order = "locale", timeZone }: Date
         weekday,
       };
       if (order === "locale") result = new Intl.DateTimeFormat(locale, options).format(date);
-      else {
+      else if (!year && !month && !day) {
+        // With no date fields, Intl would otherwise insert its default full date.
+        result = new Intl.DateTimeFormat(locale, { timeZone: zone, weekday }).format(date);
+      } else {
         const parts = new Intl.DateTimeFormat("en-US", {
           ...options,
           weekday: undefined,

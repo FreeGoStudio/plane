@@ -22,6 +22,19 @@ function load(path, mocks = {}) {
   return exports;
 }
 const chart = load("./utils.ts");
+test("weekday-only calendar labels stay compact under every date order", () => {
+  const day = new Date(2026, 10, 12);
+  for (const order of ["locale", "ymd", "mdy", "dmy"]) {
+    for (const [locale, short, long] of [
+      ["zh-CN", "周四", "星期四"],
+      ["en", "Thu", "Thursday"],
+    ]) {
+      const calendar = utils.createDateFormatter({ locale, order, timeZone: "America/Los_Angeles" });
+      assert.equal(calendar.formatCalendarDate(day, "EEE"), short);
+      assert.equal(calendar.formatCalendarDate(day, "EEEE"), long);
+    }
+  }
+});
 test("chart date-only buckets keep the same day and month in a negative account timezone", () => {
   const year = new Date().getFullYear();
   const date = `${year}-11-01`;
