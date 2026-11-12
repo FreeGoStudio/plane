@@ -12,7 +12,7 @@ import { Field } from "@makeplane/propel/components/field";
 import { Input, InputGroup } from "@makeplane/propel/components/input";
 import { E_PASSWORD_STRENGTH } from "@plane/constants";
 // types
-import { useTranslation } from "@plane/i18n";
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/elements/button";
 import { setToast } from "@plane/blocks/toast";
 import type { IUser, TUserProfile, TOnboardingSteps } from "@plane/types";
@@ -140,8 +140,8 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       ]);
       setToast({
         type: "success",
-        title: "Success",
-        message: "Profile setup completed!",
+        title: t("success"),
+        message: t("onboarding_ui.profile_setup_completed"),
       });
       // For Invited Users, they will skip all other steps and finish onboarding.
       if (totalSteps <= 2) {
@@ -150,8 +150,8 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
     } catch {
       setToast({
         type: "error",
-        title: "Error",
-        message: "Profile setup failed. Please try again!",
+        title: t("error"),
+        message: t("onboarding_ui.profile_setup_failed_please_try_again"),
       });
     }
   };
@@ -171,12 +171,13 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
         } else {
           setProfileSetupStep(EProfileSetupSteps.USER_PERSONALIZATION);
         }
+        return undefined;
       });
     } catch {
       setToast({
         type: "error",
-        title: "Error",
-        message: "User details update failed. Please try again!",
+        title: t("error"),
+        message: t("onboarding_ui.user_details_update_failed_please_try_again"),
       });
     }
   };
@@ -193,8 +194,8 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       ]);
       setToast({
         type: "success",
-        title: "Success",
-        message: "Profile setup completed!",
+        title: t("success"),
+        message: t("onboarding_ui.profile_setup_completed"),
       });
       // For Invited Users, they will skip all other steps and finish onboarding.
       if (totalSteps <= 2) {
@@ -203,8 +204,8 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
     } catch {
       setToast({
         type: "error",
-        title: "Error",
-        message: "Profile setup failed. Please try again!",
+        title: t("error"),
+        message: t("onboarding_ui.profile_setup_failed_please_try_again"),
       });
     }
   };
@@ -243,8 +244,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
 
   // Check for all available fields validation and if password field is available, then checks for password validation (strength + confirmation).
   // Also handles the condition for optional password i.e if password field is optional it only checks for above validation if it's not empty.
-  const isButtonDisabled =
-    !isSubmitting && isValid ? (isPasswordAlreadySetup ? false : isValidPassword ? false : true) : true;
+  const isButtonDisabled = isSubmitting || !isValid || (!isPasswordAlreadySetup && !isValidPassword);
 
   return (
     <div className="flex h-full w-full">
@@ -278,7 +278,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                         </div>
                       </div>
                       <div className="pt-1 text-body-xs-medium text-accent-secondary hover:text-tertiary">
-                        Choose image
+                        {t("editor_ui.choose_image")}
                       </div>
                     </div>
                   ) : (
@@ -286,7 +286,6 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                       <img
                         src={getFileURL(userAvatar ?? "")}
                         className="absolute top-0 left-0 h-full w-full rounded-full object-cover"
-                        onClick={() => setIsImageUploadModalOpen(true)}
                         alt={user?.display_name}
                       />
                     </div>
@@ -299,17 +298,17 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                     className="text-body-xs-medium text-tertiary after:ml-0.5 after:text-danger-primary after:content-['*']"
                     htmlFor="first_name"
                   >
-                    First name
+                    {t("first_name")}
                   </label>
                   <Controller
                     control={control}
                     name="first_name"
                     rules={{
-                      required: "First name is required",
-                      validate: validatePersonName,
+                      required: t("onboarding_ui.first_name_is_required"),
+                      validate: (value) => translateValidationMessage(validatePersonName(value), t),
                       maxLength: {
                         value: 50,
-                        message: "First name must be within 50 characters.",
+                        message: t("onboarding_ui.first_name_must_be_within_50_characters"),
                       },
                     }}
                     render={({ field: { value, onChange, ref } }) => (
@@ -321,10 +320,12 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                             name="first_name"
                             type="text"
                             value={value}
+                            // Keep existing focus when the user enters this setup step.
+                            // oxlint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus
                             onChange={onChange}
                             ref={ref}
-                            placeholder="Wilbur"
+                            placeholder={t("admin_access.first_name_placeholder")}
                             autoComplete="on"
                           />
                         </InputGroup>
@@ -340,17 +341,17 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                     className="text-body-xs-medium text-tertiary after:ml-0.5 after:text-danger-primary after:content-['*']"
                     htmlFor="last_name"
                   >
-                    Last name
+                    {t("last_name")}
                   </label>
                   <Controller
                     control={control}
                     name="last_name"
                     rules={{
-                      required: "Last name is required",
-                      validate: validatePersonName,
+                      required: t("onboarding_ui.last_name_is_required"),
+                      validate: (value) => translateValidationMessage(validatePersonName(value), t),
                       maxLength: {
                         value: 50,
-                        message: "Last name must be within 50 characters.",
+                        message: t("onboarding_ui.last_name_must_be_within_50_characters"),
                       },
                     }}
                     render={({ field: { value, onChange, ref } }) => (
@@ -364,7 +365,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                             value={value}
                             onChange={onChange}
                             ref={ref}
-                            placeholder="Wright"
+                            placeholder={t("admin_access.last_name_placeholder")}
                             autoComplete="on"
                           />
                         </InputGroup>
@@ -382,7 +383,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                 <>
                   <div className="space-y-1">
                     <label className="text-body-xs-medium text-tertiary" htmlFor="password">
-                      Set a password ({t("common.optional")})
+                      {t("onboarding_ui.set_password_optional")}
                     </label>
                     <Controller
                       control={control}
@@ -400,11 +401,11 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                               value={value}
                               onChange={onChange}
                               ref={ref}
-                              placeholder="New password..."
+                              placeholder={t("onboarding_ui.new_password")}
                               onFocus={() => setIsPasswordInputFocused(true)}
                               onBlur={() => setIsPasswordInputFocused(false)}
                               autoComplete="new-password"
-                              aria-label="New password..."
+                              aria-label={t("onboarding_ui.new_password")}
                             />
                             <button
                               type="button"
@@ -425,15 +426,19 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                   </div>
                   <div className="space-y-1">
                     <label className="text-body-xs-medium text-tertiary" htmlFor="confirm_password">
-                      {t("auth.common.password.confirm_password.label")} ({t("common.optional")})
+                      {t("onboarding_ui.confirm_password_optional")}
                     </label>
                     <Controller
                       control={control}
                       name="confirm_password"
                       rules={{
-                        required: watch("password") ? true : false,
+                        required: Boolean(watch("password")),
                         validate: (value) =>
-                          watch("password") ? (value === watch("password") ? true : "Passwords don't match") : true,
+                          watch("password")
+                            ? value === watch("password")
+                              ? true
+                              : t("onboarding_ui.passwords_do_not_match")
+                            : true,
                       }}
                       render={({ field: { value, onChange, ref } }) => (
                         <Field name="confirm_password" invalid={Boolean(errors.confirm_password)}>
@@ -483,18 +488,19 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                   className="text-body-xs-medium text-tertiary after:ml-0.5 after:text-danger-primary after:content-['*']"
                   htmlFor="role"
                 >
-                  What role are you working on? Choose one.
+                  {t("onboarding_ui.what_role_are_you_working_on_choose_one")}
                 </label>
                 <Controller
                   control={control}
                   name="role"
                   rules={{
-                    required: "This field is required",
+                    required: t("onboarding_ui.this_field_is_required"),
                   }}
                   render={({ field: { value, onChange } }) => (
                     <div className="flex flex-wrap gap-2 overflow-auto py-2 break-all">
                       {USER_ROLE.map((userRole) => (
                         <div
+                          role="presentation"
                           key={userRole}
                           className={cn(
                             "shrink-0 rounded border-[0.5px] px-3 py-1.5 text-body-xs-medium hover:cursor-pointer hover:bg-surface-2",
@@ -505,7 +511,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                           )}
                           onClick={() => onChange(userRole)}
                         >
-                          {userRole}
+                          {t(`onboarding_ui.legacy_role_${USER_ROLE.indexOf(userRole)}`)}
                         </div>
                       ))}
                     </div>
@@ -518,14 +524,15 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                   className="text-body-xs-medium text-tertiary after:ml-0.5 after:text-danger-primary after:content-['*']"
                   htmlFor="use_case"
                 >
-                  What is your domain expertise? Choose one or more.
+                  {t("onboarding_ui.what_is_your_domain_expertise_choose_one_or_more")}
                 </label>
                 <Controller
                   control={control}
                   name="use_case"
                   rules={{
-                    required: "Please select at least one option",
-                    validate: (value) => (value && value.length > 0) || "Please select at least one option",
+                    required: t("onboarding_ui.please_select_at_least_one_option"),
+                    validate: (value) =>
+                      (value && value.length > 0) || t("onboarding_ui.please_select_at_least_one_option"),
                   }}
                   render={({ field: { value, onChange } }) => (
                     <div className="flex flex-wrap gap-2 overflow-auto py-2 break-all">
@@ -533,6 +540,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                         const isSelected = value?.includes(userDomain) || false;
                         return (
                           <div
+                            role="presentation"
                             key={userDomain}
                             className={`flex-shrink-0 border-[0.5px] hover:cursor-pointer hover:bg-surface-2 ${
                               isSelected ? "border-accent-strong" : "border-strong"
@@ -546,7 +554,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                               }
                             }}
                           >
-                            {userDomain}
+                            {t(`onboarding_ui.domain_${USER_DOMAIN.indexOf(userDomain)}`)}
                           </div>
                         );
                       })}
@@ -560,7 +568,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
             </>
           )}
           <Button variant="primary" type="submit" size="lg" stretch="full" disabled={isButtonDisabled}>
-            {isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+            {isSubmitting ? <Spinner height="20px" width="20px" /> : t("common.continue")}
           </Button>
         </form>
       </div>

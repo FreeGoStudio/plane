@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { Controller, useForm } from "react-hook-form";
@@ -57,6 +58,7 @@ const defaultValues: Partial<TProfileSetupFormValues> = {
 };
 
 export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepChange }: Props) {
+  const { t } = useTranslation();
   // states
   const [isImageUploadModalOpen, setIsImageUploadModalOpen] = useState(false);
   // store hooks
@@ -102,8 +104,8 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
     } catch {
       setToast({
         type: "error",
-        title: "Error",
-        message: "User details update failed. Please try again!",
+        title: t("error"),
+        message: t("onboarding_ui.user_details_update_failed_please_try_again"),
       });
     }
   };
@@ -144,13 +146,15 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
 
   // Check for all available fields validation and if password field is available, then checks for password validation (strength + confirmation).
   // Also handles the condition for optional password i.e if password field is optional it only checks for above validation if it's not empty.
-  const isButtonDisabled =
-    !isSubmitting && isValid ? (isPasswordAlreadySetup ? false : isValidPassword ? false : true) : true;
+  const isButtonDisabled = isSubmitting || !isValid || (!isPasswordAlreadySetup && !isValidPassword);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       {/* Header */}
-      <CommonOnboardingHeader title="Create your profile." description="This is how you will appear in Plane." />
+      <CommonOnboardingHeader
+        title={t("onboarding_ui.create_your_profile")}
+        description={t("onboarding_ui.this_is_how_you_will_appear_in_plane")}
+      />
 
       {/* Profile Picture Section */}
       <Controller
@@ -175,7 +179,7 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
             className="flex rounded-full"
             type="button"
             onClick={() => setIsImageUploadModalOpen(true)}
-            aria-label={userAvatar ? "Change image" : "Upload image"}
+            aria-label={userAvatar ? t("onboarding_ui.change_image") : t("onboarding_ui.upload_image")}
           >
             <Avatar
               size="2xl"
@@ -193,7 +197,7 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
             onClick={() => setIsImageUploadModalOpen(true)}
             icon={<Icon icon={ImageOutline} />}
             iconPosition="start"
-            label={userAvatar ? "Change image" : "Upload image"}
+            label={userAvatar ? t("onboarding_ui.change_image") : t("onboarding_ui.upload_image")}
           />
         </div>
         <div className="flex w-full flex-col gap-6">
@@ -202,11 +206,11 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
             control={control}
             name="first_name"
             rules={{
-              required: "Name is required",
-              validate: validatePersonName,
+              required: t("onboarding_ui.name_is_required"),
+              validate: (value) => translateValidationMessage(validatePersonName(value), t),
               maxLength: {
                 value: 50,
-                message: "Name must be within 50 characters.",
+                message: t("onboarding_ui.name_must_be_within_50_characters"),
               },
             }}
             render={({ field: { value, onChange, ref } }) => (
@@ -217,12 +221,14 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
                 size="xl"
                 orientation="vertical"
                 type="text"
-                label="Name"
+                label={t("name")}
                 required
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
+                // Keep existing focus when the user enters this setup step.
+                // oxlint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus
-                placeholder="Enter your full name"
+                placeholder={t("onboarding_ui.enter_your_full_name")}
                 autoComplete="on"
                 error={errors.first_name?.message}
               />
@@ -238,7 +244,14 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
           )}
         </div>
         {/* Continue Button */}
-        <Button variant="primary" type="submit" stretch="full" size="lg" disabled={isButtonDisabled} label="Continue" />
+        <Button
+          variant="primary"
+          type="submit"
+          stretch="full"
+          size="lg"
+          disabled={isButtonDisabled}
+          label={t("common.continue")}
+        />
       </div>
 
       {/* Marketing Consent */}

@@ -142,7 +142,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
               rules={{
                 pattern: {
                   value: emailRegex,
-                  message: "Invalid Email ID",
+                  message: t("onboarding_ui.invalid_email_id"),
                 },
               }}
               render={({ field: { value, onChange, ref } }) => (
@@ -215,7 +215,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
         />
       </div>
       {email && !emailRegex.test(email) && (
-        <p className="mt-1 text-caption-sm-regular text-danger-primary">That doesn{"'"}t look like an email address.</p>
+        <p className="mt-1 text-caption-sm-regular text-danger-primary">{t("onboarding_ui.invalid_email")}</p>
       )}
     </div>
   );
@@ -265,15 +265,16 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
       .then(async () => {
         setToast({
           type: "success",
-          title: "Success!",
-          message: "Invitations sent successfully.",
+          title: t("success"),
+          message: t("onboarding_ui.invitations_sent_successfully"),
         });
         await nextStep();
+        return undefined;
       })
       .catch((err) => {
         setToast({
           type: "error",
-          title: "Error!",
+          title: t("error"),
           message: err?.error,
         });
       });
@@ -307,8 +308,10 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
       }}
     >
       <CommonOnboardingHeader
-        title="Invite your teammates"
-        description="Work in plane happens best with your team. Invite them now to use Plane to its potential."
+        title={t("onboarding_ui.invite_your_teammates")}
+        description={t(
+          "onboarding_ui.work_in_plane_happens_best_with_your_team_invite_them_now_to_use_plane_to_its_potential"
+        )}
       />
       <div className="flex w-full flex-col gap-6">
         <div className="flex flex-col gap-3">
@@ -350,7 +353,7 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
               onClick={appendField}
               icon={<Icon icon={AddOutline} />}
               iconPosition="start"
-              label="Add another"
+              label={t("onboarding_ui.add_another")}
             />
           </div>
         </div>
@@ -362,9 +365,15 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
             stretch="full"
             disabled={isInvitationDisabled || !isValid || isSubmitting}
             loading={isSubmitting}
-            label="Continue"
+            label={t("common.continue")}
           />
-          <Button variant="ghost" size="lg" stretch="full" onClick={nextStep} label="I’ll do it later" />
+          <Button
+            variant="ghost"
+            size="lg"
+            stretch="full"
+            onClick={nextStep}
+            label={t("onboarding_ui.i_ll_do_it_later")}
+          />
         </div>
       </div>
     </form>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Controller, useForm } from "react-hook-form";
 // plane imports
@@ -29,6 +30,7 @@ const defaultValues = {
 };
 
 export const UseCaseSetupStep = observer(function UseCaseSetupStep({ handleStepChange }: Props) {
+  const { t } = useTranslation();
   // store hooks
   const { data: profile, updateUserProfile } = useUserProfile();
   // form info
@@ -50,17 +52,17 @@ export const UseCaseSetupStep = observer(function UseCaseSetupStep({ handleStepC
       use_case: formData.use_case && formData.use_case.length > 0 ? formData.use_case.join(". ") : undefined,
     };
     try {
-      [await updateUserProfile(profileUpdatePayload)];
+      await updateUserProfile(profileUpdatePayload);
       setToast({
         type: "success",
-        title: "Success",
-        message: "Profile setup completed!",
+        title: t("success"),
+        message: t("onboarding_ui.profile_setup_completed"),
       });
     } catch {
       setToast({
         type: "error",
-        title: "Error",
-        message: "Profile setup failed. Please try again!",
+        title: t("error"),
+        message: t("onboarding_ui.profile_setup_failed_please_try_again"),
       });
     }
   };
@@ -78,23 +80,26 @@ export const UseCaseSetupStep = observer(function UseCaseSetupStep({ handleStepC
   };
 
   // derived values
-  const isButtonDisabled = !isSubmitting && isValid ? false : true;
+  const isButtonDisabled = isSubmitting || !isValid;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       {/* Header */}
-      <CommonOnboardingHeader title="What brings you to Plane?" description="Tell us your goals and team size." />
+      <CommonOnboardingHeader
+        title={t("onboarding_ui.what_brings_you_to_plane")}
+        description={t("onboarding_ui.tell_us_your_goals_and_team_size")}
+      />
 
       {/* Use Case Selection */}
       <fieldset className="flex min-w-0 flex-col gap-3">
-        <legend className="mb-3 text-body-sm-semibold text-placeholder">Select one or more</legend>
+        <legend className="mb-3 text-body-sm-semibold text-placeholder">{t("onboarding_ui.select_one_or_more")}</legend>
 
         <Controller
           control={control}
           name="use_case"
           rules={{
-            required: "Please select at least one option",
-            validate: (value) => (value && value.length > 0) || "Please select at least one option",
+            required: t("onboarding_ui.please_select_at_least_one_option"),
+            validate: (value) => (value && value.length > 0) || t("onboarding_ui.please_select_at_least_one_option"),
           }}
           render={({ field: { value, onChange } }) => (
             <div className="flex flex-col gap-3">
@@ -144,7 +149,7 @@ export const UseCaseSetupStep = observer(function UseCaseSetupStep({ handleStepC
                         "text-primary": !isSelected,
                       })}
                     >
-                      {useCase}
+                      {t(`onboarding_ui.use_case_${USE_CASES.indexOf(useCase)}`)}
                     </span>
                   </button>
                 );
@@ -157,8 +162,15 @@ export const UseCaseSetupStep = observer(function UseCaseSetupStep({ handleStepC
 
       {/* Action Buttons */}
       <div className="space-y-3">
-        <Button variant="primary" type="submit" stretch="full" size="lg" disabled={isButtonDisabled} label="Continue" />
-        <Button variant="ghost" onClick={handleSkip} stretch="full" size="lg" label="Skip" />
+        <Button
+          variant="primary"
+          type="submit"
+          stretch="full"
+          size="lg"
+          disabled={isButtonDisabled}
+          label={t("common.continue")}
+        />
+        <Button variant="ghost" onClick={handleSkip} stretch="full" size="lg" label={t("onboarding_ui.skip")} />
       </div>
     </form>
   );

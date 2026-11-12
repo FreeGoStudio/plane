@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const OnboardingRoot = observer(function OnboardingRoot({ invitations = [] }: Props) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState<TOnboardingStep>(EOnboardingSteps.PROFILE_SETUP);
   // store hooks
   const { data: user } = useUser();
@@ -44,11 +46,11 @@ export const OnboardingRoot = observer(function OnboardingRoot({ invitations = [
     } catch (_error) {
       setToast({
         type: "error",
-        title: "Failed",
-        message: "Failed to finish onboarding, Please try again later.",
+        title: t("onboarding_ui.failed"),
+        message: t("onboarding_ui.failed_to_finish_onboarding_please_try_again_later"),
       });
     }
-  }, [user, finishUserOnboarding]);
+  }, [user, finishUserOnboarding, t]);
 
   // handle step change
   const stepChange = useCallback(

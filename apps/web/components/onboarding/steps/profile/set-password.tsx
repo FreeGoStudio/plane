@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState, useCallback, useMemo } from "react";
 import { ChevronDownOutline, LockOutline } from "@makeplane/propel/icons";
 import { PasswordInput, PasswordStrengthIndicator } from "@plane/blocks/auth";
@@ -22,6 +23,7 @@ interface SetPasswordRootProps {
 }
 
 export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, disabled = false }: SetPasswordRootProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [passwordState, setPasswordState] = useState<PasswordState>({
     password: "",
@@ -91,7 +93,7 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
       >
         <div className="flex items-center gap-1 text-tertiary">
           <LockOutline className="size-3" />
-          <span className="font-medium">Set a password</span>
+          <span className="font-medium">{t("auth.common.password.set_password")}</span>
           <span>{`(Optional)`}</span>
         </div>
         <div className="flex items-center gap-2 text-placeholder">
@@ -104,11 +106,11 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
         <div className="flex transform flex-col gap-2 pt-1 transition-all duration-300 ease-in-out">
           <PasswordInput
             id="password"
-            label="Password"
+            label={t("auth.common.password.label")}
             autoComplete="new-password"
             value={passwordState.password}
             onChange={(value) => handlePasswordChange("password", value)}
-            placeholder="Set a password"
+            placeholder={t("auth.common.password.set_password")}
             className="transition-all duration-200"
           />
           {passwordState.password.length > 0 && <PasswordStrengthIndicator password={passwordState.password} />}
@@ -119,17 +121,21 @@ export function SetPasswordRoot({ onPasswordChange, onConfirmPasswordChange, dis
           <div className="transform transition-all delay-100 duration-300 ease-in-out">
             <PasswordInput
               id="confirm-password"
-              label="Confirm password"
+              label={t("auth.common.password.confirm_password.label")}
               autoComplete="new-password"
               value={passwordState.confirmPassword}
               onChange={(value) => handlePasswordChange("confirmPassword", value)}
-              placeholder="Confirm password"
+              placeholder={t("auth.common.password.confirm_password.label")}
               className="transition-all duration-200"
             />
             {hasPasswordMismatch && (
-              <p className="mt-1 text-caption-sm-regular text-danger-primary">Passwords do not match</p>
+              <p className="mt-1 text-caption-sm-regular text-danger-primary">
+                {t("onboarding_ui.passwords_do_not_match")}
+              </p>
             )}
-            {isPasswordValid && <p className="mt-1 text-caption-sm-regular text-success-primary">✓ Passwords match</p>}
+            {isPasswordValid && (
+              <p className="mt-1 text-caption-sm-regular text-success-primary">{t("onboarding_ui.passwords_match")}</p>
+            )}
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ import { observer } from "mobx-react";
 import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { ORGANIZATION_SIZE, RESTRICTED_URLS } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { InputField } from "@makeplane/propel/components/input-field";
 import { Icon } from "@makeplane/propel/components/icon";
@@ -120,9 +120,7 @@ export const WorkspaceCreateStep = observer(function WorkspaceCreateStep({
     return (
       <div className="flex flex-col gap-10">
         <span className="text-center text-body-sm-regular text-tertiary">
-          You don&apos;t seem to have any invites to a workspace and your instance admin has restricted creation of new
-          workspaces. Please ask a workspace owner or admin to invite you to a workspace first and come back to this
-          screen to join.
+          {t("onboarding_ui.workspace_restricted")}
         </span>
       </div>
     );
@@ -134,14 +132,17 @@ export const WorkspaceCreateStep = observer(function WorkspaceCreateStep({
         void handleSubmit(handleCreateWorkspace)(e);
       }}
     >
-      <CommonOnboardingHeader title="Create your workspace" description="All your work — unified." />
+      <CommonOnboardingHeader
+        title={t("workspace_creation.heading")}
+        description={t("onboarding_ui.all_your_work_unified")}
+      />
       <div className="flex flex-col gap-8">
         <Controller
           control={control}
           name="name"
           rules={{
             required: t("common.errors.required"),
-            validate: (value) => validateWorkspaceName(value, true),
+            validate: (value) => translateValidationMessage(validateWorkspaceName(value, true), t),
             maxLength: {
               value: 80,
               message: t("workspace_creation.errors.validation.name_length"),
@@ -164,9 +165,11 @@ export const WorkspaceCreateStep = observer(function WorkspaceCreateStep({
                   shouldValidate: true,
                 });
               }}
-              placeholder="Enter workspace name"
+              placeholder={t("onboarding_ui.enter_workspace_name")}
               ref={ref}
               // eslint-disable-next-line jsx-a11y/no-autofocus
+              // Keep existing focus when the user enters this setup step.
+              // oxlint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
               error={errors.name?.message}
             />
@@ -239,7 +242,7 @@ export const WorkspaceCreateStep = observer(function WorkspaceCreateStep({
                   {ORGANIZATION_SIZE.map((size) => (
                     <Toggle
                       key={size}
-                      label={size}
+                      label={size === "Just myself" ? t("onboarding_ui.just_myself") : size}
                       size="md"
                       startIcon={<Icon icon={TickCircleOutline} />}
                       pressed={value === size}
@@ -271,7 +274,7 @@ export const WorkspaceCreateStep = observer(function WorkspaceCreateStep({
             size="lg"
             stretch="full"
             onClick={handleCurrentViewChange}
-            label="Join existing workspace"
+            label={t("onboarding_ui.join_existing_workspace")}
           />
         )}
       </div>

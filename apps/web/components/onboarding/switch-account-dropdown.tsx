@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -20,6 +21,7 @@ type TSwitchAccountDropdownProps = {
 };
 
 export const SwitchAccountDropdown = observer(function SwitchAccountDropdown(props: TSwitchAccountDropdownProps) {
+  const { t } = useTranslation();
   const { fullName } = props;
   // states
   const [showSwitchAccountModal, setShowSwitchAccountModal] = useState(false);
@@ -55,7 +57,11 @@ export const SwitchAccountDropdown = observer(function SwitchAccountDropdown(pro
           <span className="text-body-sm-regular text-secondary">{displayName}</span>
         </MenuTrigger>
         <MenuContent side="bottom" align="end">
-          <MenuItem variant="danger" label="Wrong e-mail address?" onClick={() => setShowSwitchAccountModal(true)} />
+          <MenuItem
+            variant="danger"
+            label={t("onboarding_ui.wrong_e_mail_address")}
+            onClick={() => setShowSwitchAccountModal(true)}
+          />
         </MenuContent>
       </Menu>
     </>

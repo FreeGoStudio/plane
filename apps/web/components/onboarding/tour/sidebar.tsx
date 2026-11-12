@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { CyclesOutline, ModuleOutline, PagesOutline, ViewsOutline, WorkItemsOutline } from "@makeplane/propel/icons";
 import type { ISvgIcons } from "@plane/blocks/icons";
 // types
@@ -17,27 +18,27 @@ const sidebarOptions: {
 }[] = [
   {
     key: "work-items",
-    label: "Work items",
+    label: "work_items",
     Icon: WorkItemsOutline,
   },
   {
     key: "cycles",
-    label: "Cycles",
+    label: "cycles",
     Icon: CyclesOutline,
   },
   {
     key: "modules",
-    label: "Modules",
+    label: "modules",
     Icon: ModuleOutline,
   },
   {
     key: "views",
-    label: "Views",
+    label: "views",
     Icon: ViewsOutline,
   },
   {
     key: "pages",
-    label: "Pages",
+    label: "pages",
     Icon: PagesOutline,
   },
 ];
@@ -48,12 +49,13 @@ type Props = {
 };
 
 export function TourSidebar({ step, setStep }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="col-span-3 hidden bg-surface-2 p-8 lg:block">
       <h3 className="text-h6-medium">
-        Let{"'"}s get started!
+        {t("onboarding_ui.get_started")}
         <br />
-        Get more out of Plane.
+        {t("onboarding_ui.get_more_out_of_plane")}
       </h3>
       <div className="mt-8 space-y-5">
         {sidebarOptions.map((option) => (
@@ -68,7 +70,7 @@ export function TourSidebar({ step, setStep }: Props) {
             role="button"
           >
             <option.Icon className="h-4 w-4" aria-hidden="true" />
-            {option.label}
+            {t(option.label)}
           </h5>
         ))}
       </div>

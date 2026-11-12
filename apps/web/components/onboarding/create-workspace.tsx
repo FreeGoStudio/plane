@@ -12,7 +12,7 @@ import { Field } from "@makeplane/propel/components/field";
 import { Input, InputGroup } from "@makeplane/propel/components/input";
 import { ORGANIZATION_SIZE, RESTRICTED_URLS } from "@plane/constants";
 // types
-import { useTranslation } from "@plane/i18n";
+import { useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/elements/button";
 import { setToast } from "@plane/blocks/toast";
 import type { IUser, IWorkspace, TOnboardingSteps } from "@plane/types";
@@ -114,14 +114,14 @@ export const CreateWorkspace = observer(function CreateWorkspace(props: Props) {
             onClick={handleCurrentViewChange}
             render={<button type="button" className="flex items-center gap-2 bg-surface-2 text-body-sm-regular" />}
           >
-            I want to join invited workspaces{" "}
+            {t("onboarding_ui.i_want_to_join_invited_workspaces")}{" "}
             <span className="flex h-4 w-4 items-center justify-center rounded-xs bg-accent-primary/80 text-caption-sm-medium text-on-color">
               {invitedWorkspaces}
             </span>
           </Button>
           <div className="mx-auto mt-4 flex items-center sm:w-96">
             <hr className="w-full border-strong" />
-            <p className="mx-3 flex-shrink-0 text-center text-body-xs-regular text-placeholder">or</p>
+            <p className="mx-3 flex-shrink-0 text-center text-body-xs-regular text-placeholder">{t("common.or")}</p>
             <hr className="w-full border-strong" />
           </div>
         </>
@@ -143,7 +143,7 @@ export const CreateWorkspace = observer(function CreateWorkspace(props: Props) {
             name="name"
             rules={{
               required: t("common.errors.required"),
-              validate: (value) => validateWorkspaceName(value, true),
+              validate: (value) => translateValidationMessage(validateWorkspaceName(value, true), t),
               maxLength: {
                 value: 80,
                 message: t("workspace_creation.errors.validation.name_length"),
@@ -168,6 +168,8 @@ export const CreateWorkspace = observer(function CreateWorkspace(props: Props) {
                       }}
                       placeholder={t("workspace_creation.form.name.placeholder")}
                       ref={ref}
+                      // Keep existing focus when the user enters this setup step.
+                      // oxlint-disable-next-line jsx-a11y/no-autofocus
                       autoFocus
                     />
                   </InputGroup>
@@ -249,7 +251,7 @@ export const CreateWorkspace = observer(function CreateWorkspace(props: Props) {
                   onChange={onChange}
                   getValues={() => ORGANIZATION_SIZE}
                   getOptionValue={(item) => item}
-                  getOptionLabel={(item) => item}
+                  getOptionLabel={(item) => (item === "Just myself" ? t("onboarding_ui.just_myself") : item)}
                   showSearch={false}
                   pinSelected={false}
                   placeholder={t("workspace_creation.form.organization_size.placeholder")}
@@ -257,7 +259,7 @@ export const CreateWorkspace = observer(function CreateWorkspace(props: Props) {
                   <Select.Trigger<string> id="organization_size" variant="select-xl">
                     {(selected) => (
                       <span className="grow truncate text-left">
-                        {selected[0] ?? (
+                        {(selected[0] === "Just myself" ? t("onboarding_ui.just_myself") : selected[0]) ?? (
                           <span className="text-placeholder">
                             {t("workspace_creation.form.organization_size.placeholder")}
                           </span>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // plane imports
 import { ROLE } from "@plane/constants";
@@ -29,6 +30,7 @@ type Props = {
 const workspaceService = new WorkspaceService();
 
 export function WorkspaceJoinInvitesStep(props: Props) {
+  const { t } = useTranslation();
   const { invitations, handleNextStep, handleCurrentViewChange } = props;
   // states
   const [isJoiningWorkspaces, setIsJoiningWorkspaces] = useState(false);
@@ -48,7 +50,7 @@ export function WorkspaceJoinInvitesStep(props: Props) {
 
   // submit invitations
   const submitInvitations = async () => {
-    const invitation = invitations?.find((invitation) => invitation.id === invitationsRespond[0]);
+    const invitation = invitations?.find((candidate) => candidate.id === invitationsRespond[0]);
 
     if (invitationsRespond.length <= 0 && !invitation?.role) return;
 
@@ -67,7 +69,10 @@ export function WorkspaceJoinInvitesStep(props: Props) {
 
   return invitations && invitations.length > 0 ? (
     <div className="flex flex-col gap-10">
-      <CommonOnboardingHeader title="Join invites or create a workspace" description="All your work — unified." />
+      <CommonOnboardingHeader
+        title={t("onboarding_ui.join_invites_or_create_a_workspace")}
+        description={t("onboarding_ui.all_your_work_unified")}
+      />
       <div className="flex flex-col gap-3">
         {invitations &&
           invitations.length > 0 &&
@@ -102,12 +107,14 @@ export function WorkspaceJoinInvitesStep(props: Props) {
                 </span>
                 <span className="flex min-w-0 flex-1 flex-col items-start">
                   <span id={`workspace-invitation-${invitation.id}-name`} className="sr-only">
-                    {invitedWorkspace?.name ?? "Select workspace invitation"}
+                    {invitedWorkspace?.name ?? t("onboarding_ui.select_invitation")}
                   </span>
                   <span aria-hidden="true" className="w-full truncate text-body-sm-medium text-primary">
                     {truncateText(invitedWorkspace?.name, 30)}
                   </span>
-                  <span className="w-full truncate text-body-xs-regular text-tertiary">{ROLE[invitation.role]}</span>
+                  <span className="w-full truncate text-body-xs-regular text-tertiary">
+                    {t(`role_details.${ROLE[invitation.role].toLowerCase()}.title`)}
+                  </span>
                 </span>
               </label>
             );
@@ -121,19 +128,19 @@ export function WorkspaceJoinInvitesStep(props: Props) {
           onClick={submitInvitations}
           disabled={isJoiningWorkspaces || !invitationsRespond.length}
           loading={isJoiningWorkspaces}
-          label="Continue"
+          label={t("common.continue")}
         />
         <Button
           variant="ghost"
           size="lg"
           stretch="full"
-          label="Create new workspace"
+          label={t("onboarding_ui.create_new_workspace")}
           onClick={handleCurrentViewChange}
           disabled={isJoiningWorkspaces}
         />
       </div>
     </div>
   ) : (
-    <div>No Invitations found</div>
+    <div>{t("onboarding_ui.no_invitations_found")}</div>
   );
 }

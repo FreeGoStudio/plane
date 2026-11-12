@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -46,6 +47,7 @@ const defaultValues = {
 };
 
 export const RoleSetupStep = observer(function RoleSetupStep({ handleStepChange }: Props) {
+  const { t } = useTranslation();
   // store hooks
   const { data: profile, updateUserProfile } = useUserProfile();
   // form info
@@ -67,17 +69,17 @@ export const RoleSetupStep = observer(function RoleSetupStep({ handleStepChange 
       role: formData.role,
     };
     try {
-      [await updateUserProfile(profileUpdatePayload)];
+      await updateUserProfile(profileUpdatePayload);
       setToast({
         type: "success",
-        title: "Success",
-        message: "Profile setup completed!",
+        title: t("success"),
+        message: t("onboarding_ui.profile_setup_completed"),
       });
     } catch {
       setToast({
         type: "error",
-        title: "Error",
-        message: "Profile setup failed. Please try again!",
+        title: t("error"),
+        message: t("onboarding_ui.profile_setup_failed_please_try_again"),
       });
     }
   };
@@ -92,20 +94,23 @@ export const RoleSetupStep = observer(function RoleSetupStep({ handleStepChange 
     handleStepChange(EOnboardingSteps.ROLE_SETUP);
   };
 
-  const isButtonDisabled = !isSubmitting && isValid ? false : true;
+  const isButtonDisabled = isSubmitting || !isValid;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
       {/* Header */}
-      <CommonOnboardingHeader title="What's your role?" description="Let's set up Plane for how you work." />
+      <CommonOnboardingHeader
+        title={t("onboarding_ui.what_s_your_role")}
+        description={t("onboarding_ui.let_s_set_up_plane_for_how_you_work")}
+      />
       {/* Role Selection */}
       <fieldset className="flex min-w-0 flex-col gap-3">
-        <legend className="mb-3 text-body-sm-semibold text-placeholder">Select one</legend>
+        <legend className="mb-3 text-body-sm-semibold text-placeholder">{t("onboarding_ui.select_one")}</legend>
         <Controller
           control={control}
           name="role"
           rules={{
-            required: "This field is required",
+            required: t("onboarding_ui.this_field_is_required"),
           }}
           render={({ field: { value, onChange } }) => (
             <div className="flex flex-col gap-2">
@@ -151,7 +156,7 @@ export const RoleSetupStep = observer(function RoleSetupStep({ handleStepChange 
                         "text-primary": !isSelected,
                       })}
                     >
-                      {role.label}
+                      {t(`onboarding_ui.role_${role.id}`)}
                     </span>
                   </button>
                 );
@@ -163,14 +168,21 @@ export const RoleSetupStep = observer(function RoleSetupStep({ handleStepChange 
       </fieldset>
       {/* Action Buttons */}
       <div className="space-y-3">
-        <Button variant="primary" type="submit" stretch="full" size="lg" disabled={isButtonDisabled} label="Continue" />
+        <Button
+          variant="primary"
+          type="submit"
+          stretch="full"
+          size="lg"
+          disabled={isButtonDisabled}
+          label={t("common.continue")}
+        />
         <Button
           variant="ghost"
           onClick={handleSkip}
           stretch="full"
           size="lg"
           render={<button type="button" />}
-          label="Skip"
+          label={t("onboarding_ui.skip")}
         />
       </div>
     </form>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -38,48 +39,46 @@ const TOUR_STEPS: {
 }[] = [
   {
     key: "work-items",
-    title: "Plan with work items",
-    description:
-      "The work item is the building block of the Plane. Most concepts in Plane are either associated with work items and their properties.",
+    title: "onboarding_ui.plan_items",
+    description: "onboarding_ui.plan_items_description",
     image: IssuesTour,
     nextStep: "cycles",
   },
   {
     key: "cycles",
-    title: "Move with cycles",
-    description:
-      "Cycles help you and your team to progress faster, similar to the sprints commonly used in agile development.",
+    title: "onboarding_ui.cycles",
+    description: "onboarding_ui.cycles_description",
     image: CyclesTour,
     prevStep: "work-items",
     nextStep: "modules",
   },
   {
     key: "modules",
-    title: "Break into modules",
-    description: "Modules break your big thing into Projects or Features, to help you organize better.",
+    title: "onboarding_ui.modules",
+    description: "onboarding_ui.modules_description",
     image: ModulesTour,
     prevStep: "cycles",
     nextStep: "views",
   },
   {
     key: "views",
-    title: "Views",
-    description:
-      "Create custom filters to display only the work items that matter to you. Save and share your filters in just a few clicks.",
+    title: "views",
+    description: "onboarding_ui.views_description",
     image: ViewsTour,
     prevStep: "modules",
     nextStep: "pages",
   },
   {
     key: "pages",
-    title: "Document with pages",
-    description: "Use Pages to quickly jot down work items when you're in a meeting or starting a day.",
+    title: "onboarding_ui.pages",
+    description: "onboarding_ui.pages_description",
     image: PagesTour,
     prevStep: "views",
   },
 ];
 
 export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) {
+  const { t } = useTranslation();
   const { onComplete } = props;
   // states
   const [step, setStep] = useState<TTourSteps>("welcome");
@@ -100,19 +99,18 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
             </div>
             <div className="flex flex-col overflow-y-auto p-6">
               <h3 className="font-semibold sm:text-h5-regular">
-                Welcome to Plane, {currentUser?.first_name} {currentUser?.last_name}
+                {t("onboarding_ui.welcome", {
+                  name: [currentUser?.first_name, currentUser?.last_name].filter(Boolean).join(" "),
+                })}
               </h3>
-              <p className="mt-3 text-body-xs-regular text-secondary">
-                We{"'"}re glad that you decided to try out Plane. You can now manage your projects with ease. Get
-                started by creating a project.
-              </p>
+              <p className="mt-3 text-body-xs-regular text-secondary">{t("onboarding_ui.welcome_description")}</p>
               <div className="flex h-full items-end">
                 <div className="mt-12 flex items-center gap-6">
                   <Button
                     variant="primary"
                     size="sm"
                     stretch="auto"
-                    label="Take a Product Tour"
+                    label={t("onboarding_ui.take_a_product_tour")}
                     onClick={() => {
                       setStep("work-items");
                     }}
@@ -124,7 +122,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                       onComplete();
                     }}
                   >
-                    No thanks, I will explore it myself
+                    {t("onboarding_ui.no_thanks_i_will_explore_it_myself")}
                   </button>
                 </div>
               </div>
@@ -147,11 +145,11 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                 currentStepIndex % 2 === 0 ? "justify-end" : "justify-start"
               }`}
             >
-              <img src={currentStep?.image} className="h-full w-full object-cover" alt={currentStep?.title} />
+              <img src={currentStep?.image} className="h-full w-full object-cover" alt={t(currentStep?.title ?? "")} />
             </div>
             <div className="flex h-1/2 flex-col overflow-y-auto p-4 sm:h-2/5">
-              <h3 className="font-semibold sm:text-h5-regular">{currentStep?.title}</h3>
-              <p className="mt-3 text-body-xs-regular text-secondary">{currentStep?.description}</p>
+              <h3 className="font-semibold sm:text-h5-regular">{t(currentStep?.title ?? "")}</h3>
+              <p className="mt-3 text-body-xs-regular text-secondary">{t(currentStep?.description ?? "")}</p>
               <div className="mt-3 flex h-full items-end justify-between gap-4">
                 <div className="flex items-center gap-4">
                   {currentStep?.prevStep && (
@@ -159,7 +157,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                       variant="secondary"
                       size="sm"
                       stretch="auto"
-                      label="Back"
+                      label={t("automations.trigger.button.previous")}
                       onClick={() => setStep(currentStep.prevStep ?? "welcome")}
                     />
                   )}
@@ -168,7 +166,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                       variant="primary"
                       size="sm"
                       stretch="auto"
-                      label="Next"
+                      label={t("next")}
                       onClick={() => setStep(currentStep.nextStep ?? "work-items")}
                     />
                   )}
@@ -178,7 +176,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                     variant="primary"
                     size="sm"
                     stretch="auto"
-                    label="Create your first project"
+                    label={t("onboarding_ui.create_your_first_project")}
                     onClick={() => {
                       onComplete();
                       toggleCreateProjectModal(true);
