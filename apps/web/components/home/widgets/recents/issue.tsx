@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+
+import { formatHomeTimeAgo } from "@/helpers/home-datetime";
 import { observer } from "mobx-react";
 // plane types
 import { PriorityIcon, StateGroupIcon } from "@plane/blocks/icons";
@@ -13,7 +16,7 @@ import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { TActivityEntityData, TIssueEntityData } from "@plane/types";
 import { EIssueServiceType } from "@plane/types";
 // plane ui
-import { calculateTimeAgo, generateWorkItemLink } from "@plane/utils";
+import { generateWorkItemLink } from "@plane/utils";
 // components
 import { ListItem } from "@/components/core/list";
 import { ButtonAvatars } from "@/components/dropdowns/member/avatar";
@@ -30,6 +33,7 @@ type BlockProps = {
 };
 export const RecentIssue = observer(function RecentIssue(props: BlockProps) {
   const { activity, ref, workspaceSlug } = props;
+  const { currentLocale } = useTranslation();
   // hooks
   const { getStateById } = useProjectState();
   const { setPeekIssue } = useIssueDetail();
@@ -95,7 +99,7 @@ export const RecentIssue = observer(function RecentIssue(props: BlockProps) {
       }
       appendTitleElement={
         <div className="flex-shrink-0 text-caption-md-regular text-tertiary">
-          {calculateTimeAgo(activity.visited_at)}
+          {formatHomeTimeAgo(activity.visited_at, currentLocale)}
         </div>
       }
       quickActionElement={

@@ -4,13 +4,16 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+
+import { formatHomeTimeAgo } from "@/helpers/home-datetime";
 import { useRouter } from "next/navigation";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 import { PagesOutline } from "@makeplane/propel/icons";
 // plane import
 import type { TActivityEntityData, TPageEntityData } from "@plane/types";
-import { calculateTimeAgo, getFileURL, getPageName } from "@plane/utils";
+import { getFileURL, getPageName } from "@plane/utils";
 import { ListItem } from "@/components/core/list";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
@@ -23,6 +26,7 @@ type BlockProps = {
 
 export function RecentPage(props: BlockProps) {
   const { activity, ref, workspaceSlug } = props;
+  const { currentLocale } = useTranslation();
   // router
   const router = useRouter();
   // store hooks
@@ -60,7 +64,7 @@ export function RecentPage(props: BlockProps) {
       }
       appendTitleElement={
         <div className="flex-shrink-0 text-caption-md-regular text-tertiary">
-          {calculateTimeAgo(activity.visited_at)}
+          {formatHomeTimeAgo(activity.visited_at, currentLocale)}
         </div>
       }
       quickActionElement={

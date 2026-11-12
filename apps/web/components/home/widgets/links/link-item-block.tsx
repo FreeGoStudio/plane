@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { formatHomeTimeAgo } from "@/helpers/home-datetime";
 // plane imports
 import { Icon as PropelIcon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
@@ -12,7 +13,7 @@ import { MoreVerticalOutline } from "@makeplane/propel/icons";
 import { getRenderableItems, resolveItemVariant } from "@plane/blocks/context-menu";
 import type { TContextMenuItem } from "@plane/blocks/context-menu";
 import { useTranslation } from "@plane/i18n";
-import { calculateTimeAgo, getIconForLink } from "@plane/utils";
+import { getIconForLink } from "@plane/utils";
 
 export type TLinkItemBlockProps = {
   title: string;
@@ -26,7 +27,7 @@ export function LinkItemBlock(props: TLinkItemBlockProps) {
   // props
   const { title, url, createdAt, menuItems, onClick } = props;
   // plane hooks
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // icons
   const Icon = getIconForLink(url);
   return (
@@ -43,7 +44,9 @@ export function LinkItemBlock(props: TLinkItemBlockProps) {
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <span className="truncate text-body-xs-regular text-primary">{title}</span>
           {createdAt && (
-            <span className="truncate text-caption-md-regular text-tertiary">{calculateTimeAgo(createdAt)}</span>
+            <span className="truncate text-caption-md-regular text-tertiary">
+              {formatHomeTimeAgo(createdAt, currentLocale)}
+            </span>
           )}
         </span>
       </button>

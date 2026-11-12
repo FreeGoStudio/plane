@@ -4,11 +4,14 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+
+import { formatHomeTimeAgo } from "@/helpers/home-datetime";
 import { useRouter } from "next/navigation";
 // plane types
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 import type { TActivityEntityData, TProjectEntityData } from "@plane/types";
-import { calculateTimeAgo } from "@plane/utils";
+
 // components
 import { ListItem } from "@/components/core/list";
 import { ButtonAvatars } from "@/components/dropdowns/member/avatar";
@@ -21,6 +24,7 @@ type BlockProps = {
 };
 export function RecentProject(props: BlockProps) {
   const { activity, ref, workspaceSlug } = props;
+  const { currentLocale } = useTranslation();
   // router
   const router = useRouter();
   // derived values
@@ -45,7 +49,7 @@ export function RecentProject(props: BlockProps) {
       }
       appendTitleElement={
         <div className="flex-shrink-0 text-caption-md-regular text-tertiary">
-          {calculateTimeAgo(activity.visited_at)}
+          {formatHomeTimeAgo(activity.visited_at, currentLocale)}
         </div>
       }
       quickActionElement={

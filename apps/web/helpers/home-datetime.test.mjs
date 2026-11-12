@@ -100,3 +100,13 @@ test("date preference loads account value and saves selection through profile se
   await new Promise((resolve) => setImmediate(resolve));
   assert.equal(errors[0].type, "error");
 });
+
+test("home relative timestamps are Chinese and retain English when selected", () => {
+  const hourAgo = new Date(Date.now() - 60 * 60 * 1000);
+  const daysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+  assert.equal(exports.formatHomeTimeAgo(hourAgo, "zh-CN"), "大约 1 小时前");
+  assert.equal(exports.formatHomeTimeAgo(daysAgo.toISOString(), "zh-CN"), "10 天前");
+  assert.equal(exports.formatHomeTimeAgo(hourAgo, "en"), "about 1 hour ago");
+  assert.equal(exports.formatHomeTimeAgo(null, "zh-CN"), "");
+  assert.equal(exports.formatHomeTimeAgo("invalid", "zh-CN"), "");
+});
