@@ -10,6 +10,7 @@ auth_patterns = [
     path("token/", auth_views.token),
     path("revoke/", auth_views.revoke),
     path("connections/", auth_views.connections),
+    path("personal-tokens/", auth_views.personal_tokens),
     path("exchange/", auth_views.exchange),
 ]
 base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"

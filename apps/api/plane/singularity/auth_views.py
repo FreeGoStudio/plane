@@ -127,7 +127,7 @@ def revoke(request):
 @require_http_methods(["GET", "POST"])
 def connections(request):
     enabled()
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or not request.user.is_active or request.user.is_bot:
         return render(request, "singularity/login.html", {"return_url": request.path}, status=401)
     if request.method == "POST":
         import uuid
@@ -146,6 +146,47 @@ def connections(request):
             ),
         },
     )
+
+
+@require_http_methods(["GET", "POST"])
+def personal_tokens(request):
+    """Issue a scoped, non-refreshable personal credential to its session owner.
+
+    The plaintext appears only in the creation response. The existing grant
+    revocation and audience exchange apply equally to OAuth and personal tokens.
+    """
+    enabled()
+    if not request.user.is_authenticated or not request.user.is_active or request.user.is_bot:
+        return render(request, "singularity/login.html", {"return_url": request.path}, status=401)
+    context = {"scopes": SCOPES}
+    if request.method == "POST":
+        scopes = request.POST.getlist("scope")
+        try:
+            days = int(request.POST.get("days", "30"))
+        except ValueError:
+            return private_json({"error": "invalid_expiration"}, 400)
+        if not scopes or not set(scopes) <= set(SCOPES) or not 1 <= days <= 90:
+            return private_json({"error": "invalid_scope_or_expiration"}, 400)
+        raw = "sgp_" + secrets.token_urlsafe(48)
+        expires = timezone.now() + timedelta(days=days)
+        with transaction.atomic():
+            grant = Delegation.objects.create(
+                user=request.user, client_id="singularity-personal-token", scopes=" ".join(sorted(set(scopes)))
+            )
+            DelegationToken.objects.create(
+                digest=digest(raw),
+                refresh_digest=digest(secrets.token_urlsafe(48)),
+                grant=grant,
+                audience="gateway",
+                scopes=grant.scopes,
+                expires_at=expires,
+                refresh_expires_at=timezone.now(),
+            )
+        context.update(token=raw, expires=expires)
+    response = render(request, "singularity/personal_tokens.html", context)
+    response["Cache-Control"] = "no-store"
+    response["Referrer-Policy"] = "no-referrer"
+    return response
 
 
 @csrf_exempt
@@ -183,20 +224,21 @@ def exchange(request):
             }
         )
     access, refresh = secrets.token_urlsafe(48), secrets.token_urlsafe(48)
+    expires = min(row.expires_at, timezone.now() + timedelta(minutes=5))
     DelegationToken.objects.create(
         digest=digest(access),
         refresh_digest=digest(refresh),
         grant=row.grant,
         audience="plane",
         scopes=row.scopes,
-        expires_at=timezone.now() + timedelta(minutes=5),
-        refresh_expires_at=timezone.now() + timedelta(minutes=5),
+        expires_at=expires,
+        refresh_expires_at=expires,
     )
     return private_json(
         {
             "access_token": access,
             "refresh_token": refresh,
-            "expires_in": 300,
+            "expires_in": max(0, int((expires - timezone.now()).total_seconds())),
             "connection_id": str(row.grant_id),
             "subject": str(row.grant.user_id),
             "scope": row.scopes,
