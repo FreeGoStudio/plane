@@ -156,5 +156,9 @@
         "label": "自訂主題"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "倉庫",
+    "repository_access": "倉庫存取"
   }
 }

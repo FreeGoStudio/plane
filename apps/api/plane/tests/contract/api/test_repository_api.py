@@ -143,3 +143,21 @@ def test_replace_credential_and_revocation_blocks_following_read(world):
         assert client.get(endpoint(repo) + f"{repo.pk}/tree/").status_code == 403
         provider.assert_not_called()
     assert RepositoryCredential.objects.get(pk=credential.pk).encrypted_material == ""
+
+
+def test_configuration_pages_are_session_scoped_and_escape_project_names(world):
+    alice, bob, repo, credential, _, _ = world
+    client = login(alice)
+    personal = client.get("/auth/singularity/repository-access/")
+    assert personal.status_code == 200
+    assert b"secret-material" not in personal.content
+    assert b"innerHTML" not in personal.content
+    repo.project.name = "<script>alert(1)</script>"
+    repo.project.save()
+    url = f"/auth/singularity/workspaces/vault/projects/{repo.project_id}/repositories/"
+    response = client.get(url)
+    assert response.status_code == 200
+    assert b"&lt;script&gt;alert(1)&lt;/script&gt;" in response.content
+    assert b"<script>alert(1)</script>" not in response.content
+    ProjectMember.objects.filter(project=repo.project, member=bob).delete()
+    assert login(bob).get(url).status_code == 404

@@ -156,5 +156,9 @@
         "label": "Aangepast thema"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "Repositories",
+    "repository_access": "Repository access"
   }
 }

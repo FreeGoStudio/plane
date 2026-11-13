@@ -5,9 +5,12 @@
 from django.urls import path
 from . import api, auth_views
 from .company_views import company_account
+from .repository_views import repository_settings
 from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectRepositories, RepositoryAccess
 
 auth_patterns = [
+    path("repository-access/", repository_settings),
+    path("workspaces/<slug:slug>/projects/<uuid:project_id>/repositories/", repository_settings),
     path("company-account/", company_account),
     path("authorize/", auth_views.authorize),
     path("token/", auth_views.token),

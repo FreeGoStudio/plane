@@ -2,6 +2,7 @@
 <main style="max-width:640px;margin:64px auto;font:16px/1.8 sans-serif;padding:24px"><h1>我的授权连接</h1><p>{{ request.user.email }}</p>
 <p><a href="/auth/singularity/personal-tokens/">创建个人访问令牌</a></p>
 <p><a href="/auth/singularity/company-account/">公司 GitLab 账号</a></p>
+<p><a href="/auth/singularity/repository-access/">仓库访问与个人凭证</a></p>
 {% for connection in connections %}<section><h2>{{ connection.client_id }}</h2><p>{{ connection.created_at }} · {{ connection.scopes }}</p>
 <form method="post">{% csrf_token %}<input type="hidden" name="grant" value="{{ connection.id }}"><button>撤销此连接</button></form></section>
 {% empty %}<p>没有有效授权连接。</p>{% endfor %}</main></html>

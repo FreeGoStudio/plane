@@ -22,6 +22,7 @@ import type { TProfileSettingsTabs } from "@plane/types";
 // local imports
 import { SettingsSidebarItem } from "../../sidebar/item";
 import { SettingsSidebarSectionHeading } from "../../sidebar/section-heading";
+import { RepositorySettingsLink } from "../../sidebar/repository-link";
 import { ProfileSettingsSidebarWorkspaceOptions } from "./workspace-options";
 
 const ICONS: Record<TProfileSettingsTabs, IconGlyph | React.FC<ISvgIcons>> = {
@@ -73,6 +74,7 @@ export const ProfileSettingsSidebarItemCategories = observer(function ProfileSet
           </div>
         );
       })}
+      <RepositorySettingsLink />
       {profileTabId && <ProfileSettingsSidebarWorkspaceOptions />}
     </div>
   );

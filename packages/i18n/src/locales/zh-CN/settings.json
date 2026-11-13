@@ -156,5 +156,9 @@
         "label": "自定义主题"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "仓库",
+    "repository_access": "仓库访问"
   }
 }

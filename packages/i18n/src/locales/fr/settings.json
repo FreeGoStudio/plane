@@ -156,5 +156,9 @@
         "label": "Thème personnalisé"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "Repositories",
+    "repository_access": "Repository access"
   }
 }

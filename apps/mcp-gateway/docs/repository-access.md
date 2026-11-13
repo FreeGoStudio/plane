@@ -79,3 +79,20 @@ Six session API contracts passed, including owner isolation, project admin/membe
 separation, spoofed owner rejection, revocation, deactivation, CSRF and secret-free
 responses/audit. Configuration pages and multi-instance live API acceptance remain
 pending for this unit.
+
+## Configuration UI
+
+Personal `/auth/singularity/repository-access/` supports create/replace/revoke,
+external actor labels and project navigation. Project pages provide admin repository
+configuration, each member's explicit credential selection, paged trees and text
+previews pinned to commit SHA. File bodies use textContent, not HTML. Server-side
+session and project checks protect page access. Plane profile/project sidebars show
+links only when the repository feature endpoint is available.
+
+Validation: 7 API/page tests passed (including escaped malicious project names),
+JavaScript syntax, targeted OxLint and web TypeScript checks passed. Both new label
+keys exist in all 22 locales; the full i18n sync reports the pre-existing 886 missing
+keys in non-English/non-Simplified-Chinese locales. Comparison against HEAD confirms
+this change adds no new missing keys. Local documentation comments checked; no PR
+exists, so remote documentation-coverage checks remain pending. Dynamic browser
+create/replace/revoke/read and deployment verification are still pending here.

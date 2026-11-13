@@ -156,5 +156,9 @@
         "label": "Vlastná téma"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "Repositories",
+    "repository_access": "Repository access"
   }
 }

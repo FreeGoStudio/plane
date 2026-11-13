@@ -156,5 +156,9 @@
         "label": "Користувацька тема"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "Repositories",
+    "repository_access": "Repository access"
   }
 }

@@ -156,5 +156,9 @@
         "label": "Chủ đề tùy chỉnh"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "Repositories",
+    "repository_access": "Repository access"
   }
 }

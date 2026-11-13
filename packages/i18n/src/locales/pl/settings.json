@@ -156,5 +156,9 @@
         "label": "Motyw niestandardowy"
       }
     }
+  },
+  "singularity_settings": {
+    "repositories": "Repositories",
+    "repository_access": "Repository access"
   }
 }

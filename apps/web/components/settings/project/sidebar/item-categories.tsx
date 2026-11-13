@@ -19,6 +19,7 @@ import { useTranslation } from "@plane/i18n";
 // components
 import { SettingsSidebarItem } from "@/components/settings/sidebar/item";
 import { SettingsSidebarSectionHeading } from "@/components/settings/sidebar/section-heading";
+import { RepositorySettingsLink } from "@/components/settings/sidebar/repository-link";
 // hooks
 import { useUserPermissions } from "@/hooks/store/user";
 // local imports
@@ -77,6 +78,7 @@ export const ProjectSettingsSidebarItemCategories = observer(function ProjectSet
           </div>
         );
       })}
+      <RepositorySettingsLink workspaceSlug={workspaceSlug} projectId={projectId} />
     </div>
   );
 });
