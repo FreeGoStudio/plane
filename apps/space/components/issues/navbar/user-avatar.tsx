@@ -17,7 +17,7 @@ import { Icon } from "@makeplane/propel/components/icon";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/components/menu";
 import { LogOutOutline } from "@makeplane/propel/icons";
 import { AuthService } from "@plane/services";
-import { getFileURL } from "@plane/utils";
+import { formatUserFullName, getFileURL } from "@plane/utils";
 // helpers
 import { queryParamGenerator } from "@/helpers/query-param-generator";
 // hooks
@@ -26,7 +26,7 @@ import { useUser } from "@/hooks/store/use-user";
 const authService = new AuthService();
 
 export const UserAvatar = observer(function UserAvatar() {
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   // query params
@@ -56,7 +56,7 @@ export const UserAvatar = observer(function UserAvatar() {
   const { queryParam } = queryParamGenerator({ peekId, board, state, priority, labels });
   const displayName =
     currentUser?.display_name ||
-    `${currentUser?.first_name} ${currentUser?.first_name}` ||
+    formatUserFullName(currentUser, currentLocale) ||
     currentUser?.email ||
     t("space_ui.user");
 

@@ -16,7 +16,7 @@ import { setPromiseToast, setToast } from "@plane/blocks/toast";
 import { EFileAssetType } from "@plane/types";
 import type { IUser, TUserProfile } from "@plane/types";
 
-import { getFileURL } from "@plane/utils";
+import { formatUserFullName, getFileURL } from "@plane/utils";
 // components
 import { DeactivateAccountModal } from "@/components/account/deactivate-account-modal";
 import { ImagePickerPopover } from "@/components/core/image-picker-popover";
@@ -59,7 +59,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
   const [deactivateAccountModal, setDeactivateAccountModal] = useState(false);
   const [isChangeEmailModalOpen, setIsChangeEmailModalOpen] = useState(false);
   // language support
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // form info
   const {
     handleSubmit,
@@ -234,7 +234,12 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   />
                 </button>
                 <div className="flex min-w-0 flex-col text-on-color">
-                  <span className="truncate text-body-sm-medium">{`${watch("first_name")} ${watch("last_name")}`}</span>
+                  <span className="truncate text-body-sm-medium">
+                    {formatUserFullName(
+                      { first_name: watch("first_name"), last_name: watch("last_name") },
+                      currentLocale
+                    )}
+                  </span>
                   <span className="truncate text-body-xs-regular">{watch("email")}</span>
                 </div>
               </div>

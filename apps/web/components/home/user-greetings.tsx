@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { formatUserFullName } from "@plane/utils";
 import { observer } from "mobx-react";
 import { useUserProfile } from "@/hooks/store/user";
 import { formatHomeDate, getHomeGreetingPeriod } from "@/helpers/home-datetime";
@@ -29,10 +30,7 @@ export const UserGreetingsView = observer(function UserGreetingsView(props: IUse
 
   const greeting = getHomeGreetingPeriod(currentTime, user.user_timezone);
   const date = formatHomeDate(currentTime, currentLocale, user.user_timezone, profile?.theme?.homeDateOrder);
-  const isChinese = currentLocale.startsWith("zh-");
-  const name = isChinese
-    ? [user.last_name, user.first_name].filter(Boolean).join("")
-    : [user.first_name, user.last_name].filter(Boolean).join(" ");
+  const name = formatUserFullName(user, currentLocale);
 
   return (
     <div className="my-6 flex flex-col items-center">

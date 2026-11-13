@@ -44,3 +44,5 @@ export * from "./workspace";
 
 export * from "./date-display";
 export * from "./date-display-context";
+
+export * from "./user-name";

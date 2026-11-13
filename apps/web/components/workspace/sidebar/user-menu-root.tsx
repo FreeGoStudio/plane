@@ -17,7 +17,7 @@ import { IconButton } from "@makeplane/propel/elements/icon-button";
 import { GOD_MODE_URL } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
-import { getFileURL } from "@plane/utils";
+import { formatUserFullName, getFileURL } from "@plane/utils";
 // components
 import { CoverImage } from "@/components/common/cover-image";
 // hooks
@@ -38,7 +38,7 @@ export const UserMenuRoot = observer(function UserMenuRoot() {
   // derived values
   const isUserInstanceAdmin = false;
   // translation
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
 
   const handleSignOut = () => {
     signOut().catch(() =>
@@ -93,9 +93,7 @@ export const UserMenuRoot = observer(function UserMenuRoot() {
                 size="xl"
               />
               <div className="relative w-full min-w-0 text-center text-on-color">
-                <p className="truncate text-body-sm-medium">
-                  {currentUser?.first_name} {currentUser?.last_name}
-                </p>
+                <p className="truncate text-body-sm-medium">{formatUserFullName(currentUser, currentLocale)}</p>
                 <Tooltip label={currentUser?.email ?? ""}>
                   <p className="truncate text-caption-md-regular">{currentUser?.email}</p>
                 </Tooltip>

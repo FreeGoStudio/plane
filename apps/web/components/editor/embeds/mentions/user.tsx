@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { Link } from "react-router";
@@ -11,7 +12,7 @@ import { Link } from "react-router";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { ROLE } from "@plane/constants";
 import { Popover, PopoverContent, PopoverTrigger } from "@makeplane/propel/components/popover";
-import { cn, getFileURL } from "@plane/utils";
+import { formatUserFullName, cn, getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { useUser } from "@/hooks/store/user";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export const EditorUserMention = observer(function EditorUserMention(props: Props) {
+  const { currentLocale } = useTranslation();
   const { id } = props;
   // router
   const { projectId } = useParams();
@@ -76,7 +78,7 @@ export const EditorUserMention = observer(function EditorUserMention(props: Prop
                 to={profileLink}
                 className="not-prose block truncate text-body-xs-medium text-primary hover:underline"
               >
-                {userDetails?.first_name} {userDetails?.last_name}
+                {formatUserFullName(userDetails, currentLocale)}
               </Link>
               {roleDetails && <p className="truncate text-caption-sm-regular text-secondary">{ROLE[roleDetails]}</p>}
             </div>

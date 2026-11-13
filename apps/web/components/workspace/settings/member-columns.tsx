@@ -21,7 +21,7 @@ import type { IUser, IWorkspaceMember } from "@plane/types";
 // plane ui
 import { Select } from "@plane/blocks/select";
 // helpers
-import { getFileURL } from "@plane/utils";
+import { formatUserFullName, getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -55,7 +55,7 @@ type AccountTypeProps = {
 export function NameColumn(props: NameProps) {
   const { rowData, workspaceSlug, isAdmin, currentUser, setRemoveMemberModal } = props;
   // plane hooks
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // derived values
   const { avatar_url, display_name, email, first_name, id, last_name } = rowData.member;
   const isSuspended = rowData.is_active === false;
@@ -73,9 +73,7 @@ export function NameColumn(props: NameProps) {
               <Avatar size="sm" src={getFileURL(avatar_url ?? "")} alt={display_name || email} />
             </Link>
           )}
-          <span className="truncate">
-            {first_name} {last_name}
-          </span>
+          <span className="truncate">{formatUserFullName({ first_name, last_name }, currentLocale)}</span>
         </div>
 
         {!isSuspended && (isAdmin || id === currentUser?.id) && (

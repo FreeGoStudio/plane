@@ -18,7 +18,7 @@ import { setToast } from "@plane/blocks/toast";
 import { ROLE, EUserPermissions } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import type { EUserProjectRoles, IUser, IWorkspaceMember, TProjectMembership } from "@plane/types";
-import { getFileURL } from "@plane/utils";
+import { formatUserFullName, getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -50,7 +50,7 @@ type AccountTypeProps = {
 export function NameColumn(props: NameProps) {
   const { rowData, workspaceSlug, isAdmin, currentUser, setRemoveMemberModal } = props;
   // plane hooks
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // derived values
   const { avatar_url, display_name, email, first_name, id, last_name } = rowData.member;
 
@@ -61,9 +61,7 @@ export function NameColumn(props: NameProps) {
           <Link href={`/${workspaceSlug}/profile/${id}`} className="flex shrink-0">
             <Avatar size="sm" src={getFileURL(avatar_url ?? "")} alt={display_name || email} />
           </Link>
-          <span className="truncate">
-            {first_name} {last_name}
-          </span>
+          <span className="truncate">{formatUserFullName({ first_name, last_name }, currentLocale)}</span>
         </div>
         {(isAdmin || id === currentUser?.id) && (
           <Menu>

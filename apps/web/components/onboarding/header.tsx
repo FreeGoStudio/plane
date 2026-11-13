@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { PlaneLockup } from "@plane/blocks/icons";
@@ -11,7 +12,7 @@ import { ChevronLeftOutline } from "@makeplane/propel/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { TOnboardingStep } from "@plane/types";
 import { EOnboardingSteps } from "@plane/types";
-import { cn } from "@plane/utils";
+import { formatUserFullName, cn } from "@plane/utils";
 // hooks
 import { useInstance } from "@/hooks/store/use-instance";
 import { useUser } from "@/hooks/store/user";
@@ -25,6 +26,7 @@ type OnboardingHeaderProps = {
 };
 
 export const OnboardingHeader = observer(function OnboardingHeader(props: OnboardingHeaderProps) {
+  const { currentLocale } = useTranslation();
   const { currentStep, updateCurrentStep, hasInvitations } = props;
   // store hooks
   const { data: user } = useUser();
@@ -61,11 +63,7 @@ export const OnboardingHeader = observer(function OnboardingHeader(props: Onboar
   // derived values
   const currentStepNumber = stepOrder.indexOf(currentStep) + 1;
   const totalSteps = stepOrder.length;
-  const userName = user?.display_name
-    ? user?.display_name
-    : user?.first_name
-      ? `${user?.first_name} ${user?.last_name ?? ""}`
-      : user?.email;
+  const userName = user?.display_name || formatUserFullName(user, currentLocale) || user?.email;
 
   return (
     <div className="sticky top-0 z-10 flex flex-col gap-4">

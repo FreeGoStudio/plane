@@ -21,7 +21,7 @@ import { EditOutline } from "@makeplane/propel/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { IUserProfileProjectSegregation } from "@plane/types";
 import { Loader } from "@plane/blocks/skeleton";
-import { cn, getFileURL, useDateFormatter } from "@plane/utils";
+import { formatUserFullName, cn, getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { CoverImage } from "@/components/common/cover-image";
 // hooks
@@ -52,7 +52,7 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
   const { getProjectById } = useProject();
   const { toggleProfileSettingsModal } = useCommandPalette();
   const { isMobile } = usePlatformOS();
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // derived values
   const userData = userProjectsData?.user_data;
 
@@ -128,15 +128,13 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
                 <Avatar
                   size="2xl"
                   src={getFileURL(userData?.avatar_url ?? "")}
-                  alt={[userData?.first_name, userData?.last_name].filter(Boolean).join(" ") || userData?.display_name}
+                  alt={formatUserFullName(userData, currentLocale) || userData?.display_name}
                 />
               </div>
             </div>
             <div className="px-5">
               <div className="mt-10">
-                <h4 className="text-h6-semibold">
-                  {userData?.first_name} {userData?.last_name}
-                </h4>
+                <h4 className="text-h6-semibold">{formatUserFullName(userData, currentLocale)}</h4>
                 <h6 className="text-body-xs-regular text-secondary">({userData?.display_name})</h6>
               </div>
               <div className="mt-6 space-y-5">

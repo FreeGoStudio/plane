@@ -4,14 +4,16 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
-import { getFileURL } from "@plane/utils";
+import { formatUserFullName, getFileURL } from "@plane/utils";
 // hooks
 import { useUser } from "@/hooks/store/user";
 
 export const ProfileSettingsSidebarHeader = observer(function ProfileSettingsSidebarHeader() {
+  const { currentLocale } = useTranslation();
   // store hooks
   const { data: currentUser } = useUser();
 
@@ -26,9 +28,7 @@ export const ProfileSettingsSidebarHeader = observer(function ProfileSettingsSid
         />
       </div>
       <div className="truncate">
-        <p className="truncate text-body-sm-medium">
-          {currentUser?.first_name} {currentUser?.last_name}
-        </p>
+        <p className="truncate text-body-sm-medium">{formatUserFullName(currentUser, currentLocale)}</p>
         <p className="truncate text-caption-md-regular">{currentUser?.email}</p>
       </div>
     </div>

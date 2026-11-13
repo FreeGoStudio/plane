@@ -26,6 +26,7 @@ const mocks = {
     Tooltip: ({ label, children }) => React.createElement("span", { title: label }, children),
   },
   "@plane/utils": {
+    formatUserFullName: require("@plane/utils").formatUserFullName,
     generateWorkItemLink: () => "/workspace/browse/TEST-1/",
     DateDisplay: ({ value }) => React.createElement("time", null, value),
     capitalizeFirstLetter: (value) => value,

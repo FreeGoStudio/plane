@@ -14,6 +14,7 @@ const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 let currentLocale = "zh-CN";
 const mocks = {
+  "@plane/utils": require("@plane/utils"),
   "react/jsx-runtime": require("react/jsx-runtime"),
   "mobx-react": { observer: (component) => component },
   "@/hooks/store/user": { useUserProfile: () => ({ data: {} }) },
