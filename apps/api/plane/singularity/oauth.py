@@ -13,7 +13,7 @@ from django.utils import timezone
 from oauthlib.oauth2 import RequestValidator, Server
 from plane.db.models import DelegationCode, DelegationToken
 
-SCOPES = ["projects:read", "workitems:read", "workitems:write"]
+SCOPES = ["projects:read", "workitems:read", "workitems:write", "capabilities:read"]
 CLIENT_ID = "singularity-codex"
 
 

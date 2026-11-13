@@ -109,6 +109,11 @@ def test_oidc_identity_exchange_and_audience_isolation(oidc_world, settings):
 def test_oidc_discovery_and_closed_by_default(oidc_world, settings):
     client = Client()
     response = client.get(BASE + ".well-known/openid-configuration")
+    metadata = response.json()
+    assert metadata["response_types_supported"] == ["code"]
+    assert metadata["grant_types_supported"] == ["authorization_code"]
+    assert metadata["code_challenge_methods_supported"] == ["S256"]
+    assert metadata["id_token_signing_alg_values_supported"] == ["RS256"]
     assert response.status_code == 200, response.content
     assert response.json()["issuer"] == settings.OAUTH2_PROVIDER["OIDC_ISS_ENDPOINT"]
     keys = client.get(BASE + ".well-known/jwks.json").json()["keys"]

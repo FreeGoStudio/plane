@@ -66,3 +66,13 @@ additive protocol tables, account associations and keys for recovery. Do not
 restore business data just to roll back code. Actual company SSO, account
 provisioning and browser acceptance passed locally as above; production trust,
 key rotation recovery and full rollback acceptance remain pending.
+
+## Capability scope and OIDC discovery correction
+
+The original plan's fourth scope is now `capabilities:read`. Capability queries
+also require project read (and item read when querying a specific work item).
+This scope never grants write access. Existing grants are not broadened: clients
+that need this tool must explicitly authorize the additional scope. OIDC discovery
+now advertises only the implemented code grant, PKCE S256 and RS256; no unsupported
+implicit/plain/HS256 modes are advertised. Ordinary MCP and GitLab login remain
+separate. Protocol/least-privilege regression results are recorded with the commit.

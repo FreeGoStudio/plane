@@ -434,3 +434,13 @@ def test_plane_preparation_binds_actor_project_payload_and_never_writes_early(wo
     assert saved.json()["url"].endswith(f"/{world[2].slug}/browse/{saved.json()['work_item_identifier']}/")
     assert alice.post(items(world[3]), body, content_type="application/json").status_code == 200
     assert Issue.objects.count() == 1
+
+
+def test_capability_scope_is_explicit_and_does_not_grant_write(world):
+    url = items(world[3]).replace("work-items/", "capabilities/")
+    without, _, _, _ = login(world[1], ["projects:read", "workitems:read"])
+    assert without.get(url).status_code == 403
+    reader, _, _, _ = login(world[1], ["projects:read", "capabilities:read"])
+    result = reader.get(url)
+    assert result.status_code == 200 and result.json()["can_create"] is False
+    assert create(reader, world[3]).status_code == 403

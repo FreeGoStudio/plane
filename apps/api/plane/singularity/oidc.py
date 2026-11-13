@@ -5,13 +5,14 @@
 """Plane identity provider for explicitly registered company SSO clients."""
 
 from functools import wraps
+import json
 import re
 
 from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
 from oauth2_provider.oauth2_validators import OAuth2Validator
-from oauth2_provider.views import AuthorizationView
+from oauth2_provider.views import AuthorizationView, ConnectDiscoveryInfoView
 
 
 def eligible(user):
@@ -111,3 +112,19 @@ class PlaneAuthorizationView(AuthorizationView):
         ):
             return JsonResponse({"error": "invalid_request"}, status=400)
         return super().dispatch(request, *args, **kwargs)
+
+
+class PlaneDiscoveryView(ConnectDiscoveryInfoView):
+    """Advertise only the protocol modes accepted by Plane's registered clients."""
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        data = json.loads(response.content)
+        data.update(
+            response_types_supported=["code"],
+            grant_types_supported=["authorization_code"],
+            code_challenge_methods_supported=["S256"],
+            id_token_signing_alg_values_supported=["RS256"],
+        )
+        response.content = json.dumps(data)
+        return response

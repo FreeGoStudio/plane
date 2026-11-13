@@ -390,7 +390,7 @@ class Items(DelegatedAPI):
 
 class Capabilities(DelegatedAPI):
     def get(self, request, slug, project_id, pk=None):
-        self.require_scopes(request, "projects:read")
+        self.require_scopes(request, "projects:read", "capabilities:read")
         if pk:
             self.require_scopes(request, "workitems:read")
         project = project_for(request, slug, project_id)
