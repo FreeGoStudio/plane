@@ -50,4 +50,4 @@ Native App/public PATCH row locks are preserved, not replaced.
 Validation: 21 Plane OAuth/work-item contracts and 6 Gateway SDK contracts pass,
 including server-owned preparation, no early write, arbitrary-ID rejection,
 actor/project/content binding, concurrent commit/restart replay and native-edit
-conflicts. API/Gateway lint passed. Live deployment of this increment remains pending.
+conflicts. API/Gateway lint passed. Live deployment and two-user OAuth/PAT plus native Codex acceptance passed on 2026-11-13; see unified-platform-delivery.md.

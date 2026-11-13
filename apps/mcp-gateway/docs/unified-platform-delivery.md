@@ -75,3 +75,11 @@
 待验收：第二个GitLab实例、私有GitHub授权、密钥实际轮换恢复演练、完整回滚演练、个人设置侧栏动态入口、远程客户端。本机浏览器使用隔离证书信任例外；严格独立TLS校验通过。不将这些待验收项计为通过。功能实现边界和操作入口见repository-access.md；私有证据在D:/plane-ops/state/company-sso，秘密不入库。
 
 P4审查：既有原生App PATCH与公开API PATCH已使用lock_work_item，与委托更新行锁配合，且真实PostgreSQL并发契约通过；保留该能力。当前缺口是Plane API仍接受任意格式合法的decision UUID，可信准备只在Gateway；需按新计划补上Plane侧准备绑定。现有返回不含真实工作项链接，也需核对前端路由后补齐。
+
+## P4/P5 本机增量验收（2026-11-13）
+
+实现完成：d8094f9ced 将准备ID及主体/连接/项目/摘要绑定移至Plane，保留原生与委托更新锁，返回真实工作项链接；7121bcb7a1 增加 capabilities:read 并收窄OIDC发现元数据。两镜像已一起部署，Web及开户进程保留已验收镜像。自动验证：完整相关后端96项通过，Gateway SDK契约6项通过。
+
+真实验收：两名不同权限用户分别以OAuth和个人令牌调用全部五工具；创建、读取、更新、幂等重试、隐藏项目隔离、撤销拒绝通过。OAuth流程还验证Gateway重启后重试；个人令牌验证缺scope拒绝、只显示一次及本人页面撤销。Codex 0.167.0-alpha.4.1 原生MCP分别使用OAuth和个人令牌创建真实工作项并读回。公司GitLab Chrome单点登录再次通过。证据位于plane-ops/state/singularity内四份验证JSON，凭证不入库。运维提交c3d2145提供复现脚本。
+
+剩余条件：真实同邮箱关联和开户响应丢失、第二GitLab实例/私有GitHub授权、密钥轮换恢复及完整回滚演练、远程ChatGPT可达与接入、正式灰度。当前是本机隔离验收，不代表全部上线验收完成。
