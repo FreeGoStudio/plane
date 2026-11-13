@@ -19,6 +19,16 @@ def eligible(user):
     return bool(user and user.is_authenticated and user.is_active and user.is_email_verified and not user.is_bot)
 
 
+def company_authorized(user, client_id):
+    if client_id != settings.SINGULARITY_COMPANY_OIDC_CLIENT_ID:
+        return True
+    if not settings.SINGULARITY_COMPANY_ENABLED:
+        return False
+    from .company import linked
+
+    return linked(user)
+
+
 def oidc_enabled(view):
     """Keep all OIDC endpoints unavailable until a signing key is configured."""
 
@@ -50,10 +60,18 @@ class PlaneOIDCValidator(OAuth2Validator):
         return "openid" in scopes and set(scopes) <= {"openid", "profile", "email"}
 
     def validate_code(self, client_id, code, client, request, *args, **kwargs):
-        return super().validate_code(client_id, code, client, request, *args, **kwargs) and eligible(request.user)
+        return (
+            super().validate_code(client_id, code, client, request, *args, **kwargs)
+            and eligible(request.user)
+            and company_authorized(request.user, client_id)
+        )
 
     def validate_bearer_token(self, token, scopes, request):
-        return super().validate_bearer_token(token, scopes, request) and eligible(request.user)
+        return (
+            super().validate_bearer_token(token, scopes, request)
+            and eligible(request.user)
+            and company_authorized(request.user, request.client.client_id)
+        )
 
     def save_bearer_token(self, token, request, *args, **kwargs):
         """SSO establishes a browser identity; it does not issue offline access."""
@@ -79,6 +97,12 @@ class PlaneAuthorizationView(AuthorizationView):
         if not eligible(request.user):
             return render(request, "singularity/login.html", {"return_url": request.get_full_path()}, status=401)
         params = request.POST if request.method == "POST" else request.GET
+        if not company_authorized(request.user, params.get("client_id")):
+            from .company import request_account
+
+            if settings.SINGULARITY_COMPANY_ENABLED:
+                request_account(request.user)
+            return render(request, "singularity/company_pending.html", status=409)
         if (
             params.get("code_challenge_method") != "S256"
             or not re.fullmatch(r"[A-Za-z0-9_-]{43}", params.get("code_challenge", ""))

@@ -25,6 +25,7 @@ CHALLENGE = base64.urlsafe_b64encode(hashlib.sha256(VERIFIER.encode()).digest())
 
 @pytest.fixture
 def oidc_world(settings):
+    settings.SINGULARITY_COMPANY_OIDC_CLIENT_ID = "provisioned-company-client"
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     settings.SINGULARITY_ENABLED = True
     settings.SINGULARITY_OIDC_ENABLED = True

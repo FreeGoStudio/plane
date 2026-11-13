@@ -129,10 +129,16 @@ SINGULARITY_GATEWAY_SECRET = os.environ.get("SINGULARITY_GATEWAY_SECRET", "")
 SINGULARITY_REDIRECT_URIS = os.environ.get("SINGULARITY_REDIRECT_URIS", "").split()
 SINGULARITY_PROJECT_CONFIG = json.loads(os.environ.get("SINGULARITY_PROJECT_CONFIG", "{}"))
 SINGULARITY_OIDC_ENABLED = os.environ.get("SINGULARITY_OIDC_ENABLED", "0") == "1"
+SINGULARITY_COMPANY_ENABLED = os.environ.get("SINGULARITY_COMPANY_ENABLED", "0") == "1"
+SINGULARITY_COMPANY_URL = os.environ.get("SINGULARITY_COMPANY_URL", "")
+SINGULARITY_COMPANY_OIDC_CLIENT_ID = os.environ.get("SINGULARITY_COMPANY_OIDC_CLIENT_ID", "company-gitlab")
+SINGULARITY_COMPANY_PROVIDER = os.environ.get("SINGULARITY_COMPANY_PROVIDER", "openid_connect")
+SINGULARITY_COMPANY_CA_FILE = os.environ.get("SINGULARITY_COMPANY_CA_FILE", "")
+SINGULARITY_COMPANY_ALLOW_HTTP = os.environ.get("SINGULARITY_COMPANY_ALLOW_HTTP", "0") == "1"
 OAUTH2_PROVIDER = {
     "OIDC_ENABLED": True,
     "OIDC_RSA_PRIVATE_KEY": os.environ.get("SINGULARITY_OIDC_RSA_PRIVATE_KEY", ""),
-    "OIDC_ISS_ENDPOINT": SINGULARITY_ISSUER.rstrip("/") + "/auth/singularity/oidc",
+    "OIDC_ISS_ENDPOINT": os.environ.get("SINGULARITY_OIDC_ISSUER", SINGULARITY_ISSUER.rstrip("/") + "/auth/singularity/oidc"),
     "OAUTH2_VALIDATOR_CLASS": "plane.singularity.oidc.PlaneOIDCValidator",
     "SCOPES": {"openid": "Your Plane identity", "profile": "Your display name", "email": "Your verified email"},
     "DEFAULT_SCOPES": ["openid"],

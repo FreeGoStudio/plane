@@ -4,8 +4,10 @@
 
 from django.urls import path
 from . import api, auth_views
+from .company_views import company_account
 
 auth_patterns = [
+    path("company-account/", company_account),
     path("authorize/", auth_views.authorize),
     path("token/", auth_views.token),
     path("revoke/", auth_views.revoke),

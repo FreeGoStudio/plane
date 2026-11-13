@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>公司 GitLab 账号 · Plane</title><main style="max-width:640px;margin:64px auto;font:16px/1.8 sans-serif;padding:24px">
+<h1>公司 GitLab 账号</h1><p>{{ request.user.email }}</p>
+{% if error %}<p role="alert">操作未完成：{{ error }}</p>{% endif %}
+{% if account %}<p>状态：{{ account.status }}</p><p>{{ account.error_code }}</p>{% else %}<p>尚未启用公司账号。</p>{% endif %}
+<form method="post">{% csrf_token %}<button name="action" value="enable">启用或重试开通</button></form>
+{% if not account.external_id %}<h2>关联已有账号</h2><p>请使用本人 GitLab 账号的访问令牌证明归属。需要读取个人资料；此令牌仅用于本次验证，不会保存。</p>
+<form method="post">{% csrf_token %}<label>GitLab 个人访问令牌 <input type="password" name="gitlab_token" required autocomplete="off"></label>
+<button name="action" value="link">验证并关联</button></form>{% endif %}
+<p>账号开通不会授予项目或仓库权限。处理完成后请刷新页面。</p>
+<a href="/auth/singularity/connections/">返回我的授权</a></main></html>
