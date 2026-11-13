@@ -9,8 +9,11 @@ automatic archiving, deletion and workers are outside this release.
 Use a separate OS user/Codex credential store per person. The shared model
 account is not your Plane identity.
 
+For the deployed local instance, merge `codex.config.example.toml` into your
+personal config. It fixes both the callback URL and listener to port 14551,
+matching the registered redirect. Then run:
+
 ```powershell
-codex mcp add singularity --url https://localhost:8444/mcp --oauth-client-id singularity-codex --oauth-resource https://localhost:8444/mcp
 codex mcp login singularity --scopes projects:read,workitems:read,workitems:write
 ```
 

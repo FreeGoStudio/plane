@@ -1,0 +1,10 @@
+# Merge this block into the individual user's Codex config.toml.
+# Local deployment pre-registers this exact callback and port.
+[mcp_servers.singularity]
+url = "https://localhost:8444/mcp"
+scopes = ["projects:read", "workitems:read", "workitems:write"]
+
+[mcp_servers.singularity.oauth]
+client_id = "singularity-codex"
+callback_url = "http://127.0.0.1:14551/callback"
+callback_port = 14551
