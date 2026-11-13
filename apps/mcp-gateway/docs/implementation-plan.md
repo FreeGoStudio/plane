@@ -51,3 +51,16 @@ Validation: 21 Plane OAuth/work-item contracts and 6 Gateway SDK contracts pass,
 including server-owned preparation, no early write, arbitrary-ID rejection,
 actor/project/content binding, concurrent commit/restart replay and native-edit
 conflicts. API/Gateway lint passed. Live deployment and two-user OAuth/PAT plus native Codex acceptance passed on 2026-11-13; see unified-platform-delivery.md.
+
+## TypeScript release and local recovery
+
+The active Gateway is now TypeScript (bdde88a622), using the official SDK. Build
+its Dockerfile from a fixed repository-root archive, not the old package-only
+Python context. Runtime environment names and the persistent SQLite schema stay
+compatible. Use `gateway-release.py` and `gateway-rollback-check.py` in plane-ops
+for stopped-vault snapshots and actual bidirectional image rollback.
+
+Full local restore and GitLab SSO configuration rollback evidence is recorded in
+unified-platform-delivery.md and plane-ops/scripts/singularity-recovery-README.md.
+Do not overwrite live volumes, expose recovery copies, or equate local data
+recovery with a certified production RPO/RTO or remote-client acceptance.

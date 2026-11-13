@@ -1,7 +1,7 @@
 # Identity and authorization boundary
 
 Plane owns users, account status, project visibility and work-item permissions.
-The gateway is a separate Python MCP SDK process with a private SQLite vault;
+The gateway is a separate TypeScript official MCP SDK process with a private SQLite vault;
 it has no Plane database connection. Work-item MCP has no GitLab dependency; the
 separate company provisioner and repository adapters are described below.
 
@@ -21,8 +21,9 @@ endpoints reject gateway-audience tokens. Gateway-audience verification rejects
 Plane tokens. The client never receives the downstream pair.
 
 The exchange secret identifies the gateway, not a user: by itself it cannot
-read or write any work item. Downstream tokens are encrypted with a separate
-Fernet vault key. The issuer/resource are deployment configuration, not model
+read or write any work item. The TypeScript runtime exchanges a fresh downstream token for each business call
+and does not persist it. Pending discussion material uses the separate Fernet
+vault key; old encrypted token-cache rows remain only for Python rollback. The issuer/resource are deployment configuration, not model
 parameters. A disabled account or revoked grant invalidates both audiences.
 
 Work-item access is checked against current membership on every call. Public
@@ -69,7 +70,11 @@ explicit per-instance exceptions. Current Plane visibility, credential ownership
 and upstream permissions are checked on every read, without fallback credentials.
 Branches resolve to commit SHAs before bounded directory/text reads.
 
-The Gateway remains the previously validated Python official-SDK application,
-a recorded difference from the proposed TypeScript stack. MCP authorization uses
-the retained OAuthLib implementation; DOT provides OIDC. No claim is made that
-these existing components were rewritten into the originally proposed stack.
+As of bdde88a622 the Gateway uses the official TypeScript server SDK 2.4.0 and
+Node adapter 2.1.2 on Node 24.15.0. Each HTTP request receives its own SDK instance
+and captured bearer; no global user context is shared. Existing SQLite tables,
+Fernet envelopes and Python-compatible canonical fingerprints allow bidirectional
+code rollback without resetting decisions. The old Python image is a rollback
+artifact, not the active runtime. MCP authorization still uses the existing
+OAuthLib adapter; DOT supplies OIDC. That remaining authorization-stack difference
+is distinct from the completed TypeScript migration.
