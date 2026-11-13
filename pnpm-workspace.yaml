@@ -5,6 +5,8 @@ packages:
   - "!apps/proxy"
 
 catalog:
+  "@modelcontextprotocol/server": "2.4.0"
+  "@modelcontextprotocol/node": "2.1.2"
   "pinyin-pro": "3.29.5"
   "@atlaskit/pragmatic-drag-and-drop": "1.7.4"
   "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "1.4.0"

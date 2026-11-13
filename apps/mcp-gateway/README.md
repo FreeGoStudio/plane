@@ -1,58 +1,30 @@
-# Singularity personal MCP gateway
+# Singularity TypeScript MCP Gateway
 
-This service uses a personal Plane OAuth grant, never a Plane administrator API
-key. It exposes exactly five tools. GitLab provisioning, shared ChatGPT grants,
-automatic archiving, deletion and workers are outside this release.
+Runtime: Node 24, official `@modelcontextprotocol/server` and Node HTTP adapter.
+Plane remains the authorization and business-data authority. Five tools only;
+repository reads remain Plane UI/API features. Bearers come only from HTTP headers.
 
-## Sign in
+From the repository root:
 
-Use a separate OS user/Codex credential store per person. The shared model
-account is not your Plane identity.
-
-For the deployed local instance, merge `codex.config.example.toml` into your
-personal config. It fixes both the callback URL and listener to port 14551,
-matching the registered redirect. Then run:
-
-```powershell
-codex mcp login singularity --scopes projects:read,workitems:read,workitems:write
+```sh
+pnpm --filter @plane/mcp-gateway build
+pnpm --filter @plane/mcp-gateway test
+pnpm exec oxlint apps/mcp-gateway/src apps/mcp-gateway/tests-ts
+node apps/mcp-gateway/dist/src/main.js
 ```
 
-Register the **exact** callback URI emitted by your installed Codex version in
-`SINGULARITY_REDIRECT_URIS`; configure a stable callback port in the personal
-Codex configuration. No redirect wildcard, disabled TLS check, or global token
-is accepted. For local verification use a separate `CODEX_HOME`, not another
-person's saved session.
+Build the Dockerfile with the **repository root** as context. The prior Python
+image and `Dockerfile.python` are retained for rollback and compatibility tests;
+Python is not in the new runtime. Configuration names and SQLite schema remain
+unchanged. The new runtime exchanges a short-lived Plane token on each business
+request rather than using the old encrypted token cache. All calls recheck grants.
 
-The browser opens Plane consent. If not logged in, use the login link, then
-return to consent. Check the displayed account before allowing access. Manage
-and revoke connections at `/auth/singularity/connections/` on the HTTPS origin.
+Fernet-encrypted pending decisions and Python canonical fingerprints are preserved.
+`tests/interop.py` and `tests-ts/interop.ts` verify both directions against a copied
+SQLite fixture, including Unicode. Never delete decisions or replace the database
+when switching images. Quiesce the Gateway and back up its SQLite volume and key
+separately before rollout. The previous image can read new decisions as well.
 
-## Archiving protocol
-
-1. Resolve a unique visible project; search for existing work items if needed.
-2. Call `save_discussion_result` with `prepare_create` and explicit content, or
-   `prepare_update` with an exact item ID and its last-read `updated_at`.
-3. Commit only the returned `decision_id`. Preparing does not write Plane.
-4. On transport failure retry the **same ID**; Plane returns its atomic receipt.
-   Never claim creation until receiving a successful result.
-
-Identical prepared content within one personal connection reuses its decision
-ID. This intentionally prevents accidental repeated archiving of the same
-summary. A revised decision requires changed content. Updates append by default;
-replacement requires explicitly setting `append=false`. Unspecified fields are
-omitted. Similar titles do not identify an update target.
-
-Configure each project's existing initial state and optional type-to-label
-mapping in `SINGULARITY_PROJECT_CONFIG`, keyed by project UUID. Without explicit
-configuration, only an existing state named `待整理` is accepted. No state or label
-is created automatically. Result IDs are authoritative; a link is omitted until
-the deployed frontend route is verified.
-
-## Validation
-
-Plane: `pytest plane/tests/contract/api/test_singularity.py` in the isolated API
-test stack. Gateway: `uv run --group test python -m unittest discover -s tests -v`.
-Never run test fixtures against an existing business database.
-
-See `docs/plane-capability-matrix.md`, `docs/architecture.md`, and
-`docs/implementation-plan.md` in this application for scope and rollout details.
+Run `node dist/src/export-schema.js` inside this package after build to export
+SDK tool schemas. Deployment, real-client acceptance, recovery and external gaps
+are recorded in `docs/unified-platform-delivery.md` and the plane-ops runbook.

@@ -4,255 +4,199 @@
       "name": "list_accessible_projects",
       "description": "List only projects visible to the authenticated Plane user.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
         "properties": {
           "workspace": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Workspace"
+            "type": ["string", "null"]
           },
           "search": {
             "default": "",
-            "title": "Search",
             "type": "string"
           },
           "offset": {
             "default": 0,
-            "title": "Offset",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           }
         },
-        "title": "list_accessible_projectsArguments",
-        "type": "object"
+        "additionalProperties": false
       }
     },
     {
       "name": "search_work_items",
       "description": "Search visible work items; similarity never authorizes overwriting.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
         "properties": {
           "project_ref": {
-            "title": "Project Ref",
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
           },
           "keyword": {
             "default": "",
-            "title": "Keyword",
             "type": "string"
           },
           "workspace": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Workspace"
+            "type": ["string", "null"]
           },
           "offset": {
             "default": 0,
-            "title": "Offset",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
           }
         },
         "required": ["project_ref"],
-        "title": "search_work_itemsArguments",
-        "type": "object"
+        "additionalProperties": false
       }
     },
     {
       "name": "get_work_item",
       "description": "Read a visible work item and its exact update version.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
         "properties": {
           "project_ref": {
-            "title": "Project Ref",
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
           },
           "item_id": {
-            "title": "Item Id",
-            "type": "string"
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
           },
           "workspace": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Workspace"
+            "type": ["string", "null"]
           }
         },
         "required": ["project_ref", "item_id"],
-        "title": "get_work_itemArguments",
-        "type": "object"
+        "additionalProperties": false
       }
     },
     {
       "name": "get_my_capabilities",
       "description": "Show current capability hints; every actual write is checked again.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
         "properties": {
           "project_ref": {
-            "title": "Project Ref",
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
           },
           "item_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
                 "type": "null"
               }
-            ],
-            "default": null,
-            "title": "Item Id"
+            ]
           },
           "workspace": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Workspace"
+            "type": ["string", "null"]
           }
         },
         "required": ["project_ref"],
-        "title": "get_my_capabilitiesArguments",
-        "type": "object"
+        "additionalProperties": false
       }
     },
     {
       "name": "save_discussion_result",
-      "description": "Explicit archive only. First prepare_create/prepare_update, then commit its decision_id.\n\n        Preparing does not write Plane. Commit exactly the returned decision ID;\n        retry that ID after transport failures. Updates require a previously read\n        version. Never archive exploratory discussion or auto-overwrite similar titles.\n        ",
+      "description": "Explicit archive only. First prepare_create/prepare_update, then commit its decision_id. Preparing does not write Plane. Retry exactly that ID after transport failures. Updates require a previously read version. Never archive exploratory discussion or overwrite similar titles.",
       "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
         "properties": {
           "intent": {
-            "title": "Intent",
-            "type": "string"
+            "type": "string",
+            "enum": ["prepare_create", "prepare_update", "commit"]
           },
           "project_ref": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
               },
               {
                 "type": "null"
               }
-            ],
-            "default": null,
-            "title": "Project Ref"
+            ]
           },
           "title": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 255
               },
               {
                 "type": "null"
               }
-            ],
-            "default": null,
-            "title": "Title"
+            ]
           },
           "description_markdown": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "maxLength": 50000
               },
               {
                 "type": "null"
               }
-            ],
-            "default": null,
-            "title": "Description Markdown"
+            ]
           },
           "decision_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
                 "type": "null"
               }
-            ],
-            "default": null,
-            "title": "Decision Id"
+            ]
           },
           "existing_work_item_id": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
               },
               {
                 "type": "null"
               }
-            ],
-            "default": null,
-            "title": "Existing Work Item Id"
+            ]
           },
           "expected_updated_at": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Expected Updated At"
+            "type": ["string", "null"]
           },
           "workspace": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Workspace"
+            "type": ["string", "null"]
           },
           "work_item_type": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Work Item Type"
+            "type": ["string", "null"]
           },
           "append": {
             "default": true,
-            "title": "Append",
             "type": "boolean"
           }
         },
         "required": ["intent"],
-        "title": "save_discussion_resultArguments",
-        "type": "object"
+        "additionalProperties": false
       }
     }
   ]

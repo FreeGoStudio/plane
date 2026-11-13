@@ -1,0 +1,25 @@
+{
+  "name": "@plane/mcp-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "files": [
+    "dist/src"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "check:types": "tsc --noEmit",
+    "check:lint": "oxlint src tests-ts",
+    "test": "node --test dist/tests-ts/*.test.js",
+    "start": "node dist/src/main.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/node": "catalog:",
+    "@modelcontextprotocol/server": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}
