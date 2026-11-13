@@ -10,7 +10,7 @@ import { Badge } from "@makeplane/propel/components/badge";
 import { DragDropOutline } from "@makeplane/propel/icons";
 // plane imports
 import { StateGroupIcon } from "@plane/blocks/icons";
-import { useTranslation } from "@plane/i18n";
+import { getStateDisplayName, useTranslation } from "@plane/i18n";
 import type { IState, TStateOperationsCallbacks } from "@plane/types";
 import { cn } from "@plane/utils";
 // local imports
@@ -38,7 +38,7 @@ export type TStateItemTitleProps = TEnabledStateItemTitleProps | TDisabledStateI
 export const StateItemTitle = observer(function StateItemTitle(props: TStateItemTitleProps) {
   const { stateCount, setUpdateStateModal, disabled, state, shouldShowDescription = true } = props;
   // plane hooks
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   // store hooks
   const { getStatePercentageInGroup } = useProjectState();
   // derived values
@@ -65,7 +65,7 @@ export const StateItemTitle = observer(function StateItemTitle(props: TStateItem
         />
         {/* state title and description */}
         <div>
-          <h6 className="text-body-sm-medium">{state.name}</h6>
+          <h6 className="text-body-sm-medium">{getStateDisplayName(state, { t, currentLocale })}</h6>
           {hasDescription && <p className="text-caption-sm-regular text-secondary">{state.description}</p>}
         </div>
       </div>

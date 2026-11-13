@@ -12,7 +12,8 @@ import { useParams } from "next/navigation";
 import { StateSelect as StateSelectBlock } from "@plane/blocks/property-select";
 import type { StateOption } from "@plane/blocks/property-select";
 import type { SelectPaginationParams, SelectTooltip, SelectTooltipOverride, SelectVariant } from "@plane/blocks/select";
-import { useTranslation } from "@plane/i18n";
+import { getStateDisplayName, useTranslation } from "@plane/i18n";
+import type { TTranslationStore } from "@plane/i18n";
 import type { IState, TPaginatedResponse } from "@plane/types";
 // hooks
 import { useProjectState } from "@/hooks/store/use-project-state";
@@ -37,9 +38,9 @@ type StateSelectWebProps = {
   tabIndex?: number;
 };
 
-const toOption = (state: IState): StateOption => ({
+const toOption = (state: IState, translation: Pick<TTranslationStore, "t" | "currentLocale">): StateOption => ({
   id: state.id,
-  name: state.name,
+  name: getStateDisplayName(state, translation),
   color: state.color,
   group: state.group,
   order: state.order,
@@ -74,7 +75,7 @@ export const StateSelect = observer(function StateSelect(props: StateSelectWebPr
   // store hooks
   const { getProjectStateIds, getStateById, fetchProjectStates } = useProjectState();
   // translation
-  const { t } = useTranslation();
+  const { t, currentLocale } = useTranslation();
   const resolvedTooltip = useMemo<SelectTooltipOverride | undefined>(() => {
     if (!tooltip) return undefined;
     const override = typeof tooltip === "object" ? tooltip : undefined;
@@ -96,19 +97,25 @@ export const StateSelect = observer(function StateSelect(props: StateSelectWebPr
       const results = (stateIds ?? [])
         .map((stateId) => getStateById(stateId))
         .filter((state): state is IState => !!state)
-        .filter((state) => !query || state.name.toLowerCase().includes(query))
-        .map(toOption);
+        .filter(
+          (state) =>
+            !query ||
+            state.name.toLowerCase().includes(query) ||
+            getStateDisplayName(state, { t, currentLocale }).toLowerCase().includes(query)
+        )
+        .map((state) => toOption(state, { t, currentLocale }));
       return { results, next_page_results: false };
     },
-    [workspaceSlug, projectId, getProjectStateIds, fetchProjectStates, getStateById]
+    [workspaceSlug, projectId, getProjectStateIds, fetchProjectStates, getStateById, t, currentLocale]
   );
 
   // Resolved in the observer render (not in a memo) so MobX re-renders when the state loads.
   const selectedState = value ? getStateById(value) : undefined;
-  const selected = selectedState ? toOption(selectedState) : null;
+  const selected = selectedState ? toOption(selectedState, { t, currentLocale }) : null;
 
   return (
     <StateSelectBlock
+      key={currentLocale}
       getValues={getValues}
       value={selected}
       onChange={onChange}

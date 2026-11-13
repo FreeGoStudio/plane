@@ -36,3 +36,4 @@ export { LocalizedText } from "./localized-text";
 
 export { getUserDisplayName } from "./user-display-name";
 export type { UserDisplayIdentity } from "./user-display-name";
+export { getStateDisplayName } from "./state-display-name";
