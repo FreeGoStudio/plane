@@ -29,12 +29,14 @@ export const UserGreetingsView = observer(function UserGreetingsView(props: IUse
 
   const greeting = getHomeGreetingPeriod(currentTime, user.user_timezone);
   const date = formatHomeDate(currentTime, currentLocale, user.user_timezone, profile?.theme?.homeDateOrder);
+  const isChinese = currentLocale.startsWith("zh-");
+  const name = isChinese
+    ? [user.last_name, user.first_name].filter(Boolean).join("")
+    : [user.first_name, user.last_name].filter(Boolean).join(" ");
 
   return (
     <div className="my-6 flex flex-col items-center">
-      <h2 className="text-center text-h4-semibold">
-        {t(`home.greetings.${greeting}`, { name: [user.first_name, user.last_name].filter(Boolean).join(" ") })}
-      </h2>
+      <h2 className="text-center text-h4-semibold">{t(`home.greetings.${greeting}`, { name })}</h2>
       <h5 className="flex items-center gap-2 font-medium text-placeholder">
         <div>{greeting === "morning" ? "🌤️" : greeting === "afternoon" ? "🌥️" : "🌙️"}</div>
         <div>{date}</div>
