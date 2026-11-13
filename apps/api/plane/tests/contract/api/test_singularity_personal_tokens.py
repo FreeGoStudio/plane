@@ -11,7 +11,7 @@ from django.test import Client
 from django.utils import timezone
 from plane.db.models import DelegationToken
 from plane.singularity.oauth import digest
-from .test_singularity import config, world  # noqa: F401
+from .test_singularity import config, world, login, RESOURCE  # noqa: F401
 
 # pytest resolves imported fixtures by name; test parameters intentionally shadow them.
 # ruff: noqa: F811
@@ -98,3 +98,30 @@ def test_exchange_cannot_extend_personal_token_expiry(world):
     assert response.status_code == 200
     child = DelegationToken.objects.get(digest=digest(response.json()["access_token"]))
     assert child.expires_at <= row.expires_at
+
+
+def test_oauth_refresh_cannot_slide_beyond_thirty_days(world):
+    from urllib.parse import urlencode
+    from plane.db.models import Delegation
+
+    _, client, tokens, _ = login(world[0])
+    row = DelegationToken.objects.get(digest=digest(tokens["access_token"]))
+    created = timezone.now() - timedelta(days=29, hours=23, minutes=59)
+    Delegation.objects.filter(pk=row.grant_id).update(created_at=created)
+    response = client.post(
+        "/auth/singularity/token/",
+        urlencode(
+            {
+                "client_id": "singularity-codex",
+                "grant_type": "refresh_token",
+                "refresh_token": tokens["refresh_token"],
+                "resource": RESOURCE,
+            }
+        ),
+        content_type="application/x-www-form-urlencoded",
+    )
+    assert response.status_code == 200, response.content
+    refreshed = DelegationToken.objects.get(digest=digest(response.json()["access_token"]))
+    deadline = created + timedelta(days=30)
+    assert refreshed.refresh_expires_at == deadline
+    assert refreshed.expires_at <= deadline + timedelta(seconds=1)

@@ -106,14 +106,16 @@ class Validator(RequestValidator):
     def save_bearer_token(self, token, request, *args, **kwargs):
         if getattr(request, "refresh_row", None):
             self.invalidate_refresh_token(request)
+        deadline = request.grant.created_at + timedelta(days=30)
+        token["expires_in"] = min(token["expires_in"], max(0, int((deadline - timezone.now()).total_seconds())))
         DelegationToken.objects.create(
             digest=digest(token["access_token"]),
             refresh_digest=digest(token["refresh_token"]),
             grant=request.grant,
             audience="gateway",
             scopes=token["scope"],
-            expires_at=timezone.now() + timedelta(seconds=token["expires_in"]),
-            refresh_expires_at=timezone.now() + timedelta(days=7),
+            expires_at=min(deadline, timezone.now() + timedelta(seconds=token["expires_in"])),
+            refresh_expires_at=deadline,
         )
 
     def validate_refresh_token(self, refresh_token, client, request, *args, **kwargs):
@@ -125,6 +127,7 @@ class Validator(RequestValidator):
                 audience="gateway",
                 grant__client_id=client.client_id,
                 refresh_expires_at__gt=timezone.now(),
+                grant__created_at__gt=timezone.now() - timedelta(days=30),
             )
             .select_related("grant__user")
             .first()

@@ -1,0 +1,8 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>使用 Plane 登录</title><main style="max-width:640px;margin:64px auto;font:16px/1.8 sans-serif;padding:24px">
+{% if not error %}<h1>使用 Plane 登录 {{ application.name }}</h1>
+<p>{{ request.user.email }}</p><p>将提供你授权的身份信息，仓库访问权限仍由目标服务决定。</p>
+<form method="post">{% csrf_token %}{{ form.as_p }}
+<button type="submit" name="allow" value="true">允许登录</button>
+<button type="submit">取消</button></form>
+{% else %}<h1>无法授权</h1><p>{{ error.description }}</p>{% endif %}</main></html>

@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_celery_beat",
+    "oauth2_provider",
 ]
 
 # Middlewares
@@ -127,6 +128,19 @@ SINGULARITY_RESOURCE = os.environ.get("SINGULARITY_RESOURCE", "https://localhost
 SINGULARITY_GATEWAY_SECRET = os.environ.get("SINGULARITY_GATEWAY_SECRET", "")
 SINGULARITY_REDIRECT_URIS = os.environ.get("SINGULARITY_REDIRECT_URIS", "").split()
 SINGULARITY_PROJECT_CONFIG = json.loads(os.environ.get("SINGULARITY_PROJECT_CONFIG", "{}"))
+SINGULARITY_OIDC_ENABLED = os.environ.get("SINGULARITY_OIDC_ENABLED", "0") == "1"
+OAUTH2_PROVIDER = {
+    "OIDC_ENABLED": True,
+    "OIDC_RSA_PRIVATE_KEY": os.environ.get("SINGULARITY_OIDC_RSA_PRIVATE_KEY", ""),
+    "OIDC_ISS_ENDPOINT": SINGULARITY_ISSUER.rstrip("/") + "/auth/singularity/oidc",
+    "OAUTH2_VALIDATOR_CLASS": "plane.singularity.oidc.PlaneOIDCValidator",
+    "SCOPES": {"openid": "Your Plane identity", "profile": "Your display name", "email": "Your verified email"},
+    "DEFAULT_SCOPES": ["openid"],
+    "ACCESS_TOKEN_EXPIRE_SECONDS": 600,
+    "AUTHORIZATION_CODE_EXPIRE_SECONDS": 120,
+    "PKCE_REQUIRED": True,
+    "ALLOWED_REDIRECT_URI_SCHEMES": ["https"],
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

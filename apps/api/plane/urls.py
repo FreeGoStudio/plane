@@ -18,6 +18,7 @@ from plane.singularity.urls import auth_patterns as singularity_auth_patterns
 handler404 = "plane.app.views.error_404.custom_404_view"
 
 urlpatterns = [
+    path("auth/singularity/oidc/", include("plane.singularity.oidc_urls")),
     path(".well-known/oauth-authorization-server", singularity_metadata),
     path("auth/singularity/", include(singularity_auth_patterns)),
     path("api/singularity/v1/", include("plane.singularity.urls")),

@@ -1,7 +1,12 @@
 # Delivery and rollback
 
-User-approved scope: Plane personal OAuth, five MCP tools, real archive/update,
+Historical delivery scope (completed before the expanded plan): Plane personal OAuth, five MCP tools, real archive/update,
 isolated tests, then local deployment. No GitLab, shared ChatGPT or worker work.
+
+The user subsequently approved company GitLab provisioning/SSO, personal tokens
+and multi-repository access. Current incremental scope and evidence are tracked
+in [unified-platform-delivery.md](unified-platform-delivery.md). The exclusions
+above describe the historical delivery only, not the expanded authorization.
 
 1. Add grant/code/token/receipt/audit tables through generated migration 0127.
 2. Add OAuth consent/revocation and custom `/api/singularity/v1/` endpoints.
