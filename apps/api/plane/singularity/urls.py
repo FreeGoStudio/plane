@@ -5,6 +5,7 @@
 from django.urls import path
 from . import api, auth_views
 from .company_views import company_account
+from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectRepositories, RepositoryAccess
 
 auth_patterns = [
     path("company-account/", company_account),
@@ -17,6 +18,14 @@ auth_patterns = [
 ]
 base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
 urlpatterns = [
+    path("repository-hosts/", RepositoryInstances.as_view()),
+    path("repository-credentials/", RepositoryCredentials.as_view()),
+    path("repository-credentials/<uuid:pk>/", RepositoryCredentials.as_view()),
+    path(base + "repositories/", ProjectRepositories.as_view()),
+    path(base + "repositories/<uuid:pk>/", ProjectRepositories.as_view()),
+    path(base + "repositories/<uuid:pk>/access/", RepositoryAccess.as_view()),
+    path(base + "repositories/<uuid:pk>/tree/", RepositoryAccess.as_view(), {"operation": "tree"}),
+    path(base + "repositories/<uuid:pk>/file/", RepositoryAccess.as_view(), {"operation": "file"}),
     path("me/", api.Me.as_view()),
     path("projects/", api.Projects.as_view()),
     path(base + "work-items/", api.Items.as_view()),

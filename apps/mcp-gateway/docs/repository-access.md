@@ -57,3 +57,25 @@ API contracts follow [GitHub contents](https://docs.github.com/en/rest/repos/con
 [GitLab repositories](https://docs.gitlab.com/api/repositories/) and
 [GitLab files](https://docs.gitlab.com/api/repository_files/); pinned-IP TLS follows
 [urllib3 custom SNI](https://urllib3.readthedocs.io/en/stable/advanced-usage.html).
+
+## Session API
+
+Under /api/singularity/v1/: `repository-hosts/` lists registered instances and
+allows native InstanceAdmin registration; `repository-credentials/` and its UUID
+child support owner-only creation/replacement/list/revocation. Project paths under
+`workspaces/{slug}/projects/{id}/repositories/` support admin configuration and
+member listing; `/{repo}/access/` selects the current user's credential or explicit
+anonymous mode; `/{repo}/tree/` and `/{repo}/file/` read pinned content.
+
+The `repository-hosts` route intentionally avoids the legacy session middleware's
+substring-based `instances` admin-cookie switch. No global middleware change is
+made. Browser session writes require CSRF. Unknown fields (including spoofed owner
+IDs) are rejected. Responses contain safe metadata only; existing Singularity
+logging exclusions prevent credential bodies/headers from being persisted. Each
+request creates a metadata-only trace with the Plane actor and selected external
+identity. Identity validation via /user is not a promise of repository write rights.
+
+Six session API contracts passed, including owner isolation, project admin/member
+separation, spoofed owner rejection, revocation, deactivation, CSRF and secret-free
+responses/audit. Configuration pages and multi-instance live API acceptance remain
+pending for this unit.
