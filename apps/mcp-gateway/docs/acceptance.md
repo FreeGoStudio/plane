@@ -1,4 +1,8 @@
-# Acceptance — 2026-11-13
+# Historical acceptance — 2026-11-13
+
+This page records the original MCP delivery. For the expanded identity/repository
+implementation and current evidence, see [unified-platform-delivery.md](unified-platform-delivery.md).
+Historical exclusions and deployment state below do not describe the current release.
 
 Implementation source: `2cf57c8aba` (Plane authorization and gateway).
 
@@ -49,3 +53,30 @@ configured existing initial state. No business-project settings were guessed.
 GitLab account provisioning, shared ChatGPT, auto-archiving and worker delegation
 are not implemented. The gateway returns actual IDs/identifiers; frontend links
 are deliberately omitted until a concrete route is verified.
+
+## Expanded-plan A01–A14 evidence map
+
+Tests below live in `apps/api/plane/tests/contract/api/test_singularity.py` unless
+noted. All are real isolated PostgreSQL contracts; upstream failures explicitly
+mocked in Gateway tests are not represented as live GitLab/CE acceptance.
+
+| Original criterion                         | Automated evidence                                                                                       | Real-instance evidence / remaining condition                                       |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| A01, A03 actor / allowed create            | test_a01_a03_real_actor_and_no_default_assignment                                                        | Two users OAuth/PAT and native Codex created real items                            |
+| A02, A04 hidden project / forbidden update | test_a02_a04_hidden_project_and_guest_edit                                                               | Two-user project visibility; forbidden-update contract                             |
+| A05 forged identity                        | test_a05_a11_a13_field_whitelist                                                                         | Contract, no model-supplied identity field                                         |
+| A06 missing write scope                    | test_a06_missing_scope                                                                                   | PAT missing-scope call refused                                                     |
+| A07 member removal                         | test_a07_removed_member                                                                                  | Plane removal contract; separate real upstream repository removal refused          |
+| A08 concurrent decision                    | test_a08_concurrent_and_restart_replay                                                                   | Real Gateway restart then same-ID replay                                           |
+| A09 human edit conflict                    | test_native_edit_serializes_before_delegated_version_check; test_a09_conflict_and_append_preserve_fields | PostgreSQL competing native/delegated updates, not a browser concurrency claim     |
+| A10 revoked / upstream failure             | test_a10_revocation_and_inactive_user; Gateway error tests                                               | Real OAuth/PAT revocation; upstream errors mocked                                  |
+| A11 unexposed member/delete tools          | Gateway test_exact_five_tools_and_no_delete; field whitelist                                             | Real client discovers exactly five tools                                           |
+| A12 CE 402                                 | Gateway test_errors_include_402_without_fallback                                                         | Mock 402 only; native v2 permissions endpoint absent, not a live CE 402 acceptance |
+| A13 SSRF / HTML                            | field whitelist / HTML tests; repository transport contracts                                             | Real hostile README rendered as text; hostile hosts mocked                         |
+| A14 similar title                          | test_a13_html_cleaned_a14_similar_titles_do_not_overwrite                                                | Contract: separate decision creates separate item                                  |
+
+Machine-readable contracts: [OpenAPI resource surface](openapi.json) and
+[official-SDK MCP tools](mcp-tools.json). Regenerate tools with
+`python export_schema.py` in the Gateway environment. The OpenAPI document is
+maintained from the actual extension routes and serializers; it does not label
+the extension as official Plane v2.

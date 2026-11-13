@@ -2,12 +2,15 @@
 
 Plane owns users, account status, project visibility and work-item permissions.
 The gateway is a separate Python MCP SDK process with a private SQLite vault;
-it has no Plane database connection. There is no GitLab dependency.
+it has no Plane database connection. Work-item MCP has no GitLab dependency; the
+separate company provisioner and repository adapters are described below.
 
 Plane is also the OAuth issuer. A pre-registered public Codex client receives an
 opaque token for the gateway resource after S256 consent. Plane stores only
 SHA-256 digests of access, refresh and authorization codes; refresh rotates.
-Client tokens have a 10-minute lifetime and seven-day refresh lifetime.
+OAuth access tokens have a 10-minute lifetime; refresh authorization is capped
+at 30 days from the original grant. Personal tokens default to 30 days, max 90,
+with no refresh. Downstream expiry cannot exceed the originating credential.
 
 The gateway validates the token by authenticated inspection at Plane on every
 MCP HTTP request and again on every tool invocation. The confidential private
@@ -44,3 +47,29 @@ The authorization pages use Plane sessions and CSRF. They are intentionally
 separate from the shared model account. HTTPS trust must be verified; local
 certificate failure is not bypassed. Tokens and pending summaries must never be
 included in diagnostic output or source control.
+
+## Company identity and repositories
+
+Django OAuth Toolkit supplies separate OIDC endpoints with stable Plane UUID
+subjects and RS256 signatures. OIDC identity tokens cannot authorize MCP. Company
+GitLab is a registered confidential OIDC client; provisioning must finish before
+issuing its code/token. Only the dedicated provisioning process mounts the GitLab
+management credential. Its durable identity key reconciles response loss; email
+collisions require ownership proof and never bind automatically. Previously owned
+accounts remain unmanaged; only platform-created company accounts are blocked
+automatically after Plane deactivation.
+
+Repository instances are registered by platform administrators. Project admins
+attach multiple stable repository IDs; each user explicitly selects their own
+HTTPS credential or anonymous access. Tokens use versioned AES-GCM with owner,
+instance and credential ID as authenticated data. Only the API mounts the keyring,
+separate from database backups. Upstream requests pin validated DNS addresses,
+verify the original TLS hostname and reject redirects. Internal networks require
+explicit per-instance exceptions. Current Plane visibility, credential ownership
+and upstream permissions are checked on every read, without fallback credentials.
+Branches resolve to commit SHAs before bounded directory/text reads.
+
+The Gateway remains the previously validated Python official-SDK application,
+a recorded difference from the proposed TypeScript stack. MCP authorization uses
+the retained OAuthLib implementation; DOT provides OIDC. No claim is made that
+these existing components were rewritten into the originally proposed stack.

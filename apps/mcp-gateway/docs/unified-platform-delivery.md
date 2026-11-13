@@ -83,3 +83,11 @@ P4审查：既有原生App PATCH与公开API PATCH已使用lock_work_item，与�
 真实验收：两名不同权限用户分别以OAuth和个人令牌调用全部五工具；创建、读取、更新、幂等重试、隐藏项目隔离、撤销拒绝通过。OAuth流程还验证Gateway重启后重试；个人令牌验证缺scope拒绝、只显示一次及本人页面撤销。Codex 0.167.0-alpha.4.1 原生MCP分别使用OAuth和个人令牌创建真实工作项并读回。公司GitLab Chrome单点登录再次通过。证据位于plane-ops/state/singularity内四份验证JSON，凭证不入库。运维提交c3d2145提供复现脚本。
 
 剩余条件：真实同邮箱关联和开户响应丢失、第二GitLab实例/私有GitHub授权、密钥轮换恢复及完整回滚演练、远程ChatGPT可达与接入、正式灰度。当前是本机隔离验收，不代表全部上线验收完成。
+
+## 后续实测修正与运维验证（2026-11-13）
+
+03157bbe49 修复两个原生表单因 no-referrer 导致 Chrome Origin:null 的CSRF拒绝；15项定向回归及lint通过。个人令牌Chrome表单创建/只显示一次/撤销通过。真实同邮箱冲突没有自动绑定；本人令牌证明后关联到原GitLab账号10，managed=false，真实SSO通过。真实创建GitLab账号11后丢弃响应，再处理成功按subject对账且无重复，真实SSO通过。运维6ed0845提供这些复现脚本。
+
+仓库v1→v2实际轮换两份有效凭证，并用旧加密快照与独立备份密钥验证恢复；轮换后私有仓库88字节正文与原提交SHA仍正确。功能关闭/恢复演练通过：新入口关闭、新进程停止，原Plane与GitLab登录入口可用，映射/幂等/凭证/审计数量保持。首次等待窗口不足已自动恢复，延长启动等待后通过；没有修改通用启动逻辑。此演练未回退GitLab配置或恢复整库，完整灾难恢复与正式上线仍待验收。
+
+已补交OpenAPI扩展资源说明和由官方SDK导出的五工具JSON Schema；响应未完全枚举的地方明确标记。当前Gateway仍为已验证Python SDK实现，MCP OAuth仍为既有OAuthLib，DOT承接OIDC；这些与原拟定技术栈的差异已记录，不能声称TypeScript改写或统一DOT迁移完成。

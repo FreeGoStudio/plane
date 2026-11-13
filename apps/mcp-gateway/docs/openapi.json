@@ -1,0 +1,1770 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Singularity Plane extension API",
+    "version": "1.0.0",
+    "description": "Implemented JSON resource surface. OAuth/OIDC metadata and session HTML forms are documented separately. Gateway tokens must first be exchanged server-side; never forward them as Plane API bearers. Repository responses never return token material. Anonymous access must be explicit. Creation requires title; updates require expected_updated_at. Access requires exactly one credential_id or anonymous=true. Credential creation requires instance_id. Response payloads not fully enumerated here remain described in the implementation and operation documentation."
+  },
+  "servers": [
+    {
+      "url": "https://plane.example.invalid"
+    }
+  ],
+  "paths": {
+    "/api/singularity/v1/me/": {
+      "get": {
+        "operationId": "getDelegatedIdentity",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/projects/": {
+      "get": {
+        "operationId": "listProjects",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "workspace",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "x-required-scopes": ["projects:read"]
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/work-items/": {
+      "get": {
+        "operationId": "searchWorkItems",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "x-required-scopes": ["workitems:read"]
+      },
+      "post": {
+        "operationId": "createWorkItem",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          },
+          "202": {
+            "description": "No decision ID supplied: returns prepared result without writing."
+          }
+        },
+        "x-required-scopes": ["workitems:read", "workitems:write"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Commit"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/work-items/prepare/": {
+      "post": {
+        "operationId": "prepareCreate",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "202": {
+            "description": "Prepared only; no work item has been written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prepared"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": ["workitems:read", "workitems:write"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Archive"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/capabilities/": {
+      "get": {
+        "operationId": "projectCapabilities",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "x-required-scopes": ["projects:read", "capabilities:read"]
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/work-items/{pk}/": {
+      "get": {
+        "operationId": "getWorkItem",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "x-required-scopes": ["workitems:read"]
+      },
+      "post": {
+        "operationId": "updateWorkItem",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          },
+          "202": {
+            "description": "No decision ID supplied: returns prepared result without writing."
+          }
+        },
+        "x-required-scopes": ["workitems:read", "workitems:write"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Commit"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/work-items/{pk}/prepare/": {
+      "post": {
+        "operationId": "prepareUpdate",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "202": {
+            "description": "Prepared only; no work item has been written.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prepared"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": ["workitems:read", "workitems:write"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Archive"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/work-items/{pk}/capabilities/": {
+      "get": {
+        "operationId": "itemCapabilities",
+        "security": [
+          {
+            "delegatedBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "x-required-scopes": ["projects:read", "capabilities:read", "workitems:read"]
+      }
+    },
+    "/api/singularity/v1/repository-hosts/": {
+      "get": {
+        "operationId": "listRepositoryHosts",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      },
+      "post": {
+        "operationId": "registerRepositoryHost",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Host"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/repository-credentials/": {
+      "get": {
+        "operationId": "listCredentials",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCredential",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credential"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/repository-credentials/{pk}/": {
+      "get": {
+        "operationId": "getCredential",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      },
+      "post": {
+        "operationId": "replaceCredential",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credential"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "revokeCredential",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "204": {
+            "description": "Credential revoked and encrypted material erased."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body."
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/repositories/": {
+      "get": {
+        "operationId": "listRepositories",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      },
+      "post": {
+        "operationId": "createRepository",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Repository"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/repositories/{pk}/": {
+      "get": {
+        "operationId": "getRepository",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "description": "Current compatibility route returns the project repository list; use the collection GET and select the ID."
+      },
+      "patch": {
+        "operationId": "updateRepository",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepositoryUpdate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/repositories/{pk}/access/": {
+      "post": {
+        "operationId": "selectPersonalAccess",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          },
+          "201": {
+            "description": "Resource created."
+          }
+        },
+        "description": "Requires a valid Plane session and CSRF token. Identity is never accepted from the request body.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Access"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/repositories/{pk}/tree/": {
+      "get": {
+        "operationId": "readRepositoryTree",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      }
+    },
+    "/api/singularity/v1/workspaces/{slug}/projects/{project_id}/repositories/{pk}/file/": {
+      "get": {
+        "operationId": "readRepositoryFile",
+        "security": [
+          {
+            "planeSession": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pk",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "ref",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful result; response varies by operation."
+          },
+          "400": {
+            "description": "Invalid fields or scope."
+          },
+          "401": {
+            "description": "Missing or expired identity."
+          },
+          "403": {
+            "description": "Insufficient scope or current resource permission."
+          },
+          "404": {
+            "description": "Unavailable feature or invisible resource."
+          },
+          "409": {
+            "description": "Decision/content/version conflict."
+          },
+          "429": {
+            "description": "Rate limited."
+          },
+          "502": {
+            "description": "Upstream unavailable; no fallback credential."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "planeSession": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "session-id",
+        "description": "Actual cookie name is deployment configured; mutations require CSRF."
+      },
+      "delegatedBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Short-lived Plane-audience token from the controlled exchange; never a Gateway token."
+      }
+    },
+    "schemas": {
+      "Archive": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description_markdown": {
+            "type": "string",
+            "maxLength": 50000
+          },
+          "expected_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "append": {
+            "type": "boolean"
+          },
+          "work_item_type": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "Commit": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "description_markdown": {
+            "type": "string",
+            "maxLength": 50000
+          },
+          "expected_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "append": {
+            "type": "boolean"
+          },
+          "work_item_type": {
+            "type": "string"
+          },
+          "decision_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "Host": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string",
+            "enum": ["gitlab", "github"]
+          },
+          "api_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "allowed_networks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allow_http": {
+            "type": "boolean"
+          },
+          "company_primary": {
+            "type": "boolean"
+          }
+        },
+        "required": ["name", "provider", "api_url", "web_url"],
+        "additionalProperties": false
+      },
+      "Credential": {
+        "type": "object",
+        "properties": {
+          "instance_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "label": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string",
+            "writeOnly": true,
+            "maxLength": 8192
+          },
+          "expires_at": {
+            "type": ["string", "null"],
+            "format": "date-time"
+          }
+        },
+        "required": ["label", "token"],
+        "additionalProperties": false
+      },
+      "Access": {
+        "type": "object",
+        "properties": {
+          "credential_id": {
+            "type": ["string", "null"],
+            "format": "uuid"
+          },
+          "anonymous": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "Repository": {
+        "type": "object",
+        "properties": {
+          "credential_id": {
+            "type": ["string", "null"],
+            "format": "uuid"
+          },
+          "anonymous": {
+            "type": "boolean"
+          },
+          "instance_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "path": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": ["development", "reference", "documentation"]
+          },
+          "default_branch": {
+            "type": "string"
+          }
+        },
+        "required": ["instance_id", "path", "purpose"],
+        "additionalProperties": false
+      },
+      "RepositoryUpdate": {
+        "type": "object",
+        "properties": {
+          "purpose": {
+            "type": "string",
+            "enum": ["development", "reference", "documentation"]
+          },
+          "default_branch": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "Prepared": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "prepared"
+          },
+          "decision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "content_digest": {
+            "type": "string"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      },
+      "WorkItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description_html": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "work_item_identifier": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      }
+    }
+  }
+}
