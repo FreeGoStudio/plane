@@ -12,10 +12,15 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from plane.singularity.auth_views import metadata as singularity_metadata
+from plane.singularity.urls import auth_patterns as singularity_auth_patterns
 
 handler404 = "plane.app.views.error_404.custom_404_view"
 
 urlpatterns = [
+    path(".well-known/oauth-authorization-server", singularity_metadata),
+    path("auth/singularity/", include(singularity_auth_patterns)),
+    path("api/singularity/v1/", include("plane.singularity.urls")),
     path("api/", include("plane.app.urls")),
     path("api/public/", include("plane.space.urls")),
     path("api/instances/", include("plane.license.urls")),

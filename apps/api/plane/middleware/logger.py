@@ -60,8 +60,13 @@ class RequestLoggerMiddleware:
         user_agent = request.META.get("HTTP_USER_AGENT", "")
 
         # Log the request information
+        logged_path = (
+            request.path
+            if request.path.startswith(("/auth/singularity/", "/api/singularity/"))
+            else request.get_full_path()
+        )
         api_logger.info(
-            f"{request.method} {request.get_full_path()} {response.status_code}",
+            f"{request.method} {logged_path} {response.status_code}",
             extra={
                 "path": request.path,
                 "method": request.method,
@@ -128,6 +133,11 @@ class APITokenLogMiddleware:
         return str(redacted)
 
     def process_request(self, request, response, request_body):
+        # Delegated endpoints have a metadata-only audit trail. Never persist
+        # consent parameters, tokens or discussion content, even if a caller
+        # also supplies an unrelated legacy API-key header.
+        if request.path.startswith(("/auth/singularity/", "/api/singularity/")):
+            return
         api_key_header = "X-Api-Key"
         api_key = request.headers.get(api_key_header)
 

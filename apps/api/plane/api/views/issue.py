@@ -6,6 +6,7 @@
 import json
 import uuid
 import re
+from plane.singularity.locking import lock_work_item
 
 # Django imports
 from django.core.serializers.json import DjangoJSONEncoder
@@ -837,6 +838,7 @@ class IssueDetailAPIEndpoint(BaseAPIView):
             409: EXTERNAL_ID_EXISTS_RESPONSE,
         },
     )
+    @lock_work_item
     def patch(self, request, slug, project_id, pk):
         """Update work item
 

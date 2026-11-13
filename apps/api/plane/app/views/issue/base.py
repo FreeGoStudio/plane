@@ -5,6 +5,7 @@
 # Python imports
 import copy
 import json
+from plane.singularity.locking import lock_work_item
 
 # Django imports
 from django.contrib.postgres.aggregates import ArrayAgg
@@ -626,6 +627,7 @@ class IssueViewSet(BaseViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @allow_permission(allowed_roles=[ROLE.ADMIN, ROLE.MEMBER], creator=True, model=Issue)
+    @lock_work_item
     def partial_update(self, request, slug, project_id, pk=None):
         queryset = self.get_queryset()
         queryset = self.apply_annotations(queryset)

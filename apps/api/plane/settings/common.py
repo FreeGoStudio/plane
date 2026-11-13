@@ -6,6 +6,7 @@
 
 # Python imports
 import ipaddress
+import json
 import logging
 import os
 from urllib.parse import parse_qs
@@ -96,6 +97,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
 # Application definition
 INSTALLED_APPS = [
+    "plane.singularity",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -119,6 +121,13 @@ INSTALLED_APPS = [
 ]
 
 # Middlewares
+SINGULARITY_ENABLED = os.environ.get("SINGULARITY_ENABLED", "0") == "1"
+SINGULARITY_ISSUER = os.environ.get("SINGULARITY_ISSUER", "https://localhost:8444")
+SINGULARITY_RESOURCE = os.environ.get("SINGULARITY_RESOURCE", "https://localhost:8444/mcp")
+SINGULARITY_GATEWAY_SECRET = os.environ.get("SINGULARITY_GATEWAY_SECRET", "")
+SINGULARITY_REDIRECT_URIS = os.environ.get("SINGULARITY_REDIRECT_URIS", "").split()
+SINGULARITY_PROJECT_CONFIG = json.loads(os.environ.get("SINGULARITY_PROJECT_CONFIG", "{}"))
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",

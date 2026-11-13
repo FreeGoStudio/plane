@@ -1,0 +1,8 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>授权个人 Codex · Plane</title><main style="max-width:640px;margin:64px auto;font:16px/1.8 sans-serif;padding:24px">
+<h1>授权个人 Codex</h1><p>当前账号：{{ request.user.email }}</p>
+<p>允许 Singularity Gateway 以你的身份执行以下操作，实际访问仍受 Plane 项目权限限制：</p>
+<ul>{% for scope in scopes %}<li>{{ scope }}</li>{% endfor %}</ul>
+<p>请只在你自己的 Codex 环境授权，不要将连接共享给其他人。你可以随时撤销连接。</p>
+<form method="post">{% csrf_token %}<button name="decision" value="allow">允许授权</button> <button name="decision" value="deny">拒绝</button></form>
+<p><a href="/auth/singularity/connections/">管理我的授权连接</a></p></main></html>
