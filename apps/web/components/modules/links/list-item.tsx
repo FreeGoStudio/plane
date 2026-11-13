@@ -10,7 +10,7 @@ import { CopyOutline, DeleteOutline, EditOutline } from "@makeplane/propel/icons
 // plane types
 import { Icon as PropelIcon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { ILinkDetails } from "@plane/types";
@@ -76,8 +76,8 @@ export const ModulesLinksListItem = observer(function ModulesLinksListItem(props
             ? t("project_ui.link_added_by", {
                 time: calculateTimeAgo(link.created_at),
                 name: createdByDetails.is_bot
-                  ? t("project_ui.bot_name", { name: createdByDetails.first_name })
-                  : createdByDetails.display_name,
+                  ? t("project_ui.bot_name", { name: getUserDisplayName(createdByDetails) })
+                  : getUserDisplayName(createdByDetails),
               })
             : t("project_ui.link_added", { time: calculateTimeAgo(link.created_at) })}
         </p>

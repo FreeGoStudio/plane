@@ -19,7 +19,7 @@ import type {
   TRealtimeConfig,
   TServerHandler,
 } from "@plane/editor";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TSearchEntityRequestPayload, TSearchResponse, TWebhookConnectionQueryParams } from "@plane/types";
 import { ERowVariant, Row } from "@plane/blocks/layout";
 import { cn, generateRandomColor, hslToHex } from "@plane/utils";
@@ -220,13 +220,14 @@ export const PageEditorBody = observer(function PageEditorBody(props: Props) {
 
   const realtimeConfig = useMemo(() => buildRealtimeConfig(webhookConnectionParams), [webhookConnectionParams]);
 
+  const currentUserDisplayName = getUserDisplayName(currentUser);
   const userConfig = useMemo(
     () => ({
       id: currentUser?.id ?? "",
-      name: currentUser?.display_name ?? "",
+      name: currentUserDisplayName,
       color: hslToHex(generateRandomColor(currentUser?.id ?? "")),
     }),
-    [currentUser?.display_name, currentUser?.id]
+    [currentUserDisplayName, currentUser?.id]
   );
 
   const blockWidthClassName = cn(
@@ -292,7 +293,9 @@ export const PageEditorBody = observer(function PageEditorBody(props: Props) {
               },
               // oxlint-disable-next-line no-shadow
               renderComponent: (props) => <EditorMentionsRoot {...props} />,
-              getMentionedEntityDetails: (id: string) => ({ display_name: getUserDetails(id)?.display_name ?? "" }),
+              getMentionedEntityDetails: (id: string) => ({
+                display_name: getUserDisplayName(getUserDetails(id)) || "",
+              }),
             }}
             updatePageProperties={updatePageProperties}
             realtimeConfig={realtimeConfig}

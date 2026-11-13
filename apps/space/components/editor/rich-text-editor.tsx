@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { forwardRef } from "react";
 // plane imports
 import { RichTextEditorWithRef } from "@plane/editor";
@@ -39,6 +40,7 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
   props: RichTextEditorWrapperProps,
   ref: React.ForwardedRef<EditorRefApi>
 ) {
+  useTranslation();
   const {
     anchor,
     containerClassName,
@@ -59,9 +61,9 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
   return (
     <RichTextEditorWithRef
       mentionHandler={{
-        renderComponent: (props) => <EditorMentionsRoot {...props} />,
+        renderComponent: (mentionProps) => <EditorMentionsRoot {...mentionProps} />,
         getMentionedEntityDetails: (id: string) => ({
-          display_name: getMemberById(id)?.member__display_name ?? "",
+          display_name: getUserDisplayName(getMemberById(id)) || "",
         }),
       }}
       ref={ref}

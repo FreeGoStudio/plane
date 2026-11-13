@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -82,7 +82,7 @@ export const ConfirmProjectMemberRemove = observer(function ConfirmProjectMember
                   <DialogTitle>
                     {isCurrentUser
                       ? t("project_ui.leave_project_title")
-                      : t("project_ui.remove_member_title", { name: data?.display_name ?? "" })}
+                      : t("project_ui.remove_member_title", { name: getUserDisplayName(data) || "" })}
                   </DialogTitle>
                 </DialogHeading>
               </div>
@@ -92,7 +92,7 @@ export const ConfirmProjectMemberRemove = observer(function ConfirmProjectMember
             <p className="text-body-xs-regular text-secondary">
               {isCurrentUser
                 ? t("project_ui.leave_project_confirmation", { name: currentProjectDetails?.name ?? "" })
-                : t("project_ui.remove_member_confirmation", { name: data?.display_name ?? "" })}
+                : t("project_ui.remove_member_confirmation", { name: getUserDisplayName(data) || "" })}
             </p>
           </DialogBody>
         </DialogMain>

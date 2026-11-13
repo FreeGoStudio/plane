@@ -15,9 +15,9 @@ import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from "@makepl
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import { IconButton } from "@makeplane/propel/elements/icon-button";
 import { GOD_MODE_URL } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
-import { formatUserFullName, getFileURL } from "@plane/utils";
+import { getFileURL } from "@plane/utils";
 // components
 import { CoverImage } from "@/components/common/cover-image";
 // hooks
@@ -38,7 +38,7 @@ export const UserMenuRoot = observer(function UserMenuRoot() {
   // derived values
   const isUserInstanceAdmin = false;
   // translation
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
 
   const handleSignOut = () => {
     signOut().catch(() =>
@@ -68,8 +68,8 @@ export const UserMenuRoot = observer(function UserMenuRoot() {
               render={<button type="button" className="data-popup-open:bg-layer-transparent-active" />}
             >
               <Avatar
-                alt={currentUser?.display_name}
-                fallback={currentUser?.display_name?.[0]?.toUpperCase()}
+                alt={getUserDisplayName(currentUser)}
+                fallback={getUserDisplayName(currentUser)?.[0]?.toUpperCase()}
                 src={getFileURL(currentUser?.avatar_url ?? "")}
                 size="xs"
               />
@@ -87,13 +87,13 @@ export const UserMenuRoot = observer(function UserMenuRoot() {
               />
               <div className="absolute inset-0 bg-black/50" />
               <Avatar
-                alt={currentUser?.display_name}
-                fallback={currentUser?.display_name?.[0]?.toUpperCase()}
+                alt={getUserDisplayName(currentUser)}
+                fallback={getUserDisplayName(currentUser)?.[0]?.toUpperCase()}
                 src={getFileURL(currentUser?.avatar_url ?? "")}
                 size="xl"
               />
               <div className="relative w-full min-w-0 text-center text-on-color">
-                <p className="truncate text-body-sm-medium">{formatUserFullName(currentUser, currentLocale)}</p>
+                <p className="truncate text-body-sm-medium">{getUserDisplayName(currentUser)}</p>
                 <Tooltip label={currentUser?.email ?? ""}>
                   <p className="truncate text-caption-md-regular">{currentUser?.email}</p>
                 </Tooltip>

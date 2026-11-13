@@ -9,7 +9,7 @@ import { sortBy } from "lodash-es";
 import { observer } from "mobx-react";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
@@ -54,12 +54,12 @@ export const MemberFilterSubmenu = observer(function MemberFilterSubmenu(props: 
       return [
         {
           value: member.id,
-          label: currentUser?.id === member.id ? t("common.you") : member.display_name,
-          searchText: member.display_name,
+          label: currentUser?.id === member.id ? t("common.you") : getUserDisplayName(member),
+          searchText: getUserDisplayName(member),
           icon: (
             <Avatar
-              alt={member.display_name}
-              fallback={member.display_name?.[0]?.toUpperCase()}
+              alt={getUserDisplayName(member)}
+              fallback={getUserDisplayName(member)?.[0]?.toUpperCase()}
               src={getFileURL(member.avatar_url)}
               size="xs"
             />

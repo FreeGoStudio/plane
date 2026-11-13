@@ -43,7 +43,10 @@ const mocks = {
   },
   "@/hooks/store/use-user": { useUser: () => ({ data: user }) },
   "@/helpers/query-param-generator": { queryParamGenerator: () => ({ queryParam: "" }) },
-  "@plane/i18n": { useTranslation: () => ({ currentLocale: locale, t: (key) => key }) },
+  "@plane/i18n": {
+    getUserDisplayName: require("@plane/i18n").getUserDisplayName,
+    useTranslation: () => ({ currentLocale: locale, t: (key) => key }),
+  },
   "@/hooks/store/user": { useUser: () => ({ data: user }) },
   "@/hooks/store/use-member": { useMember: () => ({ getUserDetails: () => user, project: {} }) },
   "@/hooks/store/use-instance": { useInstance: () => ({ config: { is_self_managed: true } }) },
@@ -86,20 +89,22 @@ const surfaces = [
   ["workspace menu", load("../workspace/sidebar/user-menu-root.tsx").UserMenuRoot, () => ({})],
 ];
 for (const [name, Component, props] of surfaces) {
-  test(`${name} follows language changes without changing profile links or stored fields`, () => {
+  test(`${name} follows language changes without changing profile links or stored fields`, async () => {
     for (const [language, first, last, expected] of [
       ["zh-CN", "三", "张", "张三"],
       ["zh-TW", "明", "陳", "陳明"],
       ["en", "John", "Smith", "John Smith"],
       ["zh-CN", "", "张", "张"],
     ]) {
+      // eslint-disable-next-line no-await-in-loop -- Each render must follow its shared language change.
+      await require("@plane/i18n").setLanguage(language);
       locale = language;
       user = {
         id: "person",
         first_name: first,
         last_name: last,
         email: "person@example.com",
-        display_name: name === "public space account" || name === "onboarding header" ? "" : "nickname",
+        display_name: "",
       };
       const original = structuredClone(user);
       const html = renderToStaticMarkup(h(Component, props()));
@@ -121,3 +126,22 @@ test("account headers preserve a chosen nickname and fall back to email when nam
     }
   }
 });
+
+for (const [name, Component, props] of surfaces) {
+  test(`${name} prefers display name over full name and uses email only when both are absent`, async () => {
+    await require("@plane/i18n").setLanguage("zh-CN");
+    locale = "zh-CN";
+    for (const [display, first, last, expected] of [
+      ["小张", "三", "张", "小张"],
+      ["   ", "三", "张", "张三"],
+      ["", "", "", "person@example.com"],
+    ]) {
+      user = { id: "person", display_name: display, first_name: first, last_name: last, email: "person@example.com" };
+      const original = structuredClone(user);
+      const html = renderToStaticMarkup(h(Component, props()));
+      assert.ok(html.includes(expected), `${name}: ${html}`);
+      if (display.trim()) assert.ok(!html.includes("张三"), html);
+      assert.deepEqual(user, original);
+    }
+  });
+}

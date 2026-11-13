@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { getUserDisplayName } from "@plane/i18n";
 import { isNil } from "lodash-es";
 // types
 import { EIconSize, ISSUE_PRIORITIES } from "@plane/constants";
@@ -140,8 +141,8 @@ const getPriorityColumns = () => {
   }));
 };
 
-const getLabelsColumns = (label: IIssueLabelStore) => {
-  const { labels: storeLabels } = label;
+const getLabelsColumns = (labelStore: IIssueLabelStore) => {
+  const { labels: storeLabels } = labelStore;
 
   if (!storeLabels) return;
 
@@ -157,20 +158,16 @@ const getLabelsColumns = (label: IIssueLabelStore) => {
   }));
 };
 
-const getAssigneeColumns = (member: IIssueMemberStore) => {
-  const { members } = member;
+const getAssigneeColumns = (memberStore: IIssueMemberStore) => {
+  const { members } = memberStore;
 
   if (!members) return;
 
   const assigneeColumns: any = members.map((member) => ({
     id: member.id,
-    name: member?.member__display_name || "",
+    name: getUserDisplayName(member) || "",
     icon: (
-      <Avatar
-        size="xs"
-        alt={member?.member__display_name}
-        fallback={member?.member__display_name?.[0]?.toUpperCase()}
-      />
+      <Avatar size="xs" alt={getUserDisplayName(member)} fallback={getUserDisplayName(member)?.[0]?.toUpperCase()} />
     ),
     payload: { assignee_ids: [member.id] },
   }));
@@ -180,20 +177,16 @@ const getAssigneeColumns = (member: IIssueMemberStore) => {
   return assigneeColumns;
 };
 
-const getCreatedByColumns = (member: IIssueMemberStore) => {
-  const { members } = member;
+const getCreatedByColumns = (memberStore: IIssueMemberStore) => {
+  const { members } = memberStore;
 
   if (!members) return;
 
   return members.map((member) => ({
     id: member.id,
-    name: member?.member__display_name || "",
+    name: getUserDisplayName(member) || "",
     icon: (
-      <Avatar
-        size="xs"
-        alt={member?.member__display_name}
-        fallback={member?.member__display_name?.[0]?.toUpperCase()}
-      />
+      <Avatar size="xs" alt={getUserDisplayName(member)} fallback={getUserDisplayName(member)?.[0]?.toUpperCase()} />
     ),
     payload: {},
   }));

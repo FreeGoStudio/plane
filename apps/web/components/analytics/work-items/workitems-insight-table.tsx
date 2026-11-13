@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import { ProjectsOutline, UserOutline } from "@makeplane/propel/icons";
 import { Avatar } from "@makeplane/propel/components/avatar";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 // plane package imports
 import type { AnalyticsTableDataMap, WorkItemInsightColumns } from "@plane/types";
@@ -111,28 +111,30 @@ const WorkItemsInsightTable = observer(function WorkItemsInsightTable() {
                 <div className="flex items-center gap-2">
                   {row.original.avatar_url && row.original.avatar_url !== "" ? (
                     <Avatar
-                      alt={row.original.display_name}
-                      fallback={row.original.display_name?.[0]?.toUpperCase()}
+                      alt={getUserDisplayName(row.original)}
+                      fallback={getUserDisplayName(row.original)?.[0]?.toUpperCase()}
                       src={getFileURL(row.original.avatar_url)}
                       size="sm"
                     />
                   ) : (
                     <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-layer-1 capitalize">
-                      {row.original.display_name ? (
-                        row.original.display_name?.[0]
+                      {getUserDisplayName(row.original) ? (
+                        getUserDisplayName(row.original)?.[0]
                       ) : (
                         <UserOutline className="text-secondary" width={12} height={12} />
                       )}
                     </div>
                   )}
-                  <span className="break-words text-secondary">{row.original.display_name ?? t("unassigned")}</span>
+                  <span className="break-words text-secondary">
+                    {getUserDisplayName(row.original) || t("unassigned")}
+                  </span>
                 </div>
               </div>
             ),
             meta: {
               export: {
                 key: columnsLabels["display_name"],
-                value: (row) => row.original.display_name?.toString() ?? "",
+                value: (row) => getUserDisplayName(row.original)?.toString() || "",
               },
             },
           },

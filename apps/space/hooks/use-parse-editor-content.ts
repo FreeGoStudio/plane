@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useCallback } from "react";
 // helpers
 import type { TCustomComponentsMetaData } from "@plane/utils";
@@ -17,6 +18,7 @@ type TArgs = {
 };
 
 export const useParseEditorContent = (args: TArgs) => {
+  useTranslation();
   const { anchor } = args;
   // store hooks
   const { getMemberById } = useMember();
@@ -54,7 +56,7 @@ export const useParseEditorContent = (args: TArgs) => {
           if (userDetails) {
             userMentions.push({
               id,
-              display_name: userDetails.member__display_name,
+              display_name: getUserDisplayName(userDetails),
               url,
             });
           }

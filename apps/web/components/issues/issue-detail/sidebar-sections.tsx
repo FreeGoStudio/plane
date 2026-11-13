@@ -17,7 +17,7 @@ import {
   UpdatedAtOutline,
   UserOutline,
 } from "@makeplane/propel/icons";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { cn, useDateFormatter } from "@plane/utils";
 // components
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
@@ -71,7 +71,9 @@ export const IssueDetailSidebarSections = observer(function IssueDetailSidebarSe
 
   const projectDetails = getProjectById(issue.project_id);
   const createdByDetails = getUserDetails(issue.created_by);
-  const createdByName = createdByDetails?.display_name?.includes("-intake") ? "Plane" : createdByDetails?.display_name;
+  const createdByName = createdByDetails?.display_name?.includes("-intake")
+    ? "Plane"
+    : getUserDisplayName(createdByDetails);
   const hasProjectStructureProperties = !!projectDetails?.cycle_view || !!projectDetails?.module_view;
 
   const auditRows = [

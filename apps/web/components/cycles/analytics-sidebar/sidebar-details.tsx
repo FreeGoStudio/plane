@@ -10,7 +10,7 @@ import { observer } from "mobx-react";
 import { MembersOutline, LeadOutline, WorkItemsOutline } from "@makeplane/propel/icons";
 // plane types
 import { EEstimateSystem } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { AvatarGroup } from "@makeplane/propel/components/avatar-group";
 import { TextArea } from "@makeplane/propel/components/text-area";
@@ -53,12 +53,8 @@ export const CycleSidebarDetails = observer(function CycleSidebarDetails(props: 
   const cycleOwnerDetails = cycleDetails ? getUserDetails(cycleDetails.owned_by_id) : undefined;
 
   const isEstimatePointValid = isEmpty(cycleDetails?.progress_snapshot || {})
-    ? estimateType && estimateType?.type == EEstimateSystem.POINTS
-      ? true
-      : false
-    : isEmpty(cycleDetails?.progress_snapshot?.estimate_distribution || {})
-      ? false
-      : true;
+    ? Boolean(estimateType && estimateType?.type == EEstimateSystem.POINTS)
+    : !isEmpty(cycleDetails?.progress_snapshot?.estimate_distribution || {});
 
   const issueEstimatePointCount =
     isCompleted && !isEmpty(cycleDetails?.progress_snapshot)
@@ -86,12 +82,12 @@ export const CycleSidebarDetails = observer(function CycleSidebarDetails(props: 
             {cycleOwnerDetails ? (
               <div className="flex min-w-0 items-center gap-2">
                 <Avatar
-                  alt={cycleOwnerDetails.display_name}
-                  fallback={cycleOwnerDetails.display_name?.[0]?.toUpperCase()}
+                  alt={getUserDisplayName(cycleOwnerDetails)}
+                  fallback={getUserDisplayName(cycleOwnerDetails)?.[0]?.toUpperCase()}
                   src={getFileURL(cycleOwnerDetails.avatar_url ?? "")}
                   size="2xs"
                 />
-                <span className="truncate">{cycleOwnerDetails.display_name}</span>
+                <span className="truncate">{getUserDisplayName(cycleOwnerDetails)}</span>
               </div>
             ) : (
               <span className="text-tertiary">{t("none")}</span>
@@ -105,7 +101,7 @@ export const CycleSidebarDetails = observer(function CycleSidebarDetails(props: 
                   return (
                     <Avatar
                       key={member}
-                      alt={memberDetails?.display_name ?? ""}
+                      alt={getUserDisplayName(memberDetails) || ""}
                       src={getFileURL(memberDetails?.avatar_url ?? "")}
                     />
                   );

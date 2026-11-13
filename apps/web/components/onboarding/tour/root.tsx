@@ -4,8 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { formatUserFullName } from "@plane/utils";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -79,7 +78,7 @@ const TOUR_STEPS: {
 ];
 
 export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) {
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   const { onComplete } = props;
   // states
   const [step, setStep] = useState<TTourSteps>("welcome");
@@ -101,7 +100,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
             <div className="flex flex-col overflow-y-auto p-6">
               <h3 className="font-semibold sm:text-h5-regular">
                 {t("onboarding_ui.welcome", {
-                  name: formatUserFullName(currentUser, currentLocale),
+                  name: getUserDisplayName(currentUser),
                 })}
               </h3>
               <p className="mt-3 text-body-xs-regular text-secondary">{t("onboarding_ui.welcome_description")}</p>

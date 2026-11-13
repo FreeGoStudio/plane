@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { getFileURL, useDateFormatter } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
@@ -41,12 +41,12 @@ export const PageNavigationPaneInfoTabActorsInfo = observer(function PageNavigat
         <div className="mt-2 flex items-center justify-between gap-2 text-body-xs-medium">
           <Link href={`/${workspaceSlug?.toString()}/profile/${page.updated_by}`} className="flex items-center gap-1">
             <Avatar
-              alt={editorInformation?.display_name}
-              fallback={editorInformation?.display_name?.[0]?.toUpperCase()}
+              alt={getUserDisplayName(editorInformation)}
+              fallback={getUserDisplayName(editorInformation)?.[0]?.toUpperCase()}
               src={getFileURL(editorInformation?.avatar_url ?? "")}
               size="2xs"
             />
-            <span>{editorInformation?.display_name ?? t("common.deactivated_user")}</span>
+            <span>{getUserDisplayName(editorInformation) || t("common.deactivated_user")}</span>
           </Link>
           <span className="flex-shrink-0 text-tertiary">{calculateTimeAgoShort(page.updated_at ?? "")} ago</span>
         </div>
@@ -58,12 +58,12 @@ export const PageNavigationPaneInfoTabActorsInfo = observer(function PageNavigat
         <div className="mt-2 flex items-center justify-between gap-2 text-body-xs-medium">
           <Link href={`/${workspaceSlug?.toString()}/profile/${page.created_by}`} className="flex items-center gap-1">
             <Avatar
-              alt={creatorInformation?.display_name}
-              fallback={creatorInformation?.display_name?.[0]?.toUpperCase()}
+              alt={getUserDisplayName(creatorInformation)}
+              fallback={getUserDisplayName(creatorInformation)?.[0]?.toUpperCase()}
               src={getFileURL(creatorInformation?.avatar_url ?? "")}
               size="2xs"
             />
-            <span>{creatorInformation?.display_name ?? t("common.deactivated_user")}</span>
+            <span>{getUserDisplayName(creatorInformation) || t("common.deactivated_user")}</span>
           </Link>
           <span className="flex-shrink-0 text-tertiary">{renderFormattedDate(page.created_at)}</span>
         </div>

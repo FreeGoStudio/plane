@@ -5,7 +5,7 @@
  */
 
 import { observer } from "mobx-react";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 
 // plane types
 import { Avatar } from "@makeplane/propel/components/avatar";
@@ -55,14 +55,14 @@ export const InboxIssueAppliedFiltersMember = observer(function InboxIssueApplie
             variant="soft"
             icon={
               <Avatar
-                alt={optionDetail.display_name}
-                fallback={optionDetail.display_name?.[0]?.toUpperCase()}
+                alt={getUserDisplayName(optionDetail)}
+                fallback={getUserDisplayName(optionDetail)?.[0]?.toUpperCase()}
                 src={getFileURL(optionDetail.avatar_url)}
                 size="2xs"
               />
             }
-            label={optionDetail.display_name}
-            ariaLabel={optionDetail.display_name}
+            label={getUserDisplayName(optionDetail)}
+            ariaLabel={getUserDisplayName(optionDetail)}
             onRemove={() => handleInboxIssueFilters(filterKey, handleFilterValue(value))}
           />
         );

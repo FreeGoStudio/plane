@@ -9,7 +9,7 @@ import { observer } from "mobx-react";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
 import type { EditorRefApi } from "@plane/editor";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import {
   Dialog,
@@ -108,8 +108,8 @@ export const DescriptionVersionsModal = observer(function DescriptionVersionsMod
                 {t("description_versions.edited_by")}
                 <span className="flex-shrink-0">
                   <Avatar
-                    alt={versionCreator?.display_name}
-                    fallback={versionCreator?.display_name?.[0]?.toUpperCase()}
+                    alt={getUserDisplayName(versionCreator)}
+                    fallback={getUserDisplayName(versionCreator)?.[0]?.toUpperCase()}
                     size="2xs"
                     src={getFileURL(versionCreator?.avatar_url ?? "")}
                   />

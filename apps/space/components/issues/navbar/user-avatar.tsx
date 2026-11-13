@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router";
@@ -17,7 +17,7 @@ import { Icon } from "@makeplane/propel/components/icon";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/components/menu";
 import { LogOutOutline } from "@makeplane/propel/icons";
 import { AuthService } from "@plane/services";
-import { formatUserFullName, getFileURL } from "@plane/utils";
+import { getFileURL } from "@plane/utils";
 // helpers
 import { queryParamGenerator } from "@/helpers/query-param-generator";
 // hooks
@@ -26,7 +26,7 @@ import { useUser } from "@/hooks/store/use-user";
 const authService = new AuthService();
 
 export const UserAvatar = observer(function UserAvatar() {
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   // query params
@@ -54,11 +54,7 @@ export const UserAvatar = observer(function UserAvatar() {
 
   // derived values
   const { queryParam } = queryParamGenerator({ peekId, board, state, priority, labels });
-  const displayName =
-    currentUser?.display_name ||
-    formatUserFullName(currentUser, currentLocale) ||
-    currentUser?.email ||
-    t("space_ui.user");
+  const displayName = getUserDisplayName(currentUser) || t("space_ui.user");
 
   return (
     <div className="relative mr-2">
@@ -87,8 +83,8 @@ export const UserAvatar = observer(function UserAvatar() {
                     <Avatar
                       size="2xs"
                       src={getFileURL(currentUser?.avatar_url)}
-                      alt={currentUser?.display_name}
-                      fallback={currentUser?.display_name?.[0]?.toUpperCase()}
+                      alt={getUserDisplayName(currentUser)}
+                      fallback={getUserDisplayName(currentUser)?.[0]?.toUpperCase()}
                     />
                   }
                   label={displayName}

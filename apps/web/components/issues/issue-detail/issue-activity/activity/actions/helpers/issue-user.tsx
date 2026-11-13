@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import Link from "next/link";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
@@ -14,6 +15,7 @@ type TIssueUser = {
 };
 
 export function IssueUser(props: TIssueUser) {
+  useTranslation();
   const { activityId, customUserName } = props;
   // hooks
   const {
@@ -33,7 +35,7 @@ export function IssueUser(props: TIssueUser) {
           href={`/${activity?.workspace_detail?.slug}/profile/${activity?.actor_detail?.id}`}
           className="text-primary hover:underline"
         >
-          {activity.actor_detail?.display_name}
+          {getUserDisplayName(activity.actor_detail)}
         </Link>
       )}
     </>

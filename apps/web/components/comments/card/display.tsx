@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { ActivityCommentCard, ActivityCommentHeader, ActivityTimelineTimestamp } from "@plane/blocks/activity";
 import type { EditorRefApi } from "@plane/editor";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useHashScroll } from "@plane/hooks";
 import { GlobeOutline, LockOutline } from "@makeplane/propel/icons";
 import { EIssueCommentAccessSpecifier } from "@plane/types";
@@ -71,8 +71,8 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
   // derived values
   const userDetails = getUserDetails(comment?.actor);
   const displayName = comment?.actor_detail?.is_bot
-    ? comment?.actor_detail?.first_name + `Bot`
-    : (userDetails?.display_name ?? comment?.actor_detail?.display_name);
+    ? getUserDisplayName(comment?.actor_detail) + `Bot`
+    : getUserDisplayName(userDetails) || getUserDisplayName(comment?.actor_detail);
   const avatarUrl = userDetails?.avatar_url ?? comment?.actor_detail?.avatar_url;
 
   const userReactions = activityOperations.userReactions(comment.id);

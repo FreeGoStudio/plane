@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { ClockOutline } from "@makeplane/propel/icons";
@@ -26,6 +27,7 @@ type TNotificationItem = {
 };
 
 export const NotificationItem = observer(function NotificationItem(props: TNotificationItem) {
+  useTranslation();
   const { renderFormattedDate, renderFormattedTime, calculateTimeAgo } = useDateFormatter();
   const { workspaceSlug, notificationId } = props;
   // hooks
@@ -89,9 +91,8 @@ export const NotificationItem = observer(function NotificationItem(props: TNotif
         <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-layer-1">
           {notificationTriggeredBy && (
             <Avatar
-              alt={notificationTriggeredBy.display_name || notificationTriggeredBy?.first_name}
-              fallback={(notificationTriggeredBy.display_name ||
-                notificationTriggeredBy?.first_name)?.[0]?.toUpperCase()}
+              alt={getUserDisplayName(notificationTriggeredBy)}
+              fallback={getUserDisplayName(notificationTriggeredBy)?.[0]?.toUpperCase()}
               src={getFileURL(notificationTriggeredBy.avatar_url)}
               size="xl"
             />

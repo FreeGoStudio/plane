@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -24,6 +25,7 @@ type IssueEmojiReactionsProps = {
 };
 
 export const IssueEmojiReactions = observer(function IssueEmojiReactions(props: IssueEmojiReactionsProps) {
+  useTranslation();
   const { anchor, issueIdFromProps } = props;
   // state
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -75,7 +77,7 @@ export const IssueEmojiReactions = observer(function IssueEmojiReactions(props: 
       .map((reaction) => {
         const reactionList = groupedReactions?.[reaction] ?? [];
         const userNames = reactionList
-          .map((r) => r?.actor_details?.display_name)
+          .map((r) => getUserDisplayName(r?.actor_details))
           .filter((name): name is string => !!name)
           .slice(0, REACTIONS_LIMIT);
 

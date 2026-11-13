@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { CloseOutline, WarningCircleOutline } from "@makeplane/propel/icons";
@@ -90,7 +90,7 @@ export const IssueAttachmentsDetail = observer(function IssueAttachmentsDetail(p
         <div className="flex shrink-0 items-center gap-1">
           <Tooltip
             label={`${
-              getUserDetails(attachment.updated_by)?.display_name ?? ""
+              getUserDisplayName(getUserDetails(attachment.updated_by)) || ""
             } uploaded on ${renderFormattedDate(attachment.updated_at)}`}
             layout="stacked"
             disabled={isMobile}

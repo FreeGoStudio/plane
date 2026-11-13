@@ -31,7 +31,7 @@ const mocks = {
   react: { useState: (value) => [value, () => {}], useEffect: () => {}, useCallback: (callback) => callback },
   "react/jsx-runtime": require("react/jsx-runtime"),
   "mobx-react": { observer: (component) => component },
-  "@plane/i18n": { useTranslation: () => ({ t }) },
+  "@plane/i18n": { getUserDisplayName: require("@plane/i18n").getUserDisplayName, useTranslation: () => ({ t }) },
   "@plane/constants": { EIssueCommentAccessSpecifier: { INTERNAL: "INTERNAL", EXTERNAL: "EXTERNAL" } },
   "@plane/types": { EIssueCommentAccessSpecifier: { INTERNAL: "INTERNAL", EXTERNAL: "EXTERNAL" } },
   "@plane/hooks": { useHashScroll: () => ({ isHashMatch: false }) },

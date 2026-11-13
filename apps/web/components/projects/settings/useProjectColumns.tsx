@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import type { IWorkspaceMember, TProjectMembership } from "@plane/types";
@@ -92,7 +92,7 @@ export const useProjectColumns = (props: TUseProjectColumnsProps) => {
           handleDisplayFilterUpdate={handleDisplayFilterUpdate}
         />
       ),
-      tdRender: (rowData: RowData) => <div className="w-32">{rowData.member.display_name}</div>,
+      tdRender: (rowData: RowData) => <div className="w-32">{getUserDisplayName(rowData.member)}</div>,
     },
     {
       key: "Email",

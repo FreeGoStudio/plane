@@ -8,7 +8,7 @@ import { useState } from "react";
 import { observer } from "mobx-react";
 // ui
 import { ConfirmDialog, TypeToConfirmDialog } from "@plane/blocks/dialog";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 // hooks
 import { useUser } from "@/hooks/store/user";
 import { useWorkspace } from "@/hooks/store/use-workspace";
@@ -78,8 +78,8 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
       handleClose={handleClose}
       handleSubmit={handleDeletion}
       isSubmitting={isRemoving}
-      title={t("workspace_ui.remove_member_title", { name: userDetails?.display_name ?? "" })}
-      content={t("workspace_ui.remove_member_description", { name: userDetails?.display_name ?? "" })}
+      title={t("workspace_ui.remove_member_title", { name: getUserDisplayName(userDetails) || "" })}
+      content={t("workspace_ui.remove_member_description", { name: getUserDisplayName(userDetails) || "" })}
       primaryButtonText={{ loading: t("removing"), default: t("remove") }}
       secondaryButtonText={t("cancel")}
     />

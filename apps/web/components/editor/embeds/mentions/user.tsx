@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { Link } from "react-router";
@@ -12,7 +12,7 @@ import { Link } from "react-router";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { ROLE } from "@plane/constants";
 import { Popover, PopoverContent, PopoverTrigger } from "@makeplane/propel/components/popover";
-import { formatUserFullName, cn, getFileURL } from "@plane/utils";
+import { cn, getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { useUser } from "@/hooks/store/user";
@@ -22,7 +22,7 @@ type Props = {
 };
 
 export const EditorUserMention = observer(function EditorUserMention(props: Props) {
-  const { currentLocale } = useTranslation();
+  useTranslation();
   const { id } = props;
   // router
   const { projectId } = useParams();
@@ -61,14 +61,14 @@ export const EditorUserMention = observer(function EditorUserMention(props: Prop
           openOnHover
           delay={100}
           nativeButton={false}
-          render={<Link to={profileLink}>@{userDetails?.display_name}</Link>}
+          render={<Link to={profileLink}>@{getUserDisplayName(userDetails)}</Link>}
         />
         <PopoverContent variant="rich" side="bottom" align="start" sideOffset={8}>
           <div className="flex items-center gap-3">
             <div className="grid size-10 flex-shrink-0 place-items-center">
               <Avatar
-                alt={userDetails?.display_name}
-                fallback={userDetails?.display_name?.[0]?.toUpperCase()}
+                alt={getUserDisplayName(userDetails)}
+                fallback={getUserDisplayName(userDetails)?.[0]?.toUpperCase()}
                 src={getFileURL(userDetails?.avatar_url ?? "")}
                 size="xl"
               />
@@ -78,7 +78,7 @@ export const EditorUserMention = observer(function EditorUserMention(props: Prop
                 to={profileLink}
                 className="not-prose block truncate text-body-xs-medium text-primary hover:underline"
               >
-                {formatUserFullName(userDetails, currentLocale)}
+                {getUserDisplayName(userDetails)}
               </Link>
               {roleDetails && <p className="truncate text-caption-sm-regular text-secondary">{ROLE[roleDetails]}</p>}
             </div>

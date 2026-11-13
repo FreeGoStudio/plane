@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useCallback } from "react";
 // plane editor
 import { Avatar } from "@makeplane/propel/components/avatar";
@@ -21,6 +22,7 @@ type TArgs = {
 };
 
 export const useEditorMention = (args: TArgs) => {
+  useTranslation();
   const { enableAdvancedMentions = false, searchEntity } = args;
   // additional mentions
   const { editorMentionTypes, updateAdditionalSections } = useAdditionalEditorMention({
@@ -46,8 +48,8 @@ export const useEditorMention = (args: TArgs) => {
             const items: TMentionSuggestion[] = (response as TUserSearchResponse[]).map((user) => ({
               icon: (
                 <Avatar
-                  alt={user.member__display_name}
-                  fallback={user.member__display_name?.[0]?.toUpperCase()}
+                  alt={getUserDisplayName(user)}
+                  fallback={getUserDisplayName(user)?.[0]?.toUpperCase()}
                   src={getFileURL(user.member__avatar_url)}
                   size="xs"
                 />
@@ -55,7 +57,7 @@ export const useEditorMention = (args: TArgs) => {
               id: user.member__id,
               entity_identifier: user.member__id,
               entity_name: "user_mention",
-              title: user.member__display_name,
+              title: getUserDisplayName(user),
             }));
             suggestionSections.push({
               key: "users",

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useCallback, useMemo } from "react";
 // plane imports
 import type { EventToPayloadMap } from "@plane/editor";
@@ -47,6 +48,7 @@ export const useRealtimePageEvents = ({
   customRealtimeEventHandlers,
   handlers,
 }: UsePageEventsProps) => {
+  useTranslation();
   const router = useAppRouter();
   const { removePage, getPageById } = usePageStore(storeType);
 
@@ -58,7 +60,7 @@ export const useRealtimePageEvents = ({
       if (!userId) return "";
       try {
         const userDetails = getUserDetails(userId);
-        return userDetails?.display_name ? ` by ${userDetails.display_name}` : "";
+        return getUserDisplayName(userDetails) ? ` by ${getUserDisplayName(userDetails)}` : "";
       } catch {
         return "";
       }

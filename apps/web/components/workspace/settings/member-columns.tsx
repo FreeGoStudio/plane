@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { ROLE, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { DeactivatedUserOutline, DeleteOutline, MoreHorizontalOutline } from "@makeplane/propel/icons";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { Badge } from "@makeplane/propel/components/badge";
@@ -21,7 +21,7 @@ import type { IUser, IWorkspaceMember } from "@plane/types";
 // plane ui
 import { Select } from "@plane/blocks/select";
 // helpers
-import { formatUserFullName, getFileURL } from "@plane/utils";
+import { getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -55,9 +55,9 @@ type AccountTypeProps = {
 export function NameColumn(props: NameProps) {
   const { rowData, workspaceSlug, isAdmin, currentUser, setRemoveMemberModal } = props;
   // plane hooks
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   // derived values
-  const { avatar_url, display_name, email, first_name, id, last_name } = rowData.member;
+  const { avatar_url, id } = rowData.member;
   const isSuspended = rowData.is_active === false;
 
   return (
@@ -70,10 +70,10 @@ export function NameColumn(props: NameProps) {
             </span>
           ) : (
             <Link href={`/${workspaceSlug}/profile/${id}`} className="flex shrink-0">
-              <Avatar size="sm" src={getFileURL(avatar_url ?? "")} alt={display_name || email} />
+              <Avatar size="sm" src={getFileURL(avatar_url ?? "")} alt={getUserDisplayName(rowData.member)} />
             </Link>
           )}
-          <span className="truncate">{formatUserFullName({ first_name, last_name }, currentLocale)}</span>
+          <span className="truncate">{getUserDisplayName(rowData.member)}</span>
         </div>
 
         {!isSuspended && (isAdmin || id === currentUser?.id) && (

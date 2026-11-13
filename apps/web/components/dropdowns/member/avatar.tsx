@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { observer } from "mobx-react";
 import type { ComponentType, SVGProps } from "react";
 import { Avatar } from "@makeplane/propel/components/avatar";
@@ -26,6 +27,7 @@ type AvatarProps = {
 const MAX_GROUP_AVATARS = 2;
 
 export const ButtonAvatars = observer(function ButtonAvatars(props: AvatarProps) {
+  useTranslation();
   const { showTooltip, userIds, icon: Icon, size = "xs", max = MAX_GROUP_AVATARS } = props;
   // store hooks
   const { getUserDetails } = useMember();
@@ -46,7 +48,7 @@ export const ButtonAvatars = observer(function ButtonAvatars(props: AvatarProps)
             <Avatar
               key={userId}
               src={getFileURL(userDetails.avatar_url)}
-              alt={userDetails.display_name}
+              alt={getUserDisplayName(userDetails)}
               tooltip={!showTooltip}
             />
           ))}
@@ -58,7 +60,7 @@ export const ButtonAvatars = observer(function ButtonAvatars(props: AvatarProps)
       return (
         <Avatar
           src={getFileURL(userDetails?.avatar_url ?? "")}
-          alt={userDetails?.display_name}
+          alt={getUserDisplayName(userDetails)}
           size={size}
           tooltip={!showTooltip}
         />

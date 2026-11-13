@@ -12,7 +12,7 @@ import { Field } from "@makeplane/propel/components/field";
 import { Input, InputGroup } from "@makeplane/propel/components/input";
 import { E_PASSWORD_STRENGTH } from "@plane/constants";
 // types
-import { useTranslation, translateValidationMessage } from "@plane/i18n";
+import { getUserDisplayName, useTranslation, translateValidationMessage } from "@plane/i18n";
 import { Button } from "@makeplane/propel/elements/button";
 import { setToast } from "@plane/blocks/toast";
 import type { IUser, TUserProfile, TOnboardingSteps } from "@plane/types";
@@ -274,7 +274,11 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                     <div className="flex flex-col items-center justify-between">
                       <div className="relative h-14 w-14 overflow-hidden">
                         <div className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-full bg-accent-primary text-h3-medium text-on-color uppercase">
-                          {watch("first_name")[0] ?? "R"}
+                          {getUserDisplayName({
+                            ...user,
+                            first_name: watch("first_name"),
+                            last_name: watch("last_name"),
+                          })[0] || "R"}
                         </div>
                       </div>
                       <div className="pt-1 text-body-xs-medium text-accent-secondary hover:text-tertiary">
@@ -286,7 +290,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                       <img
                         src={getFileURL(userAvatar ?? "")}
                         className="absolute top-0 left-0 h-full w-full rounded-full object-cover"
-                        alt={user?.display_name}
+                        alt={getUserDisplayName(user)}
                       />
                     </div>
                   )}

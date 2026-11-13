@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { getUserDisplayName } from "@plane/i18n";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { Badge } from "@makeplane/propel/components/badge";
 import { AnchorButton } from "@makeplane/propel/components/anchor-button";
@@ -27,16 +28,17 @@ export const useExportColumns = () => {
       key: "Exported By",
       content: "Exported By",
       tdRender: (rowData: RowData) => {
-        const { avatar_url, display_name, email } = rowData.initiated_by_detail;
+        const { avatar_url } = rowData.initiated_by_detail;
+        const displayName = getUserDisplayName(rowData.initiated_by_detail);
         return (
           <div className="flex items-center gap-x-2">
             <Avatar
               size="2xs"
               src={avatar_url && avatar_url.trim() !== "" ? getFileURL(avatar_url) : undefined}
-              alt={display_name || email}
-              fallback={<span className="capitalize">{(email ?? display_name ?? "?")[0]}</span>}
+              alt={displayName}
+              fallback={<span className="capitalize">{(displayName || "?")[0]}</span>}
             />
-            <div>{display_name}</div>
+            <div>{displayName}</div>
           </div>
         );
       },

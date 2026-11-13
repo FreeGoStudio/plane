@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 
 import { formatHomeTimeAgo } from "@/helpers/home-datetime";
 import { useRouter } from "next/navigation";
@@ -70,8 +70,8 @@ export function RecentPage(props: BlockProps) {
       quickActionElement={
         <div className="flex items-center gap-2">
           <Avatar
-            alt={ownerDetails?.display_name}
-            fallback={ownerDetails?.display_name?.[0]?.toUpperCase()}
+            alt={getUserDisplayName(ownerDetails)}
+            fallback={getUserDisplayName(ownerDetails)?.[0]?.toUpperCase()}
             src={getFileURL(ownerDetails?.avatar_url ?? "")}
             size="xs"
           />

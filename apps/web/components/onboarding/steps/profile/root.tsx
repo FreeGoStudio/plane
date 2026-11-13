@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation, translateValidationMessage } from "@plane/i18n";
+import { getUserDisplayName, useTranslation, translateValidationMessage } from "@plane/i18n";
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { Controller, useForm } from "react-hook-form";
@@ -184,8 +184,14 @@ export const ProfileSetupStep = observer(function ProfileSetupStep({ handleStepC
             <Avatar
               size="2xl"
               src={userAvatar ? getFileURL(userAvatar) : undefined}
-              alt={user?.display_name}
-              fallback={watch("first_name")?.[0]?.toUpperCase() || undefined}
+              alt={getUserDisplayName(user)}
+              fallback={
+                getUserDisplayName({
+                  ...user,
+                  first_name: watch("first_name"),
+                  last_name: watch("last_name"),
+                })[0]?.toUpperCase() || undefined
+              }
             />
           </button>
           <input type="file" className="hidden" id="profile-image-input" />

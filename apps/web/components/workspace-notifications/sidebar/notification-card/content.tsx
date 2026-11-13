@@ -5,7 +5,7 @@
  */
 
 import type { ReactNode } from "react";
-import { LocalizedText } from "@plane/i18n";
+import { useTranslation, getUserDisplayName, LocalizedText } from "@plane/i18n";
 // plane imports
 import type { TNotification } from "@plane/types";
 import {
@@ -158,6 +158,7 @@ export function NotificationContent({
   renderCommentBox?: boolean;
   isUnread?: boolean;
 }) {
+  useTranslation();
   const { data, triggered_by_details: triggeredBy } = notification;
   const emphasisClassName = isUnread ? "font-semibold" : "font-medium";
   const notificationField = data?.issue_activity.field;
@@ -173,9 +174,7 @@ export function NotificationContent({
   };
 
   const renderTriggerName = () => (
-    <span className={cn("text-primary", emphasisClassName)}>
-      {triggeredBy?.is_bot ? triggeredBy.first_name : triggeredBy?.display_name}{" "}
-    </span>
+    <span className={cn("text-primary", emphasisClassName)}>{getUserDisplayName(triggeredBy)} </span>
   );
 
   if (notificationField === "labels") {

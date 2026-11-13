@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // helpers
 import { cn } from "@plane/utils";
@@ -39,7 +39,7 @@ export const EditorUserMention = observer(function EditorUserMention(props: Prop
         "bg-yellow-500/20 text-yellow-500": id === currentUser?.id,
       })}
     >
-      @{userDetails?.member__display_name}
+      @{getUserDisplayName(userDetails)}
     </div>
   );
 });

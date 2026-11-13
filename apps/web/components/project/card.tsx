@@ -22,7 +22,7 @@ import {
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel, IS_FAVORITE_MENU_OPEN } from "@plane/constants";
 import { useLocalStorage } from "@plane/hooks";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { AvatarGroup } from "@makeplane/propel/components/avatar-group";
 import { Badge } from "@makeplane/propel/components/badge";
@@ -331,11 +331,13 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                 <div className="flex min-w-0 items-center gap-1.5">
                   <Avatar
                     src={getFileURL(projectLead.avatar_url)}
-                    alt={projectLead.display_name}
-                    fallback={projectLead.display_name?.[0]?.toUpperCase()}
+                    alt={getUserDisplayName(projectLead)}
+                    fallback={getUserDisplayName(projectLead)?.[0]?.toUpperCase()}
                     size="2xs"
                   />
-                  <span className="truncate text-caption-md-regular text-secondary">{projectLead.display_name}</span>
+                  <span className="truncate text-caption-md-regular text-secondary">
+                    {getUserDisplayName(projectLead)}
+                  </span>
                 </div>
               )}
             </div>
@@ -366,8 +368,8 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                     {projectMembers.map((member) => (
                       <Avatar
                         key={member.id}
-                        alt={member.display_name}
-                        fallback={member.display_name?.[0]?.toUpperCase()}
+                        alt={getUserDisplayName(member)}
+                        fallback={getUserDisplayName(member)?.[0]?.toUpperCase()}
                         src={getFileURL(member.avatar_url)}
                       />
                     ))}

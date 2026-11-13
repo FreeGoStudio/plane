@@ -5,6 +5,7 @@
  * See the LICENSE file for details.
  */
 
+import { getUserDisplayName } from "@plane/i18n";
 import type { CSSProperties } from "react";
 import { extractInstruction } from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
 import { clone, isNil, pull, uniq, concat } from "lodash-es";
@@ -314,11 +315,11 @@ const getAssigneeColumns = ({ isWorkspaceLevel, projectId }: TGetColumns): IGrou
     if (!member) return;
     assigneeColumns.push({
       id: memberId,
-      name: member?.display_name || "",
+      name: getUserDisplayName(member) || "",
       icon: (
         <Avatar
-          alt={member?.display_name}
-          fallback={member?.display_name?.[0]?.toUpperCase()}
+          alt={getUserDisplayName(member)}
+          fallback={getUserDisplayName(member)?.[0]?.toUpperCase()}
           src={getFileURL(member?.avatar_url ?? "")}
           size="xs"
         />
@@ -344,11 +345,11 @@ const getCreatedByColumns = (): IGroupByColumn[] | undefined => {
     const member = getUserDetails(memberId);
     return {
       id: memberId,
-      name: member?.display_name || "",
+      name: getUserDisplayName(member) || "",
       icon: (
         <Avatar
-          alt={member?.display_name}
-          fallback={member?.display_name?.[0]?.toUpperCase()}
+          alt={getUserDisplayName(member)}
+          fallback={getUserDisplayName(member)?.[0]?.toUpperCase()}
           src={getFileURL(member?.avatar_url ?? "")}
           size="xs"
         />

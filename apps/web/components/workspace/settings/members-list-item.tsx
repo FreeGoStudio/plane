@@ -7,7 +7,7 @@
 import { isEmpty } from "lodash-es";
 import { observer } from "mobx-react";
 // plane imports
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
 import type { IWorkspaceMember } from "@plane/types";
 // components
@@ -100,7 +100,7 @@ export const WorkspaceMembersListItem = observer(function WorkspaceMembersListIt
           onClose={() => setRemoveMemberModal(null)}
           userDetails={{
             id: removeMemberModal.member.id,
-            display_name: removeMemberModal.member.display_name || "",
+            display_name: getUserDisplayName(removeMemberModal.member) || "",
           }}
           onSubmit={() => handleRemove(removeMemberModal.member.id)}
         />

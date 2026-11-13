@@ -10,7 +10,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // plane imports
 import { EntityDetailVotes, EntityDetailVotesModal } from "@plane/blocks/entity-detail";
 import type { TEntityDetailVoteType, TEntityDetailVoter } from "@plane/blocks/entity-detail";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { getFileURL } from "@plane/utils";
 // helpers
 import { queryParamGenerator } from "@/helpers/query-param-generator";
@@ -29,7 +29,7 @@ type TIssueVotes = {
 const toVoters = (votes: IVote[]): TEntityDetailVoter[] =>
   votes.map((vote) => ({
     id: vote.actor_details?.id ?? "",
-    displayName: vote.actor_details?.display_name ?? "",
+    displayName: getUserDisplayName(vote.actor_details) || "",
     avatarUrl: getFileURL(vote.actor_details?.avatar_url ?? ""),
   }));
 

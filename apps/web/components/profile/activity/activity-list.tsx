@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -57,7 +57,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                         <Avatar
                           size="md"
                           src={getFileURL(activityItem.actor_detail.avatar_url)}
-                          alt={activityItem.actor_detail.display_name}
+                          alt={getUserDisplayName(activityItem.actor_detail)}
                         />
                       )}
 
@@ -69,8 +69,8 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                       <div>
                         <div className="text-caption-sm-regular">
                           {activityItem.actor_detail.is_bot
-                            ? `${activityItem.actor_detail.first_name} ${t("bot")}`
-                            : activityItem.actor_detail.display_name}
+                            ? `${getUserDisplayName(activityItem.actor_detail)} ${t("bot")}`
+                            : getUserDisplayName(activityItem.actor_detail)}
                         </div>
                         <p className="mt-0.5 text-caption-sm-regular text-secondary">
                           {t("profile_activity.commented")} {calculateTimeAgo(activityItem.created_at)}
@@ -129,7 +129,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                                   <Avatar
                                     size="sm"
                                     src={getFileURL(activityItem.actor_detail.avatar_url)}
-                                    alt={activityItem.actor_detail.display_name}
+                                    alt={getUserDisplayName(activityItem.actor_detail)}
                                   />
                                 )}
                               </div>
@@ -142,7 +142,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                               <span className="font-medium text-primary">Plane</span>
                             ) : activityItem.actor_detail.is_bot ? (
                               <span className="font-medium text-primary">
-                                {activityItem.actor_detail.first_name} {t("bot")}
+                                {getUserDisplayName(activityItem.actor_detail)} {t("bot")}
                               </span>
                             ) : (
                               <Link
@@ -152,7 +152,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                                 <span className="font-medium text-primary">
                                   {currentUser?.id === activityItem.actor_detail.id
                                     ? t("you")
-                                    : activityItem.actor_detail.display_name}
+                                    : getUserDisplayName(activityItem.actor_detail)}
                                 </span>
                               </Link>
                             )}{" "}

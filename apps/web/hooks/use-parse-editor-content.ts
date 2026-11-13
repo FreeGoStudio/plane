@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useCallback } from "react";
 // plane types
 import type { TSearchEntities } from "@plane/types";
@@ -21,6 +22,7 @@ type TArgs = {
 };
 
 export const useParseEditorContent = (args: TArgs) => {
+  useTranslation();
   const { projectId, workspaceSlug } = args;
   // store hooks
   const { getUserDetails } = useMember();
@@ -53,7 +55,7 @@ export const useParseEditorContent = (args: TArgs) => {
         let textContent = "user";
         if (entityType === "user_mention") {
           const userDetails = getUserDetails(id);
-          textContent = userDetails?.display_name ?? "";
+          textContent = getUserDisplayName(userDetails) || "";
         } else {
           const mentionDetails = parseAdditionalEditorContent({
             id,
@@ -182,7 +184,7 @@ export const useParseEditorContent = (args: TArgs) => {
         if (entityType === "user_mention") {
           const userDetails = getUserDetails(id);
           if (!userDetails) return "";
-          return `[${userDetails.display_name}](${originUrl}/${workspaceSlug}/profile/${id})`;
+          return `[${getUserDisplayName(userDetails)}](${originUrl}/${workspaceSlug}/profile/${id})`;
         } else {
           const mentionDetails = parseAdditionalEditorContent({
             id,
@@ -256,7 +258,7 @@ export const useParseEditorContent = (args: TArgs) => {
           if (userDetails) {
             userMentions.push({
               id,
-              display_name: userDetails.display_name,
+              display_name: getUserDisplayName(userDetails),
               url,
             });
           }

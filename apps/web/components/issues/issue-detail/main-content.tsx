@@ -11,7 +11,7 @@ import { observer } from "mobx-react";
 import { Button } from "@makeplane/propel/components/button";
 import { Loader } from "@plane/blocks/skeleton";
 import type { EditorRefApi } from "@plane/editor";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TNameDescriptionLoader } from "@plane/types";
 import { EFileAssetType, EIssueServiceType } from "@plane/types";
 // components
@@ -205,7 +205,7 @@ export const IssueMainContent = observer(function IssueMainContent(props: Props)
               className="shrink-0"
               entityInformation={{
                 createdAt: issue.created_at ? new Date(issue.created_at) : new Date(),
-                createdByDisplayName: getUserDetails(issue.created_by ?? "")?.display_name ?? "",
+                createdByDisplayName: getUserDisplayName(getUserDetails(issue.created_by ?? "")) || "",
                 id: issueId,
                 isRestoreDisabled: !isEditable || isArchived,
               }}

@@ -10,13 +10,13 @@ import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { InputField } from "@makeplane/propel/components/input-field";
-import { DEFAULT_LANGUAGE, useTranslation } from "@plane/i18n";
+import { getUserDisplayName, DEFAULT_LANGUAGE, useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { setPromiseToast, setToast } from "@plane/blocks/toast";
 import { EFileAssetType } from "@plane/types";
 import type { IUser, TUserProfile } from "@plane/types";
 
-import { formatUserFullName, getFileURL } from "@plane/utils";
+import { getFileURL } from "@plane/utils";
 // components
 import { DeactivateAccountModal } from "@/components/account/deactivate-account-modal";
 import { ImagePickerPopover } from "@/components/core/image-picker-popover";
@@ -59,7 +59,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
   const [deactivateAccountModal, setDeactivateAccountModal] = useState(false);
   const [isChangeEmailModalOpen, setIsChangeEmailModalOpen] = useState(false);
   // language support
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   // form info
   const {
     handleSubmit,
@@ -216,7 +216,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
             <CoverImage
               src={userCover}
               className="absolute inset-0 size-full"
-              alt={currentUser?.first_name ?? "Cover image"}
+              alt={getUserDisplayName(currentUser) || "Cover image"}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/70" />
             <div className="absolute inset-x-4 bottom-4 z-5 flex h-10 items-end justify-between gap-2">
@@ -230,15 +230,17 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   <Avatar
                     size="xl"
                     src={userAvatar ? getFileURL(userAvatar) : undefined}
-                    alt={currentUser?.display_name}
+                    alt={getUserDisplayName(currentUser)}
                   />
                 </button>
                 <div className="flex min-w-0 flex-col text-on-color">
                   <span className="truncate text-body-sm-medium">
-                    {formatUserFullName(
-                      { first_name: watch("first_name"), last_name: watch("last_name") },
-                      currentLocale
-                    )}
+                    {getUserDisplayName({
+                      display_name: watch("display_name"),
+                      first_name: watch("first_name"),
+                      last_name: watch("last_name"),
+                      email: watch("email"),
+                    })}
                   </span>
                   <span className="truncate text-body-xs-regular">{watch("email")}</span>
                 </div>

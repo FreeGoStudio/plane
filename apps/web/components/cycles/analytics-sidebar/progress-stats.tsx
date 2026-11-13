@@ -7,7 +7,7 @@
 import { observer } from "mobx-react";
 // plane imports
 import { Tabs, TabsList, Tab, TabsPanel } from "@makeplane/propel/components/tabs";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TWorkItemFilterCondition } from "@plane/shared-state";
 import type { TCycleDistribution, TCycleEstimateDistribution, TCyclePlotType } from "@plane/types";
 import { toFilterArray } from "@plane/utils";
@@ -64,14 +64,14 @@ export const CycleProgressStats = observer(function CycleProgressStats(props: TC
     plotType === "burndown"
       ? (currentDistribution?.assignees || []).map((assignee) => ({
           id: assignee?.assignee_id || undefined,
-          title: assignee?.display_name || undefined,
+          title: getUserDisplayName(assignee) || undefined,
           avatar_url: assignee?.avatar_url || undefined,
           completed: assignee.completed_issues,
           total: assignee.total_issues,
         }))
       : (currentEstimateDistribution?.assignees || []).map((assignee) => ({
           id: assignee?.assignee_id || undefined,
-          title: assignee?.display_name || undefined,
+          title: getUserDisplayName(assignee) || undefined,
           avatar_url: assignee?.avatar_url || undefined,
           completed: assignee.completed_estimates,
           total: assignee.total_estimates,

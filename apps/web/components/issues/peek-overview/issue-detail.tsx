@@ -5,6 +5,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useEffect } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -47,6 +48,7 @@ type Props = {
 };
 
 export const PeekOverviewIssueDetails = observer(function PeekOverviewIssueDetails(props: Props) {
+  useTranslation();
   const { editorRef, workspaceSlug, issueId, issueOperations, disabled, isArchived, isSubmitting, setIsSubmitting } =
     props;
   // store hooks
@@ -163,7 +165,7 @@ export const PeekOverviewIssueDetails = observer(function PeekOverviewIssueDetai
             className="shrink-0"
             entityInformation={{
               createdAt: issue.created_at ? new Date(issue.created_at) : new Date(),
-              createdByDisplayName: getUserDetails(issue.created_by ?? "")?.display_name ?? "",
+              createdByDisplayName: getUserDisplayName(getUserDetails(issue.created_by ?? "")) || "",
               id: issueId,
               isRestoreDisabled: disabled || isArchived,
             }}

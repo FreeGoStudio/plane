@@ -9,14 +9,14 @@ import { observer } from "mobx-react";
 import { useParams, useRouter } from "next/navigation";
 import { ChevronDownOutline, RightSidePaneOutline, YourWorkOutline } from "@makeplane/propel/icons";
 import { PROFILE_VIEWER_TAB, PROFILE_ADMINS_TAB, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { IUserProfileProjectSegregation } from "@plane/types";
 import { Breadcrumbs } from "@plane/blocks/breadcrumb";
 import { Header } from "@plane/blocks/layout";
 import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/components/menu";
-import { formatUserFullName, cn } from "@plane/utils";
+import { cn } from "@plane/utils";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 import { ProfileIssuesFilter } from "@/components/profile/profile-issues-filter";
@@ -39,7 +39,7 @@ export const UserProfileHeader = observer(function UserProfileHeader(props: TUse
   const { toggleProfileSidebar, profileSidebarCollapsed } = useAppTheme();
   const { data: currentUser } = useUser();
   const { workspaceUserInfo, allowPermissions } = useUserPermissions();
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   // derived values
   const isAuthorized = allowPermissions(
     [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
@@ -50,7 +50,7 @@ export const UserProfileHeader = observer(function UserProfileHeader(props: TUse
 
   const tabsList = isAuthorized ? [...PROFILE_VIEWER_TAB, ...PROFILE_ADMINS_TAB] : PROFILE_VIEWER_TAB;
 
-  const userName = formatUserFullName(userProjectsData?.user_data, currentLocale);
+  const userName = getUserDisplayName(userProjectsData?.user_data);
 
   const isCurrentUser = currentUser?.id === userId;
 

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { Command } from "cmdk";
 import { observer } from "mobx-react";
 // plane imports
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const PowerKMembersMenu = observer(function PowerKMembersMenu(props: Props) {
+  useTranslation();
   const { handleSelect, heading, userIds, value } = props;
   // store hooks
   const { getUserDetails } = useMember();
@@ -38,14 +40,14 @@ export const PowerKMembersMenu = observer(function PowerKMembersMenu(props: Prop
             key={memberId}
             iconNode={
               <Avatar
-                alt={memberDetails?.display_name}
-                fallback={memberDetails?.display_name?.[0]?.toUpperCase()}
+                alt={getUserDisplayName(memberDetails)}
+                fallback={getUserDisplayName(memberDetails)?.[0]?.toUpperCase()}
                 src={getFileURL(memberDetails?.avatar_url ?? "")}
                 size="xs"
               />
             }
             isSelected={value.includes(memberId)}
-            label={memberDetails?.display_name}
+            label={getUserDisplayName(memberDetails)}
             onSelect={() => handleSelect(memberId)}
           />
         );

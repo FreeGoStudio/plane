@@ -4,13 +4,13 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/components/menu";
-import { formatUserFullName, getFileURL } from "@plane/utils";
+import { getFileURL } from "@plane/utils";
 // hooks
 import { useUser } from "@/hooks/store/user";
 // components
@@ -21,14 +21,14 @@ type TSwitchAccountDropdownProps = {
 };
 
 export const SwitchAccountDropdown = observer(function SwitchAccountDropdown(props: TSwitchAccountDropdownProps) {
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   const { fullName } = props;
   // states
   const [showSwitchAccountModal, setShowSwitchAccountModal] = useState(false);
   // store hooks
   const { data: user } = useUser();
 
-  const displayName = formatUserFullName(user, currentLocale) || (fullName?.trim() ? fullName : user?.email);
+  const displayName = getUserDisplayName(user) || fullName?.trim() || "";
 
   if (!displayName && !fullName) return null;
 
@@ -47,8 +47,8 @@ export const SwitchAccountDropdown = observer(function SwitchAccountDropdown(pro
           <Avatar
             size="xs"
             src={user?.avatar_url ? getFileURL(user.avatar_url) : undefined}
-            alt={user?.display_name ?? displayName}
-            fallback={fullName?.[0] ?? "R"}
+            alt={getUserDisplayName(user) || displayName}
+            fallback={displayName[0] ?? "R"}
           />
           <span className="text-body-sm-regular text-secondary">{displayName}</span>
         </MenuTrigger>

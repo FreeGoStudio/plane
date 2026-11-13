@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import React, { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -25,6 +26,7 @@ type Props = {
 };
 
 export const CommentReactions = observer(function CommentReactions(props: Props) {
+  useTranslation();
   const { anchor, commentId } = props;
   // state
   const [isPickerOpen, setIsPickerOpen] = useState(false);
@@ -86,7 +88,7 @@ export const CommentReactions = observer(function CommentReactions(props: Props)
       .map((reaction) => {
         const reactionList = groupedReactions?.[reaction] ?? [];
         const userNames = reactionList
-          .map((r) => r?.actor_detail?.display_name)
+          .map((r) => getUserDisplayName(r?.actor_detail))
           .filter((name): name is string => !!name)
           .slice(0, REACTIONS_LIMIT);
 

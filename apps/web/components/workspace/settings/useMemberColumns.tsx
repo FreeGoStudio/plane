@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { EUserPermissions, EUserPermissionsLevel, LOGIN_MEDIUM_LABELS } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { formatPreferredDate } from "@/helpers/home-datetime";
 import { MemberHeaderColumn } from "@/components/project/member-header-column";
 import type { RowData } from "@/components/workspace/settings/member-columns";
@@ -70,7 +70,7 @@ export const useMemberColumns = () => {
     {
       key: "Display name",
       content: t("workspace_settings.settings.members.details.display_name"),
-      tdRender: (rowData: RowData) => <div className="w-32 truncate">{rowData.member.display_name}</div>,
+      tdRender: (rowData: RowData) => <div className="w-32 truncate">{getUserDisplayName(rowData.member)}</div>,
       thRender: () => (
         <MemberHeaderColumn
           property="display_name"

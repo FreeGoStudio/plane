@@ -8,7 +8,7 @@ import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
 // ui
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { EmptyStateCompact } from "@plane/blocks/empty-state";
 import { Card } from "@plane/blocks/card";
@@ -60,8 +60,8 @@ export const ProfileActivity = observer(function ProfileActivity() {
             {userProfileActivity.results.map((activity) => (
               <div key={activity.id} className="flex gap-3">
                 <Avatar
-                  alt={activity.actor_detail?.display_name}
-                  tooltip={activity.actor_detail?.display_name}
+                  alt={getUserDisplayName(activity.actor_detail)}
+                  tooltip={getUserDisplayName(activity.actor_detail)}
                   src={getFileURL(activity.actor_detail?.avatar_url)}
                   size="sm"
                 />
@@ -70,7 +70,7 @@ export const ProfileActivity = observer(function ProfileActivity() {
                     <span className="font-medium text-primary">
                       {currentUser?.id === activity.actor_detail?.id
                         ? t("you")
-                        : activity.actor_detail?.display_name}{" "}
+                        : getUserDisplayName(activity.actor_detail)}{" "}
                     </span>
                     {activity.field ? (
                       <ActivityMessage activity={activity} showIssue />

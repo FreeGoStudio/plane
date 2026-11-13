@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from "react";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { setToast } from "@plane/blocks/toast";
 import { EFileAssetType } from "@plane/types";
 import type { TCommentsOperations } from "@plane/types";
@@ -203,7 +203,7 @@ export const useWorkItemCommentOperations = (
         const reactionUsers = (reactionIds?.[reaction] || [])
           .map((reactionId) => {
             const reactionDetails = getCommentReactionById(reactionId);
-            return reactionDetails ? getUserDetails(reactionDetails.actor)?.display_name : null;
+            return reactionDetails ? getUserDisplayName(getUserDetails(reactionDetails.actor)) : null;
           })
           .filter((displayName): displayName is string => !!displayName);
         const formattedUsers = formatTextList(reactionUsers);

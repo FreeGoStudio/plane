@@ -8,7 +8,7 @@ import { observer } from "mobx-react";
 // plane imports
 import { Menu, MenuContent, MenuGroup, MenuLabel, MenuTrigger } from "@makeplane/propel/components/menu";
 import { ChevronDownOutline, HistoryOutline } from "@makeplane/propel/icons";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TDescriptionVersion } from "@plane/types";
 import { cn, useDateFormatter } from "@plane/utils";
 // hooks
@@ -33,7 +33,7 @@ export const DescriptionVersionsDropdown = observer(function DescriptionVersions
   const latestVersion = versions?.[0];
   const lastUpdatedAt = latestVersion?.created_at ?? entityInformation.createdAt;
   const lastUpdatedByUserDisplayName = latestVersion?.owned_by
-    ? getUserDetails(latestVersion?.owned_by)?.display_name
+    ? getUserDisplayName(getUserDetails(latestVersion?.owned_by))
     : entityInformation.createdByDisplayName;
   // translation
   const { t } = useTranslation();

@@ -9,7 +9,7 @@ import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // plane imports
 import { useOutsideClickDetector } from "@plane/hooks";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Logo } from "@plane/blocks/emoji-icon-picker";
 import { Collapsible } from "@makeplane/propel/components/collapsible";
 import { Avatar } from "@makeplane/propel/components/avatar";
@@ -21,7 +21,7 @@ import { EditOutline } from "@makeplane/propel/icons";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 import type { IUserProfileProjectSegregation } from "@plane/types";
 import { Loader } from "@plane/blocks/skeleton";
-import { formatUserFullName, cn, getFileURL, useDateFormatter } from "@plane/utils";
+import { cn, getFileURL, useDateFormatter } from "@plane/utils";
 // components
 import { CoverImage } from "@/components/common/cover-image";
 // hooks
@@ -52,7 +52,7 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
   const { getProjectById } = useProject();
   const { toggleProfileSettingsModal } = useCommandPalette();
   const { isMobile } = usePlatformOS();
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   // derived values
   const userData = userProjectsData?.user_data;
 
@@ -120,22 +120,17 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
               )}
               <CoverImage
                 src={userData?.cover_image_url ?? undefined}
-                alt={userData?.display_name}
+                alt={getUserDisplayName(userData)}
                 className="h-[110px] w-full"
                 showDefaultWhenEmpty
               />
               <div className="absolute -bottom-7 left-5 flex">
-                <Avatar
-                  size="2xl"
-                  src={getFileURL(userData?.avatar_url ?? "")}
-                  alt={formatUserFullName(userData, currentLocale) || userData?.display_name}
-                />
+                <Avatar size="2xl" src={getFileURL(userData?.avatar_url ?? "")} alt={getUserDisplayName(userData)} />
               </div>
             </div>
             <div className="px-5">
               <div className="mt-10">
-                <h4 className="text-h6-semibold">{formatUserFullName(userData, currentLocale)}</h4>
-                <h6 className="text-body-xs-regular text-secondary">({userData?.display_name})</h6>
+                <h4 className="text-h6-semibold">{getUserDisplayName(userData)}</h4>
               </div>
               <div className="mt-6 space-y-5">
                 {userDetails.map((detail) => (

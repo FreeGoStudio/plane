@@ -20,7 +20,10 @@ const mocks = {
   "@/hooks/store/user": { useUserProfile: () => ({ data: {} }) },
   "@/hooks/use-current-time": { useCurrentTime: () => ({ currentTime: new Date("2026-11-13T00:00:00Z") }) },
   "@/helpers/home-datetime": { getHomeGreetingPeriod: () => "morning", formatHomeDate: () => "2026/11/13" },
-  "@plane/i18n": { useTranslation: () => ({ currentLocale, t: (_key, { name }) => `Hello, ${name}` }) },
+  "@plane/i18n": {
+    getUserDisplayName: require("@plane/i18n").getUserDisplayName,
+    useTranslation: () => ({ currentLocale, t: (_key, { name }) => `Hello, ${name}` }),
+  },
 };
 const code = ts.transpileModule(readFileSync(new URL("./user-greetings.tsx", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
@@ -41,7 +44,8 @@ for (const [locale, firstName, lastName, expected] of [
   ["en", "John", "", "John"],
   ["zh-CN", "", "", ""],
 ]) {
-  test(`home greeting formats ${locale} name ${lastName}/${firstName}`, () => {
+  test(`home greeting formats ${locale} name ${lastName}/${firstName}`, async () => {
+    await require("@plane/i18n").setLanguage(locale);
     currentLocale = locale;
     const html = renderToStaticMarkup(
       React.createElement(exports.UserGreetingsView, {
@@ -51,3 +55,14 @@ for (const [locale, firstName, lastName, expected] of [
     assert.ok(html.includes(`>Hello, ${expected}</h2>`), html);
   });
 }
+
+test("home greeting prioritizes the configured display name and falls back to email", async () => {
+  await require("@plane/i18n").setLanguage("zh-CN");
+  for (const [user, expected] of [
+    [{ display_name: "小张", first_name: "三", last_name: "张", email: "person@example.com" }, "小张"],
+    [{ display_name: "", first_name: "", last_name: "", email: "person@example.com" }, "person@example.com"],
+  ]) {
+    const html = renderToStaticMarkup(React.createElement(exports.UserGreetingsView, { user }));
+    assert.ok(html.includes(`>Hello, ${expected}</h2>`), html);
+  }
+});

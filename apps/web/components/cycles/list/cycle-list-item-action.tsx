@@ -19,7 +19,7 @@ import {
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel, IS_FAVORITE_MENU_OPEN } from "@plane/constants";
 import { useLocalStorage } from "@plane/hooks";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Avatar } from "@makeplane/propel/components/avatar";
 import { Icon } from "@makeplane/propel/components/icon";
 import { Pill } from "@makeplane/propel/components/pill";
@@ -273,7 +273,11 @@ export const CycleListItemAction = observer(function CycleListItemAction(props: 
                 {cycleDetails.assignee_ids?.map((assignee_id) => {
                   const member = getUserDetails(assignee_id);
                   return (
-                    <Avatar key={assignee_id} alt={member?.display_name} src={getFileURL(member?.avatar_url ?? "")} />
+                    <Avatar
+                      key={assignee_id}
+                      alt={getUserDisplayName(member)}
+                      src={getFileURL(member?.avatar_url ?? "")}
+                    />
                   );
                 })}
               </AvatarGroup>

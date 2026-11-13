@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 // types
@@ -18,6 +19,7 @@ type TUser = {
 };
 
 export const User = observer(function User(props: TUser) {
+  useTranslation();
   const { activity, customUserName } = props;
   // store hooks
   const { getUserDetails } = useMember();
@@ -35,7 +37,7 @@ export const User = observer(function User(props: TUser) {
           href={`/${workspaceDetail?.slug}/profile/${actorDetail?.id}`}
           className="font-medium text-primary hover:underline"
         >
-          {actorDetail?.display_name}
+          {getUserDisplayName(actorDetail)}
         </Link>
       )}
     </>

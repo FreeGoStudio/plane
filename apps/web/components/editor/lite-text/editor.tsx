@@ -10,7 +10,7 @@ import type { EIssueCommentAccessSpecifier } from "@plane/constants";
 // plane imports
 import { LiteTextEditorWithRef } from "@plane/editor";
 import type { EditorRefApi, ILiteTextEditorProps, TFileHandler } from "@plane/editor";
-import { translate as t } from "@plane/i18n";
+import { useTranslation, getUserDisplayName, translate as t } from "@plane/i18n";
 import type { MakeOptional } from "@plane/types";
 import { cn, isCommentEmpty } from "@plane/utils";
 // components
@@ -64,6 +64,7 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
   props: LiteTextEditorWrapperProps,
   ref: React.ForwardedRef<EditorRefApi>
 ) {
+  useTranslation();
   const {
     containerClassName,
     editable,
@@ -159,7 +160,7 @@ export const LiteTextEditor = React.forwardRef(function LiteTextEditor(
               },
               renderComponent: EditorMentionsRoot,
               getMentionedEntityDetails: (id) => ({
-                display_name: getUserDetails(id)?.display_name ?? "",
+                display_name: getUserDisplayName(getUserDetails(id)) || "",
               }),
             }}
             placeholder={placeholder}

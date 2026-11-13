@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { GlobeOutline, InfoOutline, LockOutline } from "@makeplane/propel/icons";
 // plane imports
@@ -29,6 +30,7 @@ type Props = {
 };
 
 export const BlockItemAction = observer(function BlockItemAction(props: Props) {
+  useTranslation();
   const { renderFormattedDate } = useDateFormatter();
   const { page, parentRef, storeType } = props;
   // store hooks
@@ -51,10 +53,10 @@ export const BlockItemAction = observer(function BlockItemAction(props: Props) {
       </div>
       {/* page details */}
       <div className="grid size-6 cursor-default place-items-center">
-        <Tooltip label={`Owned by: ${ownerDetails?.display_name ?? ""}`} layout="stacked">
+        <Tooltip label={`Owned by: ${getUserDisplayName(ownerDetails) || ""}`} layout="stacked">
           <Avatar
-            alt={ownerDetails?.display_name}
-            fallback={ownerDetails?.display_name?.[0]?.toUpperCase()}
+            alt={getUserDisplayName(ownerDetails)}
+            fallback={getUserDisplayName(ownerDetails)?.[0]?.toUpperCase()}
             src={getFileURL(ownerDetails?.avatar_url ?? "")}
             size="2xs"
           />

@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { observer } from "mobx-react";
@@ -183,7 +183,7 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
                 createdByDisplayName:
                   inboxIssue.source === EInboxIssueSource.FORMS
                     ? "Intake Form user"
-                    : (getUserDetails(issue.created_by ?? "")?.display_name ?? ""),
+                    : getUserDisplayName(getUserDetails(issue.created_by ?? "")) || "",
                 id: issue.id,
                 isRestoreDisabled: !isEditable,
               }}

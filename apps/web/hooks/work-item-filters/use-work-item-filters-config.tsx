@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useCallback, useMemo } from "react";
 import {
   AtOutline,
@@ -89,6 +90,7 @@ export type TWorkItemFiltersConfig = {
 };
 
 export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps): TWorkItemFiltersConfig => {
+  useTranslation();
   const { allowedFilters, cycleIds, labelIds, memberIds, moduleIds, projectId, projectIds, stateIds, workspaceSlug } =
     props;
   // store hooks
@@ -131,10 +133,7 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
     [moduleIds, getModuleById]
   );
   const projects = useMemo(
-    () =>
-      projectIds
-        ? (projectIds.map((projectId) => getProjectById(projectId)).filter((project) => project) as IProject[])
-        : [],
+    () => (projectIds ? (projectIds.map((id) => getProjectById(id)).filter((item) => item) as IProject[]) : []),
     [projectIds, getProjectById]
   );
   const areAllConfigsInitialized = useMemo(() => isLoaderReady(projectLoader), [projectLoader]);
@@ -222,8 +221,8 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
         members: members ?? [],
         getOptionIcon: (memberDetails) => (
           <Avatar
-            alt={memberDetails.display_name}
-            fallback={memberDetails.display_name?.[0]?.toUpperCase()}
+            alt={getUserDisplayName(memberDetails)}
+            fallback={getUserDisplayName(memberDetails)?.[0]?.toUpperCase()}
             src={getFileURL(memberDetails.avatar_url)}
             size="2xs"
           />
@@ -242,8 +241,8 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
         members: members ?? [],
         getOptionIcon: (memberDetails) => (
           <Avatar
-            alt={memberDetails.display_name}
-            fallback={memberDetails.display_name?.[0]?.toUpperCase()}
+            alt={getUserDisplayName(memberDetails)}
+            fallback={getUserDisplayName(memberDetails)?.[0]?.toUpperCase()}
             src={getFileURL(memberDetails.avatar_url)}
             size="2xs"
           />
@@ -262,8 +261,8 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
         members: members ?? [],
         getOptionIcon: (memberDetails) => (
           <Avatar
-            alt={memberDetails.display_name}
-            fallback={memberDetails.display_name?.[0]?.toUpperCase()}
+            alt={getUserDisplayName(memberDetails)}
+            fallback={getUserDisplayName(memberDetails)?.[0]?.toUpperCase()}
             src={getFileURL(memberDetails.avatar_url)}
             size="2xs"
           />
@@ -282,8 +281,8 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
         members: members ?? [],
         getOptionIcon: (memberDetails) => (
           <Avatar
-            alt={memberDetails.display_name}
-            fallback={memberDetails.display_name?.[0]?.toUpperCase()}
+            alt={getUserDisplayName(memberDetails)}
+            fallback={getUserDisplayName(memberDetails)?.[0]?.toUpperCase()}
             src={getFileURL(memberDetails.avatar_url)}
             size="2xs"
           />
@@ -356,7 +355,7 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
         isEnabled: isFilterEnabled("project_id") && projects !== undefined,
         filterIcon: ProjectsOutline,
         projects: projects,
-        getOptionIcon: (project) => <Logo logo={project.logo_props} size={12} />,
+        getOptionIcon: (option) => <Logo logo={option.logo_props} size={12} />,
         ...operatorConfigs,
       }),
     [isFilterEnabled, projects, operatorConfigs]

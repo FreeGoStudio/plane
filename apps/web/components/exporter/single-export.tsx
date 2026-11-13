@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { useState } from "react";
 // ui
 import { Button } from "@makeplane/propel/components/button";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function SingleExport({ service, refreshing }: Props) {
+  useTranslation();
   const { renderFormattedDate } = useDateFormatter();
   const provider = service.provider;
 
@@ -60,7 +62,7 @@ export function SingleExport({ service, refreshing }: Props) {
         </h4>
         <div className="mt-2 flex items-center gap-2 text-caption-sm-regular text-secondary">
           <span>{renderFormattedDate(service.created_at)}</span>|
-          <span>Exported by {service?.initiated_by_detail?.display_name}</span>
+          <span>Exported by {getUserDisplayName(service?.initiated_by_detail)}</span>
         </div>
       </div>
       {checkExpiry(service.created_at) ? (

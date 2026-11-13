@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { setToast } from "@plane/blocks/toast";
@@ -78,7 +78,7 @@ export const ProjectMemberListItem = observer(function ProjectMemberListItem(pro
         <ConfirmProjectMemberRemove
           isOpen={removeMemberModal !== null}
           onClose={() => setRemoveMemberModal(null)}
-          data={{ id: removeMemberModal.member.id, display_name: removeMemberModal.member.display_name || "" }}
+          data={{ id: removeMemberModal.member.id, display_name: getUserDisplayName(removeMemberModal.member) || "" }}
           onSubmit={() => handleRemove(removeMemberModal.member.id)}
         />
       )}

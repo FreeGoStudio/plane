@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { forwardRef } from "react";
 // plane imports
 import { DocumentEditorWithRef } from "@plane/editor";
@@ -42,6 +43,7 @@ export const DocumentEditor = forwardRef(function DocumentEditor(
   props: DocumentEditorWrapperProps,
   ref: React.ForwardedRef<EditorRefApi>
 ) {
+  useTranslation();
   const {
     containerClassName,
     editable,
@@ -93,7 +95,7 @@ export const DocumentEditor = forwardRef(function DocumentEditor(
           return res;
         },
         renderComponent: EditorMentionsRoot,
-        getMentionedEntityDetails: (id: string) => ({ display_name: getUserDetails(id)?.display_name ?? "" }),
+        getMentionedEntityDetails: (id: string) => ({ display_name: getUserDisplayName(getUserDetails(id)) || "" }),
       }}
       extendedEditorProps={extendedEditorProps}
       {...rest}

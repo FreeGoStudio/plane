@@ -15,7 +15,7 @@ import { Button } from "@makeplane/propel/components/button";
 import { Icon } from "@makeplane/propel/components/icon";
 import { IconButton } from "@makeplane/propel/components/icon-button";
 import { CloseOutline } from "@makeplane/propel/icons";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TPageVersion } from "@plane/types";
 import { cn, getFileURL, useDateFormatter } from "@plane/utils";
 // components
@@ -81,13 +81,13 @@ const VersionRow = observer(function VersionRow(props: VersionRowProps) {
         {version && (
           <span className="flex items-center gap-1">
             <Avatar
-              alt={versionCreator?.display_name}
-              fallback={versionCreator?.display_name?.[0]?.toUpperCase()}
+              alt={getUserDisplayName(versionCreator)}
+              fallback={getUserDisplayName(versionCreator)?.[0]?.toUpperCase()}
               size="2xs"
               src={getFileURL(versionCreator?.avatar_url ?? "")}
             />
             <span className="truncate text-caption-sm-regular text-secondary">
-              {versionCreator?.display_name ?? t("common.deactivated_user")}
+              {getUserDisplayName(versionCreator) || t("common.deactivated_user")}
             </span>
           </span>
         )}

@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { stringToEmoji } from "@plane/blocks/emoji-icon-picker";
@@ -94,7 +94,7 @@ export const IssueReaction = observer(function IssueReaction(props: TIssueReacti
       .map((reactionId) => {
         const reactionDetails = getReactionById(reactionId);
         return reactionDetails
-          ? getUserDetails(reactionDetails?.actor)?.display_name || reactionDetails?.display_name
+          ? getUserDisplayName(getUserDetails(reactionDetails?.actor)) || getUserDisplayName(reactionDetails)
           : null;
       })
       .filter((displayName): displayName is string => !!displayName);

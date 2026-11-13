@@ -16,9 +16,9 @@ import { MoreHorizontalOutline, UserMinusOutline } from "@makeplane/propel/icons
 import { Select } from "@plane/blocks/select";
 import { setToast } from "@plane/blocks/toast";
 import { ROLE, EUserPermissions } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { EUserProjectRoles, IUser, IWorkspaceMember, TProjectMembership } from "@plane/types";
-import { formatUserFullName, getFileURL } from "@plane/utils";
+import { getFileURL } from "@plane/utils";
 // hooks
 import { useMember } from "@/hooks/store/use-member";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -50,18 +50,18 @@ type AccountTypeProps = {
 export function NameColumn(props: NameProps) {
   const { rowData, workspaceSlug, isAdmin, currentUser, setRemoveMemberModal } = props;
   // plane hooks
-  const { t, currentLocale } = useTranslation();
+  const { t } = useTranslation();
   // derived values
-  const { avatar_url, display_name, email, first_name, id, last_name } = rowData.member;
+  const { avatar_url, id } = rowData.member;
 
   return (
     <div className="group relative">
       <div className="flex w-72 items-center gap-2">
         <div className="flex min-w-0 flex-1 items-center gap-x-2 gap-y-2 overflow-hidden">
           <Link href={`/${workspaceSlug}/profile/${id}`} className="flex shrink-0">
-            <Avatar size="sm" src={getFileURL(avatar_url ?? "")} alt={display_name || email} />
+            <Avatar size="sm" src={getFileURL(avatar_url ?? "")} alt={getUserDisplayName(rowData.member)} />
           </Link>
-          <span className="truncate">{formatUserFullName({ first_name, last_name }, currentLocale)}</span>
+          <span className="truncate">{getUserDisplayName(rowData.member)}</span>
         </div>
         {(isAdmin || id === currentUser?.id) && (
           <Menu>

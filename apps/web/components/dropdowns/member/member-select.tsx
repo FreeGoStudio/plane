@@ -11,7 +11,7 @@ import { useParams } from "next/navigation";
 import { MemberSelect as MemberSelectBlock } from "@plane/blocks/property-select";
 import type { MemberOption, MemberSelectVariant } from "@plane/blocks/property-select";
 import type { SelectPaginationParams, SelectTooltip, SelectTooltipOverride } from "@plane/blocks/select";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TPaginatedResponse } from "@plane/types";
 import { getFileURL } from "@plane/utils";
 // hooks
@@ -112,7 +112,7 @@ export const MemberSelect = observer(function MemberSelect(props: MemberSelectWe
   const toOption = useCallback(
     (id: string): MemberOption => {
       const member = getUserDetails(id);
-      const name = member?.display_name ?? "";
+      const name = getUserDisplayName(member) || "";
       return {
         id,
         display_name: id === currentUser?.id ? `${name} (${youLabel})` : name,

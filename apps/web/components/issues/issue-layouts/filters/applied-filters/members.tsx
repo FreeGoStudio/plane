@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation, getUserDisplayName } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Avatar } from "@makeplane/propel/components/avatar";
 // helpers
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export const AppliedMembersFilters = observer(function AppliedMembersFilters(props: Props) {
+  useTranslation();
   const { handleRemove, values, editable } = props;
 
   const {
@@ -38,14 +40,14 @@ export const AppliedMembersFilters = observer(function AppliedMembersFilters(pro
             variant="soft"
             icon={
               <Avatar
-                alt={memberDetails.display_name}
-                fallback={memberDetails.display_name?.[0]?.toUpperCase()}
+                alt={getUserDisplayName(memberDetails)}
+                fallback={getUserDisplayName(memberDetails)?.[0]?.toUpperCase()}
                 src={getFileURL(memberDetails.avatar_url)}
                 size="2xs"
               />
             }
-            label={memberDetails.display_name}
-            ariaLabel={memberDetails.display_name}
+            label={getUserDisplayName(memberDetails)}
+            ariaLabel={getUserDisplayName(memberDetails)}
             onRemove={editable ? () => handleRemove(memberId) : undefined}
           />
         );

@@ -24,7 +24,10 @@ const mocks = {
   "mobx-react": { observer: (component) => component },
   "next/navigation": { useParams: () => ({ workspaceSlug: "workspace", userId: "self" }) },
   swr: { __esModule: true, default: () => ({ data: { results: activities } }) },
-  "@plane/i18n": { useTranslation: () => ({ t: (key) => dictionaries[locale][key] ?? key }) },
+  "@plane/i18n": {
+    getUserDisplayName: require("@plane/i18n").getUserDisplayName,
+    useTranslation: () => ({ t: (key) => dictionaries[locale][key] ?? key }),
+  },
   "@plane/utils": { getFileURL: () => "", useDateFormatter: () => ({ calculateTimeAgo: () => "time" }) },
   "@plane/constants": { USER_PROFILE_ACTIVITY: () => "activity" },
   "@/hooks/store/user": { useUser: () => ({ data: { id: "self" } }) },

@@ -15,7 +15,7 @@ import { IconButton } from "@makeplane/propel/components/icon-button";
 import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/components/menu";
 import { ActivityCommentCard, ActivityCommentHeader, ActivityTimelineTimestamp } from "@plane/blocks/activity";
 import type { EditorRefApi } from "@plane/editor";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import type { TIssuePublicComment } from "@plane/types";
 import { calculateTimeAgo, getFileURL, renderFormattedDate, renderFormattedTime } from "@plane/utils";
 // components
@@ -71,8 +71,8 @@ export const CommentCard = observer(function CommentCard(props: Props) {
   };
 
   const displayName = comment.actor_detail.is_bot
-    ? comment.actor_detail.first_name + " Bot"
-    : comment.actor_detail.display_name;
+    ? getUserDisplayName(comment.actor_detail) + " Bot"
+    : getUserDisplayName(comment.actor_detail);
   const canManageComment = !isInIframe && currentUser?.id === comment?.actor_detail?.id;
 
   return (

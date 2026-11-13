@@ -13,7 +13,7 @@ import { CloseOutline, MembersOutline, ProjectsOutline, TickOutline } from "@mak
 // plane ui
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useLocalStorage } from "@plane/hooks";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { cn, getFileURL } from "@plane/utils";
 // hooks
 import { useCommandPalette } from "@/hooks/store/use-command-palette";
@@ -99,14 +99,14 @@ export const NoProjectsEmptyState = observer(function NoProjectsEmptyState() {
               <img
                 src={getFileURL(currentUser?.avatar_url)}
                 className="absolute top-0 left-0 h-full w-full rounded-full object-cover"
-                alt={currentUser?.display_name || currentUser?.email}
+                alt={getUserDisplayName(currentUser)}
               />
             </span>
           </Link>
         ) : (
           <Link href={`/${workspaceSlug}/profile/${currentUser?.id}`}>
             <span className="relative flex size-4 items-center justify-center rounded-full bg-[#028375] p-4 text-body-xs-regular text-on-color capitalize">
-              {(currentUser?.email ?? currentUser?.display_name ?? "?")[0]}
+              {(getUserDisplayName(currentUser) || "?")[0]}
             </span>
           </Link>
         ),

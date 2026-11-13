@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme as useNextTheme } from "next-themes";
@@ -114,8 +114,8 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
                 render={
                   <IconButton variant="ghost" size="lg" type="button" aria-label={t("admin_ui.account_menu")}>
                     <Avatar
-                      alt={currentUser.display_name ?? t("admin_ui.admin_user")}
-                      fallback={currentUser.display_name?.[0]?.toUpperCase()}
+                      alt={getUserDisplayName(currentUser) || t("admin_ui.admin_user")}
+                      fallback={getUserDisplayName(currentUser)?.[0]?.toUpperCase()}
                       src={getFileURL(currentUser.avatar_url)}
                       size="sm"
                     />

@@ -11,7 +11,7 @@ import { useTheme } from "next-themes";
 import { CompletedAtOutline } from "@makeplane/propel/icons";
 // plane imports
 import { Avatar } from "@makeplane/propel/components/avatar";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { PriorityIcon } from "@plane/blocks/icons";
 import { Tabs, TabsList, Tab, TabsPanel } from "@makeplane/propel/components/tabs";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
@@ -210,13 +210,13 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                         title={
                           <div className="flex items-center gap-2">
                             <Avatar
-                              alt={assignee?.display_name ?? undefined}
-                              fallback={assignee?.display_name?.[0]?.toUpperCase()}
+                              alt={getUserDisplayName(assignee) || undefined}
+                              fallback={getUserDisplayName(assignee)?.[0]?.toUpperCase()}
                               src={getFileURL(assignee?.avatar_url ?? "")}
                               size="xs"
                             />
 
-                            <span>{assignee.display_name}</span>
+                            <span>{getUserDisplayName(assignee)}</span>
                           </div>
                         }
                         completed={assignee.completed_issues}

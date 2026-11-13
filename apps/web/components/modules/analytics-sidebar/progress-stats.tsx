@@ -5,7 +5,7 @@
  */
 
 import { observer } from "mobx-react";
-import { useTranslation } from "@plane/i18n";
+import { getUserDisplayName, useTranslation } from "@plane/i18n";
 import { Tabs, TabsList, Tab, TabsPanel } from "@makeplane/propel/components/tabs";
 import type { TWorkItemFilterCondition } from "@plane/shared-state";
 import type { TModuleDistribution, TModuleEstimateDistribution, TModulePlotType } from "@plane/types";
@@ -53,14 +53,14 @@ export const ModuleProgressStats = observer(function ModuleProgressStats(props: 
     plotType === "burndown"
       ? (currentDistribution?.assignees || []).map((assignee) => ({
           id: assignee?.assignee_id || undefined,
-          title: assignee?.display_name || undefined,
+          title: getUserDisplayName(assignee) || undefined,
           avatar_url: assignee?.avatar_url || undefined,
           completed: assignee.completed_issues,
           total: assignee.total_issues,
         }))
       : (currentEstimateDistribution?.assignees || []).map((assignee) => ({
           id: assignee?.assignee_id || undefined,
-          title: assignee?.display_name || undefined,
+          title: getUserDisplayName(assignee) || undefined,
           avatar_url: assignee?.avatar_url || undefined,
           completed: assignee.completed_estimates,
           total: assignee.total_estimates,
