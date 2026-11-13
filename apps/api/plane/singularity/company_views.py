@@ -54,5 +54,6 @@ def company_account(request):
         request, "singularity/company_account.html", {"account": row, "error": error}, status=400 if error else 200
     )
     response["Cache-Control"] = "no-store"
-    response["Referrer-Policy"] = "no-referrer"
+    # Native same-origin form POSTs must retain Origin for Django CSRF checks.
+    response["Referrer-Policy"] = "same-origin"
     return response

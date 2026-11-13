@@ -185,7 +185,8 @@ def personal_tokens(request):
         context.update(token=raw, expires=expires)
     response = render(request, "singularity/personal_tokens.html", context)
     response["Cache-Control"] = "no-store"
-    response["Referrer-Policy"] = "no-referrer"
+    # Native same-origin form POSTs must retain Origin for Django CSRF checks.
+    response["Referrer-Policy"] = "same-origin"
     return response
 
 

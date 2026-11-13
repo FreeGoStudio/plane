@@ -33,6 +33,7 @@ def test_personal_token_exchange_scope_and_revocation(world):
     assert row.scopes == "projects:read"
     assert row.refresh_expires_at <= timezone.now()
     assert "no-store" in response["Cache-Control"]
+    assert response["Referrer-Policy"] == "same-origin"
     assert raw not in client.get(URL).content.decode()
     assert raw not in client.get("/auth/singularity/connections/").content.decode()
     params = {"subject_token": raw}
