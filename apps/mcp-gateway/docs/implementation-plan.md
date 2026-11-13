@@ -30,3 +30,24 @@ and authorization origin. No public network policy changes are authorized.
 Delivery evidence distinguishes implementation, automated validation and actual
 client acceptance. Missing interactive login or certificate trust is reported
 as pending, not silently replaced with mocked acceptance.
+
+## P4 Plane-owned preparation
+
+Prepare via `POST .../work-items/prepare/` (or the item UUID's `/prepare/`) using
+only explicit content and, for updates, the previously read version. Plane returns
+202 with a server-generated decision UUID and content digest, bound to the current
+grant, project and target. No work item or discussion body is stored at preparation.
+A write request without a decision ID also prepares only. Unknown IDs, changed
+content, different connections or projects cannot commit. Successful saves retain
+receipt/work-item atomicity and current permission checks on every replay.
+
+The Gateway retains encrypted pending content but uses Plane's decision ID. Existing
+committed decisions can still replay. Legacy Gateway-only pending IDs must be
+prepared again; deploy API and Gateway together. Work-item results include the
+native `/{workspace}/browse/{identifier}-{sequence}/` link using configured WEB_URL.
+Native App/public PATCH row locks are preserved, not replaced.
+
+Validation: 21 Plane OAuth/work-item contracts and 6 Gateway SDK contracts pass,
+including server-owned preparation, no early write, arbitrary-ID rejection,
+actor/project/content binding, concurrent commit/restart replay and native-edit
+conflicts. API/Gateway lint passed. Live deployment of this increment remains pending.

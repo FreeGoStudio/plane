@@ -54,6 +54,10 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
                 return httpx.Response(self.status, json={"secret": "must not leak"})
             if request.url.path.endswith("projects/"):
                 return httpx.Response(200, json={"results": self.projects, "next_offset": None})
+            if request.url.path.endswith("prepare/"):
+                return httpx.Response(
+                    202, json={"status": "prepared", "decision_id": "33333333-3333-3333-3333-333333333333"}
+                )
             return httpx.Response(200, json={"status": "created", "id": "item-1"})
 
         self.plane = Plane("https://plane.test", "gateway-secret", self.vault, transport=httpx.MockTransport(handle))
@@ -93,7 +97,13 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
             self.call("save_discussion_result", args), self.call("save_discussion_result", args)
         )
         self.assertEqual(first["decision_id"], second["decision_id"])
-        self.assertFalse(any(r.method == "POST" and "/api/" in r.url.path for r in self.requests))
+        self.assertFalse(
+            any(
+                r.method == "POST" and "/api/" in r.url.path and not r.url.path.endswith("prepare/")
+                for r in self.requests
+            )
+        )
+        self.assertEqual(first["decision_id"], "33333333-3333-3333-3333-333333333333")
         self.assertNotIn(b"Sensitive discussion", Path(self.db).read_bytes())
         self.assertNotIn(b"private-plane-token", Path(self.db).read_bytes())
         reopened = Vault(self.db, self.key)

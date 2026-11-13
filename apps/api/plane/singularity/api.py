@@ -7,6 +7,7 @@
 import json
 import uuid
 from functools import partial
+from urllib.parse import quote
 
 import nh3
 from markdown_it import MarkdownIt
@@ -149,7 +150,68 @@ def item_data(item):
         "updated_at": item.updated_at.isoformat(),
         "project_id": str(item.project_id),
         "work_item_identifier": f"{item.project.identifier}-{item.sequence_id}",
+        "url": settings.WEB_URL.rstrip("/")
+        + "/"
+        + quote(item.project.workspace.slug, safe="")
+        + "/browse/"
+        + quote(f"{item.project.identifier}-{item.sequence_id}", safe="")
+        + "/",
     }
+
+
+ARCHIVE_FIELDS = {"title", "description_markdown", "expected_updated_at", "append", "work_item_type"}
+
+
+def validate_archive_content(data):
+    if not isinstance(data, dict) or set(data) - ARCHIVE_FIELDS:
+        raise ValidationError("Invalid archive request")
+    if "title" in data and (not isinstance(data["title"], str) or not 1 <= len(data["title"].strip()) <= 255):
+        raise ValidationError("Title must be 1–255 characters")
+    if "description_markdown" in data and (
+        not isinstance(data["description_markdown"], str) or len(data["description_markdown"]) > 50000
+    ):
+        raise ValidationError("Description must be at most 50000 characters")
+    if "append" in data and not isinstance(data["append"], bool):
+        raise ValidationError("Append must be a boolean")
+    for key in ("expected_updated_at", "work_item_type"):
+        if key in data and (not isinstance(data[key], str) or len(data[key]) > 100):
+            raise ValidationError("Invalid archive metadata")
+    if not {"title", "description_markdown"} & set(data):
+        raise ValidationError("No explicit content to save")
+
+
+def prepare_archive(view, request, slug, project_id, pk=None):
+    """Issue a server-owned decision bound to grant, project, target and payload hash."""
+    view.require_scopes(request, "workitems:read", "workitems:write")
+    project = project_for(request, slug, project_id)
+    item = get_object_or_404(readable_items(request, project), pk=pk) if pk else None
+    if not can_write(request, slug, project_id, item):
+        raise PermissionDenied("Work item operation not allowed")
+    validate_archive_content(request.data)
+    if item and not request.data.get("expected_updated_at"):
+        raise ValidationError("Updates require the previously read version")
+    if not item and "title" not in request.data:
+        raise ValidationError("Creation requires a title")
+    decision_id = uuid.uuid4()
+    payload = {**request.data, "decision_id": str(decision_id)}
+    fingerprint = digest(json.dumps({"item": str(pk), "payload": payload}, sort_keys=True))
+    DiscussionReceipt.objects.create(
+        id=decision_id, grant=request.auth.grant, project=project, payload_digest=fingerprint
+    )
+    return Response(
+        {
+            "status": "prepared",
+            "decision_id": str(decision_id),
+            "project_id": str(project.pk),
+            "content_digest": fingerprint,
+        },
+        status=202,
+    )
+
+
+class DiscussionPrepare(DelegatedAPI):
+    def post(self, request, slug, project_id, pk=None):
+        return prepare_archive(self, request, slug, project_id, pk)
 
 
 class Me(DelegatedAPI):
@@ -220,7 +282,9 @@ class Items(DelegatedAPI):
         self.require_scopes(request, "workitems:read", "workitems:write")
         project = project_for(request, slug, project_id)
         data = request.data
-        allowed = {"decision_id", "title", "description_markdown", "expected_updated_at", "append", "work_item_type"}
+        if isinstance(data, dict) and "decision_id" not in data:
+            return prepare_archive(self, request, slug, project_id, pk)
+        allowed = ARCHIVE_FIELDS | {"decision_id"}
         if not isinstance(data, dict) or set(data) - allowed or not _uuid(data.get("decision_id")):
             raise ValidationError("Invalid archive request")
         item = (
@@ -229,11 +293,9 @@ class Items(DelegatedAPI):
         if not can_write(request, slug, project_id, item):
             raise PermissionDenied("Work item operation not allowed")
         payload_hash = digest(json.dumps({"item": str(pk), "payload": data}, sort_keys=True))
-        receipt, _ = DiscussionReceipt.objects.get_or_create(
-            id=data["decision_id"],
-            defaults={"grant": request.auth.grant, "project": project, "payload_digest": payload_hash},
-        )
-        receipt = DiscussionReceipt.objects.select_for_update().get(pk=receipt.pk)
+        receipt = DiscussionReceipt.objects.select_for_update().filter(pk=data["decision_id"]).first()
+        if receipt is None:
+            return Response({"error": "decision_not_prepared"}, status=409)
         if (
             receipt.grant_id != request.auth.grant_id
             or receipt.project_id != project.id
@@ -294,7 +356,7 @@ class Items(DelegatedAPI):
             saved = serializer.save()
         created = item is None
         result = {"status": "created" if created else "updated", **item_data(saved)}
-        # Do not guess frontend routes; ID and identifier are sufficient until verified.
+        # Match the native generateWorkItemLink browse route after persistence.
         receipt.issue, receipt.result = saved, result
         receipt.save(update_fields=["issue", "result"])
         transaction.on_commit(

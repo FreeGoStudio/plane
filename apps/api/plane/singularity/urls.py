@@ -32,6 +32,8 @@ urlpatterns = [
     path("me/", api.Me.as_view()),
     path("projects/", api.Projects.as_view()),
     path(base + "work-items/", api.Items.as_view()),
+    path(base + "work-items/prepare/", api.DiscussionPrepare.as_view()),
+    path(base + "work-items/<uuid:pk>/prepare/", api.DiscussionPrepare.as_view()),
     path(base + "work-items/<uuid:pk>/", api.Items.as_view()),
     path(base + "capabilities/", api.Capabilities.as_view()),
     path(base + "work-items/<uuid:pk>/capabilities/", api.Capabilities.as_view()),

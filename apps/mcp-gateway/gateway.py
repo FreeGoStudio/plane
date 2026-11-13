@@ -69,12 +69,20 @@ class Vault:
                 (key, self.encode(data), time.time() + data["expires_in"]),
             )
 
-    def prepare(self, connection, data):
+    def prepared(self, connection, data):
+        fingerprint = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT id FROM decisions WHERE connection=? AND fingerprint=?", (connection, fingerprint)
+            ).fetchone()
+            return row["id"] if row else None
+
+    def prepare(self, connection, data, decision_id):
         fingerprint = hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
         with self.connect() as db:
             db.execute(
                 "INSERT OR IGNORE INTO decisions(id,connection,fingerprint,data) VALUES (?,?,?,?)",
-                (str(uuid.uuid4()), connection, fingerprint, self.encode(data)),
+                (str(uuid.UUID(decision_id)), connection, fingerprint, self.encode(data)),
             )
             row = db.execute(
                 "SELECT id FROM decisions WHERE connection=? AND fingerprint=?", (connection, fingerprint)
@@ -327,12 +335,19 @@ def build_server(plane, issuer, resource):
         }.items():
             if value is not None:
                 payload[key] = value
-        prepared = plane.vault.prepare(connection, {"path": path, "payload": payload})
+        pending = {"path": path, "payload": payload, "prepared_by": "plane"}
+        prepared = plane.vault.prepared(connection, pending)
+        if prepared is None:
+            draft = await plane.request("POST", path + "prepare/", payload=payload)
+            prepared = plane.vault.prepare(connection, pending, draft["decision_id"])
         return {
             "status": "prepared",
             "decision_id": prepared,
             "project": project,
-            "message": "No work item has been written. Commit this decision only for explicit user archive instructions.",
+            "message": (
+                "No work item has been written. "
+                "Commit this decision only for explicit user archive instructions."
+            ),
         }
 
     return mcp

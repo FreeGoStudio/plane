@@ -118,16 +118,13 @@ def items(project, item=None):
 
 
 def create(api, project, **extra):
-    return api.post(
-        items(project),
-        {
-            "decision_id": str(uuid.uuid4()),
-            "title": "Discussed decision",
-            "description_markdown": "A confirmed result",
-            **extra,
-        },
-        content_type="application/json",
-    )
+    payload = {"title": "Discussed decision", "description_markdown": "A confirmed result", **extra}
+    if "decision_id" not in payload:
+        prepared = api.post(items(project) + "prepare/", payload, content_type="application/json")
+        if prepared.status_code != 202:
+            return prepared
+        payload["decision_id"] = prepared.json()["decision_id"]
+    return api.post(items(project), payload, content_type="application/json")
 
 
 def test_a01_a03_real_actor_and_no_default_assignment(world):
@@ -184,7 +181,11 @@ def test_a07_removed_member(world):
 
 def test_a08_concurrent_and_restart_replay(world):
     api, _, _, token = login(world[1])
-    key = str(uuid.uuid4())
+    key = api.post(
+        items(world[3]) + "prepare/",
+        {"title": "Discussed decision", "description_markdown": "A confirmed result"},
+        content_type="application/json",
+    ).json()["decision_id"]
 
     def send():
         close_old_connections()
@@ -209,12 +210,18 @@ def test_a09_conflict_and_append_preserve_fields(world):
     with impersonate(world[0]):
         issue.save()
     payload = {
-        "decision_id": str(uuid.uuid4()),
         "description_markdown": "More",
         "expected_updated_at": result["updated_at"],
     }
+    payload["decision_id"] = api.post(
+        items(world[3], issue.id) + "prepare/", payload, content_type="application/json"
+    ).json()["decision_id"]
     assert api.post(items(world[3], issue.id), payload, content_type="application/json").status_code == 409
-    payload.update(decision_id=str(uuid.uuid4()), expected_updated_at=issue.updated_at.isoformat())
+    payload.pop("decision_id")
+    payload["expected_updated_at"] = issue.updated_at.isoformat()
+    payload["decision_id"] = api.post(
+        items(world[3], issue.id) + "prepare/", payload, content_type="application/json"
+    ).json()["decision_id"]
     response = api.post(items(world[3], issue.id), payload, content_type="application/json")
     assert response.status_code == 200, response.content
     issue.refresh_from_db()
@@ -345,6 +352,10 @@ def test_native_edit_serializes_before_delegated_version_check(world):
 
     api, _, _, downstream = login(world[1])
     item = create(api, world[3]).json()
+    delegated_payload = {"description_markdown": "AI append", "expected_updated_at": item["updated_at"]}
+    delegated_payload["decision_id"] = api.post(
+        items(world[3], item["id"]) + "prepare/", delegated_payload, content_type="application/json"
+    ).json()["decision_id"]
     entered, release = threading.Event(), threading.Event()
     original_update = IssueCreateSerializer.update
 
@@ -373,11 +384,7 @@ def test_native_edit_serializes_before_delegated_version_check(world):
             delegated = Client(HTTP_AUTHORIZATION="Bearer " + downstream["access_token"])
             return delegated.post(
                 items(world[3], item["id"]),
-                {
-                    "decision_id": str(uuid.uuid4()),
-                    "description_markdown": "AI append",
-                    "expected_updated_at": item["updated_at"],
-                },
+                delegated_payload,
                 content_type="application/json",
             )
         finally:
@@ -393,3 +400,37 @@ def test_native_edit_serializes_before_delegated_version_check(world):
         assert first.result().status_code == 204
         assert second.result().status_code == 409
     assert Issue.objects.get(pk=item["id"]).name == "Concurrent human edit"
+
+
+def test_plane_preparation_binds_actor_project_payload_and_never_writes_early(world):
+    from plane.db.models import DiscussionReceipt
+
+    alice, _, _, _ = login(world[0])
+    bob, _, _, _ = login(world[1])
+    payload = {"title": "Explicitly prepared", "description_markdown": "Private discussion"}
+    # A client without an ID receives a draft, never an implicit work-item create.
+    prepared = alice.post(items(world[3]), payload, content_type="application/json")
+    assert prepared.status_code == 202 and prepared.json()["status"] == "prepared"
+    assert Issue.objects.count() == 0
+    key = prepared.json()["decision_id"]
+    row = DiscussionReceipt.objects.get(pk=key)
+    assert row.issue_id is None and row.result == {} and len(row.payload_digest) == 64
+    body = {**payload, "decision_id": key}
+    assert bob.post(items(world[3]), body, content_type="application/json").status_code == 409
+    assert alice.post(items(world[4]), body, content_type="application/json").status_code == 409
+    assert (
+        alice.post(items(world[3]), {**body, "title": "Different content"}, content_type="application/json").status_code
+        == 409
+    )
+    assert (
+        alice.post(items(world[3]), {**body, "decision_id": str(uuid.uuid4())}, content_type="application/json").json()[
+            "error"
+        ]
+        == "decision_not_prepared"
+    )
+    assert Issue.objects.count() == 0
+    saved = alice.post(items(world[3]), body, content_type="application/json")
+    assert saved.status_code == 201
+    assert saved.json()["url"].endswith(f"/{world[2].slug}/browse/{saved.json()['work_item_identifier']}/")
+    assert alice.post(items(world[3]), body, content_type="application/json").status_code == 200
+    assert Issue.objects.count() == 1
