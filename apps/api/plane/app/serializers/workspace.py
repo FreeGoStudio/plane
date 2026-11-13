@@ -3,6 +3,7 @@
 # See the LICENSE file for details.
 
 # Third party imports
+from django.conf import settings
 from rest_framework import serializers
 
 # Module imports
@@ -126,7 +127,9 @@ class WorkSpaceMemberInviteSerializer(BaseSerializer):
     invite_link = serializers.SerializerMethodField()
 
     def get_invite_link(self, obj):
-        return f"/workspace-invitations/?invitation_id={obj.id}&slug={obj.workspace.slug}&token={obj.token}"
+        """Use the configured public origin so copied links work outside the sender's machine."""
+        base_url = (settings.APP_BASE_URL or settings.WEB_URL or "").rstrip("/")
+        return f"{base_url}/workspace-invitations/?invitation_id={obj.id}&slug={obj.workspace.slug}&token={obj.token}"
 
     class Meta:
         model = WorkspaceMemberInvite
