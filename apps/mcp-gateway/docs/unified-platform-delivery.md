@@ -57,3 +57,11 @@
 已实现：CompanyAccount 持久化意图；用户创建/验证/停用事件；独立轮询开通命令；固定实例 API 客户端；响应丢失按 provider/extern_uid 对账；个人状态/重试/已有账号证明界面；OIDC 发码与兑码关联闸门。迁移由 Django 生成。自动测试与真实部署验收分别记录，当前不宣称真实 SSO 完成。
 
 部署限制：本机 GitLab 用户管理 API 没有物理删除用户会话记录的端点；先验证 blocked 用户无法继续使用既有会话，物理会话清理记录为运维待验收，不擅自增加 GitLab 私有管理接口。
+
+## P2 本机真实验收（2026-11-13）
+
+实现完成：10789c238e 提供开户、关联闸门和生命周期；运维 9c90b1d 部署独立开户进程与本机 TLS SSO。自动验证：49 项公司账号/OIDC/个人令牌/MCP 契约测试通过，迁移与 Ruff 通过。真实验收：两名新验证用户自动生成独立普通 GitLab 账号，Chrome 中仅凭 Plane 登录完成 SSO；重复登录保持同一外部 ID；停用一名用户后 GitLab blocked，旧 Plane/GitLab 会话被拒绝；重启后另一用户继续 SSO 成功。管理凭据不在 Web、普通 Worker、Gateway 中。旧 GitLab HTTP 入口仍可用。
+
+证据：D:/plane-ops/state/company-sso 内私有验证 JSON 与截图（不提交凭据/cookie）；复现与回滚说明见 D:/plane-ops/scripts/company-sso-README.md。API 固定镜像 company-sso-20261113-10789c238e；原 Gateway 镜像保留。
+
+限制：仅本机隔离用户验收；浏览器使用证书信任例外，独立严格 TLS 链及主机名校验通过。真实同邮箱冲突/本人证明、超时故障注入、物理会话删除及完整回滚演练待验收，契约模拟通过不代替这些条件。P3/P4/P5 仍未完成。上文“尚未实现/未部署”是历史起点，不再代表 P2 当前状态。

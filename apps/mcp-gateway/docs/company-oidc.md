@@ -1,9 +1,10 @@
 # Company SSO identity provider
 
-Status: source implementation only. Company GitLab provisioning and deployment
-remain separate acceptance units. Do not enable company SSO before the account
-provisioning/association gate is implemented and verified; otherwise GitLab JIT
-creation may race platform provisioning.
+Status (2026-11-13): provisioning and association gates are implemented in
+`10789c238e`. Local deployment passed two-user real Chrome SSO, repeated login,
+managed-user blocking and rejection of existing sessions. Ops `9c90b1d` records
+reproduction and limitations. Remote rollout, live collision/fault injection and
+physical session-record cleanup remain pending. Do not enable GitLab JIT creation.
 
 ## Configuration
 
@@ -15,7 +16,8 @@ creation may race platform provisioning.
 - `SINGULARITY_OIDC_RSA_PRIVATE_KEY` is a PEM RSA private key supplied from the
   deployment secret store. Never commit it, log it, or reuse the Plane application
   secret. Back it up separately from the database with restricted access.
-- The stable SSO issuer is `${SINGULARITY_ISSUER}/auth/singularity/oidc`.
+- The stable SSO issuer is `SINGULARITY_OIDC_ISSUER`, falling back to
+  `${SINGULARITY_ISSUER}/auth/singularity/oidc`.
   Discovery is at that issuer plus `/.well-known/openid-configuration`.
   The key endpoint contains only public RSA parameters.
 
@@ -62,4 +64,5 @@ PostgreSQL and protocol exchanges, not a live company GitLab browser session.
 Disable `SINGULARITY_OIDC_ENABLED` to remove every new SSO endpoint. Keep the
 additive protocol tables, account associations and keys for recovery. Do not
 restore business data just to roll back code. Actual company SSO, account
-provisioning, key rotation and browser acceptance are still pending.
+provisioning and browser acceptance passed locally as above; production trust,
+key rotation recovery and full rollback acceptance remain pending.
