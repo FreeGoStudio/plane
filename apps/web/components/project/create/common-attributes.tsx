@@ -5,6 +5,7 @@
  */
 
 import type { ChangeEvent } from "react";
+import { pinyin } from "pinyin-pro";
 import type { UseFormSetValue } from "react-hook-form";
 import { Controller, useFormContext } from "react-hook-form";
 import { Icon } from "@makeplane/propel/components/icon";
@@ -45,7 +46,10 @@ function ProjectCommonAttributes(props: Props) {
         return;
       }
       if (e.target.value === "") setValue("identifier", "");
-      else setValue("identifier", projectIdentifierSanitizer(e.target.value).substring(0, 10));
+      else {
+        const initials = pinyin(e.target.value, { pattern: "first", toneType: "none", type: "array" });
+        setValue("identifier", projectIdentifierSanitizer(initials.join("")).toUpperCase().substring(0, 10));
+      }
       onChange(e);
       handleFormOnChange?.();
     };

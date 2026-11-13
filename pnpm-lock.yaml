@@ -333,6 +333,9 @@ catalogs:
     pdf-parse:
       specifier: ^2.4.5
       version: 2.4.5
+    pinyin-pro:
+      specifier: 3.29.5
+      version: 3.29.5
     prosemirror-codemark:
       specifier: ^0.4.2
       version: 0.4.2
@@ -1041,6 +1044,9 @@ importers:
       next-themes:
         specifier: 'catalog:'
         version: 0.4.6(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      pinyin-pro:
+        specifier: 'catalog:'
+        version: 3.29.5
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -6730,6 +6736,9 @@ packages:
   pify@4.0.1:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
+
+  pinyin-pro@3.29.5:
+    resolution: {integrity: sha512-Fk5YoRmtdHqJWqAuzYVG/NzvzeCbaG+ZEwbY6Nbps3QAIrvQQEtcm49frcyCM8i2b5najnzPDtYqrHRYTTiuwQ==}
 
   pirates@4.0.7:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
@@ -12842,6 +12851,8 @@ snapshots:
   pidtree@0.6.0: {}
 
   pify@4.0.1: {}
+
+  pinyin-pro@3.29.5: {}
 
   pirates@4.0.7: {}
 
