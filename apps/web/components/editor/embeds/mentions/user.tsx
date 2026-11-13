@@ -22,7 +22,7 @@ type Props = {
 };
 
 export const EditorUserMention = observer(function EditorUserMention(props: Props) {
-  useTranslation();
+  const { t } = useTranslation();
   const { id } = props;
   // router
   const { projectId } = useParams();
@@ -80,7 +80,11 @@ export const EditorUserMention = observer(function EditorUserMention(props: Prop
               >
                 {getUserDisplayName(userDetails)}
               </Link>
-              {roleDetails && <p className="truncate text-caption-sm-regular text-secondary">{ROLE[roleDetails]}</p>}
+              {roleDetails && (
+                <p className="truncate text-caption-sm-regular text-secondary">
+                  {t(`role_details.${ROLE[roleDetails].toLowerCase()}.title`)}
+                </p>
+              )}
             </div>
           </div>
         </PopoverContent>

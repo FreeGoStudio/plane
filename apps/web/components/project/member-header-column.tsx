@@ -35,6 +35,10 @@ export const MemberHeaderColumn = observer(function MemberHeaderColumn(props: Pr
 
   const propertyDetails = MEMBER_PROPERTY_DETAILS[property];
 
+  const ascendingOrderTitle = property === "role" ? t("role_details.guest.title") : propertyDetails.ascendingOrderTitle;
+  const descendingOrderTitle =
+    property === "role" ? t("role_details.admin.title") : propertyDetails.descendingOrderTitle;
+
   const activeSortingProperty = displayFilters?.order_by;
 
   const handleOrderBy = (order: TMemberOrderByOptions, _itemKey: keyof IProjectMemberDisplayProperties) => {
@@ -78,13 +82,13 @@ export const MemberHeaderColumn = observer(function MemberHeaderColumn(props: Pr
           <>
             <MenuItem
               icon={<Icon icon={SortDescendingOutline} />}
-              label={`${propertyDetails.ascendingOrderTitle} \u2192 ${propertyDetails.descendingOrderTitle}`}
+              label={`${ascendingOrderTitle} \u2192 ${descendingOrderTitle}`}
               selected={activeSortingProperty === propertyDetails.ascendingOrderKey}
               onClick={() => handleOrderBy(propertyDetails.ascendingOrderKey, property)}
             />
             <MenuItem
               icon={<Icon icon={SortAscendingOutline} />}
-              label={`${propertyDetails.descendingOrderTitle} \u2192 ${propertyDetails.ascendingOrderTitle}`}
+              label={`${descendingOrderTitle} \u2192 ${ascendingOrderTitle}`}
               selected={activeSortingProperty === propertyDetails.descendingOrderKey}
               onClick={() => handleOrderBy(propertyDetails.descendingOrderKey, property)}
             />

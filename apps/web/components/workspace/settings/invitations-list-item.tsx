@@ -172,7 +172,7 @@ export const WorkspaceInvitationsListItem = observer(function WorkspaceInvitatio
               }}
               getValues={() => roleOptions}
               getOptionValue={(role) => String(role.key)}
-              getOptionLabel={(role) => role.label}
+              getOptionLabel={(role) => t(`role_details.${role.label.toLowerCase()}.title`)}
               disabled={!hasRoleChangeAccess}
               showSearch={false}
               pinSelected={false}
@@ -181,7 +181,9 @@ export const WorkspaceInvitationsListItem = observer(function WorkspaceInvitatio
                 variant="pill-sm"
                 appendIcon={hasRoleChangeAccess ? <ChevronDownOutline /> : undefined}
               >
-                <span className="min-w-0 truncate">{ROLE[invitationDetails.role]}</span>
+                <span className="min-w-0 truncate">
+                  {t(`role_details.${ROLE[invitationDetails.role].toLowerCase()}.title`)}
+                </span>
               </Select.Trigger>
             </Select>
           </SelectDropdownPlacementContext.Provider>

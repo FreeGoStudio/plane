@@ -106,13 +106,13 @@ export const InvitationFields = observer(function InvitationFields(props: TInvit
                       onChange={(val) => onChange(Number(val))}
                       getValues={() => roleOptions}
                       getOptionValue={(role) => String(role.key)}
-                      getOptionLabel={(role) => role.label}
+                      getOptionLabel={(role) => t(`role_details.${role.label.toLowerCase()}.title`)}
                       showSearch={false}
                       pinSelected={false}
                     >
                       <Select.Trigger<TRoleOption> variant="select-2xl">
                         <span className="min-w-0 flex-1 truncate text-left text-caption-sm-regular sm:text-body-xs-regular">
-                          {ROLE[value]}
+                          {t(`role_details.${ROLE[value].toLowerCase()}.title`)}
                         </span>
                       </Select.Trigger>
                     </Select>

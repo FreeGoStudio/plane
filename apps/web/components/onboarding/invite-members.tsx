@@ -197,7 +197,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
                         getValues(`emails.${index}.role_active`) ? "text-primary" : "text-placeholder"
                       )}
                     >
-                      {ROLE[value]}
+                      {t(`role_details.${ROLE[value].toLowerCase()}.title`)}
                     </span>
                   </Select.Trigger>
                 </Select>

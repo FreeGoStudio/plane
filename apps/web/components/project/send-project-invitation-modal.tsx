@@ -234,7 +234,7 @@ export const SendProjectInvitationModal = observer(function SendProjectInvitatio
                                   value={roleOptions.find((role) => role.key === value) ?? null}
                                   onChange={(key) => onChange(parseInt(key))}
                                   getOptionValue={(role) => String(role.key)}
-                                  getOptionLabel={(role) => role.label}
+                                  getOptionLabel={(role) => t(`role_details.${role.label.toLowerCase()}.title`)}
                                   placeholder={t("project_ui.select_role")}
                                   showSearch={false}
                                   pinSelected={false}
@@ -245,7 +245,9 @@ export const SendProjectInvitationModal = observer(function SendProjectInvitatio
                                     tooltip={{ emptyContent: t("project_ui.select_role") }}
                                   >
                                     <span className="min-w-0 grow truncate text-left capitalize">
-                                      {value ? ROLE[value] : t("project_ui.select_role")}
+                                      {value
+                                        ? t(`role_details.${ROLE[value].toLowerCase()}.title`)
+                                        : t("project_ui.select_role")}
                                     </span>
                                   </Select.Trigger>
                                 </Select>

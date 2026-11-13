@@ -80,11 +80,11 @@ function UserInvitationsPage() {
         mutate(USER_WORKSPACES_LIST);
         const firstInviteId = invitationsRespond[0];
         const redirectWorkspace = invitations?.find((i) => i.id === firstInviteId)?.workspace;
-        updateUserProfile({ last_workspace_id: redirectWorkspace?.id })
+        return updateUserProfile({ last_workspace_id: redirectWorkspace?.id })
           .then(() => {
             setIsJoiningWorkspaces(false);
-            fetchWorkspaces().then(() => {
-              router.push(`/${redirectWorkspace?.slug}`);
+            return fetchWorkspaces().then(() => {
+              return router.push(`/${redirectWorkspace?.slug}`);
             });
           })
           .catch(() => {
@@ -154,7 +154,7 @@ function UserInvitationsPage() {
                             {truncateText(invitation.workspace.name, 30)}
                           </span>
                           <span className="block text-caption-sm-regular text-secondary capitalize">
-                            {ROLE[invitation.role]}
+                            {t(`role_details.${ROLE[invitation.role].toLowerCase()}.title`)}
                           </span>
                         </span>
                         <span className={`flex-shrink-0 ${isSelected ? "text-accent-primary" : "text-secondary"}`}>

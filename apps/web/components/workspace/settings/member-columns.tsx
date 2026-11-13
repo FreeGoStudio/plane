@@ -131,7 +131,7 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
         </div>
       ) : isRoleNonEditable ? (
         <div className="flex w-32">
-          <span>{ROLE[rowData.role]}</span>
+          <span>{t(`role_details.${ROLE[rowData.role].toLowerCase()}.title`)}</span>
         </div>
       ) : (
         <Controller
@@ -160,12 +160,14 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
                 }}
                 getValues={() => ROLE_OPTIONS}
                 getOptionValue={(role) => String(role.key)}
-                getOptionLabel={(role) => role.label}
+                getOptionLabel={(role) => t(`role_details.${role.label.toLowerCase()}.title`)}
                 showSearch={false}
                 pinSelected={false}
               >
                 <Select.Trigger<TRoleOption> variant="select-ghost-md">
-                  <span className="min-w-0 flex-1 truncate text-left">{ROLE[rowData.role]}</span>
+                  <span className="min-w-0 flex-1 truncate text-left">
+                    {t(`role_details.${ROLE[rowData.role].toLowerCase()}.title`)}
+                  </span>
                 </Select.Trigger>
               </Select>
             </div>

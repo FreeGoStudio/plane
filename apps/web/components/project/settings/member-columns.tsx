@@ -109,7 +109,7 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
     formState: { errors },
   } = useForm();
   // derived values
-  const roleLabel = ROLE[rowData.original_role ?? EUserPermissions.GUEST];
+  const roleLabel = t(`role_details.${ROLE[rowData.original_role ?? EUserPermissions.GUEST].toLowerCase()}.title`);
   const isCurrentUser = currentUser?.id === rowData.member.id;
   const isRowDataWorkspaceAdmin = [EUserPermissions.ADMIN].includes(
     Number(getWorkspaceMemberDetails(rowData.member.id)?.role)
@@ -177,7 +177,7 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
                     });
                   }}
                   getOptionValue={(option) => option.key}
-                  getOptionLabel={(option) => option.label}
+                  getOptionLabel={(option) => t(`role_details.${option.label.toLowerCase()}.title`)}
                   placeholder={t("role")}
                   showSearch={false}
                   pinSelected={false}
