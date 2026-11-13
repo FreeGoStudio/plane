@@ -179,7 +179,7 @@ def get_safe_redirect_url(base_url: str, next_path: str = "", params: dict = {})
 
     # Add the next path to the parameters
     if validated_path:
-        query_parts.append(f"next_path={validated_path}")
+        query_parts.append(urlencode({"next_path": validated_path}))
 
     # Add additional parameters
     if params:

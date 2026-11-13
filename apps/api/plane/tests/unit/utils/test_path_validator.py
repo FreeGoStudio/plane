@@ -90,3 +90,16 @@ class TestValidateNextPathAuthorityRelative:
             f"{obfuscated_next_path!r} must be rejected — browsers strip tab/CR/LF before parsing, "
             "so this collapses to an authority-relative '///evil.com' navigation"
         )
+
+
+@pytest.mark.parametrize("suffix", ["", "#invite", "&label=a%26b%2Bc"])
+def test_login_redirect_preserves_complete_invitation(settings, suffix):
+    from urllib.parse import parse_qs, urlsplit
+    from plane.utils.path_validator import get_safe_redirect_url
+
+    settings.WEB_URL = "http://192.168.3.56:8088"
+    settings.APP_BASE_URL = ""
+    path = "/workspace-invitations/?invitation_id=example&slug=team&token=a.b-c_d" + suffix
+    redirect = get_safe_redirect_url(settings.WEB_URL, path, {"error_code": "test"})
+    query = parse_qs(urlsplit(redirect).query)
+    assert query == {"next_path": [path], "error_code": ["test"]}

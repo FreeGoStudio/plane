@@ -37,14 +37,13 @@ function WorkspaceInvitationPage() {
   const invitation_id = searchParams.get("invitation_id");
   const slug = searchParams.get("slug");
   const token = searchParams.get("token");
+  const hasInvitationParams = !!(invitation_id && slug && token);
   // store hooks
   const { data: currentUser } = useUser();
 
   const { data: invitationDetail, error } = useSWR(
-    invitation_id && slug && WORKSPACE_INVITATION(invitation_id.toString()),
-    invitation_id && slug
-      ? () => workspaceService.getWorkspaceInvitation(slug.toString(), invitation_id.toString())
-      : null
+    hasInvitationParams && WORKSPACE_INVITATION(invitation_id!),
+    hasInvitationParams ? () => workspaceService.getWorkspaceInvitation(slug!, invitation_id!) : null
   );
 
   const handleAccept = () => {
@@ -82,7 +81,24 @@ function WorkspaceInvitationPage() {
   return (
     <AuthenticationWrapper pageType={EPageTypes.PUBLIC}>
       <div className="flex h-full w-full flex-col items-center justify-center px-3">
-        {invitationDetail && !invitationDetail.responded_at ? (
+        {!hasInvitationParams ? (
+          <EmptyStateDetailed
+            align="center"
+            assetKey="invalid-link"
+            title="This invitation link is incomplete."
+            description="Open the complete invitation link shared with you, or ask your workspace admin for a new link."
+            customButton={
+              <Button
+                variant="primary"
+                size="lg"
+                stretch="auto"
+                label="Continue to home"
+                nativeButton={false}
+                render={<Link href="/" />}
+              />
+            }
+          />
+        ) : invitationDetail && !invitationDetail.responded_at ? (
           error ? (
             <EmptyStateDetailed
               align="center"

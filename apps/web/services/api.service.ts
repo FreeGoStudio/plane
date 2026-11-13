@@ -48,7 +48,8 @@ export abstract class APIService {
           // letting the sign-in screen render. Only bounce away from private
           // routes.
           if (currentPath !== "/") {
-            window.location.replace(`/${currentPath ? `?next_path=${encodeURIComponent(currentPath)}` : ``}`);
+            const returnPath = `${currentPath}${window.location.search}${window.location.hash}`;
+            window.location.replace(`/?next_path=${encodeURIComponent(returnPath)}`);
           }
         }
         return Promise.reject(error);
