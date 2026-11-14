@@ -8,7 +8,7 @@ Gateway 每次核验原始授权，再交换 Plane audience 的短期凭证，�
 
 `singularity/operations.py` 登记原生视图方法所需 OAuth 范围。原生 PAT 保持用户的全部原生权限；OAuth 只允许明确同意的范围。新增 `profile:read` 和 `workitems:delete`；旧 OAuth 的 `workitems:write` 不自动获得删除能力。账户停用、源 PAT 删除/过期/禁用、授权撤销及当前成员关系继续在每次调用检查。
 
-`ApiKeyRateThrottle` 根据源 PAT UUID 或 OAuth 授权 UUID 使用 `API_KEY_RATE_LIMIT`（部署当前为 60/minute）。API 和 MCP 共享业务请求计数，委托交换不占用业务配额。已移除工作项扩展接口的额外 15/min 写限制。便捷名称解析可能实际发起项目查询；UUID + workspace 的原生工具不做这次额外查询。
+`ApiKeyRateThrottle` 根据源 PAT UUID 或 OAuth 授权 UUID 使用 `API_KEY_RATE_LIMIT`（部署当前为 600/minute，覆盖 Plane 原生默认的 60/minute）。API 和 MCP 共享业务请求计数，委托交换不占用业务配额。已移除工作项扩展接口的额外 15/min 写限制。便捷名称解析可能实际发起项目查询；UUID + workspace 的原生工具不做这次额外查询。
 
 ## 新增工具及契约
 
@@ -66,3 +66,5 @@ Gateway 每次核验原始授权，再交换 Plane audience 的短期凭证，�
 部署前备份数据库和路由，先运行只读挂载候选；验收后从本地提交构建固定 API/Gateway 镜像。回滚恢复旧镜像和路由，保留新增表、工作项、授权映射和审计数据。
 
 后续 C/D 阶段（评论、关系、周期、模块、项目管理等）以及 E 阶段附件传输不在本次 A/B 交付内。已有仓库工具保留；外部 GitHub/第二 GitLab 的授权、远程 ChatGPT 接入及公司 VPN 环境仍按原清单独立验收，不影响本次本机工作项闭环。
+
+2026-11-14 限流调整：根据用户反馈，本机 API_KEY_RATE_LIMIT 已提高至 600/minute。真实连续 62 次原生 API + 1 次 MCP 调用全部成功，剩余计数为 537，确认超过原 60 次限制且仍共享计数；测试令牌随后撤销。上面的 60 次边界结果是调整前的历史验收。
