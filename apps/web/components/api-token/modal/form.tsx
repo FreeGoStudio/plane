@@ -173,7 +173,7 @@ export function CreateApiTokenForm(props: Props) {
                   onChange={onChange}
                   ref={ref}
                   error={errors.label?.message}
-                  placeholder={t("title")}
+                  placeholder={t("name")}
                   aria-label={t("title")}
                 />
               )}

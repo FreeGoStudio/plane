@@ -25,6 +25,7 @@ import { API_TOKENS_LIST } from "@plane/constants";
 
 const apiTokenService = new APITokenService();
 
+/** Manage personal tokens with one creation entry in empty, populated and filtered states. */
 export const APITokensProfileSettings = observer(function APITokensProfileSettings() {
   // states
   const [isCreateTokenModalOpen, setIsCreateTokenModalOpen] = useState(false);
@@ -53,15 +54,13 @@ export const APITokensProfileSettings = observer(function APITokensProfileSettin
         title={t("account_settings.api_tokens.title")}
         description={t("account_settings.api_tokens.description")}
         control={
-          tokens.length === 0 && (
-            <Button
-              variant="primary"
-              size="md"
-              stretch="auto"
-              label={t("workspace_settings.settings.api_tokens.add_token")}
-              onClick={() => setIsCreateTokenModalOpen(true)}
-            />
-          )
+          <Button
+            variant="primary"
+            size="md"
+            stretch="auto"
+            label={t("workspace_settings.settings.api_tokens.add_token")}
+            onClick={() => setIsCreateTokenModalOpen(true)}
+          />
         }
       />
       {/* the toolbar stays while a query is set, so an emptied list can still be cleared */}
@@ -79,13 +78,6 @@ export const APITokensProfileSettings = observer(function APITokensProfileSettin
               startIcon={<Icon icon={SearchOutline} tint="tertiary" />}
             />
           </div>
-          <Button
-            variant="primary"
-            size="md"
-            stretch="auto"
-            label={t("workspace_settings.settings.api_tokens.add_token")}
-            onClick={() => setIsCreateTokenModalOpen(true)}
-          />
         </div>
       )}
       <div>
@@ -95,14 +87,6 @@ export const APITokensProfileSettings = observer(function APITokensProfileSettin
             assetClassName="size-20"
             title={t("settings_empty_state.tokens.title")}
             description={t("settings_empty_state.tokens.description")}
-            actions={[
-              {
-                label: t("settings_empty_state.tokens.cta_primary"),
-                onClick: () => {
-                  setIsCreateTokenModalOpen(true);
-                },
-              },
-            ]}
             align="center"
             rootClassName="rounded-lg border border-subtle bg-surface-1 py-10"
           />

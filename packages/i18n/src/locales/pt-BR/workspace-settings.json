@@ -180,7 +180,9 @@
           "last_used": "Último uso"
         },
         "expired": "Expirado",
-        "not_used_yet": "Ainda não usado"
+        "not_used_yet": "Ainda não usado",
+        "created": "Personal access token created",
+        "copy_once": "Copy and securely store this personal access token. You will not be able to view it again after closing."
       },
       "integrations": {
         "title": "Integrações",

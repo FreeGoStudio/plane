@@ -212,9 +212,9 @@
       "description": "您目前没有任何导出记录。导出数据后,所有记录将显示在此处。"
     },
     "tokens": {
-      "title": "暂无个人令牌",
-      "description": "生成安全的 API 令牌以将工作空间与外部系统和应用程序连接。",
-      "cta_primary": "添加 API 令牌"
+      "title": "暂无个人访问令牌",
+      "description": "创建个人访问令牌，连接你使用的应用。用途由名称区分。",
+      "cta_primary": "创建个人访问令牌"
     },
     "workspace_tokens": {
       "title": "暂无访问令牌",

@@ -49,8 +49,8 @@ export function GeneratedTokenDetails(props: Props) {
       <DialogMain>
         <DialogHeader>
           <DialogHeading>
-            <DialogTitle>{t("workspace_settings.key_created")}</DialogTitle>
-            <DialogDescription>{t("workspace_settings.copy_key")}</DialogDescription>
+            <DialogTitle>{t("workspace_settings.settings.api_tokens.created")}</DialogTitle>
+            <DialogDescription>{t("workspace_settings.settings.api_tokens.copy_once")}</DialogDescription>
           </DialogHeading>
         </DialogHeader>
         <DialogBody>

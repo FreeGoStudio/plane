@@ -212,9 +212,9 @@
       "description": "You don't have any export records right now. Once you export data, all records will appear here."
     },
     "tokens": {
-      "title": "No Personal token yet",
-      "description": "Generate secure API tokens to connect your workspace with external systems and applications.",
-      "cta_primary": "Add access token"
+      "title": "No personal access tokens",
+      "description": "Create a personal access token to connect your applications. Use its name to distinguish its purpose.",
+      "cta_primary": "Create personal access token"
     },
     "workspace_tokens": {
       "title": "No Access tokens yet",

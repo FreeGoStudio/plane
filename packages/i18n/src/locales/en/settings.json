@@ -59,7 +59,7 @@
     },
     "api_tokens": {
       "title": "Personal Access Tokens",
-      "description": "Generate secure API tokens to integrate your data with external systems and applications."
+      "description": "Use your Plane permissions in API clients, scripts and AI clients. Name tokens by purpose, such as “Codex” or “Data sync”."
     },
     "activity": {
       "heading": "Activity",

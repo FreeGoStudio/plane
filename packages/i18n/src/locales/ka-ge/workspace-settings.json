@@ -180,7 +180,9 @@
           "last_used": "ბოლოს გამოყენებული"
         },
         "expired": "ვადაგასული",
-        "not_used_yet": "ჯერ არ გამოყენებულა"
+        "not_used_yet": "ჯერ არ გამოყენებულა",
+        "created": "Personal access token created",
+        "copy_once": "Copy and securely store this personal access token. You will not be able to view it again after closing."
       },
       "integrations": {
         "title": "Integrations",

@@ -180,7 +180,9 @@
           "last_used": "Lần dùng cuối"
         },
         "expired": "Đã hết hạn",
-        "not_used_yet": "Chưa sử dụng"
+        "not_used_yet": "Chưa sử dụng",
+        "created": "Personal access token created",
+        "copy_once": "Copy and securely store this personal access token. You will not be able to view it again after closing."
       },
       "integrations": {
         "title": "Tích hợp",

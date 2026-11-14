@@ -155,24 +155,24 @@
         }
       },
       "api_tokens": {
-        "heading": "Access Tokens",
-        "description": "Generate secure API tokens to integrate your data with external systems and applications.",
-        "title": "Access Tokens",
-        "add_token": "Add access token",
-        "create_token": "Create token",
+        "heading": "Personal access tokens",
+        "description": "Use your Plane permissions in API clients, scripts and AI clients. Name tokens by purpose, such as “Codex” or “Data sync”.",
+        "title": "Personal access tokens",
+        "add_token": "Create personal access token",
+        "create_token": "Create personal access token",
         "never_expires": "Never expires",
-        "generate_token": "Generate token",
+        "generate_token": "Generate personal access token",
         "generating": "Generating",
         "delete": {
-          "title": "Delete access token",
+          "title": "Delete personal access token",
           "description": "Any application using this token will no longer have the access to Plane data. This action cannot be undone.",
           "success": {
             "title": "Success!",
-            "message": "The token has been successfully deleted"
+            "message": "Personal access token deleted successfully"
           },
           "error": {
             "title": "Error!",
-            "message": "The token could not be deleted"
+            "message": "Could not delete personal access token"
           }
         },
         "columns": {
@@ -180,7 +180,9 @@
           "last_used": "Last used"
         },
         "expired": "Expired",
-        "not_used_yet": "Not used yet"
+        "not_used_yet": "Not used yet",
+        "created": "Personal access token created",
+        "copy_once": "Copy and securely store this personal access token. You will not be able to view it again after closing."
       },
       "integrations": {
         "title": "Integrations",

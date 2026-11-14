@@ -59,7 +59,7 @@
     },
     "api_tokens": {
       "title": "个人访问令牌",
-      "description": "生成安全的 API 令牌，将您的数据与外部系统和应用程序集成。"
+      "description": "用于 API、脚本和 AI 客户端，均使用你的 Plane 权限。可通过名称区分用途，例如“Codex”或“数据同步”。"
     },
     "activity": {
       "heading": "活动",
