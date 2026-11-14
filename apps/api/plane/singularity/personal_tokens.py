@@ -27,6 +27,6 @@ def native_delegation(raw):
     return SimpleNamespace(
         grant=grant,
         grant_id=grant.pk,
-        scopes=grant.scopes,
+        scopes=" ".join(SCOPES),
         expires_at=source.expired_at or timezone.now() + timedelta(minutes=5),
     )

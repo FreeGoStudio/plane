@@ -17,7 +17,15 @@ from django.db.models import Q
 from plane.db.models import Delegation, DelegationCode, DelegationToken
 from plane.utils.personal_tokens import valid_personal_tokens
 
-SCOPES = ["projects:read", "workitems:read", "workitems:write", "capabilities:read", "repositories:read"]
+SCOPES = [
+    "projects:read",
+    "workitems:read",
+    "workitems:write",
+    "capabilities:read",
+    "repositories:read",
+    "profile:read",
+    "workitems:delete",
+]
 CLIENT_ID = "singularity-codex"
 
 

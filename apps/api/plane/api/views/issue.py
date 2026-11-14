@@ -7,6 +7,7 @@ import json
 import uuid
 import re
 from plane.singularity.locking import lock_work_item
+from plane.singularity.mutations import idempotent_mutation, after_commit
 
 # Django imports
 from django.core.serializers.json import DjangoJSONEncoder
@@ -36,6 +37,7 @@ from rest_framework.response import Response
 
 # drf-spectacular imports
 from drf_spectacular.utils import (
+    OpenApiParameter,
     extend_schema,
     OpenApiResponse,
     OpenApiExample,
@@ -164,6 +166,26 @@ from plane.utils.openapi import (
     WORKSPACE_NOT_FOUND_RESPONSE,
 )
 from plane.bgtasks.work_item_link_task import crawl_work_item_link_title
+
+
+IDEMPOTENCY_PARAMETER = OpenApiParameter(
+    "Idempotency-Key",
+    str,
+    OpenApiParameter.HEADER,
+    description=(
+        "Optional stable retry key (1-200 characters), scoped to the original credential. "
+        "Reuse unchanged after uncertain responses."
+    ),
+)
+VERSION_PARAMETER = OpenApiParameter(
+    "If-Match",
+    str,
+    OpenApiParameter.HEADER,
+    description=(
+        "Optional updated_at timestamp from the last read. A different current version returns 409; "
+        "the check is performed under the shared work-item row lock."
+    ),
+)
 
 
 def user_has_issue_permission(user_id, project_id, issue=None, allowed_roles=None, allow_creator=True):
@@ -515,6 +537,7 @@ class IssueListCreateAPIEndpoint(BaseAPIView):
 
     @work_item_docs(
         operation_id="create_work_item",
+        parameters=[IDEMPOTENCY_PARAMETER],
         summary="Create work item",
         description="Create a new work item in the specified project with the provided details.",
         request=OpenApiRequest(
@@ -532,6 +555,7 @@ class IssueListCreateAPIEndpoint(BaseAPIView):
             409: EXTERNAL_ID_EXISTS_RESPONSE,
         },
     )
+    @idempotent_mutation
     def post(self, request, slug, project_id):
         """Create work item
 
@@ -577,7 +601,8 @@ class IssueListCreateAPIEndpoint(BaseAPIView):
             serializer.save()
 
             # Track the issue
-            issue_activity.delay(
+            after_commit(
+                issue_activity,
                 type="issue.activity.created",
                 requested_data=json.dumps(self.request.data, cls=DjangoJSONEncoder),
                 actor_id=str(request.user.id),
@@ -590,7 +615,8 @@ class IssueListCreateAPIEndpoint(BaseAPIView):
             )
 
             # Send the model activity
-            model_activity.delay(
+            after_commit(
+                model_activity,
                 model_name="issue",
                 model_id=str(serializer.data["id"]),
                 requested_data=request.data,
@@ -822,6 +848,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
         description="Partially update an existing work item with the provided fields. Supports external ID validation to prevent conflicts.",  # noqa: E501
         parameters=[
             PROJECT_ID_PARAMETER,
+            IDEMPOTENCY_PARAMETER,
+            VERSION_PARAMETER,
         ],
         request=OpenApiRequest(
             request=IssueSerializer,
@@ -838,6 +866,7 @@ class IssueDetailAPIEndpoint(BaseAPIView):
             409: EXTERNAL_ID_EXISTS_RESPONSE,
         },
     )
+    @idempotent_mutation
     @lock_work_item
     def patch(self, request, slug, project_id, pk):
         """Update work item
@@ -876,7 +905,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
             serializer.save()
             # Read-only fields are ignored on save, so they are not reported as changes either.
             accepted_data = writable_data(serializer, request.data)
-            issue_activity.delay(
+            after_commit(
+                issue_activity,
                 type="issue.activity.updated",
                 requested_data=json.dumps(accepted_data, cls=DjangoJSONEncoder),
                 actor_id=str(request.user.id),
@@ -888,7 +918,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
                 origin=base_host(request=request, is_app=True),
             )
             # Send the model activity for webhook dispatch
-            model_activity.delay(
+            after_commit(
+                model_activity,
                 model_name="issue",
                 model_id=str(pk),
                 requested_data=accepted_data,
@@ -906,6 +937,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
         description="Permanently delete an existing work item from the project. Only admins or the item creator can perform this action.",  # noqa: E501
         parameters=[
             PROJECT_ID_PARAMETER,
+            IDEMPOTENCY_PARAMETER,
+            VERSION_PARAMETER,
         ],
         responses={
             204: DELETED_RESPONSE,
@@ -913,6 +946,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
             404: WORK_ITEM_NOT_FOUND_RESPONSE,
         },
     )
+    @idempotent_mutation
+    @lock_work_item
     def delete(self, request, slug, project_id, pk):
         """Delete work item
 
@@ -935,7 +970,8 @@ class IssueDetailAPIEndpoint(BaseAPIView):
             )
         current_instance = json.dumps(IssueSerializer(issue).data, cls=DjangoJSONEncoder)
         issue.delete()
-        issue_activity.delay(
+        after_commit(
+            issue_activity,
             type="issue.activity.deleted",
             requested_data=json.dumps({"issue_id": str(pk)}),
             actor_id=str(request.user.id),

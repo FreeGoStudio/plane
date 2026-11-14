@@ -7,6 +7,7 @@
 import json
 import uuid
 from functools import partial
+from types import SimpleNamespace
 from urllib.parse import quote
 
 import nh3
@@ -18,8 +19,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed, PermissionDenied, ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.throttling import SimpleRateThrottle
@@ -27,6 +27,7 @@ from rest_framework.views import APIView
 
 from plane.api.serializers import IssueSerializer
 from plane.app.permissions import ROLE, allow_permission
+from plane.app.permissions.project import ProjectEntityPermission
 from plane.bgtasks.issue_activities_task import issue_activity
 from plane.bgtasks.webhook_task import model_activity
 from plane.db.models import (
@@ -39,39 +40,9 @@ from plane.db.models import (
     State,
     WorkspaceMember,
 )
-from .auth_views import enabled
-from .oauth import active_tokens, digest
-from .personal_tokens import native_delegation
-
-
-class DelegatedAuthentication(BaseAuthentication):
-    def authenticate_header(self, request):
-        return "Bearer"
-
-    def authenticate(self, request):
-        enabled()
-        raw = request.headers.get("Authorization", "")
-        personal = request.headers.get("X-Api-Key")
-        if personal:
-            token = native_delegation(personal)
-            return token.grant.user, token
-        if not raw.startswith("Bearer "):
-            raise AuthenticationFailed("Plane delegation required")
-        token = (
-            active_tokens()
-            .filter(
-                digest=digest(raw[7:]),
-                audience="plane",
-                expires_at__gt=timezone.now(),
-            )
-            .select_related("grant__user")
-            .first()
-        )
-        if not token:
-            token = native_delegation(raw[7:])
-        if token.grant.user.is_bot and not token.grant.source_api_token:
-            raise AuthenticationFailed("Plane delegation expired or revoked")
-        return token.grant.user, token
+from .oauth import digest
+from .authentication import DelegatedAuthentication
+from plane.api.rate_limit import ApiKeyRateThrottle
 
 
 class PersonalThrottle(SimpleRateThrottle):
@@ -96,7 +67,7 @@ class WriteThrottle(SimpleRateThrottle):
 class DelegatedAPI(APIView):
     authentication_classes = [DelegatedAuthentication]
     permission_classes = [IsAuthenticated]
-    throttle_classes = [PersonalThrottle, WriteThrottle]
+    throttle_classes = [ApiKeyRateThrottle]
 
     def require_scopes(self, request, *scopes):
         if not set(scopes) <= set(request.auth.scopes.split()):
@@ -402,11 +373,31 @@ class Capabilities(DelegatedAPI):
             self.require_scopes(request, "workitems:read")
         project = project_for(request, slug, project_id)
         item = get_object_or_404(readable_items(request, project), pk=pk) if pk else None
-        write_scope = {"workitems:read", "workitems:write"} <= set(request.auth.scopes.split())
+        scopes = set(request.auth.scopes.split())
+        native_write = ProjectEntityPermission().has_permission(
+            SimpleNamespace(user=request.user, method="POST"),
+            SimpleNamespace(workspace_slug=slug, project_id=project_id),
+        )
+        write_scope = "workitems:write" in scopes
         return Response(
             {
-                "can_create": write_scope and can_write(request, slug, project_id),
-                "can_update": write_scope and can_write(request, slug, project_id, item) if item else None,
+                "can_create": write_scope and native_write,
+                "can_update": write_scope and native_write if item else None,
+                "can_delete": (
+                    "workitems:delete" in scopes
+                    and native_write
+                    and (
+                        item.created_by_id == request.user.pk
+                        or ProjectMember.objects.filter(
+                            project_id=project_id,
+                            member=request.user,
+                            role=20,
+                            is_active=True,
+                        ).exists()
+                    )
+                )
+                if item
+                else None,
                 "authoritative": False,
             }
         )

@@ -124,6 +124,20 @@ class BaseAPIView(TimezoneMixin, GenericAPIView, ReadReplicaControlMixin, BasePa
         # Call super to get the default response
         response = super().finalize_response(request, response, *args, **kwargs)
 
+        grant = getattr(request, "delegation_audit_grant", None) or getattr(
+            getattr(request, "auth", None), "grant", None
+        )
+        if grant:
+            from plane.db.models import DelegationAudit
+
+            audit = DelegationAudit.objects.create(
+                grant=grant,
+                operation=f"{request.method} {type(self).__name__}"[:100],
+                resource=str(kwargs.get("pk") or kwargs.get("project_id") or ""),
+                status=response.status_code,
+            )
+            response["X-Trace-ID"] = str(audit.trace_id)
+
         # Add custom headers if they exist in the request META
         ratelimit_remaining = request.META.get("X-RateLimit-Remaining")
         if ratelimit_remaining is not None:

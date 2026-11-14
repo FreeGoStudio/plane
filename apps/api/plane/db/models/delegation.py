@@ -56,3 +56,20 @@ class DelegationAudit(models.Model):
     resource = models.CharField(max_length=100, blank=True)
     status = models.PositiveSmallIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class APIMutationReceipt(models.Model):
+    """One committed native mutation per originating credential and retry key."""
+
+    credential_id = models.UUIDField()
+    key_digest = models.CharField(max_length=64)
+    payload_digest = models.CharField(max_length=64)
+    result = models.JSONField(null=True)
+    status = models.PositiveSmallIntegerField(default=0)
+    creator_id = models.UUIDField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["credential_id", "key_digest"], name="api_mutation_credential_key")
+        ]

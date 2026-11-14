@@ -10,6 +10,22 @@ import { z } from "zod";
 import { Plane, PlaneError, inputs, invoke, transport } from "./core.js";
 import { Vault } from "./vault.js";
 const descriptions: Record<keyof typeof inputs, string> = {
+  get_current_user: "Read the authenticated Plane user's native API profile.",
+  get_project: "Read native project details or summary with current membership permissions.",
+  get_project_metadata:
+    "Read native project states, labels or members for work-item fields. query accepts native pagination/field parameters.",
+  list_work_items:
+    "List native work items. query accepts native filters (state, priority, assignees, labels), order_by, cursor, per_page, fields, expand. Unsupported edition features return the same native error.",
+  find_work_items:
+    "Search work items across the workspace using native query parameters (search, project_id and other native filters).",
+  get_work_item_by_identifier:
+    "Read a native work item by project identifier and sequence number, with optional fields/expand query.",
+  create_work_item:
+    "Create a native work item. fields accepts native writable fields: name, description_html, state, priority, assignees, labels, start_date, target_date, parent, estimate_point, type_id and external IDs. Native defaults and validation apply. Supply a stable idempotency_key and reuse it unchanged after uncertain responses. No discussion preparation is required.",
+  update_work_item:
+    "Partially update native work-item fields; omitted fields stay unchanged. Use expected_updated_at from the last read to detect concurrent edits. Reuse idempotency_key and arguments after uncertain responses; never silently overwrite a conflict.",
+  delete_work_item:
+    "Delete a work item using native creator/admin rules. Supply expected_updated_at to protect concurrent edits and reuse idempotency_key after uncertain responses.",
   list_project_repositories:
     "List repositories already configured in a Plane project. Requires repositories:read consent.",
   read_project_repository:
@@ -48,6 +64,8 @@ export function createGateway(plane: Plane, issuer: string, resource: string) {
             "workitems:write",
             "capabilities:read",
             "repositories:read",
+            "profile:read",
+            "workitems:delete",
           ],
           bearer_methods_supported: ["header"],
         })
@@ -87,7 +105,10 @@ export function createGateway(plane: Plane, issuer: string, resource: string) {
         const result = await invoke(plane, bearer, request.params.name, request.params.arguments ?? {});
         return { content: [{ type: "text" as const, text: JSON.stringify(result) }], structuredContent: result };
       } catch (error) {
-        const message = error instanceof PlaneError ? error.message : "Invalid or unavailable tool request";
+        const message =
+          error instanceof PlaneError
+            ? JSON.stringify({ status: error.status, error: error.code, details: error.details })
+            : "Invalid or unavailable tool request";
         return { isError: true, content: [{ type: "text" as const, text: message }] };
       }
     });

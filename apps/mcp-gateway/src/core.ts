@@ -7,7 +7,8 @@ import { Vault } from "./vault.js";
 export class PlaneError extends Error {
   constructor(
     readonly status: number,
-    readonly code: string
+    readonly code: string,
+    readonly details?: unknown
   ) {
     super(`Plane request failed: ${status} ${code}`);
   }
@@ -97,25 +98,34 @@ export class Plane {
     method: string,
     path: string,
     payload?: unknown,
-    params: Record<string, string | number> = {}
+    params: Record<string, string | number> = {},
+    native = false,
+    mutationHeaders: { "Idempotency-Key"?: string; "If-Match"?: string } = {}
   ): Promise<Record<string, unknown>> {
     const identity = await this.identity(bearer);
     const token = tokenSchema.parse(await this.exchange(bearer));
     if (!/^[a-zA-Z0-9%_./-]+$/.test(path) || path.includes("..") || path.startsWith("/"))
       throw new Error("Invalid resource path");
-    const url = new URL("/api/singularity/v1/" + path, this.base);
+    const url = new URL((native ? "/api/v1/" : "/api/singularity/v1/") + path, this.base);
     for (const [key, value] of Object.entries(params)) url.searchParams.set(key, String(value));
     let response;
     try {
       response = await this.send(
         url,
         method,
-        { Authorization: `Bearer ${token.access_token}`, "Content-Type": "application/json" },
+        { ...mutationHeaders, Authorization: `Bearer ${token.access_token}`, "Content-Type": "application/json" },
         payload === undefined ? undefined : JSON.stringify(payload)
       );
     } catch {
       this.vault.record(identity.connection_id, method, 503);
-      throw new PlaneError(503, method === "POST" ? "outcome_unknown_retry_same_decision" : "unavailable");
+      throw new PlaneError(
+        503,
+        native && ["POST", "PATCH", "DELETE"].includes(method)
+          ? "outcome_unknown_check_result_or_retry_same_idempotency_key"
+          : method === "POST"
+            ? "outcome_unknown_retry_same_decision"
+            : "unavailable"
+      );
     }
     this.vault.record(identity.connection_id, method, response.status);
     if (
@@ -170,8 +180,11 @@ export class Plane {
             409: "conflict",
             429: "rate_limited",
           } as Record<number, string>
-        )[response.status] ?? "request_rejected"
+        )[response.status] ?? "request_rejected",
+        native && [400, 409].includes(response.status) ? response.data : undefined
       );
+    if (native && response.status === 204) return { status: "deleted" };
+    if (native && Array.isArray(response.data)) return { results: response.data };
     return recordSchema.parse(response.data);
   }
   async resolve(
@@ -206,7 +219,29 @@ export class Plane {
 }
 const nullableString = z.string().nullable().optional();
 const reference = z.string().min(1).max(255);
+const nativeProject = { workspace: z.string().min(1), project_id: z.uuid() };
+const query = z.record(z.string(), z.union([z.string(), z.number()])).default({});
+const retry = { idempotency_key: z.string().min(1).max(200).optional() };
+const version = { expected_updated_at: z.string().optional() };
+// Native IssueSerializer owns field validation, nullability and defaults.
+const fields = z.record(z.string(), z.unknown());
 export const inputs = {
+  get_current_user: z.object({}).strict(),
+  get_project: z.object({ ...nativeProject, summary: z.boolean().default(false) }).strict(),
+  get_project_metadata: z.object({ ...nativeProject, kind: z.enum(["states", "labels", "members"]), query }).strict(),
+  list_work_items: z.object({ ...nativeProject, query }).strict(),
+  find_work_items: z.object({ workspace: z.string().min(1), query }).strict(),
+  get_work_item_by_identifier: z
+    .object({
+      workspace: z.string().min(1),
+      project_identifier: z.string().regex(/^[a-zA-Z0-9_]+$/),
+      sequence_id: z.number().int().positive(),
+      query,
+    })
+    .strict(),
+  create_work_item: z.object({ ...nativeProject, fields, ...retry }).strict(),
+  update_work_item: z.object({ ...nativeProject, item_id: z.uuid(), fields, ...retry, ...version }).strict(),
+  delete_work_item: z.object({ ...nativeProject, item_id: z.uuid(), ...retry, ...version }).strict(),
   list_project_repositories: z.object({ project_ref: reference, workspace: nullableString }).strict(),
   read_project_repository: z
     .object({
@@ -230,7 +265,7 @@ export const inputs = {
       offset: z.number().int().min(0).default(0),
     })
     .strict(),
-  get_work_item: z.object({ project_ref: reference, item_id: z.uuid(), workspace: nullableString }).strict(),
+  get_work_item: z.object({ project_ref: reference, item_id: z.uuid(), workspace: nullableString, query }).strict(),
   get_my_capabilities: z
     .object({ project_ref: reference, item_id: z.uuid().nullable().optional(), workspace: nullableString })
     .strict(),
@@ -250,13 +285,65 @@ export const inputs = {
     .strict(),
 };
 const projectPath = (p: Project) => `workspaces/${encodeURIComponent(p.workspace)}/projects/${p.id}/`;
-/** Dispatch the original five tools. Authentication is captured per HTTP request, never in args. */
+const nativePath = (a: { workspace: string; project_id: string }) =>
+  `workspaces/${encodeURIComponent(a.workspace)}/projects/${a.project_id}/`;
+/** Authentication is captured per HTTP request, never in tool arguments. */
 export async function invoke(
   plane: Plane,
   bearer: string,
   name: string,
   args: unknown
 ): Promise<Record<string, unknown>> {
+  const native = (
+    method: string,
+    path: string,
+    body?: unknown,
+    params: Record<string, string | number> = {},
+    headers = {}
+  ) => plane.request(bearer, method, path, body, params, true, headers);
+  if (name === "get_current_user") {
+    inputs.get_current_user.parse(args);
+    return native("GET", "users/me/");
+  }
+  if (name === "get_project") {
+    const a = inputs.get_project.parse(args);
+    return native("GET", nativePath(a) + (a.summary ? "summary/" : ""));
+  }
+  if (name === "get_project_metadata") {
+    const a = inputs.get_project_metadata.parse(args);
+    return native("GET", nativePath(a) + a.kind + "/", undefined, a.query);
+  }
+  if (name === "list_work_items") {
+    const a = inputs.list_work_items.parse(args);
+    return native("GET", nativePath(a) + "work-items/", undefined, a.query);
+  }
+  if (name === "find_work_items") {
+    const a = inputs.find_work_items.parse(args);
+    return native("GET", `workspaces/${encodeURIComponent(a.workspace)}/work-items/search/`, undefined, a.query);
+  }
+  if (name === "get_work_item_by_identifier") {
+    const a = inputs.get_work_item_by_identifier.parse(args);
+    return native(
+      "GET",
+      `workspaces/${encodeURIComponent(a.workspace)}/work-items/${a.project_identifier}-${a.sequence_id}/`,
+      undefined,
+      a.query
+    );
+  }
+  if (name === "create_work_item" || name === "update_work_item" || name === "delete_work_item") {
+    const a = inputs[name].parse(args);
+    const headers = {
+      ...(a.idempotency_key ? { "Idempotency-Key": a.idempotency_key } : {}),
+      ...("expected_updated_at" in a && a.expected_updated_at ? { "If-Match": a.expected_updated_at } : {}),
+    };
+    return native(
+      name === "create_work_item" ? "POST" : name === "update_work_item" ? "PATCH" : "DELETE",
+      nativePath(a) + "work-items/" + ("item_id" in a ? `${a.item_id}/` : ""),
+      "fields" in a ? a.fields : undefined,
+      {},
+      headers
+    );
+  }
   if (name === "list_project_repositories") {
     const a = inputs.list_project_repositories.parse(args);
     const r = await plane.resolve(bearer, a.project_ref, a.workspace);
@@ -338,9 +425,16 @@ export async function invoke(
     );
   }
   if (name === "get_work_item") {
-    const a = inputs.get_work_item.parse(args),
-      r = await plane.resolve(bearer, a.project_ref, a.workspace);
-    return r.ambiguity ?? plane.request(bearer, "GET", projectPath(r.project!) + `work-items/${a.item_id}/`);
+    const a = inputs.get_work_item.parse(args);
+    if (a.workspace && z.uuid().safeParse(a.project_ref).success)
+      return native(
+        "GET",
+        nativePath({ workspace: a.workspace, project_id: a.project_ref }) + `work-items/${a.item_id}/`,
+        undefined,
+        a.query
+      );
+    const r = await plane.resolve(bearer, a.project_ref, a.workspace);
+    return r.ambiguity ?? native("GET", projectPath(r.project!) + `work-items/${a.item_id}/`, undefined, a.query);
   }
   if (name === "get_my_capabilities") {
     const a = inputs.get_my_capabilities.parse(args),

@@ -11,21 +11,31 @@ from rest_framework.throttling import SimpleRateThrottle
 
 class ApiKeyRateThrottle(SimpleRateThrottle):
     scope = "api_key"
-    rate = settings.API_KEY_RATE_LIMIT
+
+    def get_rate(self):
+        return settings.API_KEY_RATE_LIMIT
 
     def get_cache_key(self, request, view):
-        # Retrieve the API key from the request header
-        api_key = request.headers.get("X-Api-Key")
-        if not api_key:
-            return None  # Allow the request if there's no API key
+        """Count one business request against its stable originating credential."""
+        identity = getattr(request, "plane_credential_id", None)
+        grant = getattr(getattr(request, "auth", None), "grant", None)
+        if grant:
+            identity = str(grant.source_api_token or grant.pk)
+        if identity:
+            return f"{self.scope}:{identity}"
+        raw = request.headers.get("X-Api-Key")
+        if raw:
+            from plane.utils.personal_tokens import authenticate_personal_token
 
-        # Use the API key as part of the cache key
-        return f"{self.scope}:{api_key}"
+            return f"{self.scope}:{authenticate_personal_token(raw).pk}"
+        if request.user.is_authenticated:
+            return f"{self.scope}:user:{request.user.pk}"
+        return None
 
     def allow_request(self, request, view):
         allowed = super().allow_request(request, view)
 
-        if allowed:
+        if allowed and self.key is not None:
             now = self.timer()
             # Calculate the remaining limit and reset time
             history = self.cache.get(self.key, [])

@@ -50,12 +50,12 @@ const prepare = {
   description_markdown: "Private discussion",
   workspace: "test",
 };
-test("seven tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 7);
+test("native and repository tools with no secret/user/admin parameters", () => {
+  assert.equal(tools.length, 16);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
-  assert(!tools.some((t) => t.name.includes("delete")));
+  assert(tools.some((t) => t.name === "delete_work_item"));
 });
 test("repository reads return a safe authorization link and retry after connection", async () => {
   const f = fixture();
@@ -230,7 +230,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 7);
+    assert.equal((await listed.json()).result.tools.length, 16);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;
@@ -243,4 +243,106 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     await new Promise<void>((resolve) => server.close(() => resolve()));
     f.vault.close();
   }
+});
+
+test("native mutations preserve fields and conditional headers with one business request", async () => {
+  const f = fixture();
+  const fields = {
+    name: "Native",
+    state: id,
+    assignees: [id],
+    labels: [decision],
+    priority: "high",
+    start_date: "2026-11-14",
+    target_date: "2026-11-30",
+    description_html: "<p>text</p>",
+  };
+  await invoke(f.plane, "original-secret", "create_work_item", {
+    workspace: "test",
+    project_id: id,
+    fields,
+    idempotency_key: "retry",
+  });
+  const create = f.calls.at(-1)!;
+  assert.equal(create.url.pathname, `/api/v1/workspaces/test/projects/${id}/work-items/`);
+  assert.equal(create.headers.Authorization, "Bearer downstream-test");
+  assert.equal(create.headers["Idempotency-Key"], "retry");
+  assert.deepEqual(JSON.parse(create.body!), fields);
+  assert.equal(f.calls.filter((c) => !c.url.pathname.endsWith("exchange/")).length, 1);
+  await invoke(f.plane, "original-secret", "update_work_item", {
+    workspace: "test",
+    project_id: id,
+    item_id: decision,
+    fields: { priority: "low" },
+    expected_updated_at: "2026-11-14T01:00:00Z",
+  });
+  assert.equal(f.calls.at(-1)!.method, "PATCH");
+  assert.equal(f.calls.at(-1)!.headers["If-Match"], "2026-11-14T01:00:00Z");
+  assert.deepEqual(JSON.parse(f.calls.at(-1)!.body!), { priority: "low" });
+  await invoke(f.plane, "original-secret", "delete_work_item", {
+    workspace: "test",
+    project_id: id,
+    item_id: decision,
+  });
+  assert.equal(f.calls.at(-1)!.method, "DELETE");
+  f.vault.close();
+});
+
+test("native reads forward pagination, filters and fields", async () => {
+  const f = fixture();
+  await invoke(f.plane, "bearer", "list_work_items", {
+    workspace: "test",
+    project_id: id,
+    query: { cursor: "1:0:0", per_page: 2, state: id, fields: "id,name", order_by: "-created_at" },
+  });
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("cursor"), "1:0:0");
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("fields"), "id,name");
+  await invoke(f.plane, "bearer", "get_work_item", { workspace: "test", project_ref: id, item_id: decision });
+  assert.equal(f.calls.filter((c) => !c.url.pathname.endsWith("exchange/")).length, 2);
+  assert(f.calls.at(-1)!.url.pathname.startsWith("/api/v1/"));
+  f.vault.close();
+});
+
+test("native uncertain writes describe the shared idempotency key", async () => {
+  const f = fixture();
+  f.state.fail = true;
+  await assert.rejects(
+    invoke(f.plane, "bearer", "create_work_item", {
+      workspace: "test",
+      project_id: id,
+      fields: { name: "Retry" },
+      idempotency_key: "stable",
+    }),
+    (error: unknown) =>
+      error instanceof PlaneError && error.code === "outcome_unknown_check_result_or_retry_same_idempotency_key"
+  );
+  f.vault.close();
+});
+
+test("native field errors and list/empty responses are represented accurately", async () => {
+  const f = fixture();
+  let status = 400;
+  const send: Transport = async (url, method, headers, body) =>
+    url.pathname.startsWith("/api/v1/")
+      ? { status, data: status === 400 ? { state: ["Invalid state"] } : status === 204 ? null : [{ id }] }
+      : f.plane.send(url, method, headers, body);
+  const plane = new Plane("https://plane.test", "test", f.vault, send);
+  await assert.rejects(
+    invoke(plane, "bearer", "create_work_item", { workspace: "test", project_id: id, fields: { state: decision } }),
+    (error: unknown) =>
+      error instanceof PlaneError &&
+      error.status === 400 &&
+      JSON.stringify(error.details) === JSON.stringify({ state: ["Invalid state"] })
+  );
+  status = 200;
+  assert.deepEqual(
+    await invoke(plane, "bearer", "get_project_metadata", { workspace: "test", project_id: id, kind: "states" }),
+    { results: [{ id }] }
+  );
+  status = 204;
+  assert.deepEqual(
+    await invoke(plane, "bearer", "delete_work_item", { workspace: "test", project_id: id, item_id: decision }),
+    { status: "deleted" }
+  );
+  f.vault.close();
 });

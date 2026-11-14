@@ -29,9 +29,17 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         token = self.get_api_token(request=request)
-        if not token:
-            return None
+        if token:
+            source = authenticate_personal_token(token)
+            request.plane_credential_id = str(source.pk)
+            return source.user, source.token
+        if request.headers.get("Authorization", "").startswith("Bearer "):
+            from plane.singularity.authentication import DelegatedAuthentication
+            from plane.singularity.operations import check_operation_scope
 
-        # Validate the API token
-        user, token = self.validate_api_token(token)
-        return user, token
+            user, delegated = DelegatedAuthentication().authenticate(request)
+            request.delegation_audit_grant = delegated.grant
+            check_operation_scope(request, delegated)
+            request.plane_credential_id = str(delegated.grant.source_api_token or delegated.grant_id)
+            return user, delegated
+        return None
