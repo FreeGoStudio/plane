@@ -8,12 +8,24 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from plane.db.models import User, CompanyAccount, Delegation
+from plane.db.models import User, CompanyAccount, Delegation, Session
 
 
 @receiver(post_save, sender=User, dispatch_uid="singularity-company-account")
 def company_user_changed(sender, instance, created, raw=False, **kwargs):
-    if raw or not settings.SINGULARITY_COMPANY_ENABLED or instance.is_bot:
+    if raw:
+        return
+    # Revocation is a Plane identity lifecycle rule, independent of provisioning.
+    # Removing sessions and pending codes prevents resurrection after reactivation.
+    if not instance.is_active:
+        Session.objects.filter(user_id=str(instance.pk)).delete()
+        Delegation.objects.filter(user=instance, revoked_at__isnull=True).update(revoked_at=timezone.now())
+        from oauth2_provider.models import get_access_token_model, get_refresh_token_model, get_grant_model
+
+        get_grant_model().objects.filter(user=instance).delete()
+        get_refresh_token_model().objects.filter(user=instance).delete()
+        get_access_token_model().objects.filter(user=instance).delete()
+    if not settings.SINGULARITY_COMPANY_ENABLED or instance.is_bot:
         return
     if created:
         CompanyAccount.objects.get_or_create(
@@ -28,9 +40,4 @@ def company_user_changed(sender, instance, created, raw=False, **kwargs):
             status="pending", next_attempt_at=timezone.now()
         )
     if not instance.is_active:
-        Delegation.objects.filter(user=instance, revoked_at__isnull=True).update(revoked_at=timezone.now())
-        from oauth2_provider.models import get_access_token_model, get_refresh_token_model
-
-        get_refresh_token_model().objects.filter(user=instance).delete()
-        get_access_token_model().objects.filter(user=instance).delete()
         CompanyAccount.objects.filter(user=instance).exclude(status="blocked").update(next_attempt_at=timezone.now())

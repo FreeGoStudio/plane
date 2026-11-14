@@ -126,3 +126,38 @@ def test_oauth_refresh_cannot_slide_beyond_thirty_days(world):
     deadline = created + timedelta(days=30)
     assert refreshed.refresh_expires_at == deadline
     assert refreshed.expires_at <= deadline + timedelta(seconds=1)
+
+
+@pytest.mark.parametrize("company_enabled", [False, True])
+def test_deactivation_permanently_revokes_sessions_and_grants(world, settings, company_enabled):
+    """Reactivation must never revive pre-disable sessions or delegated credentials."""
+    from plane.db.models import Session, Delegation
+
+    settings.SINGULARITY_COMPANY_ENABLED = company_enabled
+    user = world[0]
+    api, client, tokens, downstream = login(user)
+    other_api, other_client, _, _ = login(world[1])
+    other_session_key = other_client.session.session_key
+    session_key = client.session.session_key
+    raw = client.post(URL, {"scope": ["projects:read"]}).context["token"]
+    user.is_active = False
+    user.save(update_fields=["is_active"])
+    assert not Session.objects.filter(session_key=session_key).exists()
+    assert not Delegation.objects.filter(user=user, revoked_at__isnull=True).exists()
+    user.is_active = True
+    user.save(update_fields=["is_active"])
+    assert client.get(URL).status_code == 401
+    assert Session.objects.filter(session_key=other_session_key).exists()
+    assert other_api.get("/api/singularity/v1/me/").status_code == 200
+    assert api.get("/api/singularity/v1/me/").status_code == 401
+    for credential in (raw, tokens["access_token"]):
+        assert (
+            Client()
+            .post(
+                "/auth/singularity/exchange/",
+                {"subject_token": credential},
+                HTTP_X_GATEWAY_SECRET="isolated-test-gateway-secret",
+            )
+            .status_code
+            == 401
+        )

@@ -201,3 +201,30 @@ def test_operator_registration_keeps_secret_private_and_refuses_overwrite(tmp_pa
             "register_company_oidc_client",
             **{**args, "client_id": "bad-client", "redirect_uri": "https://*.company.test/callback"},
         )
+
+
+def test_deactivation_cancels_pending_oidc_code_even_without_company_feature(oidc_world, settings):
+    """A code issued before disable cannot be redeemed after account reactivation."""
+    settings.SINGULARITY_COMPANY_ENABLED = False
+    user, app, _ = oidc_world
+    client, params = authorize(user)
+    response = client.post(BASE + "authorize/", {**params, "allow": "true"})
+    assert response.status_code == 302
+    code = parse_qs(urlparse(response["Location"]).query)["code"][0]
+    user.is_active = False
+    user.save(update_fields=["is_active"])
+    user.is_active = True
+    user.save(update_fields=["is_active"])
+    response = Client().post(
+        BASE + "token/",
+        {
+            "client_id": app.client_id,
+            "client_secret": "test-client-secret",
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": REDIRECT,
+            "code_verifier": VERIFIER,
+        },
+    )
+    assert response.status_code == 400
+    assert response.json()["error"] == "invalid_grant"
