@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { PlaneLogo } from "@plane/blocks/icons";
+import { setToast } from "@plane/blocks/toast";
 import type { IWorkspace } from "@plane/types";
 // assets
 import WorkspaceCreationDisabled from "@/app/assets/workspace/workspace-creation-disabled.png?url";
@@ -29,9 +30,10 @@ const CreateWorkspacePage = observer(function CreateWorkspacePage() {
   const router = useAppRouter();
   // store hooks
   const { config } = useInstance();
-  const { data: currentUser } = useUser();
+  const { data: currentUser, signOut } = useUser();
   const { updateUserProfile } = useUserProfile();
   // states
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const [defaultValues, setDefaultValues] = useState<Pick<IWorkspace, "name" | "slug" | "organization_size">>({
     name: "",
     slug: "",
@@ -42,6 +44,21 @@ const CreateWorkspacePage = observer(function CreateWorkspacePage() {
   const requestAccessLabel = t("workspace_creation.errors.creation_disabled.request_button");
 
   // methods
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      await signOut();
+    } catch {
+      setToast({
+        type: "error",
+        title: t("auth.sign_out.toast.error.title"),
+        message: t("auth.sign_out.toast.error.message"),
+      });
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
+
   const getMailtoHref = () => {
     const subject = t("workspace_creation.request_email.subject");
     const body = t("workspace_creation.request_email.body", {
@@ -68,8 +85,16 @@ const CreateWorkspacePage = observer(function CreateWorkspacePage() {
           >
             <PlaneLogo className="h-9 w-auto text-primary" />
           </Link>
-          <div className="absolute top-1/4 right-4 -translate-y-1/2 text-body-xs-regular text-primary sm:fixed sm:top-12 sm:right-16 sm:translate-y-0 sm:py-5">
-            {currentUser?.email}
+          <div className="absolute top-1/4 right-4 z-10 flex max-w-[70%] -translate-y-1/2 flex-wrap items-center justify-end gap-2 text-body-xs-regular text-primary sm:fixed sm:top-12 sm:right-16 sm:translate-y-0 sm:py-5">
+            <span className="truncate">{currentUser?.email}</span>
+            <Button
+              variant="secondary"
+              size="sm"
+              stretch="auto"
+              label={t("sign_out")}
+              disabled={isSigningOut}
+              onClick={handleSignOut}
+            />
           </div>
         </div>
         <div className="relative flex h-full justify-center px-8 pb-8 sm:w-10/12 sm:items-center sm:justify-start sm:p-0 sm:pr-[8.33%] md:w-9/12 lg:w-4/5">
