@@ -14,6 +14,7 @@ from unittest.mock import patch
 
 import pytest
 from django.core.cache import cache
+from django.core.management import call_command
 from django.db import close_old_connections
 from django.test import Client
 from rest_framework.test import APIClient
@@ -46,6 +47,7 @@ def config(settings):
     settings.SINGULARITY_GATEWAY_SECRET = "isolated-test-gateway-secret"
     settings.SINGULARITY_PROJECT_CONFIG = {}
     cache.clear()
+    call_command("register_mcp_oauth_client", verbosity=0)
     with patch("plane.singularity.api.issue_activity.delay"), patch("plane.singularity.api.model_activity.delay"):
         yield
 

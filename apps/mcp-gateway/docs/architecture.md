@@ -5,7 +5,9 @@ The gateway is a separate TypeScript official MCP SDK process with a private SQL
 it has no Plane database connection. Work-item MCP has no GitLab dependency; the
 separate company provisioner and repository adapters are described below.
 
-Plane is also the OAuth issuer. A pre-registered public Codex client receives an
+Plane is also the OAuth issuer. Django OAuth Toolkit manages the MCP protocol
+backend and explicit public Application registration, separately from confidential
+OIDC clients. A pre-registered public Codex client receives an
 opaque token for the gateway resource after S256 consent. Plane stores only
 SHA-256 digests of access, refresh and authorization codes; refresh rotates.
 OAuth access tokens have a 10-minute lifetime; refresh authorization is capped
@@ -75,6 +77,8 @@ Node adapter 2.1.2 on Node 24.15.0. Each HTTP request receives its own SDK insta
 and captured bearer; no global user context is shared. Existing SQLite tables,
 Fernet envelopes and Python-compatible canonical fingerprints allow bidirectional
 code rollback without resetting decisions. The old Python image is a rollback
-artifact, not the active runtime. MCP authorization still uses the existing
-OAuthLib adapter; DOT supplies OIDC. That remaining authorization-stack difference
-is distinct from the completed TypeScript migration.
+artifact, not the active runtime. MCP now uses DOT OAuthLibCore/OAuthLibMixin and
+an OAuth2Validator storage adapter; DOT internally uses OAuthLib for protocol
+processing. Existing Delegation/Code/Token digest records remain authoritative,
+so grant IDs, revocation and cross-version receipt replay survive the cutover.
+DOT bearer token/code tables are not used for MCP secrets. See [cutover acceptance](mcp-dot.md).

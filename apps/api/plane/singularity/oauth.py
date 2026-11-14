@@ -2,16 +2,19 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-"""OAuthLib owns authorization-code/PKCE validation; storage never contains bearer secrets."""
+"""DOT protocol/client lifecycle with a digest-only delegation storage adapter."""
 
 import hashlib
 from datetime import timedelta
-from types import SimpleNamespace
 
 from django.conf import settings
 from django.utils import timezone
-from oauthlib.oauth2 import RequestValidator, Server
-from plane.db.models import DelegationCode, DelegationToken
+from oauthlib.oauth2 import Server
+from oauth2_provider.oauth2_backends import OAuthLibCore
+from oauth2_provider.oauth2_validators import OAuth2Validator
+from oauth2_provider.views.mixins import OAuthLibMixin
+from django.db.models import Q
+from plane.db.models import Delegation, DelegationCode, DelegationToken
 
 SCOPES = ["projects:read", "workitems:read", "workitems:write", "capabilities:read"]
 CLIENT_ID = "singularity-codex"
@@ -25,32 +28,40 @@ def active_tokens():
     return DelegationToken.objects.filter(revoked=False, grant__revoked_at__isnull=True, grant__user__is_active=True)
 
 
-class Validator(RequestValidator):
+class Validator(OAuth2Validator):
     """Validate only the pre-registered public client and rotation-bound grants."""
 
     def validate_client_id(self, client_id, request, *args, **kwargs):
-        if client_id != CLIENT_ID:
+        if client_id != CLIENT_ID or not super().validate_client_id(client_id, request, *args, **kwargs):
             return False
-        request.client = SimpleNamespace(client_id=client_id)
-        return True
+        return (
+            request.client.client_type == request.client.CLIENT_PUBLIC
+            and request.client.authorization_grant_type == request.client.GRANT_AUTHORIZATION_CODE
+            and not request.client.algorithm
+        )
 
-    def client_authentication_required(self, request, *args, **kwargs):
+    def authenticate_client(self, request, *args, **kwargs):
+        # This registered MCP client only supports token_endpoint_auth_method=none.
         return False
 
     def authenticate_client_id(self, client_id, request, *args, **kwargs):
-        return self.validate_client_id(client_id, request)
+        return self.validate_client_id(client_id, request, *args, **kwargs)
 
     def validate_redirect_uri(self, client_id, redirect_uri, request, *args, **kwargs):
-        return redirect_uri in settings.SINGULARITY_REDIRECT_URIS
+        return (
+            redirect_uri in settings.SINGULARITY_REDIRECT_URIS and redirect_uri in request.client.redirect_uris.split()
+        )
 
     def get_default_redirect_uri(self, client_id, request, *args, **kwargs):
         return None
 
     def validate_response_type(self, client_id, response_type, client, request, *args, **kwargs):
-        return response_type == "code"
+        return response_type == "code" and super().validate_response_type(client_id, response_type, client, request)
 
     def validate_grant_type(self, client_id, grant_type, client, request, *args, **kwargs):
-        return grant_type in ("authorization_code", "refresh_token")
+        return grant_type in ("authorization_code", "refresh_token") and super().validate_grant_type(
+            client_id, grant_type, client, request
+        )
 
     def get_default_scopes(self, client_id, request, *args, **kwargs):
         return SCOPES[:2]
@@ -150,5 +161,31 @@ class Validator(RequestValidator):
         request.refresh_row.revoked = True
         request.refresh_row.save(update_fields=["revoked"])
 
+    def revoke_token(self, token, token_type_hint, request, *args, **kwargs):
+        """Revoke the original grant, invalidating both resource audiences."""
+        value = digest(token)
+        rows = DelegationToken.objects.filter(
+            Q(digest=value) | Q(refresh_digest=value),
+            audience="gateway",
+            grant__client_id=request.client.client_id,
+        )
+        Delegation.objects.filter(pk__in=rows.values("grant_id")).update(revoked_at=timezone.now())
 
-server = Server(Validator(), token_expires_in=600)
+
+class MCPOAuthLibCore(OAuthLibCore):
+    """Keep the public MCP issuer independent of proxy headers and OIDC issuer."""
+
+    def _get_escaped_full_path(self, request):
+        return settings.SINGULARITY_ISSUER.rstrip("/") + super()._get_escaped_full_path(request)
+
+
+class MCPOAuthBackend(OAuthLibMixin):
+    """Use DOT's backend lifecycle without enabling OIDC grants at MCP endpoints."""
+
+    server_class = Server
+    validator_class = Validator
+    oauthlib_backend_class = MCPOAuthLibCore
+
+
+def get_backend():
+    return MCPOAuthBackend.get_oauthlib_core()

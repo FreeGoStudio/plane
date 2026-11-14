@@ -6,7 +6,7 @@
 
 import secrets
 from datetime import timedelta
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit, parse_qsl
 
 from django.conf import settings
 from django.db import transaction
@@ -15,10 +15,10 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods, require_POST
-from oauthlib.oauth2 import OAuth2Error
+from oauth2_provider.exceptions import OAuthToolkitError
 
 from plane.db.models import Delegation, DelegationToken
-from .oauth import CLIENT_ID, SCOPES, active_tokens, digest, server
+from .oauth import CLIENT_ID, SCOPES, active_tokens, digest, get_backend
 
 
 def enabled():
@@ -60,10 +60,9 @@ def authorize(request):
         return private_json({"error": "invalid_request"}, 400)
     if not params.get("state") or len(params.get("state", "")) > 1024:
         return private_json({"error": "invalid_request"}, 400)
-    uri = settings.SINGULARITY_ISSUER.rstrip("/") + request.get_full_path()
     try:
-        scopes, credentials = server.validate_authorization_request(uri)
-    except OAuth2Error:
+        scopes, credentials = get_backend().validate_authorization_request(request)
+    except OAuthToolkitError:
         return private_json({"error": "invalid_request"}, 400)
     if not request.user.is_authenticated or not request.user.is_active or request.user.is_bot:
         return render(request, "singularity/login.html", {"return_url": request.get_full_path()}, status=401)
@@ -86,8 +85,13 @@ def authorize(request):
     with transaction.atomic():
         grant = Delegation.objects.create(user=request.user, client_id=CLIENT_ID, scopes=" ".join(scopes))
         credentials.update(user=request.user, grant=grant)
-        headers, body, status = server.create_authorization_response(uri, scopes=scopes, credentials=credentials)
-        headers["Location"] += "&" + urlencode({"iss": settings.SINGULARITY_ISSUER})
+        _, headers, body, status = get_backend().create_authorization_response(
+            request, scopes=scopes, credentials=credentials, allow=True
+        )
+        location = urlsplit(headers["Location"])
+        query = [(k, v) for k, v in parse_qsl(location.query) if k != "iss"]
+        query.append(("iss", settings.SINGULARITY_ISSUER.rstrip("/")))
+        headers["Location"] = urlunsplit(location._replace(query=urlencode(query)))
     response = HttpResponse(body or "", status=status, headers=headers)
     response["Cache-Control"] = "no-store"
     return response
@@ -101,12 +105,7 @@ def token(request):
     if request.POST.get("resource") != settings.SINGULARITY_RESOURCE:
         return private_json({"error": "invalid_target"}, 400)
     with transaction.atomic():
-        headers, body, status = server.create_token_response(
-            settings.SINGULARITY_ISSUER + request.path,
-            http_method="POST",
-            body=request.body.decode(),
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-        )
+        _, headers, body, status = get_backend().create_token_response(request)
     return HttpResponse(body, status=status, headers=headers)
 
 
@@ -114,14 +113,11 @@ def token(request):
 @require_POST
 def revoke(request):
     enabled()
-    if request.POST.get("client_id") != CLIENT_ID:
-        return private_json({"error": "invalid_client"}, 400)
-    value = digest(request.POST.get("token", ""))
-    from django.db.models import Q
-
-    rows = DelegationToken.objects.filter(Q(digest=value) | Q(refresh_digest=value), audience="gateway")
-    Delegation.objects.filter(pk__in=rows.values("grant_id")).update(revoked_at=timezone.now())
-    return private_json({})
+    with transaction.atomic():
+        _, headers, body, status = get_backend().create_revocation_response(request)
+    response = HttpResponse(body, status=status, headers=headers)
+    response["Cache-Control"] = "no-store"
+    return response
 
 
 @require_http_methods(["GET", "POST"])

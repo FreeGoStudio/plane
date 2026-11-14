@@ -120,3 +120,7 @@ P4审查：既有原生App PATCH与公开API PATCH已使用lock_work_item，与�
 ### 仍属实现差异的事项
 
 MCP OAuth仍采用此前OAuthLib适配，DOT提供OIDC；原计划统一DOT的调整未在本轮完成，不能记作“缺少外部账号”。本轮指定的TypeScript及本机回滚/灾备验收已关闭，整份原计划尚不宣称全部完成。
+
+## P1 MCP 统一 DOT 本机验收（2026-11-14）
+
+上节 OAuthLib/DOT 差异为上一轮状态，本轮已完成 DOT 协议后端、Application 注册与摘要存储适配。64 项契约、Ruff 和无迁移检查通过；真实旧授权码/令牌跨版本切换、刷新、讨论重放与撤销通过；两用户 OAuth/PAT 五工具和 Codex 原生两种授权方式通过。实现和本机验收见 [mcp-dot.md](mcp-dot.md)。固定提交镜像发布及公司 SSO 回归随后记录，外部实例/私有 GitHub/远程 ChatGPT/组织灰度仍单列待验收。
