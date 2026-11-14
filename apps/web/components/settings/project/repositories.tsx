@@ -117,10 +117,10 @@ export function ProjectRepositoriesSettings({
                   id={row.id}
                   className={`rounded-lg border p-5 ${params.get("repository") === row.id ? "border-accent-strong" : "border-subtle"}`}
                 >
-                  <h4 className="font-medium text-primary">
+                  <h4 className="font-medium break-words text-primary">
                     {row.instance_name} / {row.path}
                   </h4>
-                  <p className="text-sm my-2 text-secondary">
+                  <p className="text-sm my-2 break-all text-secondary">
                     {row.enabled
                       ? credential
                         ? `${text("account")}: ${credential.external_actor_label || credential.label}${credential.expires_at ? ` · ${text("expires")}: ${new Date(credential.expires_at).toLocaleString()}` : ""}`
