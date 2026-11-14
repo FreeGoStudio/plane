@@ -43,11 +43,12 @@ access tokens; signing out of Plane is not a promise of downstream single logout
 
 ## Personal MCP tokens
 
-`/auth/singularity/personal-tokens/` requires an active human Plane session and
-CSRF protection. Select explicit scopes and 1–90 days (default 30). The response
-shows the credential once; configure it as the MCP HTTP bearer credential, never
-as a tool argument. `/auth/singularity/connections/` revokes an owner's grant and
-all derived delegations. Revocation cannot affect another user's grant.
+Use Plane's native `/settings/profile/api-tokens/` page. The same personal token
+works as `X-Api-Key` for native APIs and as the MCP HTTP bearer, never as a tool
+argument. Native token expiry and deletion also invalidate every derived MCP
+credential. The old separate creation URL redirects to native settings.
+Already issued scoped `sgp_` tokens remain usable until expiry/revocation through
+`/auth/singularity/connections/`; no broader permissions are silently granted.
 
 OAuth MCP access remains 10 minutes. Refresh grants end 30 days after original
 consent, including rotations. Exchanged Plane access never exceeds the remaining

@@ -3,15 +3,12 @@
 # See the LICENSE file for details.
 
 # Django imports
-from django.utils import timezone
-from django.db.models import Q
 
 # Third party imports
 from rest_framework import authentication
-from rest_framework.exceptions import AuthenticationFailed
 
 # Module imports
-from plane.db.models import APIToken
+from plane.utils.personal_tokens import authenticate_personal_token
 
 
 class APIKeyAuthentication(authentication.BaseAuthentication):
@@ -27,20 +24,8 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
         return request.headers.get(self.auth_header_name)
 
     def validate_api_token(self, token):
-        try:
-            api_token = APIToken.objects.get(
-                Q(Q(expired_at__gt=timezone.now()) | Q(expired_at__isnull=True)),
-                token=token,
-                is_active=True,
-                user__is_active=True,
-            )
-        except APIToken.DoesNotExist:
-            raise AuthenticationFailed("Given API token is not valid")
-
-        # save api token last used
-        api_token.last_used = timezone.now()
-        api_token.save(update_fields=["last_used"])
-        return (api_token.user, api_token.token)
+        api_token = authenticate_personal_token(token)
+        return api_token.user, api_token.token
 
     def authenticate(self, request):
         token = self.get_api_token(request=request)

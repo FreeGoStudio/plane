@@ -11,13 +11,15 @@ from urllib.parse import urlencode, urlsplit, urlunsplit, parse_qsl
 from django.conf import settings
 from django.db import transaction
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods, require_POST
 from oauth2_provider.exceptions import OAuthToolkitError
 
-from plane.db.models import Delegation, DelegationToken
+from plane.db.models import APIToken, Delegation, DelegationToken
+from rest_framework.exceptions import AuthenticationFailed
+from .personal_tokens import native_delegation
 from .oauth import CLIENT_ID, SCOPES, active_tokens, digest, get_backend
 
 
@@ -132,58 +134,26 @@ def connections(request):
             grant_id = uuid.UUID(request.POST.get("grant", ""))
         except ValueError:
             return private_json({"error": "invalid_request"}, 400)
-        Delegation.objects.filter(pk=grant_id, user=request.user).update(revoked_at=timezone.now())
+        with transaction.atomic():
+            grants = Delegation.objects.filter(pk=grant_id, user=request.user)
+            APIToken.objects.filter(pk__in=grants.values("source_api_token"), user=request.user).update(is_active=False)
+            grants.update(revoked_at=timezone.now())
     return render(
         request,
         "singularity/connections.html",
         {
-            "connections": Delegation.objects.filter(user=request.user, revoked_at__isnull=True).order_by(
-                "-created_at"
-            ),
+            "connections": Delegation.objects.filter(
+                user=request.user, revoked_at__isnull=True, source_api_token__isnull=True
+            ).order_by("-created_at"),
         },
     )
 
 
 @require_http_methods(["GET", "POST"])
 def personal_tokens(request):
-    """Issue a scoped, non-refreshable personal credential to its session owner.
-
-    The plaintext appears only in the creation response. The existing grant
-    revocation and audience exchange apply equally to OAuth and personal tokens.
-    """
+    """Retire the separate issuer while preserving already issued credentials."""
     enabled()
-    if not request.user.is_authenticated or not request.user.is_active or request.user.is_bot:
-        return render(request, "singularity/login.html", {"return_url": request.path}, status=401)
-    context = {"scopes": SCOPES}
-    if request.method == "POST":
-        scopes = request.POST.getlist("scope")
-        try:
-            days = int(request.POST.get("days", "30"))
-        except ValueError:
-            return private_json({"error": "invalid_expiration"}, 400)
-        if not scopes or not set(scopes) <= set(SCOPES) or not 1 <= days <= 90:
-            return private_json({"error": "invalid_scope_or_expiration"}, 400)
-        raw = "sgp_" + secrets.token_urlsafe(48)
-        expires = timezone.now() + timedelta(days=days)
-        with transaction.atomic():
-            grant = Delegation.objects.create(
-                user=request.user, client_id="singularity-personal-token", scopes=" ".join(sorted(set(scopes)))
-            )
-            DelegationToken.objects.create(
-                digest=digest(raw),
-                refresh_digest=digest(secrets.token_urlsafe(48)),
-                grant=grant,
-                audience="gateway",
-                scopes=grant.scopes,
-                expires_at=expires,
-                refresh_expires_at=timezone.now(),
-            )
-        context.update(token=raw, expires=expires)
-    response = render(request, "singularity/personal_tokens.html", context)
-    response["Cache-Control"] = "no-store"
-    # Native same-origin form POSTs must retain Origin for Django CSRF checks.
-    response["Referrer-Policy"] = "same-origin"
-    return response
+    return redirect("/settings/profile/api-tokens/")
 
 
 @csrf_exempt
@@ -210,7 +180,10 @@ def exchange(request):
         .first()
     )
     if not row:
-        return private_json({"error": "invalid_token"}, 401)
+        try:
+            row = native_delegation(request.POST.get("subject_token", ""))
+        except AuthenticationFailed:
+            return private_json({"error": "invalid_token"}, 401)
     if request.POST.get("inspect") == "1":
         return private_json(
             {

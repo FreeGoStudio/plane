@@ -14,6 +14,8 @@ from rest_framework import status
 # Module import
 from .base import BaseAPIView
 from plane.db.models import APIToken
+from plane.db.models.api import generate_token
+from plane.utils.personal_tokens import token_digest
 from plane.app.serializers import APITokenSerializer, APITokenReadSerializer
 
 
@@ -26,7 +28,9 @@ class ApiTokenEndpoint(BaseAPIView):
         # Check the user type
         user_type = 1 if request.user.is_bot else 0
 
+        raw_token = generate_token()
         api_token = APIToken.objects.create(
+            token=token_digest(raw_token),
             label=label,
             description=description,
             user=request.user,
@@ -36,7 +40,9 @@ class ApiTokenEndpoint(BaseAPIView):
 
         serializer = APITokenSerializer(api_token)
         # Token will be only visible while creating
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        response = Response({**serializer.data, "token": raw_token}, status=status.HTTP_201_CREATED)
+        response["Cache-Control"] = "no-store"
+        return response
 
     def get(self, request: Request, pk: Optional[str] = None) -> Response:
         if pk is None:
@@ -58,5 +64,5 @@ class ApiTokenEndpoint(BaseAPIView):
         serializer = APITokenSerializer(api_token, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(APITokenReadSerializer(api_token).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

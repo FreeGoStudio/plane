@@ -33,6 +33,8 @@ class APITokenReadSerializer(BaseSerializer):
         exclude = ("token",)
 
     def get_is_active(self, obj: APIToken) -> bool:
+        if not obj.is_active:
+            return False
         if obj.expired_at is None:
             return True
         return timezone.now() < obj.expired_at

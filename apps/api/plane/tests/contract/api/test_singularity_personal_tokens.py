@@ -9,7 +9,7 @@ from datetime import timedelta
 import pytest
 from django.test import Client
 from django.utils import timezone
-from plane.db.models import DelegationToken
+from plane.db.models import Delegation, DelegationToken
 from plane.singularity.oauth import digest
 from .test_singularity import config, world, login, RESOURCE  # noqa: F401
 
@@ -20,20 +20,34 @@ pytestmark = pytest.mark.django_db(transaction=True)
 URL = "/auth/singularity/personal-tokens/"
 
 
+def legacy_token(user, scopes="projects:read"):
+    """Represent a credential issued before the separate creation UI was retired."""
+    import secrets
+
+    raw = "sgp_" + secrets.token_urlsafe(48)
+    grant = Delegation.objects.create(user=user, client_id="singularity-personal-token", scopes=scopes)
+    DelegationToken.objects.create(
+        digest=digest(raw),
+        refresh_digest=digest(secrets.token_urlsafe(48)),
+        grant=grant,
+        audience="gateway",
+        scopes=scopes,
+        expires_at=timezone.now() + timedelta(days=30),
+        refresh_expires_at=timezone.now(),
+    )
+    return raw
+
+
 def test_personal_token_exchange_scope_and_revocation(world):
     """A personal token uses the same actor and cannot bypass grant revocation."""
     user, other, *_ = world
     client = Client()
     client.force_login(user)
-    response = client.post(URL, {"scope": ["projects:read"], "days": "30"})
-    assert response.status_code == 200
-    raw = response.context["token"]
+    raw = legacy_token(user)
     row = DelegationToken.objects.get(digest=digest(raw))
     assert row.grant.user_id == user.id
     assert row.scopes == "projects:read"
     assert row.refresh_expires_at <= timezone.now()
-    assert "no-store" in response["Cache-Control"]
-    assert response["Referrer-Policy"] == "same-origin"
     assert raw not in client.get(URL).content.decode()
     assert raw not in client.get("/auth/singularity/connections/").content.decode()
     params = {"subject_token": raw}
@@ -52,44 +66,20 @@ def test_personal_token_exchange_scope_and_revocation(world):
     assert api.get("/api/singularity/v1/projects/").status_code == 401
 
 
-@pytest.mark.parametrize(
-    "data",
-    [
-        {"scope": ["admin"], "days": "30"},
-        {"days": "30"},
-        {"scope": ["projects:read"], "days": "91"},
-        {"scope": ["projects:read"], "days": "0"},
-        {"scope": ["projects:read"], "days": "bad"},
-    ],
-)
-def test_personal_token_rejects_invalid_grants(world, data):
+@pytest.mark.parametrize("method", ["get", "post"])
+def test_separate_issuer_redirects_without_creating_tokens(world, method):
     client = Client()
     client.force_login(world[0])
-    assert client.post(URL, data).status_code == 400
+    response = getattr(client, method)(URL)
+    assert response.status_code == 302
+    assert response["Location"] == "/settings/profile/api-tokens/"
     assert not DelegationToken.objects.exists()
-
-
-def test_personal_token_requires_session_csrf_and_human(world):
-    assert Client().post(URL, {"scope": ["projects:read"]}).status_code == 401
-    client = Client(enforce_csrf_checks=True)
-    client.force_login(world[0])
-    response = client.post(URL, {"scope": ["projects:read"]})
-    # Plane's existing CSRF failure page returns HTTP 200. Assert rejection by
-    # the security boundary rather than changing unrelated login behavior.
-    assert "csrf_failure.html" in [template.name for template in response.templates]
-    assert not DelegationToken.objects.exists()
-    user = world[0]
-    user.is_bot = True
-    user.save()
-    client = Client()
-    client.force_login(user)
-    assert client.post(URL, {"scope": ["projects:read"]}).status_code == 401
 
 
 def test_exchange_cannot_extend_personal_token_expiry(world):
     client = Client()
     client.force_login(world[0])
-    raw = client.post(URL, {"scope": ["projects:read"]}).context["token"]
+    raw = legacy_token(world[0])
     row = DelegationToken.objects.get(digest=digest(raw))
     row.expires_at = timezone.now() + timedelta(seconds=20)
     row.save()
@@ -139,14 +129,14 @@ def test_deactivation_permanently_revokes_sessions_and_grants(world, settings, c
     other_api, other_client, _, _ = login(world[1])
     other_session_key = other_client.session.session_key
     session_key = client.session.session_key
-    raw = client.post(URL, {"scope": ["projects:read"]}).context["token"]
+    raw = legacy_token(world[0])
     user.is_active = False
     user.save(update_fields=["is_active"])
     assert not Session.objects.filter(session_key=session_key).exists()
     assert not Delegation.objects.filter(user=user, revoked_at__isnull=True).exists()
     user.is_active = True
     user.save(update_fields=["is_active"])
-    assert client.get(URL).status_code == 401
+    assert client.get("/auth/singularity/connections/").status_code == 401
     assert Session.objects.filter(session_key=other_session_key).exists()
     assert other_api.get("/api/singularity/v1/me/").status_code == 200
     assert api.get("/api/singularity/v1/me/").status_code == 401

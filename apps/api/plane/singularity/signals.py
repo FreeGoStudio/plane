@@ -8,7 +8,7 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from plane.db.models import User, CompanyAccount, Delegation, Session
+from plane.db.models import User, CompanyAccount, Delegation, Session, APIToken
 
 
 @receiver(post_save, sender=User, dispatch_uid="singularity-company-account")
@@ -18,6 +18,7 @@ def company_user_changed(sender, instance, created, raw=False, **kwargs):
     # Revocation is a Plane identity lifecycle rule, independent of provisioning.
     # Removing sessions and pending codes prevents resurrection after reactivation.
     if not instance.is_active:
+        APIToken.objects.filter(user=instance).update(is_active=False)
         Session.objects.filter(user_id=str(instance.pk)).delete()
         Delegation.objects.filter(user=instance, revoked_at__isnull=True).update(revoked_at=timezone.now())
         from oauth2_provider.models import get_access_token_model, get_refresh_token_model, get_grant_model

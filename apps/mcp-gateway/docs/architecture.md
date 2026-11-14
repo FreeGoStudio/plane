@@ -11,8 +11,17 @@ OIDC clients. A pre-registered public Codex client receives an
 opaque token for the gateway resource after S256 consent. Plane stores only
 SHA-256 digests of access, refresh and authorization codes; refresh rotates.
 OAuth access tokens have a 10-minute lifetime; refresh authorization is capped
-at 30 days from the original grant. Personal tokens default to 30 days, max 90,
-with no refresh. Downstream expiry cannot exceed the originating credential.
+at 30 days from the original grant. Personal credentials now use Plane's native
+`APIToken` lifecycle and expiry settings, shared by native API and MCP. New tokens
+created in the native settings page are stored as SHA-256 digests and displayed
+once. Existing plaintext native tokens and already issued `sgp_` credentials remain
+valid; legacy scoped grants retain their original limits and revocation page.
+The old dedicated creation URL redirects to `/settings/profile/api-tokens/`.
+Downstream expiry cannot exceed the originating credential. Native delegation
+rows retain a stable source UUID after token deletion so receipts and audit remain;
+every child request checks the source's current activity, expiry and user status.
+Native tokens receive all supported tool scopes and existing Plane RBAC, without
+adding new MCP tools. OAuth retains explicitly consented scopes.
 
 The gateway validates the token by authenticated inspection at Plane on every
 MCP HTTP request and again on every tool invocation. The confidential private

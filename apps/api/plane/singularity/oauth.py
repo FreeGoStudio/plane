@@ -15,6 +15,7 @@ from oauth2_provider.oauth2_validators import OAuth2Validator
 from oauth2_provider.views.mixins import OAuthLibMixin
 from django.db.models import Q
 from plane.db.models import Delegation, DelegationCode, DelegationToken
+from plane.utils.personal_tokens import valid_personal_tokens
 
 SCOPES = ["projects:read", "workitems:read", "workitems:write", "capabilities:read"]
 CLIENT_ID = "singularity-codex"
@@ -25,7 +26,11 @@ def digest(value):
 
 
 def active_tokens():
-    return DelegationToken.objects.filter(revoked=False, grant__revoked_at__isnull=True, grant__user__is_active=True)
+    return DelegationToken.objects.filter(
+        revoked=False, grant__revoked_at__isnull=True, grant__user__is_active=True
+    ).filter(
+        Q(grant__source_api_token__isnull=True) | Q(grant__source_api_token__in=valid_personal_tokens().values("pk"))
+    )
 
 
 class Validator(OAuth2Validator):

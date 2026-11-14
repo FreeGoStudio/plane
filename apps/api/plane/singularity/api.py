@@ -41,6 +41,7 @@ from plane.db.models import (
 )
 from .auth_views import enabled
 from .oauth import active_tokens, digest
+from .personal_tokens import native_delegation
 
 
 class DelegatedAuthentication(BaseAuthentication):
@@ -50,6 +51,10 @@ class DelegatedAuthentication(BaseAuthentication):
     def authenticate(self, request):
         enabled()
         raw = request.headers.get("Authorization", "")
+        personal = request.headers.get("X-Api-Key")
+        if personal:
+            token = native_delegation(personal)
+            return token.grant.user, token
         if not raw.startswith("Bearer "):
             raise AuthenticationFailed("Plane delegation required")
         token = (
@@ -62,7 +67,9 @@ class DelegatedAuthentication(BaseAuthentication):
             .select_related("grant__user")
             .first()
         )
-        if not token or token.grant.user.is_bot:
+        if not token:
+            token = native_delegation(raw[7:])
+        if token.grant.user.is_bot and not token.grant.source_api_token:
             raise AuthenticationFailed("Plane delegation expired or revoked")
         return token.grant.user, token
 

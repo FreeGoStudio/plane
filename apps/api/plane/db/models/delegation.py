@@ -16,6 +16,8 @@ class Delegation(models.Model):
     scopes = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     revoked_at = models.DateTimeField(null=True)
+    # Keep receipts/audit after native token deletion; a missing source is invalid.
+    source_api_token = models.UUIDField(null=True, unique=True)
 
 
 class DelegationCode(models.Model):
