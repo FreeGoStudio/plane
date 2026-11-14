@@ -62,11 +62,16 @@ create/update, replay after Gateway restart, missing-scope rejection and revocat
 The actual Codex CLI passed OAuth login and native MCP create/read, and separately
 passed personal-token native MCP create/read. Evidence is private under
 `D:/plane-ops/state/singularity/`: `dot-cutover-verification.json`,
-`live-verification.json`, `personal-verification.json`, `codex-verification.json`
-and `codex-personal-verification.json`. No secrets are included in this document.
+`live-verification.json`, `personal-token-verification.json`, `codex-verification.json`
+and `codex-personal-token-verification.json`. No secrets are included in this document.
 
-Fixed-commit image rollout and post-rollout company SSO regression are recorded
-in the delivery log after completion.
+Fixed-commit backend `plane-custom/plane-backend:dot-eb155463f2` is deployed to
+API/worker/beat. Post-rollout two-user OAuth/PAT workflows passed. Chrome company
+SSO passed with Plane UUID mapped to the same GitLab user, without a GitLab
+password. The company browser uses its existing certificate exception; MCP tests
+verify TLS. The candidate is stopped and original TLS routing is restored. Exact
+fixture users are disabled and their managed GitLab accounts blocked; work items
+and audit/receipt records remain. Release backup: `20261114-021953-singularity`.
 
 ## External acceptance still pending
 
