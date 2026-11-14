@@ -1,8 +1,28 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
-<title>使用 Plane 登录</title><main style="max-width:640px;margin:64px auto;font:16px/1.8 sans-serif;padding:24px">
-{% if not error %}<h1>使用 Plane 登录 {{ application.name }}</h1>
-<p>{{ request.user.email }}</p><p>将提供你授权的身份信息，仓库访问权限仍由目标服务决定。</p>
-<form method="post">{% csrf_token %}{{ form.as_p }}
-<button type="submit" name="allow" value="true">允许登录</button>
-<button type="submit">取消</button></form>
-{% else %}<h1>无法授权</h1><p>{{ error.description }}</p>{% endif %}</main></html>
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title>使用 Plane 登录</title>
+<main style="max-width:640px;margin:64px auto;font:16px/1.8 sans-serif;padding:24px">
+{% if not error %}
+<h1>使用 Plane 登录 {{ application.name }}</h1>
+<p>当前 Plane 账号：{{ request.user.email }}</p>
+<p>允许登录后，{{ application.name }} 将获得以下信息，用于识别你的账号并完成登录：</p>
+<ul>
+  <li><strong>账号身份：</strong>你的 Plane 账号唯一标识，用于关联同一个账号。</li>
+  {% if "profile" in form.scope.value %}<li><strong>基本资料：</strong>你的显示名称和登录用户名。</li>{% endif %}
+  {% if "email" in form.scope.value %}<li><strong>邮箱信息：</strong>你的邮箱地址及邮箱是否已验证。</li>{% endif %}
+</ul>
+<p>你的 Plane 密码不会提供给 {{ application.name }}。本次授权仅用于登录，仓库访问权限仍由 {{ application.name }} 单独管理。</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form.hidden_fields %}{{ field }}{{ field.errors }}{% endfor %}
+  <button type="submit" name="allow" value="true">允许登录</button>
+  <button type="submit">取消</button>
+</form>
+{% else %}
+<h1>无法授权</h1><p>{{ error.description }}</p>
+{% endif %}
+</main>
+</html>
