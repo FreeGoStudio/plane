@@ -281,7 +281,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   onChange={onChange}
                   ref={ref}
                   error={errors.first_name?.message}
-                  placeholder="Enter your first name"
+                  placeholder={t("admin_access.first_name_placeholder")}
                   maxLength={50}
                   autoComplete="on"
                 />
@@ -305,7 +305,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   onChange={onChange}
                   ref={ref}
                   error={errors.last_name?.message}
-                  placeholder="Enter your last name"
+                  placeholder={t("admin_access.last_name_placeholder")}
                   maxLength={50}
                   autoComplete="on"
                 />
@@ -331,7 +331,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   onChange={onChange}
                   ref={ref}
                   error={errors?.display_name?.message}
-                  placeholder="Enter your display name"
+                  placeholder={t("display_name")}
                   maxLength={50}
                 />
               )}
@@ -355,7 +355,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                     value={value}
                     ref={ref}
                     error={errors.email?.message}
-                    placeholder="Enter your email"
+                    placeholder={t("account_settings.profile.change_email_modal.form.email.placeholder")}
                     autoComplete="on"
                     disabled
                   />

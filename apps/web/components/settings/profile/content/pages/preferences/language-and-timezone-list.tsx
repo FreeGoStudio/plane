@@ -100,7 +100,7 @@ export const ProfileSettingsLanguageAndTimezonePreferencesList = observer(
               onValueChange={(value) => {
                 if (value !== null) void handleLanguageChange(value);
               }}
-              placeholder="Select a language"
+              placeholder={t("language")}
             />
           }
         />
