@@ -10,6 +10,8 @@ import Link from "next/link";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
+import { Icon } from "@makeplane/propel/components/icon";
+import { LogOutOutline } from "@makeplane/propel/icons";
 import { PlaneLogo } from "@plane/blocks/icons";
 import { setToast } from "@plane/blocks/toast";
 import type { IWorkspace } from "@plane/types";
@@ -85,14 +87,21 @@ const CreateWorkspacePage = observer(function CreateWorkspacePage() {
           >
             <PlaneLogo className="h-9 w-auto text-primary" />
           </Link>
-          <div className="absolute top-1/4 right-4 z-10 flex max-w-[70%] -translate-y-1/2 flex-wrap items-center justify-end gap-2 text-body-xs-regular text-primary sm:fixed sm:top-12 sm:right-16 sm:translate-y-0 sm:py-5">
-            <span className="truncate">{currentUser?.email}</span>
+          <div className="absolute top-1/2 right-6 z-10 flex max-w-[calc(100%-7rem)] -translate-y-1/2 flex-col items-end gap-1 bg-surface-1 px-2 sm:fixed sm:top-12 sm:right-16 sm:max-w-[60%] sm:translate-y-0 sm:flex-row sm:items-center sm:gap-3 sm:py-5">
+            <span
+              className="max-w-full min-w-0 truncate text-body-xs-regular text-secondary"
+              title={currentUser?.email}
+            >
+              {currentUser?.email}
+            </span>
+            <span aria-hidden="true" className="hidden h-4 shrink-0 border-l border-subtle sm:block" />
             <Button
-              variant="secondary"
+              variant="ghost"
               size="sm"
               stretch="auto"
               label={t("sign_out")}
-              disabled={isSigningOut}
+              icon={<Icon icon={LogOutOutline} />}
+              loading={isSigningOut}
               onClick={handleSignOut}
             />
           </div>
