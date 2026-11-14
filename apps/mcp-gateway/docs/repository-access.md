@@ -1,5 +1,48 @@
 # Repository access
 
+## Project-native connections (2026-11-14)
+
+The native route `/{workspace}/settings/projects/{project}/repositories/` owns
+repository configuration, each member's connection and immutable file previews.
+Old project configuration URLs redirect there. The profile sidebar no longer
+promotes credential setup before a project is selected. Existing vaults, explicit
+anonymous selections, upstream adapters and administrator repository APIs remain.
+The legacy personal URL remains available for existing credential/host maintenance.
+
+`list_project_repositories` and `read_project_repository` are read-only MCP tools.
+They require `repositories:read`; existing OAuth grants are not silently expanded.
+When a connection is absent, expired, revoked or rejected with upstream 401, reads
+return `authorization_required` with a project/repository link. The user connects
+in Plane and the client retries the original read. No callback can execute AI
+instructions, and clients unable to resume automatically ask the user to continue.
+403/404, network failures and rate limiting do not produce misleading login loops.
+Project membership and upstream permission are checked separately on each read.
+
+Only browser sessions can configure connections. OAuth uses a ten-minute signed
+state, session/owner/repository binding, S256 PKCE and single-use callback state.
+The callback verifies upstream identity and target repository visibility before
+saving an encrypted personal credential and selection. Cancelling or failing does
+not replace the old selection. The browser returns to the original native project
+page; tokens never enter URLs or AI responses. Expired OAuth access tokens currently
+require reconnecting; refresh tokens are not retained. Disconnecting a repository
+removes that selection, not the upstream grant or selections in other projects.
+
+Operator setup: register an OAuth application separately on each hosting instance,
+with exact callback `{WEB_URL}/auth/singularity/repository-callback/`. Mount a private
+JSON file only in the API and set `SINGULARITY_REPOSITORY_OAUTH_FILE` to its path.
+It maps instance UUIDs to `client_id` and `client_secret`. Do not commit the file.
+GitLab requests `read_api`; GitHub OAuth requests `repo` (upstream write capability
+is disclosed in the UI, while Plane only exposes reads). Without a registered app,
+the UI explains the missing setup and retains personal-token configuration.
+For private GitLab API authorities, existing explicit CIDRs/TLS rules still apply.
+Set Gateway `PLANE_PUBLIC_URL` to the canonical Plane browser origin so it can
+validate authorization links independently of its internal `PLANE_URL` authority.
+
+Protocol references: [GitLab OAuth](https://docs.gitlab.com/api/oauth2/),
+[GitHub OAuth flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
+External GitLab/GitHub instances still require their operator-provided app setup
+and real-account acceptance; local contracts do not substitute for those checks.
+
 ## Credential storage foundation
 
 Repository instances, project mappings, external identities, owner credentials,

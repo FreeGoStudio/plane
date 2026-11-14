@@ -156,8 +156,8 @@ def test_configuration_pages_are_session_scoped_and_escape_project_names(world):
     repo.project.save()
     url = f"/auth/singularity/workspaces/vault/projects/{repo.project_id}/repositories/"
     response = client.get(url)
-    assert response.status_code == 200
-    assert b"&lt;script&gt;alert(1)&lt;/script&gt;" in response.content
-    assert b"<script>alert(1)</script>" not in response.content
+    assert response.status_code == 302
+    assert f"/settings/projects/{repo.project_id}/repositories/" in response.url
+    assert "<script>" not in response.url
     ProjectMember.objects.filter(project=repo.project, member=bob).delete()
     assert login(bob).get(url).status_code == 404

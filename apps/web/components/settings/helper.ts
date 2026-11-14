@@ -31,7 +31,7 @@ export const pathnameToAccessKey = (pathname: string) => {
   const pathArray = pathname.replace(/^\/|\/$/g, "").split("/"); // Regex removes leading and trailing slashes
   const workspaceSlug = pathArray[0];
   const accessKey = pathArray.slice(1, 3).join("/");
-  return { workspaceSlug, accessKey: `/${accessKey}` || "" };
+  return { workspaceSlug, accessKey: `/${accessKey}` };
 };
 
 export const getWorkspaceActivePath = (pathname: string) => {
@@ -47,5 +47,6 @@ export const getProjectActivePath = (pathname: string) => {
   const settingsIndex = parts.indexOf("settings");
   if (settingsIndex === -1) return null;
   const subPath = parts.slice(settingsIndex + 3, settingsIndex + 4).join("/");
+  if (subPath === "repositories") return "singularity_settings.repositories";
   return subPath ? projectHrefToLabelMap["/" + subPath] : projectHrefToLabelMap[subPath];
 };

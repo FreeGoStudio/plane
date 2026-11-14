@@ -7,8 +7,11 @@ from . import api, auth_views
 from .company_views import company_account
 from .repository_views import repository_settings
 from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectRepositories, RepositoryAccess
+from .repository_api import ProjectRepositoryConnections, DelegatedRepositoryRead
+from .repository_oauth import callback as repository_callback
 
 auth_patterns = [
+    path("repository-callback/", repository_callback),
     path("repository-access/", repository_settings),
     path("workspaces/<slug:slug>/projects/<uuid:project_id>/repositories/", repository_settings),
     path("company-account/", company_account),
@@ -21,6 +24,11 @@ auth_patterns = [
 ]
 base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
 urlpatterns = [
+    path(base + "repository-connections/", ProjectRepositoryConnections.as_view()),
+    path(base + "repositories/<uuid:pk>/connection/", ProjectRepositoryConnections.as_view()),
+    path(base + "ai-repositories/", DelegatedRepositoryRead.as_view()),
+    path(base + "ai-repositories/<uuid:pk>/tree/", DelegatedRepositoryRead.as_view(), {"operation": "tree"}),
+    path(base + "ai-repositories/<uuid:pk>/file/", DelegatedRepositoryRead.as_view(), {"operation": "file"}),
     path("repository-hosts/", RepositoryInstances.as_view()),
     path("repository-credentials/", RepositoryCredentials.as_view()),
     path("repository-credentials/<uuid:pk>/", RepositoryCredentials.as_view()),

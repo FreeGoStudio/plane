@@ -65,7 +65,8 @@ export class Plane {
     readonly base: string,
     readonly secret: string,
     readonly vault: Vault,
-    readonly send: Transport
+    readonly send: Transport,
+    readonly publicBase: string = base
   ) {
     const url = new URL(base);
     if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash)
@@ -97,7 +98,7 @@ export class Plane {
     path: string,
     payload?: unknown,
     params: Record<string, string | number> = {}
-  ) {
+  ): Promise<Record<string, unknown>> {
     const identity = await this.identity(bearer);
     const token = tokenSchema.parse(await this.exchange(bearer));
     if (!/^[a-zA-Z0-9%_./-]+$/.test(path) || path.includes("..") || path.startsWith("/"))
@@ -117,6 +118,34 @@ export class Plane {
       throw new PlaneError(503, method === "POST" ? "outcome_unknown_retry_same_decision" : "unavailable");
     }
     this.vault.record(identity.connection_id, method, response.status);
+    if (response.status >= 400 && /\/ai-repositories\//.test(path)) {
+      const upstream = z
+        .object({
+          error: z.enum([
+            "upstream_access_denied",
+            "upstream_resource_invisible",
+            "upstream_unavailable",
+            "upstream_rate_limited",
+            "file_too_large",
+            "binary_file",
+            "lfs_file",
+          ]),
+        })
+        .safeParse(response.data);
+      if (upstream.success) return { status: "read_failed", error: upstream.data.error };
+    }
+    if (response.status === 403 && /\/ai-repositories\//.test(path)) {
+      const challenge = z
+        .object({
+          error: z.literal("repository_authorization_required"),
+          status: z.literal("authorization_required"),
+          authorization_url: z.url(),
+          message: z.string(),
+        })
+        .safeParse(response.data);
+      if (challenge.success && new URL(challenge.data.authorization_url).origin === new URL(this.publicBase).origin)
+        return challenge.data;
+    }
     if (response.status >= 300)
       throw new PlaneError(
         response.status,
@@ -166,6 +195,18 @@ export class Plane {
 const nullableString = z.string().nullable().optional();
 const reference = z.string().min(1).max(255);
 export const inputs = {
+  list_project_repositories: z.object({ project_ref: reference, workspace: nullableString }).strict(),
+  read_project_repository: z
+    .object({
+      project_ref: reference,
+      workspace: nullableString,
+      repository_id: z.uuid(),
+      operation: z.enum(["tree", "file"]),
+      path: z.string().max(1024).default(""),
+      ref: z.string().max(255).default(""),
+      page: z.number().int().min(1).max(10000).default(1),
+    })
+    .strict(),
   list_accessible_projects: z
     .object({ workspace: nullableString, search: z.string().default(""), offset: z.number().int().min(0).default(0) })
     .strict(),
@@ -204,6 +245,25 @@ export async function invoke(
   name: string,
   args: unknown
 ): Promise<Record<string, unknown>> {
+  if (name === "list_project_repositories") {
+    const a = inputs.list_project_repositories.parse(args);
+    const r = await plane.resolve(bearer, a.project_ref, a.workspace);
+    return r.ambiguity ?? plane.request(bearer, "GET", projectPath(r.project!) + "ai-repositories/");
+  }
+  if (name === "read_project_repository") {
+    const a = inputs.read_project_repository.parse(args);
+    const r = await plane.resolve(bearer, a.project_ref, a.workspace);
+    return (
+      r.ambiguity ??
+      plane.request(
+        bearer,
+        "GET",
+        projectPath(r.project!) + `ai-repositories/${a.repository_id}/${a.operation}/`,
+        undefined,
+        { path: a.path, ref: a.ref, page: a.page }
+      )
+    );
+  }
   if (name === "list_accessible_projects") {
     const a = inputs.list_accessible_projects.parse(args);
     return plane.request(bearer, "GET", "projects/", undefined, {

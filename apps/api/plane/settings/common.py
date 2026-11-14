@@ -637,6 +637,7 @@ INLINE_SAFE_MIME_TYPES: frozenset[str] = frozenset(["image/jpeg", "image/jpg", "
 # Repository secrets are supplied independently of the database and source tree.
 SINGULARITY_REPOSITORIES_ENABLED = os.environ.get("SINGULARITY_REPOSITORIES_ENABLED", "0") == "1"
 SINGULARITY_REPOSITORY_KEY_FILE = os.environ.get("SINGULARITY_REPOSITORY_KEY_FILE", "")
+SINGULARITY_REPOSITORY_OAUTH_FILE = os.environ.get("SINGULARITY_REPOSITORY_OAUTH_FILE", "")
 
 # Seed directory path
 SEED_DIR = os.path.join(BASE_DIR, "seeds")

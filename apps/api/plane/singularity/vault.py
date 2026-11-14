@@ -15,7 +15,7 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
-from plane.db.models import RepositoryCredential, RepositorySelection
+from plane.db.models import RepositoryCredential, RepositorySelection, ProjectMember
 
 
 class VaultError(Exception):
@@ -80,7 +80,10 @@ def selected_credential(user, repository):
 
     if not user.is_active or user.is_bot or not repository.enabled or not repository.instance.enabled:
         raise VaultError("repository_unavailable")
-    if not visible_projects(user).filter(pk=repository.project_id).exists():
+    if (
+        not visible_projects(user).filter(pk=repository.project_id).exists()
+        or not ProjectMember.objects.filter(project_id=repository.project_id, member=user, is_active=True).exists()
+    ):
         raise VaultError("repository_unavailable")
     selection = (
         RepositorySelection.objects.filter(owner=user, repository=repository)

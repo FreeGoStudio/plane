@@ -10,6 +10,7 @@ from django.db import IntegrityError, transaction
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.middleware.csrf import get_token
 from rest_framework import serializers
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
@@ -26,7 +27,7 @@ from plane.db.models import (
     ProjectMember,
 )
 from plane.license.models import InstanceAdmin
-from .api import visible_projects, PersonalThrottle, WriteThrottle
+from .api import visible_projects, PersonalThrottle, WriteThrottle, DelegatedAuthentication
 from .repository_provider import RepositoryProvider
 from .repository_transport import RepositoryError, validate_instance
 from .vault import VaultError, seal, unseal, require_owner, selected_credential
@@ -151,7 +152,13 @@ class RepositoryAPI(APIView):
         return response
 
     def project(self, request, slug, project_id, admin=False):
-        project = get_object_or_404(visible_projects(request.user), pk=project_id, workspace__slug=slug)
+        project = get_object_or_404(
+            visible_projects(request.user).filter(
+                pk__in=ProjectMember.objects.filter(member=request.user, is_active=True).values("project_id")
+            ),
+            pk=project_id,
+            workspace__slug=slug,
+        )
         if (
             admin
             and not ProjectMember.objects.filter(project=project, member=request.user, role=20, is_active=True).exists()
@@ -243,6 +250,7 @@ class ProjectRepositories(RepositoryAPI):
                     "enabled": row.enabled,
                     "credential_id": str(selection.credential_id) if selection and selection.credential_id else None,
                     "anonymous": bool(selection and selection.anonymous),
+                    "provider": row.instance.provider,
                 }
             )
         return Response(result)
@@ -283,16 +291,41 @@ class RepositoryAccess(RepositoryAPI):
     def row(self, request, slug, project_id, pk):
         project = self.project(request, slug, project_id)
         self.repository = get_object_or_404(
-            ProjectRepository.objects.select_related("instance"), project=project, pk=pk, enabled=True
+            ProjectRepository.objects.select_related("instance"),
+            project=project,
+            pk=pk,
+            enabled=True,
+            instance__enabled=True,
         )
         return self.repository
+
+    def handle_exception(self, error):
+        from .repository_oauth import project_url
+
+        if self.repository and (
+            isinstance(error, VaultError)
+            and str(error) in ("select_repository_credential", "credential_unavailable")
+            or isinstance(error, RepositoryError)
+            and error.code == "upstream_authentication_required"
+        ):
+            return Response(
+                {
+                    "error": "repository_authorization_required",
+                    "status": "authorization_required",
+                    "authorization_url": project_url(self.repository),
+                    "message": "Open this project repository in Plane, connect your account, then retry the same read.",
+                },
+                status=403,
+            )
+        return super().handle_exception(error)
 
     def post(self, request, slug, project_id, pk, operation=None):
         if operation is not None:
             raise MethodNotAllowed("POST")
         row = self.row(request, slug, project_id, pk)
         data = validated(AccessInput, request.data)
-        self.credential, _ = chosen(request.user, row.instance, data)
+        self.credential, token = chosen(request.user, row.instance, data)
+        RepositoryProvider(row.instance, token).metadata(row.external_id)
         RepositorySelection.objects.update_or_create(
             owner=request.user, repository=row, defaults={"credential": self.credential, "anonymous": data["anonymous"]}
         )
@@ -314,3 +347,91 @@ class RepositoryAccess(RepositoryAPI):
         else:
             result = provider.file(row, ref, path)
         return Response(result)
+
+
+class ProjectRepositoryConnections(RepositoryAccess):
+    """Personal connection operations remain session-only and project-scoped."""
+
+    def get(self, request, slug, project_id, pk=None):
+        project = self.project(request, slug, project_id)
+        hosts = RepositoryInstance.objects.filter(enabled=True)
+        can_manage = ProjectMember.objects.filter(
+            project=project, member=request.user, role=20, is_active=True
+        ).exists()
+        if not can_manage:
+            hosts = hosts.filter(pk__in=ProjectRepository.objects.filter(project=project).values("instance_id"))
+        credentials = RepositoryCredential.objects.filter(
+            owner=request.user, revoked_at__isnull=True, instance__in=hosts
+        )
+        from .repository_oauth import oauth_config
+
+        def host_data(host):
+            try:
+                oauth_config(host)
+                available = True
+            except RepositoryError:
+                available = False
+            return {"id": str(host.pk), "name": host.name, "provider": host.provider, "oauth_available": available}
+
+        return Response(
+            {
+                "csrf_token": get_token(request),
+                "hosts": [host_data(host) for host in hosts],
+                "credentials": [credential_data(row) for row in credentials],
+                "can_manage": can_manage,
+            }
+        )
+
+    def post(self, request, slug, project_id, pk):
+        row = self.row(request, slug, project_id, pk)
+        if request.data.get("method") == "oauth" and set(request.data) == {"method"}:
+            from .repository_oauth import start
+
+            return Response(start(request, row))
+        data = validated(CredentialInput, request.data)
+        if data.get("instance_id") and data["instance_id"] != row.instance_id:
+            raise serializers.ValidationError("Credential instance does not match repository")
+        provider = RepositoryProvider(row.instance, data["token"])
+        actor_id, actor_label = provider.actor()
+        provider.metadata(row.external_id)
+        if data.get("expires_at") and data["expires_at"] <= timezone.now():
+            raise serializers.ValidationError("Expiry must be in the future")
+        with transaction.atomic():
+            credential = RepositoryCredential(
+                owner=request.user,
+                instance=row.instance,
+                label=data["label"],
+                expires_at=data.get("expires_at"),
+                external_actor_id=actor_id,
+                external_actor_label=actor_label,
+                validated_at=timezone.now(),
+                validation_status="identity_verified",
+            )
+            seal(credential, data["token"])
+            credential.save()
+            RepositorySelection.objects.update_or_create(
+                owner=request.user, repository=row, defaults={"credential": credential, "anonymous": False}
+            )
+        self.credential = credential
+        return Response(credential_data(credential), status=201)
+
+    def delete(self, request, slug, project_id, pk):
+        row = self.row(request, slug, project_id, pk)
+        RepositorySelection.objects.filter(owner=request.user, repository=row).delete()
+        return Response(status=204)
+
+
+class DelegatedRepositoryRead(RepositoryAccess):
+    authentication_classes = [DelegatedAuthentication]
+    http_method_names = ["get", "head", "options"]
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        if "repositories:read" not in request.auth.scopes.split():
+            raise PermissionDenied("Repository read scope required; reauthorize your AI connection")
+
+    def get(self, request, slug, project_id, pk=None, operation=None):
+        if pk is None:
+            response = ProjectRepositories.get(self, request, slug, project_id)
+            return Response({"results": response.data})
+        return super().get(request, slug, project_id, pk, operation)

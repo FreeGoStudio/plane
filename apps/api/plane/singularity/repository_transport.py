@@ -56,6 +56,12 @@ class RepositoryTransport:
         self.instance, self.token = instance, token
 
     def get(self, path, params=None):
+        return self.request("GET", path, params=params)
+
+    def post(self, path, body):
+        return self.request("POST", path, body=body)
+
+    def request(self, method, path, params=None, body=None):
         """Resolve once, validate every address, pin the connection; never redirect."""
         url, networks = validate_instance(self.instance)
         if not self.instance.enabled:
@@ -88,9 +94,9 @@ class RepositoryTransport:
             "Accept-Encoding": "identity",
         }
         if self.token:
-            headers["PRIVATE-TOKEN" if self.instance.provider == "gitlab" else "Authorization"] = (
-                self.token if self.instance.provider == "gitlab" else "Bearer " + self.token
-            )
+            headers["Authorization"] = "Bearer " + self.token
+        if body is not None:
+            headers["Content-Type"] = "application/x-www-form-urlencoded"
         options = dict(timeout=urllib3.Timeout(connect=5, read=20), retries=False)
         if url.scheme == "https":
             pool = urllib3.HTTPSConnectionPool(
@@ -110,9 +116,17 @@ class RepositoryTransport:
         response = None
         try:
             response = pool.urlopen(
-                "GET", target, headers=headers, redirect=False, preload_content=False, assert_same_host=False
+                method,
+                target,
+                headers=headers,
+                body=urlencode(body) if body is not None else None,
+                redirect=False,
+                preload_content=False,
+                assert_same_host=False,
             )
-            if response.status in (401, 403):
+            if response.status == 401:
+                raise RepositoryError("upstream_authentication_required", 401)
+            if response.status == 403:
                 raise RepositoryError("upstream_access_denied", 403)
             if response.status == 404:
                 raise RepositoryError("upstream_resource_invisible", 404)

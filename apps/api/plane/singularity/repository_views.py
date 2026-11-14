@@ -4,7 +4,7 @@
 
 from django.conf import settings
 from django.http import Http404
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_GET
 from plane.db.models import ProjectMember
 from plane.license.models import InstanceAdmin
@@ -19,6 +19,11 @@ def repository_settings(request, slug=None, project_id=None):
         return render(request, "singularity/login.html", {"return_url": request.path}, status=401)
     projects = visible_projects(request.user).select_related("workspace").order_by("name")
     project = get_object_or_404(projects, pk=project_id, workspace__slug=slug) if project_id else None
+    if project:
+        from .repository_oauth import project_url
+        from types import SimpleNamespace
+
+        return redirect(project_url(SimpleNamespace(project=project, project_id=project.pk, pk="")))
     admin = bool(
         project and ProjectMember.objects.filter(project=project, member=request.user, is_active=True, role=20).exists()
     )

@@ -50,12 +50,60 @@ const prepare = {
   description_markdown: "Private discussion",
   workspace: "test",
 };
-test("exact five tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 5);
+test("seven tools with no secret/user/admin parameters", () => {
+  assert.equal(tools.length, 7);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
   assert(!tools.some((t) => t.name.includes("delete")));
+});
+test("repository reads return a safe authorization link and retry after connection", async () => {
+  const f = fixture();
+  let connected = false;
+  const send: Transport = async (url, method, headers, body) => {
+    if (url.pathname.includes("/ai-repositories/"))
+      return connected
+        ? { status: 200, data: { content: "README", commit_sha: "a".repeat(40) } }
+        : {
+            status: 403,
+            data: {
+              error: "repository_authorization_required",
+              status: "authorization_required",
+              authorization_url: `https://plane.test/test/settings/projects/${id}/repositories/?repository=${decision}`,
+              message: "Connect in Plane, then retry",
+            },
+          };
+    return f.plane.send(url, method, headers, body);
+  };
+  const plane = new Plane("https://internal.test", "test", f.vault, send, "https://plane.test");
+  const args = { project_ref: "POS", repository_id: decision, operation: "file", path: "README.md" };
+  const challenge = await invoke(plane, "bearer", "read_project_repository", args);
+  assert.equal(challenge.status, "authorization_required");
+  assert.match(String(challenge.authorization_url), /https:\/\/plane.test\//);
+  connected = true;
+  assert.equal((await invoke(plane, "bearer", "read_project_repository", args)).content, "README");
+  f.vault.close();
+});
+test("repository permission and network failures do not trigger login", async () => {
+  const f = fixture();
+  for (const error of ["upstream_access_denied", "upstream_unavailable", "upstream_rate_limited"]) {
+    const send: Transport = async (url, method, headers, body) =>
+      url.pathname.includes("/ai-repositories/")
+        ? { status: 403, data: { error, secret: "never return" } }
+        : f.plane.send(url, method, headers, body);
+    const plane = new Plane("https://plane.test", "test", f.vault, send);
+    // Independent failures share the fixture but never authorize a different identity.
+    assert.deepEqual(
+      // eslint-disable-next-line no-await-in-loop
+      await invoke(plane, "bearer", "read_project_repository", {
+        project_ref: "POS",
+        repository_id: decision,
+        operation: "tree",
+      }),
+      { status: "read_failed", error }
+    );
+  }
+  f.vault.close();
 });
 test("prepare persists encrypted, retries across restart and binds connection", async () => {
   const f = fixture();
@@ -165,7 +213,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 5);
+    assert.equal((await listed.json()).result.tools.length, 7);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;

@@ -145,7 +145,7 @@ def test_explicit_network_pins_address_and_keeps_hostname_verification():
     "status,error",
     [
         (302, "upstream_redirect_refused"),
-        (401, "upstream_access_denied"),
+        (401, "upstream_authentication_required"),
         (403, "upstream_access_denied"),
         (404, "upstream_resource_invisible"),
         (429, "upstream_rate_limited"),
