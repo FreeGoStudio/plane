@@ -4,6 +4,8 @@
 
 ## 当前执行结果（2026-11-14）
 
+最新逐项复核与人工验收入口：[final-plan-review.md](final-plan-review.md)。本轮补齐停用撤销的独立性和不可恢复性，当前后端镜像 lifecycle-77476caf7a；下文版本为各轮历史状态。
+
 Gateway TypeScript 调整及本机可执行的镜像回滚、功能/SSO配置回滚、隔离数据恢复已完成并真实验收。当前 Gateway 镜像 ts-bdde88a622；MCP OAuth 已统一 DOT，API/worker/beat 镜像 dot-eb155463f2，本机跨版本授权及真实客户端验收通过。下列各阶段文字保留当时状态，最新证据见文末；外部实例、远程客户端及组织灰度不计为已验收。
 
 ## 原始验收单元（实施前基线）
@@ -126,3 +128,9 @@ MCP OAuth仍采用此前OAuthLib适配，DOT提供OIDC；原计划统一DOT的�
 上节 OAuthLib/DOT 差异为上一轮状态，本轮已完成 DOT 协议后端、Application 注册与摘要存储适配。64 项契约、Ruff 和无迁移检查通过；真实旧授权码/令牌跨版本切换、刷新、讨论重放与撤销通过；两用户 OAuth/PAT 五工具和 Codex 原生两种授权方式通过。实现和本机验收见 [mcp-dot.md](mcp-dot.md)。固定提交镜像发布及公司 SSO 回归随后记录，外部实例/私有 GitHub/远程 ChatGPT/组织灰度仍单列待验收。
 
 本轮发布完成：实现提交 `eb155463f2`；API/worker/beat 已运行 `plane-custom/plane-backend:dot-eb155463f2`，Gateway 保持 `ts-bdde88a622`。部署后双用户 OAuth/PAT 全流程和 Chrome 公司 GitLab SSO 复验通过；启动期间短暂 502 在 API 就绪后消失。只读候选容器已停止、原 TLS 路由已恢复；本轮两名隔离 MCP 用户已停用，对应受管 GitLab 账号已阻止访问，工作项/审计/幂等记录保留。数据库与配置备份为 `D:/plane-ops/backups/20261114-021953-singularity`。状态分别为：本轮实现完成、自动验证通过、本机真实验收完成；外部条件继续待验收，整体计划不宣称全部完成。
+
+## 原计划复核与人工验收准备（2026-11-14）
+
+发现原始“停用即撤销平台会话和授权”未完整满足：公司开关关闭时授权未持久撤销，原生会话和 OIDC 待兑换码未删除。三项新增回归先失败，修复 77476caf7a 后 112 项后端契约、15 项 Gateway 测试及类型/lint/迁移检查通过。固定镜像已部署到 API/worker/beat/company-provisioner。真实 HTTPS 验证停用再启用后旧 session/OAuth/PAT/refresh 均拒绝，新登录成功；Chrome 公司 SSO 与私有仓库正文/SHA 复验通过。测试用户已停用、密码移除，未增加工作项或外部账号。
+
+当前进入本机人工验收准备，尚无用户人工签收。外部实例/私有 GitHub/远程 ChatGPT/组织灰度继续单列；GitLab blocked 拒绝旧会话已实测，但未把物理删除全部存量会话宣称为完成。完整复核表及 H01–H08 在 final-plan-review.md。
