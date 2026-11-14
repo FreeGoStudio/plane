@@ -105,6 +105,23 @@ test("repository permission and network failures do not trigger login", async ()
   }
   f.vault.close();
 });
+test("old Plane grants explain required consent without suggesting repository login", async () => {
+  const f = fixture();
+  const send: Transport = async (url, method, headers, body) =>
+    url.pathname.includes("/ai-repositories/")
+      ? { status: 403, data: { error: "repository_scope_required" } }
+      : f.plane.send(url, method, headers, body);
+  const result = await invoke(
+    new Plane("https://plane.test", "test", f.vault, send),
+    "bearer",
+    "list_project_repositories",
+    { project_ref: "POS" }
+  );
+  assert.equal(result.status, "plane_authorization_required");
+  assert.equal(result.required_scope, "repositories:read");
+  assert.equal(result.authorization_url, undefined);
+  f.vault.close();
+});
 test("prepare persists encrypted, retries across restart and binds connection", async () => {
   const f = fixture();
   const result = await invoke(f.plane, "test-bearer", "save_discussion_result", prepare);

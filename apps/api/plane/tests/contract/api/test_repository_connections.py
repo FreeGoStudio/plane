@@ -163,6 +163,7 @@ def test_ai_scope_and_session_only_configuration(world):
         return_value=(bob, SimpleNamespace(scopes="projects:read")),
     ):
         assert client.get(url).status_code == 403
+        assert client.get(url).json()["error"] == "repository_scope_required"
     with patch(
         "plane.singularity.api.DelegatedAuthentication.authenticate",
         return_value=(bob, SimpleNamespace(scopes="repositories:read")),

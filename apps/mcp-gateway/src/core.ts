@@ -118,6 +118,18 @@ export class Plane {
       throw new PlaneError(503, method === "POST" ? "outcome_unknown_retry_same_decision" : "unavailable");
     }
     this.vault.record(identity.connection_id, method, response.status);
+    if (
+      response.status === 403 &&
+      /\/ai-repositories\//.test(path) &&
+      z.object({ error: z.literal("repository_scope_required") }).safeParse(response.data).success
+    ) {
+      return {
+        status: "plane_authorization_required",
+        required_scope: "repositories:read",
+        message:
+          "Reconnect your Plane MCP client and consent to repositories:read, then retry. This is separate from the repository hosting account connection.",
+      };
+    }
     if (response.status >= 400 && /\/ai-repositories\//.test(path)) {
       const upstream = z
         .object({

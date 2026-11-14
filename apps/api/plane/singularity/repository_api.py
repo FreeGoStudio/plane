@@ -428,7 +428,7 @@ class DelegatedRepositoryRead(RepositoryAccess):
     def initial(self, request, *args, **kwargs):
         super().initial(request, *args, **kwargs)
         if "repositories:read" not in request.auth.scopes.split():
-            raise PermissionDenied("Repository read scope required; reauthorize your AI connection")
+            raise RepositoryError("repository_scope_required", 403)
 
     def get(self, request, slug, project_id, pk=None, operation=None):
         if pk is None:
