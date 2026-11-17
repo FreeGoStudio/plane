@@ -97,8 +97,17 @@ def generate(snapshot):
         "已有子任务涵盖的内容应复用，不重复创建。existing 必须说明证据且 task_ids 为空；"
         "gap/unknown 必须有实施或核查任务。未提供源码，不得宣称已检查源码或编造实现路径。"
         "不确定事项列入 questions；任务应有明确范围、产出、验收和依赖。"
-        "REQ-1 表示整份正文，须覆盖正文中的全部验收要求。遵循 skill_files 中的 WBS 技能和模板，输出适配当前 JSON 契约。"
+        "coverage 的 criterion_id 必须逐字使用输入 criteria，不能增加横线或重编号；每个原编号恰好出现一次。"
+        "任务的 criteria 也只能引用这些原编号，不得额外创建验收编号。"
+        "遵循 skill_files 中的 WBS 技能和模板，输出适配当前 JSON 契约。"
     )
+    if snapshot["criteria"] == ["REQ-1"]:
+        prompt += "REQ-1 表示整份正文，须覆盖正文中的全部验收要求。"
+    schema = Draft.model_json_schema()
+    # Bind the model contract to the original acceptance IDs, not skill examples.
+    criterion = {"type": "string", "enum": snapshot["criteria"]}
+    schema["$defs"]["Coverage"]["properties"]["criterion_id"] = criterion
+    schema["$defs"]["Task"]["properties"]["criteria"]["items"] = criterion
     response = requests.post(
         "https://api.openai.com/v1/responses",
         headers={"Authorization": "Bearer " + key},
@@ -113,7 +122,7 @@ def generate(snapshot):
                     "type": "json_schema",
                     "name": "wbs_draft",
                     "strict": True,
-                    "schema": Draft.model_json_schema(),
+                    "schema": schema,
                 }
             },
         },
@@ -163,7 +172,8 @@ def execute(run_id, hatchet_run_id):
         return {"run_id": str(run_id), "status": "ready"}
     except Exception as error:
         # No model responses, credentials, requirement text or request URLs in errors.
+        reason = str(error) if type(error) is ValueError else type(error).__name__
         WbsRun.objects.filter(pk=run_id, execution_token=token).update(
-            status="queued" if row.attempts < 3 else "failed", error=type(error).__name__, lease_until=None
+            status="queued" if row.attempts < 3 else "failed", error=reason[:500], lease_until=None
         )
         raise RuntimeError("WBS generation failed; inspect the Plane run and worker configuration") from None
