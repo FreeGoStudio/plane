@@ -226,6 +226,26 @@ const version = { expected_updated_at: z.string().optional() };
 // Native IssueSerializer owns field validation, nullability and defaults.
 const fields = z.record(z.string(), z.unknown());
 export const inputs = {
+  start_wbs: z
+    .object({
+      ...nativeProject,
+      item_id: z.uuid(),
+      expected_updated_at: z.string().min(1),
+      idempotency_key: z.string().min(8).max(128),
+      confirmed: z.literal(true),
+    })
+    .strict(),
+  get_wbs: z.object({ ...nativeProject, item_id: z.uuid(), run_id: z.uuid().optional() }).strict(),
+  review_wbs: z
+    .object({
+      ...nativeProject,
+      item_id: z.uuid(),
+      run_id: z.uuid(),
+      result_digest: z.string().length(64),
+      decision: z.enum(["approve", "reject"]),
+      reason: z.string().max(5000).optional(),
+    })
+    .strict(),
   get_current_user: z.object({}).strict(),
   get_project: z.object({ ...nativeProject, summary: z.boolean().default(false) }).strict(),
   get_project_metadata: z.object({ ...nativeProject, kind: z.enum(["states", "labels", "members"]), query }).strict(),
@@ -294,6 +314,24 @@ export async function invoke(
   name: string,
   args: unknown
 ): Promise<Record<string, unknown>> {
+  if (name === "start_wbs" || name === "get_wbs" || name === "review_wbs") {
+    const a = inputs[name].parse(args);
+    const path = nativePath(a) + `work-items/${a.item_id}/wbs/` + ("run_id" in a && a.run_id ? `${a.run_id}/` : "");
+    if (name === "get_wbs") return plane.request(bearer, "GET", path);
+    let payload: unknown;
+    if (name === "start_wbs") {
+      const input = inputs.start_wbs.parse(args);
+      payload = {
+        expected_updated_at: input.expected_updated_at,
+        idempotency_key: input.idempotency_key,
+        confirmed: true,
+      };
+    } else {
+      const input = inputs.review_wbs.parse(args);
+      payload = { decision: input.decision, result_digest: input.result_digest, reason: input.reason ?? "" };
+    }
+    return plane.request(bearer, "POST", path, payload);
+  }
   const native = (
     method: string,
     path: string,

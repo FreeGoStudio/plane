@@ -465,5 +465,26 @@
       "label": "史诗标题",
       "required": "史诗标题为必填项"
     }
+  },
+  "wbs": {
+    "title": "WBS 任务拆分",
+    "description": "根据已保存的需求生成草稿，人工批准后才创建子工作项。",
+    "load_error": "无法加载 WBS，请刷新重试。",
+    "action_error": "请求结果暂不确定，请重试同一操作。",
+    "confirm_source": "我确认以当前已保存的需求版本生成拆分草稿。",
+    "start": "生成 WBS 草稿",
+    "confirm_draft": "我已审阅这份草稿，确认按此版本创建子工作项。",
+    "approve": "批准并创建子工作项",
+    "reject": "驳回草稿",
+    "reason": "驳回原因",
+    "deliverable": "产出",
+    "acceptance": "验收标准",
+    "dependencies": "依赖",
+    "status_queued": "等待执行",
+    "status_running": "正在生成草稿",
+    "status_ready": "等待人工评审",
+    "status_completed": "已批准并创建子工作项",
+    "status_rejected": "已驳回",
+    "status_failed": "生成失败，请检查执行状态"
   }
 }

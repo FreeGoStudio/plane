@@ -51,7 +51,7 @@ const prepare = {
   workspace: "test",
 };
 test("native and repository tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 16);
+  assert.equal(tools.length, 19);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
@@ -230,7 +230,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 16);
+    assert.equal((await listed.json()).result.tools.length, 19);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;
@@ -344,5 +344,29 @@ test("native field errors and list/empty responses are represented accurately", 
     await invoke(plane, "bearer", "delete_work_item", { workspace: "test", project_id: id, item_id: decision }),
     { status: "deleted" }
   );
+  f.vault.close();
+});
+
+test("WBS tools delegate commands and require explicit human approval", async () => {
+  const f = fixture();
+  const base = { workspace: "test", project_id: id, item_id: decision };
+  await invoke(f.plane, "bearer", "start_wbs", {
+    ...base,
+    expected_updated_at: "2026-11-17T00:00:00Z",
+    idempotency_key: "wbs-request-123",
+    confirmed: true,
+  });
+  assert.match(f.calls.at(-1)!.url.pathname, /work-items\/.+\/wbs\/$/);
+  assert.equal(JSON.parse(f.calls.at(-1)!.body!).confirmed, true);
+  await invoke(f.plane, "bearer", "get_wbs", base);
+  assert.equal(f.calls.at(-1)!.method, "GET");
+  await assert.rejects(invoke(f.plane, "bearer", "review_wbs", { ...base, run_id: id, result_digest: "a".repeat(64) }));
+  await invoke(f.plane, "bearer", "review_wbs", {
+    ...base,
+    run_id: id,
+    result_digest: "a".repeat(64),
+    decision: "approve",
+  });
+  assert.equal(JSON.parse(f.calls.at(-1)!.body!).decision, "approve");
   f.vault.close();
 });

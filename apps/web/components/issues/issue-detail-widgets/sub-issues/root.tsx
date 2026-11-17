@@ -17,6 +17,7 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { SubIssuesCollapsibleContent } from "./content";
 import { SubIssuesProgressChip } from "./title";
 import { SubWorkItemTitleActions } from "./title-actions";
+import { WbsPanel } from "./wbs";
 
 type Props = {
   workspaceSlug: string;
@@ -41,28 +42,33 @@ export const SubIssuesCollapsible = observer(function SubIssuesCollapsible(props
   const subIssuesCount = subIssuesByIssueId(issueId)?.length ?? 0;
 
   return (
-    <EntityDetailWidgetSection
-      title={issueServiceType === EIssueServiceType.EPICS ? t("issue.label", { count: 1 }) : t("common.sub_work_items")}
-      count={subIssuesCount}
-      isOpen={isCollapsibleOpen}
-      onToggle={() => toggleOpenWidget("sub-work-items")}
-      titleAccessory={<SubIssuesProgressChip parentIssueId={issueId} issueServiceType={issueServiceType} />}
-      actions={
-        <SubWorkItemTitleActions
+    <>
+      <WbsPanel workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} disabled={disabled} />
+      <EntityDetailWidgetSection
+        title={
+          issueServiceType === EIssueServiceType.EPICS ? t("issue.label", { count: 1 }) : t("common.sub_work_items")
+        }
+        count={subIssuesCount}
+        isOpen={isCollapsibleOpen}
+        onToggle={() => toggleOpenWidget("sub-work-items")}
+        titleAccessory={<SubIssuesProgressChip parentIssueId={issueId} issueServiceType={issueServiceType} />}
+        actions={
+          <SubWorkItemTitleActions
+            projectId={projectId}
+            parentId={issueId}
+            disabled={disabled}
+            issueServiceType={issueServiceType}
+          />
+        }
+      >
+        <SubIssuesCollapsibleContent
+          workspaceSlug={workspaceSlug}
           projectId={projectId}
-          parentId={issueId}
+          parentIssueId={issueId}
           disabled={disabled}
           issueServiceType={issueServiceType}
         />
-      }
-    >
-      <SubIssuesCollapsibleContent
-        workspaceSlug={workspaceSlug}
-        projectId={projectId}
-        parentIssueId={issueId}
-        disabled={disabled}
-        issueServiceType={issueServiceType}
-      />
-    </EntityDetailWidgetSection>
+      </EntityDetailWidgetSection>
+    </>
   );
 });

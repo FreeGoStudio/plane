@@ -90,6 +90,7 @@ from .device import Device, DeviceSession
 from .sticky import Sticky
 
 from .description import Description, DescriptionVersion
+from .wbs import WbsRun
 from .delegation import Delegation, DelegationCode, DelegationToken, DiscussionReceipt, DelegationAudit, APIMutationReceipt
 from .company_account import CompanyAccount
 from .repository import (

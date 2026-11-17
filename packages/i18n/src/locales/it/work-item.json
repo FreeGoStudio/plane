@@ -465,5 +465,26 @@
       "label": "Titolo Epic",
       "required": "Il titolo dell'Epic è obbligatorio."
     }
+  },
+  "wbs": {
+    "title": "WBS task breakdown",
+    "description": "Generate a draft from the saved requirement. Child work items are created only after human approval.",
+    "load_error": "Could not load WBS. Refresh to try again.",
+    "action_error": "Request outcome is uncertain. Retry the same action.",
+    "confirm_source": "I confirm the saved requirement version for this draft.",
+    "start": "Generate WBS draft",
+    "confirm_draft": "I have reviewed this exact draft and approve creating its child work items.",
+    "approve": "Approve and create child work items",
+    "reject": "Reject draft",
+    "reason": "Reason for rejection",
+    "deliverable": "Deliverable",
+    "acceptance": "Acceptance criteria",
+    "dependencies": "Dependencies",
+    "status_queued": "Queued",
+    "status_running": "Generating draft",
+    "status_ready": "Awaiting human review",
+    "status_completed": "Approved; child work items created",
+    "status_rejected": "Rejected",
+    "status_failed": "Generation failed; check execution status"
   }
 }
