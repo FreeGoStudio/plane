@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * See the LICENSE file for details.
  */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useSWR from "swr";
 import { Button } from "@makeplane/propel/components/button";
 import { useTranslation } from "@plane/i18n";
@@ -40,6 +40,7 @@ function useStatusLabel() {
   };
 }
 
+/** Tracks asynchronous repository initialization and prevents duplicate requests until it settles. */
 export function RepositoryInitialization({
   base,
   canManage,
@@ -49,12 +50,14 @@ export function RepositoryInitialization({
 }: {
   base: string;
   canManage: boolean;
-  write: () => Promise<void>;
+  write: () => Promise<{ status: string }>;
   busy: boolean;
   onReady: () => void;
 }) {
   const { t } = useTranslation();
-  const label = useStatusLabel();
+  const submittingRef = useRef(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submissionFailed, setSubmissionFailed] = useState(false);
   const { data, error, mutate } = useSWR<Management>(
     base + "repository-management/",
     (url: string) => api.read<Management>(url),
@@ -65,14 +68,34 @@ export function RepositoryInitialization({
       },
     }
   );
-  if (error) return <p role="alert">{t("repository_ui.load_failed")}</p>;
-  if (!data?.enabled) return null;
+  const running = submitting || ["pending", "processing", "retry"].includes(data?.status ?? "");
+  /** Publish the accepted state through SWR so older polling responses cannot overwrite it. */
+  async function initialize() {
+    if (submittingRef.current || busy || running) return;
+    submittingRef.current = true;
+    setSubmitting(true);
+    setSubmissionFailed(false);
+    try {
+      await mutate(async () => ({ ...data!, error_code: "", ...(await write()) }), { revalidate: false });
+    } catch {
+      setSubmissionFailed(true);
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+      void mutate();
+    }
+  }
+  const progress = submitting ? "submitting" : (data?.status ?? "not_started");
+  if (!data) return error ? <p role="alert">{t("repository_ui.load_failed")}</p> : null;
+  if (!data.enabled) return null;
   return (
     <section className="mt-6 rounded-lg border border-subtle p-5">
       <p>{t("repository_ui.management_hint")}</p>
-      <p className="my-3" role="status">
-        {t("common.status")}: {label(data.status)}
+      <p className="my-3" role="status" aria-live="polite">
+        {t(`repository_ui.initialization.${progress}`)}
       </p>
+      {error && <p role="alert">{t("repository_ui.initialization.status_unavailable")}</p>}
+      {submissionFailed && <p role="alert">{t("repository_ui.failed")}</p>}
       {data.error_code && (
         <details className="text-sm mb-3">
           <summary>{t("error")}</summary>
@@ -85,10 +108,8 @@ export function RepositoryInitialization({
           size="md"
           variant="secondary"
           stretch="auto"
-          disabled={busy || data.status === "processing"}
-          onClick={() => {
-            void write().finally(() => mutate());
-          }}
+          disabled={busy || running}
+          onClick={() => void initialize()}
         />
       )}
     </section>

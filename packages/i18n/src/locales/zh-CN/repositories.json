@@ -65,6 +65,16 @@
     "effective_access": "GitLab 实际访问级别",
     "adopt_existing": "接管此直接授权",
     "identity_required": "需要已验证的 GitLab 账号",
-    "external_permissions": "外部或继承的访问权限"
+    "external_permissions": "外部或继承的访问权限",
+    "initialization": {
+      "submitting": "正在提交仓库初始化请求…",
+      "pending": "请求已受理，正在等待创建并绑定缺失仓库…",
+      "processing": "正在创建并绑定缺失仓库、同步成员权限…",
+      "retry": "初始化遇到临时错误，正在等待自动重试…",
+      "ready": "仓库初始化完成，专用仓库已绑定。",
+      "blocked": "仓库初始化未完成，请检查错误详情后重试。",
+      "not_started": "尚未开始初始化仓库。",
+      "status_unavailable": "暂时无法更新进度，后台操作可能仍在执行，请恢复连接后查看状态。"
+    }
   }
 }

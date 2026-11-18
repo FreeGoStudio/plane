@@ -65,6 +65,16 @@
     "effective_access": "실제 GitLab 접근 수준",
     "adopt_existing": "이 직접 부여된 권한 관리",
     "identity_required": "검증된 GitLab 계정이 필요합니다",
-    "external_permissions": "외부 또는 상속된 접근 권한"
+    "external_permissions": "외부 또는 상속된 접근 권한",
+    "initialization": {
+      "submitting": "Submitting repository initialization…",
+      "pending": "Request accepted. Waiting to create and bind missing repositories…",
+      "processing": "Creating and binding missing repositories and synchronizing member access…",
+      "retry": "Initialization encountered a temporary error. Waiting for an automatic retry…",
+      "ready": "Repository initialization complete. Required repositories are bound.",
+      "blocked": "Repository initialization could not finish. Check the error details and retry.",
+      "not_started": "Repository initialization has not started.",
+      "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status."
+    }
   }
 }

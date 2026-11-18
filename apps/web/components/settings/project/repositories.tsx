@@ -44,6 +44,7 @@ type RepositoryBindings = {
   documentation_repository_id: string | null;
   prototype_repository_id: string | null;
 };
+/** Renders repository configuration and refreshes bindings when background initialization completes. */
 export function ProjectRepositoriesSettings({
   workspaceSlug,
   projectId,
@@ -121,12 +122,10 @@ export function ProjectRepositoriesSettings({
           base={base}
           canManage={info.can_manage}
           busy={busy}
-          write={() =>
-            action(async () => {
-              await write("repository-management/", {});
-              setStatus(t("common.pending"));
-            })
-          }
+          write={async () => {
+            setStatus("");
+            return api.write<{ status: string }>(base + "repository-management/", "POST", info.csrf_token, {});
+          }}
           onReady={() => {
             void mutate();
             void refreshBindings();

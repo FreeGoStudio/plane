@@ -65,6 +65,16 @@
     "effective_access": "Effective GitLab access",
     "adopt_existing": "Manage this direct grant",
     "identity_required": "Verified GitLab account required",
-    "external_permissions": "External or inherited access"
+    "external_permissions": "External or inherited access",
+    "initialization": {
+      "submitting": "Submitting repository initialization…",
+      "pending": "Request accepted. Waiting to create and bind missing repositories…",
+      "processing": "Creating and binding missing repositories and synchronizing member access…",
+      "retry": "Initialization encountered a temporary error. Waiting for an automatic retry…",
+      "ready": "Repository initialization complete. Required repositories are bound.",
+      "blocked": "Repository initialization could not finish. Check the error details and retry.",
+      "not_started": "Repository initialization has not started.",
+      "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status."
+    }
   }
 }
