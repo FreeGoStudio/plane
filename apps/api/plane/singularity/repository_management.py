@@ -137,6 +137,18 @@ class GitLabRepositoryManager:
         else:
             self.call("POST", root, {"name": "main", "push_access_level": 0, "merge_access_level": 40})
         verified = self.call("GET", root + "/main")
+        # GitLab CE accepts PATCH but ignores access-level arrays. This method
+        # only runs on operation-owned repositories before binding/grant sync.
+        # Never recreate protection after an external direct member was added.
+        if current and (
+            any(x.get("access_level") != 0 for x in verified.get("push_access_levels", []))
+            or any(x.get("access_level") != 40 for x in verified.get("merge_access_levels", []))
+        ):
+            if self.call("GET", f"/projects/{remote['id']}/members", params={"per_page": 1}):
+                raise RepositoryError("repository_protection_requires_manual_review", 409)
+            self.call("DELETE", root + "/main")
+            self.call("POST", root, {"name": "main", "push_access_level": 0, "merge_access_level": 40})
+            verified = self.call("GET", root + "/main")
         if not verified.get("push_access_levels") or any(
             x.get("access_level") != 0 for x in verified["push_access_levels"]
         ):

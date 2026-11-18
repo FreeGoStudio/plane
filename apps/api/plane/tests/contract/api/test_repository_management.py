@@ -40,6 +40,7 @@ class FakeGitLab(GitLabRepositoryManager):
         self.lose_create_response = False
         self.creation_level = "maintainer"
         self.group_members = {}
+        self.ignore_protection_patch = False
 
     def call(self, method, path, body=None, params=None):
         self.calls.append((method, path, body))
@@ -76,6 +77,11 @@ class FakeGitLab(GitLabRepositoryManager):
         if len(parts) == 3:
             return remote
         if parts[3] == "protected_branches":
+            if method == "DELETE":
+                self.protections.pop(identifier, None)
+                return None
+            if method == "PATCH" and self.ignore_protection_patch:
+                return self.protections[identifier]
             if method == "GET":
                 if identifier not in self.protections:
                     raise RepositoryError("upstream_resource_invisible", 404)
@@ -86,6 +92,12 @@ class FakeGitLab(GitLabRepositoryManager):
             }
             return self.protections[identifier]
         if parts[3] == "members":
+            if method == "GET" and len(parts) == 4:
+                return [
+                    {"id": int(user), "access_level": level}
+                    for (project, user), level in self.direct.items()
+                    if project == identifier
+                ]
             user_id = str(body["user_id"]) if method == "POST" else parts[-1]
             key = (identifier, user_id)
             if method in ("POST", "PUT"):
@@ -137,6 +149,24 @@ def test_project_creation_persists_intent_and_rollbacks_do_not_leave_work(manage
         raise RuntimeError("rollback")
     assert not RepositoryProvisioning.objects.filter(project_id=failed.pk).exists()
     assert client.calls == []
+
+
+def test_ce_ignored_protection_patch_recreates_before_binding_only_without_direct_members(managed):
+    _, _, _, client = managed
+    client.ignore_protection_patch = True
+    current = {
+        "push_access_levels": [{"id": 1, "access_level": 40}],
+        "merge_access_levels": [{"id": 2, "access_level": 40}],
+    }
+    client.protections["1"] = current
+    client.direct[("1", "11")] = 30
+    with pytest.raises(RepositoryError, match="repository_protection_requires_manual_review"):
+        client.protect(client.projects["1"])
+    assert not any(method == "DELETE" for method, *_ in client.calls)
+    client.direct.clear()
+    client.protect(client.projects["1"])
+    assert client.protections["1"]["push_access_levels"][0]["access_level"] == 0
+    assert ("DELETE", "/projects/1/protected_branches/main", None) in client.calls
 
 
 def test_native_browser_project_creation_queues_automatic_repositories(managed):
