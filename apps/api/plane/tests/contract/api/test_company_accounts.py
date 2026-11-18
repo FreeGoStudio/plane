@@ -68,12 +68,9 @@ class GitLab:
 
 def test_new_user_activation_and_old_user_opt_in(settings):
     new = person(verified=False)
-    assert CompanyAccount.objects.get(user=new).status == "awaiting_activation"
-    new.is_email_verified = True
-    new.save()
     assert CompanyAccount.objects.get(user=new).status == "pending"
     settings.SINGULARITY_COMPANY_ENABLED = False
-    old = person("old")
+    old = person("old", verified=False)
     assert not CompanyAccount.objects.filter(user=old).exists()
     settings.SINGULARITY_COMPANY_ENABLED = True
     assert request_account(old).status == "pending"
@@ -141,15 +138,20 @@ def test_company_proof_never_overwrites_existing_identity():
     assert ("PUT", "users/99") not in gitlab.calls
 
 
-def test_no_bot_or_unverified_provisioning():
+def test_no_bot_provisioning_and_unverified_humans_are_linked():
     bot = User.objects.create(username="bot", email="bot@company.test", is_bot=True, is_email_verified=True)
     assert not CompanyAccount.objects.filter(user=bot).exists()
     with pytest.raises(CompanyError):
         request_account(bot)
     user = person(verified=False)
     gitlab = GitLab()
+    CompanyAccount.objects.filter(user=user).update(status="awaiting_activation")
+    assert request_account(user).status == "pending"
     process_account(user.pk, gitlab)
-    assert gitlab.created == 0
+    assert gitlab.created == 1
+    assert CompanyAccount.objects.get(user=user).status == "linked"
+    user.refresh_from_db()
+    assert user.is_email_verified is False
 
 
 def test_instance_change_fails_closed(settings):

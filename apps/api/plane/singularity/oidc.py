@@ -16,8 +16,8 @@ from oauth2_provider.views import AuthorizationView, ConnectDiscoveryInfoView
 
 
 def eligible(user):
-    """Only verified, active human identities may authenticate to company SSO."""
-    return bool(user and user.is_authenticated and user.is_active and user.is_email_verified and not user.is_bot)
+    """Active human Plane identities may authenticate to company SSO."""
+    return bool(user and user.is_authenticated and user.is_active and not user.is_bot)
 
 
 def company_authorized(user, client_id):

@@ -67,8 +67,11 @@ def authorize(user, **changes):
     return client, params
 
 
-def test_oidc_identity_exchange_and_audience_isolation(oidc_world, settings):
+@pytest.mark.parametrize("verified", [True, False])
+def test_oidc_identity_exchange_and_audience_isolation(oidc_world, settings, verified):
     user, app, key = oidc_world
+    user.is_email_verified = verified
+    user.save()
     client, params = authorize(user)
     assert client.get(BASE + "authorize/?" + urlencode(params)).status_code == 200
     response = client.post(BASE + "authorize/", {**params, "allow": "true"})
@@ -98,6 +101,9 @@ def test_oidc_identity_exchange_and_audience_isolation(oidc_world, settings):
     assert claims["sub"] == str(user.pk)
     assert claims["nonce"] == "sso-nonce"
     assert claims["email"] == user.email
+    assert claims["email_verified"] is verified
+    user.refresh_from_db()
+    assert user.is_email_verified is verified
     identity = Client(HTTP_AUTHORIZATION="Bearer " + tokens["access_token"])
     assert identity.get(BASE + "userinfo/").json()["sub"] == str(user.pk)
     assert identity.get("/api/singularity/v1/projects/").status_code == 401
@@ -123,7 +129,7 @@ def test_oidc_discovery_and_closed_by_default(oidc_world, settings):
     assert client.get(BASE + ".well-known/openid-configuration").status_code == 404
 
 
-@pytest.mark.parametrize("field", ["is_bot", "is_email_verified", "is_active"])
+@pytest.mark.parametrize("field", ["is_bot", "is_active"])
 def test_oidc_denies_ineligible_accounts(oidc_world, field):
     user = oidc_world[0]
     setattr(user, field, field == "is_bot")

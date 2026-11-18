@@ -65,7 +65,7 @@ class GitLabCompanyClient:
 
 def request_account(user):
     """Existing users opt in; subsequent retries retain the same durable identity."""
-    if not settings.SINGULARITY_COMPANY_ENABLED or not user.is_active or not user.is_email_verified or user.is_bot:
+    if not settings.SINGULARITY_COMPANY_ENABLED or not user.is_active or user.is_bot:
         raise CompanyError("account_not_eligible")
     row, _ = CompanyAccount.objects.get_or_create(
         user=user, defaults={"instance_url": settings.SINGULARITY_COMPANY_URL.rstrip("/")}
@@ -113,10 +113,6 @@ def process_account(user_id, client):
                     raise CompanyError("block_not_confirmed")
             row.status = "blocked" if row.managed else "disconnected"
             row.error_code = ""
-            row.save()
-            return
-        if not user.is_email_verified:
-            row.status = "awaiting_activation"
             row.save()
             return
         if row.status in ("linked", "conflict", "blocked", "disconnected"):

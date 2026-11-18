@@ -33,10 +33,10 @@ def company_user_changed(sender, instance, created, raw=False, **kwargs):
             user=instance,
             defaults={
                 "instance_url": settings.SINGULARITY_COMPANY_URL.rstrip("/"),
-                "status": "pending" if instance.is_active and instance.is_email_verified else "awaiting_activation",
+                "status": "pending" if instance.is_active else "awaiting_activation",
             },
         )
-    elif instance.is_active and instance.is_email_verified:
+    elif instance.is_active:
         CompanyAccount.objects.filter(user=instance, status="awaiting_activation").update(
             status="pending", next_attempt_at=timezone.now()
         )
