@@ -22,6 +22,9 @@ OPERATIONS = {
     "StateListCreateAPIEndpoint": {"GET": "workitems:read"},
     "LabelListCreateAPIEndpoint": {"GET": "workitems:read"},
     "ProjectMemberListCreateAPIEndpoint": {"GET": "workitems:read"},
+    "ModuleListCreateAPIEndpoint": {"GET": "workitems:read"},
+    "ModuleIssueListCreateAPIEndpoint": {"GET": "workitems:read", "POST": "workitems:write"},
+    "ModuleIssueDetailAPIEndpoint": {"DELETE": "workitems:write"},
 }
 
 

@@ -21,6 +21,14 @@ const descriptions: Record<keyof typeof inputs, string> = {
     "Read native project states, labels or members for work-item fields. query accepts native pagination/field parameters.",
   list_work_items:
     "List native work items. query accepts native filters (state, priority, assignees, labels), order_by, cursor, per_page, fields, expand. Unsupported edition features return the same native error.",
+  list_project_modules:
+    "List active project modules to select a module UUID. query accepts native cursor, per_page, fields, expand and order_by. Requires workitems:read.",
+  list_module_work_items:
+    "Read work items assigned to a module, with native pagination via query. Use to verify assignment or removal. Requires workitems:read.",
+  assign_module_work_items:
+    "Assign one or more existing project work items to the selected module using the native module-issues endpoint. Does not promise replacement of other module memberships. Read back with list_module_work_items to verify; after uncertain responses inspect current membership before retrying. Requires workitems:write and native project permissions.",
+  remove_module_work_item:
+    "Remove the selected module association using the work item UUID, not a bridge ID; keeps the work item. After uncertain responses read module membership before retrying. Requires workitems:write and native project permissions.",
   find_work_items:
     "Search work items across the workspace using native query parameters (search, project_id and other native filters).",
   get_work_item_by_identifier:

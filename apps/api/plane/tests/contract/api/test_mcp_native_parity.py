@@ -13,7 +13,7 @@ from django.db import close_old_connections
 from django.test import Client
 from crum import impersonate
 
-from plane.db.models import APIToken, Issue, Label, ProjectMember, State, DelegationAudit
+from plane.db.models import APIToken, Issue, Label, ProjectMember, State, DelegationAudit, Module, ModuleIssue
 from .test_singularity import config, world, login  # noqa: F401
 from .test_native_personal_tokens import exchange
 
@@ -133,6 +133,43 @@ def test_oauth_scopes_remain_explicit(world):
     all_api, _, _, _ = login(world[0])
     assert all_api.get("/api/v1/users/me/").status_code == 200
     assert all_api.delete(path(world, result.json()["id"])).status_code == 204
+
+
+def test_module_assignment_read_write_scopes_and_removal(world):
+    project, workspace = world[3], world[2]
+    module = Module.objects.create(project=project, workspace=workspace, name="MCP assignment")
+    item = Issue.objects.create(project=project, workspace=workspace, name="Assign me")
+    root = path(world).replace("work-items/", "modules/")
+    url = root + f"{module.pk}/module-issues/"
+    reader, _, _, _ = login(world[0], ["workitems:read"])
+    writer, _, _, _ = login(world[0], ["workitems:read", "workitems:write"])
+    assert reader.get(root).status_code == 200
+    assert post(reader, url, {"issues": [str(item.pk)]}).status_code == 403
+    result = post(writer, url, {"issues": [str(item.pk)]})
+    assert result.status_code == 200, result.content
+    assert ModuleIssue.objects.filter(module=module, issue=item).count() == 1
+    assert reader.get(url).status_code == 200
+    assert reader.delete(url + f"{item.pk}/").status_code == 403
+    assert writer.delete(url + f"{item.pk}/").status_code == 204
+    assert not ModuleIssue.objects.filter(module=module, issue=item).exists()
+    assert Issue.objects.filter(pk=item.pk).exists()
+    # Assignment consent must not enable module creation or work-item deletion.
+    assert post(writer, root, {"name": "Not authorized"}).status_code == 403
+    assert writer.delete(path(world, item.pk)).status_code == 403
+
+
+@pytest.mark.parametrize("role,active", [(20, True), (15, True), (5, True), (15, False)])
+def test_module_assignment_preserves_native_permissions(world, role, active):
+    member = ProjectMember.objects.get(project=world[3], member=world[1])
+    member.role, member.is_active = role, active
+    member.save()
+    module = Module.objects.create(project=world[3], workspace=world[2], name="Membership")
+    item = Issue.objects.create(project=world[3], workspace=world[2], name="Module item")
+    url = path(world).replace("work-items/", "modules/") + f"{module.pk}/module-issues/"
+    _, direct, delegated = clients(world[1])
+    responses = [post(api, url, {"issues": [str(item.pk)]}) for api in (direct, delegated)]
+    assert responses[0].status_code == responses[1].status_code == (200 if active and role >= 15 else 403)
+    assert ModuleIssue.objects.filter(module=module, issue=item).count() == (1 if active and role >= 15 else 0)
 
 
 def test_gateway_audience_is_not_a_native_api_token(world):

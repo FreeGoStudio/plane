@@ -250,6 +250,12 @@ export const inputs = {
   get_project: z.object({ ...nativeProject, summary: z.boolean().default(false) }).strict(),
   get_project_metadata: z.object({ ...nativeProject, kind: z.enum(["states", "labels", "members"]), query }).strict(),
   list_work_items: z.object({ ...nativeProject, query }).strict(),
+  list_project_modules: z.object({ ...nativeProject, query }).strict(),
+  list_module_work_items: z.object({ ...nativeProject, module_id: z.uuid(), query }).strict(),
+  assign_module_work_items: z
+    .object({ ...nativeProject, module_id: z.uuid(), item_ids: z.array(z.uuid()).min(1) })
+    .strict(),
+  remove_module_work_item: z.object({ ...nativeProject, module_id: z.uuid(), item_id: z.uuid() }).strict(),
   find_work_items: z.object({ workspace: z.string().min(1), query }).strict(),
   get_work_item_by_identifier: z
     .object({
@@ -368,6 +374,28 @@ export async function invoke(
   if (name === "list_work_items") {
     const a = inputs.list_work_items.parse(args);
     return native("GET", nativePath(a) + "work-items/", undefined, a.query);
+  }
+  if (name === "list_project_modules") {
+    const a = inputs.list_project_modules.parse(args);
+    return native("GET", nativePath(a) + "modules/", undefined, a.query);
+  }
+  if (name === "list_module_work_items") {
+    const a = inputs.list_module_work_items.parse(args);
+    return native("GET", nativePath(a) + `modules/${a.module_id}/module-issues/`, undefined, a.query);
+  }
+  if (name === "assign_module_work_items" || name === "remove_module_work_item") {
+    const a = inputs[name].parse(args);
+    const path = nativePath(a) + `modules/${a.module_id}/module-issues/`;
+    try {
+      return "item_ids" in a
+        ? await native("POST", path, { issues: a.item_ids })
+        : await native("DELETE", path + `${a.item_id}/`);
+    } catch (error) {
+      // These native endpoints have no idempotency receipts: read back before retrying.
+      if (error instanceof PlaneError && error.code === "outcome_unknown_check_result_or_retry_same_idempotency_key")
+        throw new PlaneError(503, "outcome_unknown_check_module_work_items_before_retry");
+      throw error;
+    }
   }
   if (name === "find_work_items") {
     const a = inputs.find_work_items.parse(args);

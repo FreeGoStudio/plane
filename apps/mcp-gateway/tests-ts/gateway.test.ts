@@ -50,8 +50,48 @@ const prepare = {
   description_markdown: "Private discussion",
   workspace: "test",
 };
+test("module assignment uses native routes, IDs and pagination without deleting work items", async () => {
+  const f = fixture();
+  const base = { workspace: "test", project_id: id, module_id: decision };
+  await invoke(f.plane, "bearer", "list_project_modules", {
+    workspace: "test",
+    project_id: id,
+    query: { per_page: 10 },
+  });
+  assert.equal(f.calls.at(-1)!.url.pathname, `/api/v1/workspaces/test/projects/${id}/modules/`);
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("per_page"), "10");
+  await invoke(f.plane, "bearer", "list_module_work_items", { ...base, query: { cursor: "1:0:0" } });
+  const path = `/api/v1/workspaces/test/projects/${id}/modules/${decision}/module-issues/`;
+  assert.equal(f.calls.at(-1)!.url.pathname, path);
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("cursor"), "1:0:0");
+  await invoke(f.plane, "bearer", "assign_module_work_items", { ...base, item_ids: [id, decision] });
+  assert.equal(f.calls.at(-1)!.method, "POST");
+  assert.equal(f.calls.at(-1)!.url.pathname, path);
+  assert.deepEqual(JSON.parse(f.calls.at(-1)!.body!), { issues: [id, decision] });
+  assert.equal(f.calls.at(-1)!.headers.Authorization, "Bearer downstream-test");
+  await invoke(f.plane, "bearer", "remove_module_work_item", { ...base, item_id: id });
+  assert.equal(f.calls.at(-1)!.method, "DELETE");
+  assert.equal(f.calls.at(-1)!.url.pathname, path + id + "/");
+  await Promise.all(
+    [[], ["invalid"]].map((item_ids) =>
+      assert.rejects(invoke(f.plane, "bearer", "assign_module_work_items", { ...base, item_ids }))
+    )
+  );
+  f.state.status = 403;
+  await assert.rejects(
+    invoke(f.plane, "bearer", "assign_module_work_items", { ...base, item_ids: [id] }),
+    (error: unknown) => error instanceof PlaneError && error.status === 403
+  );
+  f.state.fail = true;
+  await assert.rejects(
+    invoke(f.plane, "bearer", "assign_module_work_items", { ...base, item_ids: [id] }),
+    (error: unknown) =>
+      error instanceof PlaneError && error.code === "outcome_unknown_check_module_work_items_before_retry"
+  );
+  f.vault.close();
+});
 test("native and repository tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 21);
+  assert.equal(tools.length, 25);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
@@ -230,7 +270,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 21);
+    assert.equal((await listed.json()).result.tools.length, 25);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;
