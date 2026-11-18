@@ -57,6 +57,14 @@
     "prototype": "Prototype Storybook",
     "bindings": "Associations de dépôts requises",
     "unbound": "Non configuré",
-    "binding_hint": "Les opérations utilisent uniquement ces associations. Une association manquante bloque l’exécution ; aucun dépôt n’est créé automatiquement."
+    "binding_hint": "Les opérations utilisent uniquement ces associations. Une association manquante bloque l’exécution ; aucun dépôt n’est créé automatiquement.",
+    "initialize": "Créer et associer les dépôts manquants",
+    "management_hint": "Les nouveaux projets initialisent automatiquement les dépôts. Une nouvelle tentative reprend la même opération.",
+    "migration_hint": "Pour migrer, enregistrez le dépôt de remplacement puis changez l’association. Modifier le chemin vérifie que l’ID du dépôt reste identique.",
+    "permission_hint": "Par défaut : administrateur → Maintainer, membre → Developer, invité → Reporter. Les autorisations externes sont conservées.",
+    "effective_access": "Accès GitLab effectif",
+    "adopt_existing": "Gérer cette autorisation directe",
+    "identity_required": "Compte GitLab vérifié requis",
+    "external_permissions": "Accès externe ou hérité"
   }
 }

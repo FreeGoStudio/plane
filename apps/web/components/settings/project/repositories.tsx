@@ -12,6 +12,7 @@ import { Input } from "@makeplane/propel/components/input";
 import { useTranslation } from "@plane/i18n";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 import { SettingsHeading } from "@/components/settings/heading";
+import { RepositoryInitialization, RepositoryMemberPermissions } from "./repository-management";
 import {
   repositoryService as api,
   repositoryBase,
@@ -115,11 +116,29 @@ export function ProjectRepositoriesSettings({
   return (
     <SettingsContentWrapper>
       <SettingsHeading title={text("title")} description={text("description")} />
+      {info && (
+        <RepositoryInitialization
+          base={base}
+          canManage={info.can_manage}
+          busy={busy}
+          write={() =>
+            action(async () => {
+              await write("repository-management/", {});
+              setStatus(t("common.pending"));
+            })
+          }
+          onReady={() => {
+            void mutate();
+            void refreshBindings();
+          }}
+        />
+      )}
       {bindingError && <p role="alert">{text("load_failed")}</p>}
       {bindings && rows && info && (
         <section className="mt-6 rounded-lg border border-subtle p-5">
           <h3 className="font-medium">{text("bindings")}</h3>
           <p className="text-sm my-3 text-secondary">{text("binding_hint")}</p>
+          <p className="text-sm my-3 text-secondary">{text("migration_hint")}</p>
           <form
             key={bindings.revision}
             className="flex flex-col gap-3"
@@ -326,13 +345,18 @@ export function ProjectRepositoriesSettings({
                           void action(() =>
                             write(
                               `repositories/${row.id}/`,
-                              { default_branch: data.get("branch"), purpose: data.get("purpose") },
+                              {
+                                default_branch: data.get("branch"),
+                                purpose: data.get("purpose"),
+                                path: data.get("path"),
+                              },
                               "PATCH"
                             )
                           );
                         }}
                       >
                         <Input size="md" name="branch" defaultValue={row.default_branch} aria-label={text("branch")} />
+                        <Input size="md" name="path" defaultValue={row.path} aria-label={text("path")} required />
                         <select
                           className={field}
                           name="purpose"
@@ -358,6 +382,15 @@ export function ProjectRepositoriesSettings({
                         </Button>
                       </form>
                     </details>
+                  )}
+                  {info.can_manage && row.purpose !== "reference" && (
+                    <RepositoryMemberPermissions
+                      base={base}
+                      repositoryId={row.id}
+                      csrf={info.csrf_token}
+                      busy={busy}
+                      action={action}
+                    />
                   )}
                 </section>
               );

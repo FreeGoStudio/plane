@@ -5,6 +5,7 @@
 """Provider contracts: exact commits, bounded content, registered-host transport."""
 
 import base64
+import json
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 import pytest
@@ -175,3 +176,25 @@ def test_github_directory_pagination_without_silent_truncation():
     )
     with pytest.raises(RepositoryError, match="directory_too_large"):
         adapter.directory(repo)
+
+
+@pytest.mark.parametrize("method,status", [("POST", 201), ("PATCH", 200), ("DELETE", 204)])
+def test_management_transport_json_and_empty_delete_response(method, status):
+    with patch("socket.getaddrinfo", return_value=dns("8.8.8.8")), patch("urllib3.HTTPSConnectionPool") as pool:
+        response = pool.return_value.urlopen.return_value
+        response.status = status
+        response.read.return_value = b'{"id":1}'
+        body = {"allowed_to_push": [{"access_level": 0}]} if method != "DELETE" else None
+        result = RepositoryTransport(host("gitlab"), "management-token").request(
+            method, "/projects/1", body=body, json_body=True, success_statuses=(200, 201, 204)
+        )
+        request = pool.return_value.urlopen.call_args.kwargs
+        assert request["redirect"] is False
+        if body:
+            assert request["headers"]["Content-Type"] == "application/json"
+            assert json.loads(request["body"]) == body
+        if status == 204:
+            assert result is None
+            response.read.assert_not_called()
+        else:
+            assert result == {"id": 1}

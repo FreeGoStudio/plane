@@ -57,6 +57,14 @@
     "prototype": "Storybook 프로토타입",
     "bindings": "필수 저장소 연결",
     "unbound": "설정되지 않음",
-    "binding_hint": "작업은 이 연결만 사용합니다. 연결이 없으면 실행이 차단되며 저장소가 자동으로 생성되지 않습니다."
+    "binding_hint": "작업은 이 연결만 사용합니다. 연결이 없으면 실행이 차단되며 저장소가 자동으로 생성되지 않습니다.",
+    "initialize": "누락된 저장소 생성 및 연결",
+    "management_hint": "새 프로젝트는 저장소를 자동으로 초기화합니다. 재시도하면 같은 작업을 재개합니다.",
+    "migration_hint": "이전 시 대체 저장소를 등록하고 연결을 변경하세요. 경로 변경 시 동일한 저장소 ID인지 확인합니다.",
+    "permission_hint": "기본 매핑: 관리자 → Maintainer, 구성원 → Developer, 게스트 → Reporter. 외부 권한은 유지됩니다.",
+    "effective_access": "실제 GitLab 접근 수준",
+    "adopt_existing": "이 직접 부여된 권한 관리",
+    "identity_required": "검증된 GitLab 계정이 필요합니다",
+    "external_permissions": "외부 또는 상속된 접근 권한"
   }
 }

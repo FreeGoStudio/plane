@@ -57,6 +57,14 @@
     "prototype": "Prototyp Storybook",
     "bindings": "Povinná propojení repozitářů",
     "unbound": "Nenakonfigurováno",
-    "binding_hint": "Operace používají pouze tato propojení. Chybějící propojení blokují provedení; repozitáře se nikdy nevytvářejí automaticky."
+    "binding_hint": "Operace používají pouze tato propojení. Chybějící propojení blokují provedení; repozitáře se nikdy nevytvářejí automaticky.",
+    "initialize": "Vytvořit a propojit chybějící repozitáře",
+    "management_hint": "Nové projekty automaticky inicializují repozitáře. Opakování pokračuje ve stejné operaci.",
+    "migration_hint": "Při migraci zaregistrujte náhradní repozitář a změňte propojení. Úprava cesty ověří stejné ID repozitáře.",
+    "permission_hint": "Výchozí: správce → Maintainer, člen → Developer, host → Reporter. Externí oprávnění zůstávají zachována.",
+    "effective_access": "Skutečný přístup ke GitLab",
+    "adopt_existing": "Spravovat toto přímé oprávnění",
+    "identity_required": "Je vyžadován ověřený účet GitLab",
+    "external_permissions": "Externí nebo zděděný přístup"
   }
 }

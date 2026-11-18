@@ -57,6 +57,14 @@
     "prototype": "Storybook 原型儲存庫",
     "bindings": "專用儲存庫綁定",
     "unbound": "尚未設定",
-    "binding_hint": "相關操作只能使用此處綁定的儲存庫。未綁定時停止執行，不會自動建立儲存庫。"
+    "binding_hint": "相關操作只能使用此處綁定的儲存庫。未綁定時停止執行，不會自動建立儲存庫。",
+    "initialize": "建立並綁定缺少的儲存庫",
+    "management_hint": "新建專案會自動初始化儲存庫，重試會繼續同一次操作。",
+    "migration_hint": "遷移時先登錄替代儲存庫，再修改綁定。修改路徑時會確認儲存庫 ID 不變。",
+    "permission_hint": "預設對應：管理員 → Maintainer，成員 → Developer，訪客 → Reporter。保留外部授權。",
+    "effective_access": "GitLab 實際存取層級",
+    "adopt_existing": "接管此直接授權",
+    "identity_required": "需要已驗證的 GitLab 帳號",
+    "external_permissions": "外部或繼承的存取權限"
   }
 }

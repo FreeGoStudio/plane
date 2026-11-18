@@ -57,6 +57,14 @@
     "prototype": "Storybook-Prototyp",
     "bindings": "Erforderliche Repository-Zuordnungen",
     "unbound": "Nicht konfiguriert",
-    "binding_hint": "Vorgänge verwenden nur diese Zuordnungen. Fehlende Zuordnungen blockieren die Ausführung; Repositorys werden nie automatisch erstellt."
+    "binding_hint": "Vorgänge verwenden nur diese Zuordnungen. Fehlende Zuordnungen blockieren die Ausführung; Repositorys werden nie automatisch erstellt.",
+    "initialize": "Fehlende Repositorys erstellen und zuordnen",
+    "management_hint": "Neue Projekte initialisieren Repositorys automatisch. Ein erneuter Versuch setzt denselben Vorgang fort.",
+    "migration_hint": "Für eine Migration das Ersatz-Repository registrieren und die Zuordnung ändern. Bei Pfadänderungen wird dieselbe Repository-ID geprüft.",
+    "permission_hint": "Standard: Administrator → Maintainer, Mitglied → Developer, Gast → Reporter. Externe Berechtigungen bleiben erhalten.",
+    "effective_access": "Effektiver GitLab-Zugriff",
+    "adopt_existing": "Diese direkte Berechtigung verwalten",
+    "identity_required": "Verifiziertes GitLab-Konto erforderlich",
+    "external_permissions": "Externer oder geerbter Zugriff"
   }
 }

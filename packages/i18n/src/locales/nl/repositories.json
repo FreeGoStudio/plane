@@ -57,6 +57,14 @@
     "prototype": "Storybook-prototype",
     "bindings": "Verplichte repositorykoppelingen",
     "unbound": "Niet ingesteld",
-    "binding_hint": "Bewerkingen gebruiken alleen deze koppelingen. Ontbrekende koppelingen blokkeren de uitvoering; repository’s worden nooit automatisch aangemaakt."
+    "binding_hint": "Bewerkingen gebruiken alleen deze koppelingen. Ontbrekende koppelingen blokkeren de uitvoering; repository’s worden nooit automatisch aangemaakt.",
+    "initialize": "Ontbrekende repository’s maken en koppelen",
+    "management_hint": "Nieuwe projecten initialiseren repository’s automatisch. Opnieuw proberen hervat dezelfde bewerking.",
+    "migration_hint": "Registreer voor migratie de vervangende repository en wijzig de koppeling. Een padwijziging controleert of de repository-ID gelijk blijft.",
+    "permission_hint": "Standaard: beheerder → Maintainer, lid → Developer, gast → Reporter. Externe rechten blijven behouden.",
+    "effective_access": "Effectieve GitLab-toegang",
+    "adopt_existing": "Dit directe recht beheren",
+    "identity_required": "Geverifieerd GitLab-account vereist",
+    "external_permissions": "Externe of overgenomen toegang"
   }
 }

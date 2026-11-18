@@ -57,6 +57,14 @@
     "prototype": "Nguyên mẫu Storybook",
     "bindings": "Liên kết kho lưu trữ bắt buộc",
     "unbound": "Chưa cấu hình",
-    "binding_hint": "Các thao tác chỉ sử dụng những liên kết này. Thiếu liên kết sẽ chặn thực thi; kho lưu trữ không bao giờ được tạo tự động."
+    "binding_hint": "Các thao tác chỉ sử dụng những liên kết này. Thiếu liên kết sẽ chặn thực thi; kho lưu trữ không bao giờ được tạo tự động.",
+    "initialize": "Tạo và liên kết kho lưu trữ còn thiếu",
+    "management_hint": "Dự án mới tự động khởi tạo kho lưu trữ. Thử lại sẽ tiếp tục cùng thao tác.",
+    "migration_hint": "Để di chuyển, đăng ký kho lưu trữ thay thế rồi đổi liên kết. Khi sửa đường dẫn, hệ thống xác minh ID kho lưu trữ không đổi.",
+    "permission_hint": "Mặc định: quản trị viên → Maintainer, thành viên → Developer, khách → Reporter. Quyền bên ngoài được giữ nguyên.",
+    "effective_access": "Quyền truy cập GitLab thực tế",
+    "adopt_existing": "Quản lý quyền trực tiếp này",
+    "identity_required": "Cần tài khoản GitLab đã xác minh",
+    "external_permissions": "Quyền bên ngoài hoặc được kế thừa"
   }
 }

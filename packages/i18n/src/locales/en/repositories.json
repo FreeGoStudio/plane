@@ -57,6 +57,14 @@
     "prototype": "Storybook prototype",
     "bindings": "Required repository bindings",
     "unbound": "Not configured",
-    "binding_hint": "Operations use these bindings only. Missing bindings block execution; repositories are never created automatically."
+    "binding_hint": "Operations use these bindings only. Missing bindings block execution; repositories are never created automatically.",
+    "initialize": "Create and bind missing repositories",
+    "management_hint": "New projects initialize repositories automatically. Retrying resumes the same operation.",
+    "migration_hint": "For migration, register the replacement and change the binding. Editing a path verifies the same repository ID.",
+    "permission_hint": "Defaults: Admin → Maintainer, Member → Developer, Guest → Reporter. External grants are preserved.",
+    "effective_access": "Effective GitLab access",
+    "adopt_existing": "Manage this direct grant",
+    "identity_required": "Verified GitLab account required",
+    "external_permissions": "External or inherited access"
   }
 }

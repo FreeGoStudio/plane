@@ -11,6 +11,7 @@ from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectR
 from .repository_api import ProjectRepositoryConnections, DelegatedRepositoryRead
 from .repository_api import ProjectRepositoryBindings, BoundRepositoryRead, DelegatedBoundRepositoryRead
 from .repository_oauth import callback as repository_callback
+from .repository_management_api import RepositoryManagement, RepositoryMembers
 
 auth_patterns = [
     path("repository-callback/", repository_callback),
@@ -32,6 +33,9 @@ urlpatterns = [
     path(base + "repositories/<uuid:pk>/connection/", ProjectRepositoryConnections.as_view()),
     path(base + "ai-repositories/", DelegatedRepositoryRead.as_view()),
     path(base + "repository-bindings/", ProjectRepositoryBindings.as_view()),
+    path(base + "repository-management/", RepositoryManagement.as_view()),
+    path(base + "repositories/<uuid:pk>/members/", RepositoryMembers.as_view()),
+    path(base + "repositories/<uuid:pk>/members/<uuid:user_id>/", RepositoryMembers.as_view()),
     path(base + "bound-repositories/<str:role>/", BoundRepositoryRead.as_view()),
     path(base + "bound-repositories/<str:role>/<str:operation>/", BoundRepositoryRead.as_view()),
     path(base + "ai-bound-repositories/<str:role>/", DelegatedBoundRepositoryRead.as_view()),

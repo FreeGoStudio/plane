@@ -1,5 +1,11 @@
 # Repository access
 
+## Dedicated repository administration (2026-11-18)
+
+Plane can provision and bind project repositories through an isolated management
+worker and reconcile member grants. Existing execution identities still cannot
+create repositories. See [setup, migration and acceptance](repository-management.md).
+
 ## Required project repository bindings (2026-11-18)
 
 Projects now have two explicit slots in `ProjectRepositoryBinding`:

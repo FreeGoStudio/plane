@@ -57,6 +57,14 @@
     "prototype": "Prototip Storybook",
     "bindings": "Asocieri obligatorii ale depozitelor",
     "unbound": "Neconfigurat",
-    "binding_hint": "Operațiile folosesc doar aceste asocieri. Asocierile lipsă blochează execuția; depozitele nu sunt create niciodată automat."
+    "binding_hint": "Operațiile folosesc doar aceste asocieri. Asocierile lipsă blochează execuția; depozitele nu sunt create niciodată automat.",
+    "initialize": "Creați și asociați depozitele lipsă",
+    "management_hint": "Proiectele noi inițializează automat depozitele. Reîncercarea reia aceeași operație.",
+    "migration_hint": "Pentru migrare, înregistrați depozitul înlocuitor și modificați asocierea. Modificarea căii verifică păstrarea aceluiași ID.",
+    "permission_hint": "Implicit: administrator → Maintainer, membru → Developer, invitat → Reporter. Permisiunile externe sunt păstrate.",
+    "effective_access": "Acces efectiv la GitLab",
+    "adopt_existing": "Gestionați această permisiune directă",
+    "identity_required": "Este necesar un cont GitLab verificat",
+    "external_permissions": "Acces extern sau moștenit"
   }
 }

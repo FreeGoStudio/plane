@@ -57,6 +57,14 @@
     "prototype": "Storybook プロトタイプ",
     "bindings": "必須のリポジトリ設定",
     "unbound": "未設定",
-    "binding_hint": "操作にはこの設定のみを使用します。未設定の場合は実行を停止し、リポジトリを自動作成しません。"
+    "binding_hint": "操作にはこの設定のみを使用します。未設定の場合は実行を停止し、リポジトリを自動作成しません。",
+    "initialize": "不足しているリポジトリを作成して関連付ける",
+    "management_hint": "新しいプロジェクトではリポジトリが自動的に初期化されます。再試行は同じ操作を再開します。",
+    "migration_hint": "移行時は代替リポジトリを登録して関連付けを変更してください。パス変更時は同じリポジトリ ID を確認します。",
+    "permission_hint": "既定の対応：管理者 → Maintainer、メンバー → Developer、ゲスト → Reporter。外部の権限は保持されます。",
+    "effective_access": "GitLab の実効アクセスレベル",
+    "adopt_existing": "この直接付与された権限を管理する",
+    "identity_required": "確認済みの GitLab アカウントが必要です",
+    "external_permissions": "外部または継承されたアクセス権"
   }
 }

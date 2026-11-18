@@ -34,6 +34,7 @@ from .api import visible_projects, PersonalThrottle, WriteThrottle, DelegatedAut
 from .repository_provider import RepositoryProvider
 from .repository_transport import RepositoryError, validate_instance
 from .vault import VaultError, seal, unseal, require_owner, selected_credential
+from .repository_management import serialized_project_operation
 
 
 class StrictSerializer(serializers.Serializer):
@@ -83,6 +84,7 @@ class RepositoryUpdate(StrictSerializer):
     )
     default_branch = serializers.CharField(max_length=255, required=False, allow_blank=True)
     enabled = serializers.BooleanField(required=False)
+    path = serializers.CharField(max_length=512, required=False)
 
 
 def validated(serializer, data):
@@ -280,6 +282,7 @@ class ProjectRepositories(RepositoryAPI):
         self.repository = row
         return Response({"id": str(row.pk), **metadata}, status=201)
 
+    @serialized_project_operation
     @transaction.atomic
     def patch(self, request, slug, project_id, pk=None):
         if pk is None:
@@ -288,6 +291,24 @@ class ProjectRepositories(RepositoryAPI):
         Project.objects.select_for_update().get(pk=project.pk)
         row = get_object_or_404(ProjectRepository, project=project, pk=pk)
         data = validated(RepositoryUpdate, request.data)
+        if data.get("path", row.path) != row.path:
+            self.credential, token = selected_credential(request.user, row)
+            metadata = RepositoryProvider(row.instance, token).metadata(data["path"], by_id=False)
+            if metadata["external_id"] != row.external_id:
+                raise RepositoryError("repository_identity_changed_use_rebinding", 409)
+            data["path"] = metadata["path"]
+            from .repository_bindings import binding_data
+
+            binding = ProjectRepositoryBinding.objects.filter(project=project).first()
+            if binding and row.pk in (binding.documentation_repository_id, binding.prototype_repository_id):
+                # The old revision stays immutable; append the verified new address after saving below.
+                row.path = data["path"]
+                row.save(update_fields=["path"])
+                binding.revision += 1
+                binding.save(update_fields=["revision"])
+                ProjectRepositoryBindingRevision.objects.create(
+                    project=project, revision=binding.revision, snapshot=binding_data(binding), changed_by=request.user
+                )
         if (
             data.get("purpose", row.purpose) != row.purpose
             and ProjectRepositoryBinding.objects.filter(
@@ -316,6 +337,7 @@ class ProjectRepositoryBindings(RepositoryAPI):
         binding = ProjectRepositoryBinding.objects.filter(project=project).first()
         return Response(binding_data(binding))
 
+    @serialized_project_operation
     @transaction.atomic
     def patch(self, request, slug, project_id):
         from .repository_bindings import binding_data, ROLES

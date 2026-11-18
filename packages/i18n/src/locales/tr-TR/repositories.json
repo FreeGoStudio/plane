@@ -57,6 +57,14 @@
     "prototype": "Storybook prototipi",
     "bindings": "Zorunlu depo bağlantıları",
     "unbound": "Yapılandırılmadı",
-    "binding_hint": "İşlemler yalnızca bu bağlantıları kullanır. Eksik bağlantılar yürütmeyi engeller; depolar hiçbir zaman otomatik oluşturulmaz."
+    "binding_hint": "İşlemler yalnızca bu bağlantıları kullanır. Eksik bağlantılar yürütmeyi engeller; depolar hiçbir zaman otomatik oluşturulmaz.",
+    "initialize": "Eksik depoları oluştur ve bağla",
+    "management_hint": "Yeni projeler depoları otomatik başlatır. Yeniden deneme aynı işlemi sürdürür.",
+    "migration_hint": "Taşıma için yedek depoyu kaydedip bağlantıyı değiştirin. Yol düzenlenirken depo ID değerinin aynı kaldığı doğrulanır.",
+    "permission_hint": "Varsayılanlar: yönetici → Maintainer, üye → Developer, misafir → Reporter. Harici izinler korunur.",
+    "effective_access": "Geçerli GitLab erişimi",
+    "adopt_existing": "Bu doğrudan izni yönet",
+    "identity_required": "Doğrulanmış GitLab hesabı gereklidir",
+    "external_permissions": "Harici veya devralınan erişim"
   }
 }

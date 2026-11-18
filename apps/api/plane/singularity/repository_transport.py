@@ -61,7 +61,7 @@ class RepositoryTransport:
     def post(self, path, body):
         return self.request("POST", path, body=body)
 
-    def request(self, method, path, params=None, body=None):
+    def request(self, method, path, params=None, body=None, success_statuses=(200,), json_body=False):
         """Resolve once, validate every address, pin the connection; never redirect."""
         url, networks = validate_instance(self.instance)
         if not self.instance.enabled:
@@ -96,7 +96,7 @@ class RepositoryTransport:
         if self.token:
             headers["Authorization"] = "Bearer " + self.token
         if body is not None:
-            headers["Content-Type"] = "application/x-www-form-urlencoded"
+            headers["Content-Type"] = "application/json" if json_body else "application/x-www-form-urlencoded"
         options = dict(timeout=urllib3.Timeout(connect=5, read=20), retries=False)
         if url.scheme == "https":
             pool = urllib3.HTTPSConnectionPool(
@@ -119,7 +119,7 @@ class RepositoryTransport:
                 method,
                 target,
                 headers=headers,
-                body=urlencode(body) if body is not None else None,
+                body=(json.dumps(body) if json_body else urlencode(body)) if body is not None else None,
                 redirect=False,
                 preload_content=False,
                 assert_same_host=False,
@@ -134,8 +134,10 @@ class RepositoryTransport:
                 raise RepositoryError("upstream_rate_limited", 429)
             if 300 <= response.status < 400:
                 raise RepositoryError("upstream_redirect_refused", 502)
-            if response.status != 200:
+            if response.status not in success_statuses:
                 raise RepositoryError("upstream_unavailable", 503)
+            if response.status == 204:
+                return None
             body = response.read(2 * 1024 * 1024 + 1, decode_content=False)
             if len(body) > 2 * 1024 * 1024:
                 raise RepositoryError("upstream_response_too_large", 422)

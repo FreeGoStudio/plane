@@ -7,3 +7,6 @@ from django.apps import AppConfig
 
 class DbConfig(AppConfig):
     name = "plane.db"
+
+    def ready(self):
+        from plane.singularity import repository_signals  # noqa: F401

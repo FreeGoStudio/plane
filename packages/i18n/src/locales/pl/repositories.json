@@ -57,6 +57,14 @@
     "prototype": "Prototyp Storybook",
     "bindings": "Wymagane powiązania repozytoriów",
     "unbound": "Nie skonfigurowano",
-    "binding_hint": "Operacje korzystają tylko z tych powiązań. Brak powiązań blokuje wykonanie; repozytoria nigdy nie są tworzone automatycznie."
+    "binding_hint": "Operacje korzystają tylko z tych powiązań. Brak powiązań blokuje wykonanie; repozytoria nigdy nie są tworzone automatycznie.",
+    "initialize": "Utwórz i powiąż brakujące repozytoria",
+    "management_hint": "Nowe projekty automatycznie inicjują repozytoria. Ponowienie wznawia tę samą operację.",
+    "migration_hint": "Aby przeprowadzić migrację, należy zarejestrować repozytorium zastępcze i zmienić powiązanie. Zmiana ścieżki sprawdza zgodność ID repozytorium.",
+    "permission_hint": "Domyślnie: administrator → Maintainer, członek → Developer, gość → Reporter. Uprawnienia zewnętrzne są zachowywane.",
+    "effective_access": "Efektywny dostęp do GitLab",
+    "adopt_existing": "Zarządzaj tym bezpośrednim uprawnieniem",
+    "identity_required": "Wymagane zweryfikowane konto GitLab",
+    "external_permissions": "Dostęp zewnętrzny lub dziedziczony"
   }
 }

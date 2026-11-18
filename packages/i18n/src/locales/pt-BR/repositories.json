@@ -57,6 +57,14 @@
     "prototype": "Protótipo Storybook",
     "bindings": "Vínculos obrigatórios de repositórios",
     "unbound": "Não configurado",
-    "binding_hint": "As operações usam apenas estes vínculos. Vínculos ausentes bloqueiam a execução; repositórios nunca são criados automaticamente."
+    "binding_hint": "As operações usam apenas estes vínculos. Vínculos ausentes bloqueiam a execução; repositórios nunca são criados automaticamente.",
+    "initialize": "Criar e vincular os repositórios ausentes",
+    "management_hint": "Novos projetos inicializam repositórios automaticamente. Uma nova tentativa retoma a mesma operação.",
+    "migration_hint": "Para migrar, registre o repositório substituto e altere o vínculo. Ao editar o caminho, o mesmo ID de repositório é verificado.",
+    "permission_hint": "Padrões: administrador → Maintainer, membro → Developer, convidado → Reporter. Permissões externas são preservadas.",
+    "effective_access": "Acesso efetivo ao GitLab",
+    "adopt_existing": "Gerenciar esta permissão direta",
+    "identity_required": "É necessária uma conta GitLab verificada",
+    "external_permissions": "Acesso externo ou herdado"
   }
 }

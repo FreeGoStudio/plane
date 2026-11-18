@@ -57,6 +57,14 @@
     "prototype": "Prototipe Storybook",
     "bindings": "Tautan repositori wajib",
     "unbound": "Belum dikonfigurasi",
-    "binding_hint": "Operasi hanya menggunakan tautan ini. Tautan yang tidak tersedia memblokir eksekusi; repositori tidak pernah dibuat secara otomatis."
+    "binding_hint": "Operasi hanya menggunakan tautan ini. Tautan yang tidak tersedia memblokir eksekusi; repositori tidak pernah dibuat secara otomatis.",
+    "initialize": "Buat dan tautkan repositori yang belum ada",
+    "management_hint": "Proyek baru menginisialisasi repositori secara otomatis. Percobaan ulang melanjutkan operasi yang sama.",
+    "migration_hint": "Untuk migrasi, daftarkan repositori pengganti dan ubah tautannya. Perubahan jalur memverifikasi ID repositori yang sama.",
+    "permission_hint": "Default: administrator → Maintainer, anggota → Developer, tamu → Reporter. Izin eksternal dipertahankan.",
+    "effective_access": "Akses GitLab efektif",
+    "adopt_existing": "Kelola izin langsung ini",
+    "identity_required": "Diperlukan akun GitLab terverifikasi",
+    "external_permissions": "Akses eksternal atau yang diwarisi"
   }
 }
