@@ -8,6 +8,7 @@ from django.conf import settings
 
 # Python imports
 import os
+import re
 from urllib.parse import urlparse
 
 
@@ -172,6 +173,16 @@ def get_safe_redirect_url(base_url: str, next_path: str = "", params: dict = {})
 
     # Add the next path to the parameters
     base_url = base_url.rstrip("/")
+
+    # OIDC resumes on a server endpoint, not a Next.js route. Only the fixed,
+    # session-bound ticket path may bypass the normal frontend continuation;
+    # failed logins keep their error parameters on the login page.
+    if (
+        not params
+        and re.fullmatch(r"/auth/singularity/oidc/authorize/\?login_resume=[A-Za-z0-9_-]{32}", validated_path)
+        and url_has_allowed_host_and_scheme(base_url + validated_path, allowed_hosts=get_allowed_hosts())
+    ):
+        return base_url + validated_path
 
     # Prepare the query parameters
     query_parts = []

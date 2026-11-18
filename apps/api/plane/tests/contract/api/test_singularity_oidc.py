@@ -325,3 +325,15 @@ def test_other_client_keeps_confirmation(oidc_world):
     response = client.get(BASE + "authorize/?" + urlencode(params))
     assert response.status_code == 200
     assert "允许登录" in response.content.decode()
+
+
+def test_native_login_uses_document_redirect_only_for_resume(settings):
+    from plane.utils.path_validator import get_safe_redirect_url
+
+    settings.WEB_URL = settings.APP_BASE_URL = "https://plane.company.test"
+    resume = BASE + "authorize/?login_resume=" + "a" * 32
+    assert get_safe_redirect_url(settings.WEB_URL, resume) == settings.WEB_URL + resume
+    failed = get_safe_redirect_url(settings.WEB_URL, resume, {"error_code": "bad_password"})
+    assert urlparse(failed).path == "/"
+    assert parse_qs(urlparse(failed).query)["next_path"] == [resume]
+    assert get_safe_redirect_url(settings.WEB_URL, "/workspace/").startswith(settings.WEB_URL + "/?next_path=")
