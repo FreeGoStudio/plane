@@ -222,6 +222,71 @@ test("old Plane grants explain required consent without suggesting repository lo
   assert.equal(result.authorization_url, undefined);
   f.vault.close();
 });
+test("bound repository reads return a safe authorization link and retry after connection", async () => {
+  const f = fixture();
+  let connected = false;
+  const send: Transport = async (url, method, headers, body) => {
+    if (url.pathname.includes("/ai-bound-repositories/"))
+      return connected
+        ? { status: 200, data: { content: "README", commit_sha: "a".repeat(40) } }
+        : {
+            status: 403,
+            data: {
+              error: "repository_authorization_required",
+              status: "authorization_required",
+              authorization_url: `https://plane.test/test/settings/projects/${id}/repositories/?repository=${decision}`,
+              message: "Connect in Plane, then retry",
+            },
+          };
+    return f.plane.send(url, method, headers, body);
+  };
+  const plane = new Plane("https://internal.test", "test", f.vault, send, "https://plane.test");
+  const args = { project_ref: "POS", role: "documentation", operation: "file", path: "README.md" };
+  const challenge = await invoke(plane, "bearer", "read_bound_project_repository", args);
+  assert.equal(challenge.status, "authorization_required");
+  assert.match(String(challenge.authorization_url), /https:\/\/plane.test\//);
+  connected = true;
+  assert.equal((await invoke(plane, "bearer", "read_bound_project_repository", args)).content, "README");
+  f.vault.close();
+});
+test("bound repository permission and network failures do not trigger login", async () => {
+  const f = fixture();
+  for (const error of ["upstream_access_denied", "upstream_unavailable", "upstream_rate_limited"]) {
+    const send: Transport = async (url, method, headers, body) =>
+      url.pathname.includes("/ai-bound-repositories/")
+        ? { status: 403, data: { error, secret: "never return" } }
+        : f.plane.send(url, method, headers, body);
+    const plane = new Plane("https://plane.test", "test", f.vault, send);
+    // Independent failures share the fixture but never authorize a different identity.
+    assert.deepEqual(
+      // eslint-disable-next-line no-await-in-loop
+      await invoke(plane, "bearer", "read_bound_project_repository", {
+        project_ref: "POS",
+        role: "documentation",
+        operation: "tree",
+      }),
+      { status: "read_failed", error }
+    );
+  }
+  f.vault.close();
+});
+test("bound repository grants explain required consent without suggesting repository login", async () => {
+  const f = fixture();
+  const send: Transport = async (url, method, headers, body) =>
+    url.pathname.includes("/ai-bound-repositories/")
+      ? { status: 403, data: { error: "repository_scope_required" } }
+      : f.plane.send(url, method, headers, body);
+  const result = await invoke(
+    new Plane("https://plane.test", "test", f.vault, send),
+    "bearer",
+    "resolve_project_repository",
+    { project_ref: "POS", role: "prototype" }
+  );
+  assert.equal(result.status, "plane_authorization_required");
+  assert.equal(result.required_scope, "repositories:read");
+  assert.equal(result.authorization_url, undefined);
+  f.vault.close();
+});
 test("prepare persists encrypted, retries across restart and binds connection", async () => {
   const f = fixture();
   const result = await invoke(f.plane, "test-bearer", "save_discussion_result", prepare);

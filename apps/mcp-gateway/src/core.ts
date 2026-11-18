@@ -130,7 +130,7 @@ export class Plane {
     this.vault.record(identity.connection_id, method, response.status);
     if (
       response.status === 403 &&
-      /\/ai-repositories\//.test(path) &&
+      /\/ai-(?:bound-)?repositories\//.test(path) &&
       z.object({ error: z.literal("repository_scope_required") }).safeParse(response.data).success
     ) {
       return {
@@ -140,7 +140,7 @@ export class Plane {
           "Reconnect your Plane MCP client and consent to repositories:read, then retry. This is separate from the repository hosting account connection.",
       };
     }
-    if (response.status >= 400 && /\/ai-repositories\//.test(path)) {
+    if (response.status >= 400 && /\/ai-(?:bound-)?repositories\//.test(path)) {
       const upstream = z
         .object({
           error: z.enum([
@@ -156,7 +156,7 @@ export class Plane {
         .safeParse(response.data);
       if (upstream.success) return { status: "read_failed", error: upstream.data.error };
     }
-    if (response.status === 403 && /\/ai-repositories\//.test(path)) {
+    if (response.status === 403 && /\/ai-(?:bound-)?repositories\//.test(path)) {
       const challenge = z
         .object({
           error: z.literal("repository_authorization_required"),
