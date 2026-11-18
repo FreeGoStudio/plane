@@ -234,3 +234,94 @@ def test_deactivation_cancels_pending_oidc_code_even_without_company_feature(oid
     )
     assert response.status_code == 400
     assert response.json()["error"] == "invalid_grant"
+
+
+@pytest.fixture
+def trusted_company(oidc_world, settings):
+    from plane.db.models import CompanyAccount
+
+    settings.SINGULARITY_COMPANY_ENABLED = True
+    settings.SINGULARITY_COMPANY_OIDC_CLIENT_ID = "company-gitlab"
+    user = oidc_world[0]
+    CompanyAccount.objects.create(
+        user=user, instance_url=settings.SINGULARITY_COMPANY_URL.rstrip("/"), status="linked", external_id=123
+    )
+    return oidc_world
+
+
+def test_company_auto_authorizes_and_preserves_state(trusted_company):
+    user, app, key = trusted_company
+    client, params = authorize(user)
+    response = client.get(BASE + "authorize/?" + urlencode(params))
+    assert response.status_code == 302
+    result = parse_qs(urlparse(response["Location"]).query)
+    assert result["state"] == [params["state"]]
+    response = client.post(
+        BASE + "token/",
+        {
+            "client_id": app.client_id,
+            "client_secret": "test-client-secret",
+            "grant_type": "authorization_code",
+            "code": result["code"][0],
+            "redirect_uri": REDIRECT,
+            "code_verifier": VERIFIER,
+        },
+    )
+    assert response.status_code == 200
+    claims = jwt.decode(
+        response.json()["id_token"],
+        key.public_key(),
+        algorithms=["RS256"],
+        audience=app.client_id,
+        options={"verify_iss": False},
+    )
+    assert claims["nonce"] == params["nonce"]
+    assert claims["sub"] == str(user.pk)
+
+
+def test_company_login_resumes_in_same_session_only(trusted_company):
+    user = trusted_company[0]
+    _, params = authorize(user)
+    path = BASE + "authorize/?" + urlencode(params)
+    client = Client()
+    response = client.get(path)
+    assert response.status_code == 302
+    resume = parse_qs(urlparse(response["Location"]).query)["next_path"][0]
+    from plane.utils.path_validator import validate_next_path
+
+    assert validate_next_path(resume) == resume
+    assert Client().get(resume).status_code == 400
+    client.force_login(user)
+    assert client.get(resume)["Location"] == path
+    assert client.get(resume).status_code == 400
+    assert "code=" in client.get(path)["Location"]
+
+
+@pytest.mark.parametrize(
+    "changes",
+    [
+        {"redirect_uri": "https://attacker.test/callback"},
+        {"client_id": "unknown"},
+        {"scope": "openid workitems:write"},
+        {"code_challenge_method": "plain"},
+        {"code_challenge": ""},
+        {"state": ""},
+        {"nonce": ""},
+        {"response_type": "token"},
+    ],
+)
+def test_company_auto_authorization_keeps_validation(trusted_company, changes):
+    from oauth2_provider.models import get_grant_model
+
+    client, params = authorize(trusted_company[0], **changes)
+    response = client.get(BASE + "authorize/?" + urlencode(params))
+    assert not get_grant_model().objects.exists()
+    assert "code=" not in response.get("Location", "")
+    assert not response.get("Location", "").startswith("https://attacker.test")
+
+
+def test_other_client_keeps_confirmation(oidc_world):
+    client, params = authorize(oidc_world[0])
+    response = client.get(BASE + "authorize/?" + urlencode(params))
+    assert response.status_code == 200
+    assert "允许登录" in response.content.decode()

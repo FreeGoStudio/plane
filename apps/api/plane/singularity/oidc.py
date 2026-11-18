@@ -7,12 +7,17 @@
 from functools import wraps
 import json
 import re
+import secrets
+import time
+from urllib.parse import urlencode
 
 from django.conf import settings
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from oauth2_provider.oauth2_validators import OAuth2Validator
 from oauth2_provider.views import AuthorizationView, ConnectDiscoveryInfoView
+from oauth2_provider.exceptions import OAuthToolkitError
+from oauth2_provider.models import get_application_model
 
 
 def eligible(user):
@@ -95,15 +100,49 @@ class PlaneAuthorizationView(AuthorizationView):
     template_name = "singularity/oidc_consent.html"
 
     def dispatch(self, request, *args, **kwargs):
+        # Keep the complete request server-side: native next_path rejects long or
+        # nested URLs. Tickets are short-lived, session-bound and single-use.
+        if request.method == "GET" and "login_resume" in request.GET:
+            tickets = request.session.get("company_oidc_login", {})
+            saved = tickets.pop(request.GET["login_resume"], None)
+            request.session["company_oidc_login"] = tickets
+            if not saved or saved["expires"] < time.time():
+                return JsonResponse({"error": "login_request_expired"}, status=400)
+            return HttpResponseRedirect(saved["path"])
+        params = request.POST if request.method == "POST" else request.GET
+        company = params.get("client_id") == settings.SINGULARITY_COMPANY_OIDC_CLIENT_ID
+        if company and request.method == "GET" and not request.user.is_authenticated:
+            try:
+                self.validate_authorization_request(request)
+            except OAuthToolkitError as error:
+                return self.error_response(error, application=None)
+            if "none" in request.GET.get("prompt", "").split():
+                return self.handle_no_permission()
+            tickets = {
+                k: v for k, v in request.session.get("company_oidc_login", {}).items() if v["expires"] > time.time()
+            }
+            tickets = dict(list(tickets.items())[-4:])
+            ticket = secrets.token_urlsafe(24)
+            tickets[ticket] = {"path": request.get_full_path(), "expires": time.time() + 600}
+            request.session["company_oidc_login"] = tickets
+            resume = request.path + "?" + urlencode({"login_resume": ticket})
+            return HttpResponseRedirect("/?" + urlencode({"next_path": resume}))
         if not eligible(request.user):
             return render(request, "singularity/login.html", {"return_url": request.get_full_path()}, status=401)
-        params = request.POST if request.method == "POST" else request.GET
         if not company_authorized(request.user, params.get("client_id")):
             from .company import request_account
 
             if settings.SINGULARITY_COMPANY_ENABLED:
                 request_account(request.user)
-            return render(request, "singularity/company_pending.html", status=409)
+            response = render(request, "singularity/company_pending.html", status=409)
+            if request.method == "GET" and settings.SINGULARITY_COMPANY_ENABLED:
+                from plane.db.models import CompanyAccount
+
+                if CompanyAccount.objects.filter(
+                    user=request.user, status__in=["pending", "processing", "retry"]
+                ).exists():
+                    response["Refresh"] = "3"
+            return response
         if (
             params.get("code_challenge_method") != "S256"
             or not re.fullmatch(r"[A-Za-z0-9_-]{43}", params.get("code_challenge", ""))
@@ -112,6 +151,20 @@ class PlaneAuthorizationView(AuthorizationView):
         ):
             return JsonResponse({"error": "invalid_request"}, status=400)
         return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """Only the configured company client receives automatic authorization."""
+        if request.GET.get("client_id") != settings.SINGULARITY_COMPANY_OIDC_CLIENT_ID:
+            return super().get(request, *args, **kwargs)
+        try:
+            scopes, credentials = self.validate_authorization_request(request)
+            application = get_application_model().objects.get(client_id=credentials["client_id"])
+            uri, _, _, _ = self.create_authorization_response(
+                request=request, scopes=" ".join(scopes), credentials=credentials, allow=True
+            )
+            return self.redirect(uri, application)
+        except OAuthToolkitError as error:
+            return self.error_response(error, application=None)
 
 
 class PlaneDiscoveryView(ConnectDiscoveryInfoView):
