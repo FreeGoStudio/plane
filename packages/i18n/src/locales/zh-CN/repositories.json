@@ -75,6 +75,15 @@
       "blocked": "仓库初始化未完成，请检查错误详情后重试。",
       "not_started": "尚未开始初始化仓库。",
       "status_unavailable": "暂时无法更新进度，后台操作可能仍在执行，请恢复连接后查看状态。"
-    }
+    },
+    "bound": "已绑定",
+    "registered": "其他仓库",
+    "personal_access": "我的访问",
+    "personal_not_connected": "未连接账号 · 不影响项目绑定",
+    "change_binding": "更换仓库",
+    "select_binding": "选择仓库",
+    "cancel_edit": "取消",
+    "connection_options": "其他连接方式",
+    "binding_saved": "仓库绑定已更新。"
   }
 }

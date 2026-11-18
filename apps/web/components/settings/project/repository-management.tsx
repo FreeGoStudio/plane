@@ -26,7 +26,7 @@ type Member = {
   revision: number;
 };
 
-const field = "rounded-md border border-subtle bg-surface-1 px-3 py-2 text-sm text-primary";
+const field = "rounded-md border border-subtle bg-surface-1 px-3 py-2 text-body-sm-regular text-primary";
 
 function useStatusLabel() {
   const { t } = useTranslation();
@@ -47,12 +47,14 @@ export function RepositoryInitialization({
   write,
   busy,
   onReady,
+  allBound = false,
 }: {
   base: string;
   canManage: boolean;
   write: () => Promise<{ status: string }>;
   busy: boolean;
   onReady: () => void;
+  allBound?: boolean;
 }) {
   const { t } = useTranslation();
   const submittingRef = useRef(false);
@@ -89,20 +91,19 @@ export function RepositoryInitialization({
   if (!data) return error ? <p role="alert">{t("repository_ui.load_failed")}</p> : null;
   if (!data.enabled) return null;
   return (
-    <section className="mt-6 rounded-lg border border-subtle p-5">
-      <p>{t("repository_ui.management_hint")}</p>
-      <p className="my-3" role="status" aria-live="polite">
+    <section className="mt-5 rounded-lg bg-surface-2 px-4 py-3 text-body-sm-regular">
+      <p className="my-2" role="status" aria-live="polite">
         {t(`repository_ui.initialization.${progress}`)}
       </p>
       {error && <p role="alert">{t("repository_ui.initialization.status_unavailable")}</p>}
       {submissionFailed && <p role="alert">{t("repository_ui.failed")}</p>}
       {data.error_code && (
-        <details className="text-sm mb-3">
+        <details className="mb-3 text-body-sm-regular">
           <summary>{t("error")}</summary>
           <code>{data.error_code}</code>
         </details>
       )}
-      {canManage && (
+      {canManage && (!allBound || data.status !== "ready") && (
         <Button
           label={t("repository_ui.initialize")}
           size="md"

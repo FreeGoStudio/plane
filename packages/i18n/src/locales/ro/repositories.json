@@ -75,6 +75,15 @@
       "blocked": "Repository initialization could not finish. Check the error details and retry.",
       "not_started": "Repository initialization has not started.",
       "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status."
-    }
+    },
+    "bound": "Bound",
+    "registered": "Additional repository",
+    "personal_access": "My access",
+    "personal_not_connected": "Not connected · project binding is unaffected",
+    "change_binding": "Change repository",
+    "select_binding": "Select repository",
+    "cancel_edit": "Cancel",
+    "connection_options": "Other connection methods",
+    "binding_saved": "Repository binding updated."
   }
 }

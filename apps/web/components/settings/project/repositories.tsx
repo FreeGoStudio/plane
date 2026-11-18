@@ -38,12 +38,94 @@ function Button({
   );
 }
 
-const field = "rounded-md border border-subtle bg-surface-1 px-3 py-2 text-sm text-primary";
+const field = "rounded-md border border-subtle bg-surface-1 px-3 py-2 text-body-sm-regular text-primary";
 type RepositoryBindings = {
   revision: number;
   documentation_repository_id: string | null;
   prototype_repository_id: string | null;
 };
+type BindingRole = "documentation" | "prototype";
+const bindingRoles: BindingRole[] = ["documentation", "prototype"];
+
+/** Keeps bindings read-only until an administrator explicitly chooses to edit a single role. */
+function RepositoryBindingEditor({
+  role,
+  bindings,
+  rows,
+  busy,
+  action,
+  save,
+}: {
+  role: BindingRole;
+  bindings: RepositoryBindings;
+  rows: Repository[];
+  busy: boolean;
+  action: (fn: () => Promise<void>) => Promise<void>;
+  save: (role: BindingRole, repositoryId: string) => Promise<void>;
+}) {
+  const { t } = useTranslation();
+  const [editing, setEditing] = useState(false);
+  const current = bindings[`${role}_repository_id`] || "";
+  const [selected, setSelected] = useState(current);
+  if (!editing)
+    return (
+      <Button
+        disabled={busy}
+        onClick={() => {
+          setSelected(current);
+          setEditing(true);
+        }}
+      >
+        {t(current ? "repository_ui.change_binding" : "repository_ui.select_binding")}
+      </Button>
+    );
+  return (
+    <form
+      className="mt-3 w-full rounded-md bg-surface-2 p-3"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void action(async () => {
+          await save(role, selected);
+          setEditing(false);
+        });
+      }}
+    >
+      <label className="flex min-w-0 flex-col gap-2 text-body-sm-regular">
+        {t(`repository_ui.${role}`)}
+        <select
+          name={role}
+          className={`${field} w-full min-w-0`}
+          value={selected}
+          onChange={(e) => setSelected(e.target.value)}
+          disabled={busy}
+          required
+        >
+          <option value="" disabled>
+            {t("repository_ui.unbound")}
+          </option>
+          {rows
+            .filter((row) => row.purpose === role)
+            .map((row) => (
+              <option key={row.id} value={row.id} disabled={!row.enabled}>
+                {row.instance_name} / {row.path}
+                {!row.enabled ? ` (${t("repository_ui.disabled")})` : ""}
+              </option>
+            ))}
+        </select>
+      </label>
+      <p className="my-3 text-body-xs-regular text-tertiary">{t("repository_ui.migration_hint")}</p>
+      <div className="flex justify-end gap-2">
+        <Button disabled={busy} onClick={() => setEditing(false)}>
+          {t("repository_ui.cancel_edit")}
+        </Button>
+        <Button type="submit" disabled={busy || !selected || selected === current}>
+          {t("repository_ui.save")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
 /** Renders repository configuration and refreshes bindings when background initialization completes. */
 export function ProjectRepositoriesSettings({
   workspaceSlug,
@@ -113,6 +195,36 @@ export function ProjectRepositoriesSettings({
     const value = await api.read<RepositoryContent>(base + `repositories/${repository.id}/${operation}/?${query}`);
     setPreview({ repository, value });
   }
+  /** Updates one binding with its observed revision and preserves the other dedicated role. */
+  function bindingEditor(role: BindingRole) {
+    if (!bindings || !rows) return null;
+    return (
+      <RepositoryBindingEditor
+        key={`${role}:${bindings.revision}`}
+        role={role}
+        bindings={bindings}
+        rows={rows}
+        busy={busy}
+        action={action}
+        save={async (targetRole, repositoryId) => {
+          try {
+            await write(
+              "repository-bindings/",
+              { expected_revision: bindings.revision, [`${targetRole}_repository_id`]: repositoryId },
+              "PATCH"
+            );
+            setStatus(text("binding_saved"));
+          } finally {
+            await refreshBindings();
+          }
+        }}
+      />
+    );
+  }
+  const orderedRows = [
+    ...bindingRoles.flatMap((role) => rows?.filter((row) => row.id === bindings?.[`${role}_repository_id`]) ?? []),
+    ...(rows?.filter((row) => !bindingRoles.some((role) => row.id === bindings?.[`${role}_repository_id`])) ?? []),
+  ];
   const result = status || (params.get("connection") ? feedback(params.get("connection")!) : "");
   return (
     <SettingsContentWrapper>
@@ -122,6 +234,9 @@ export function ProjectRepositoriesSettings({
           base={base}
           canManage={info.can_manage}
           busy={busy}
+          allBound={bindingRoles.every((role) =>
+            rows?.some((row) => row.enabled && row.id === bindings?.[`${role}_repository_id`])
+          )}
           write={async () => {
             setStatus("");
             return api.write<{ status: string }>(base + "repository-management/", "POST", info.csrf_token, {});
@@ -133,76 +248,35 @@ export function ProjectRepositoriesSettings({
         />
       )}
       {bindingError && <p role="alert">{text("load_failed")}</p>}
-      {bindings && rows && info && (
-        <section className="mt-6 rounded-lg border border-subtle p-5">
-          <h3 className="font-medium">{text("bindings")}</h3>
-          <p className="text-sm my-3 text-secondary">{text("binding_hint")}</p>
-          <p className="text-sm my-3 text-secondary">{text("migration_hint")}</p>
-          <form
-            key={bindings.revision}
-            className="flex flex-col gap-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const form = new FormData(e.currentTarget);
-              const values = Object.fromEntries(
-                ["documentation", "prototype"].flatMap((role) => {
-                  const value = form.get(role);
-                  return value ? [[`${role}_repository_id`, value]] : [];
-                })
-              );
-              void action(async () => {
-                try {
-                  await write("repository-bindings/", { expected_revision: bindings.revision, ...values }, "PATCH");
-                } finally {
-                  await refreshBindings();
-                }
-              });
-            }}
-          >
-            {(["documentation", "prototype"] as const).map((role) => (
-              <label key={role} className="text-sm flex flex-col gap-2">
-                {text(role)}
-                <select
-                  name={role}
-                  aria-label={text(role)}
-                  className={field}
-                  disabled={busy || !info.can_manage}
-                  defaultValue={bindings[`${role}_repository_id`] || ""}
-                >
-                  <option value="" disabled>
-                    {text("unbound")}
-                  </option>
-                  {rows
-                    .filter((r) => r.purpose === role)
-                    .map((r) => (
-                      <option key={r.id} value={r.id} disabled={!r.enabled}>
-                        {r.instance_name} / {r.path}
-                        {!r.enabled ? ` (${text("disabled")})` : ""}
-                      </option>
-                    ))}
-                </select>
-              </label>
-            ))}
-            {info.can_manage && (
-              <Button type="submit" disabled={busy}>
-                {text("save")}
-              </Button>
-            )}
-          </form>
-        </section>
+      {result && (
+        <p className="my-4 text-body-sm-regular text-secondary" role="status" aria-live="polite">
+          {result}
+        </p>
       )}
-      <p className="text-sm my-4 text-secondary" role="status" aria-live="polite">
-        {result}
-      </p>
       {error ? (
         <p role="alert">{text("load_failed")}</p>
       ) : !rows || !info ? (
         <p>{text("loading")}</p>
       ) : (
         <>
-          {!rows.length && <p className="py-6 text-secondary">{text("empty")}</p>}
-          <div className="space-y-5">
-            {rows.map((row) => {
+          <div className="mt-5 space-y-4">
+            {bindings &&
+              bindingRoles
+                .filter((role) => !rows.some((row) => row.id === bindings[`${role}_repository_id`]))
+                .map((role) => (
+                  <section key={role} className="rounded-lg border border-subtle p-5">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <h3 className="text-h6-medium text-primary">{text(role)}</h3>
+                      <span className="rounded bg-surface-2 px-2 py-1 text-body-xs-regular text-secondary">
+                        {text("unbound")}
+                      </span>
+                    </div>
+                    <p className="my-3 text-body-sm-regular text-secondary">{text("binding_hint")}</p>
+                    {info.can_manage && bindingEditor(role)}
+                  </section>
+                ))}
+            {orderedRows.map((row) => {
+              const boundRole = bindingRoles.find((role) => bindings?.[`${role}_repository_id`] === row.id);
               const credential = info.credentials.find((c) => c.id === row.credential_id);
               const host = info.hosts.find((h) => h.id === row.instance_id);
               return (
@@ -211,21 +285,32 @@ export function ProjectRepositoriesSettings({
                   id={row.id}
                   className={`rounded-lg border p-5 ${params.get("repository") === row.id ? "border-accent-strong" : "border-subtle"}`}
                 >
-                  <h4 className="font-medium break-words text-primary">
-                    {row.instance_name} / {row.path}
-                  </h4>
-                  <p className="text-sm my-2 break-all text-secondary">
-                    {row.enabled
-                      ? credential
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-h6-medium text-primary">{text(boundRole || row.purpose)}</h3>
+                      <p className="mt-1 text-body-xs-regular text-tertiary">{row.instance_name}</p>
+                      <p className="mt-1 truncate text-body-sm-regular text-secondary" title={row.path}>
+                        {row.path}
+                      </p>
+                    </div>
+                    <span className="shrink-0 rounded bg-surface-2 px-2 py-1 text-body-xs-regular text-secondary">
+                      {text(!row.enabled ? "disabled" : boundRole ? "bound" : "registered")}
+                    </span>
+                  </div>
+                  {boundRole && info.can_manage && <div className="mt-3">{bindingEditor(boundRole)}</div>}
+                  <div className="mt-4 border-t border-subtle pt-4">
+                    <p className="text-body-xs-regular font-medium text-tertiary">{text("personal_access")}</p>
+                    <p className="mt-1 text-body-sm-regular break-words text-secondary">
+                      {credential
                         ? `${text("account")}: ${credential.external_actor_label || credential.label}${credential.expires_at ? ` · ${text("expires")}: ${new Date(credential.expires_at).toLocaleString()}` : ""}`
                         : row.anonymous
                           ? text("anonymous")
-                          : text("not_connected")
-                      : text("disabled")}
-                  </p>
+                          : text("personal_not_connected")}
+                    </p>
+                  </div>
                   {row.enabled && (
                     <>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="mt-3 flex flex-wrap gap-2">
                         <Button
                           disabled={busy || !host?.oauth_available}
                           onClick={() =>
@@ -256,13 +341,13 @@ export function ProjectRepositoriesSettings({
                           </Button>
                         )}
                       </div>
-                      <p className="text-xs my-2 text-tertiary">
-                        {host?.oauth_available
-                          ? text(row.provider === "github" ? "github_scope" : "scope")
-                          : text("oauth_unavailable")}
-                      </p>
-                      <details className="text-sm mt-4">
-                        <summary className="cursor-pointer">{text("manual")}</summary>
+                      <details className="mt-4 text-body-sm-regular">
+                        <summary className="cursor-pointer text-secondary">{text("connection_options")}</summary>
+                        <p className="my-3 text-body-xs-regular text-tertiary">
+                          {host?.oauth_available
+                            ? text(row.provider === "github" ? "github_scope" : "scope")
+                            : text("oauth_unavailable")}
+                        </p>
                         <form
                           className="my-3 flex flex-wrap gap-2"
                           onSubmit={(e) => {
@@ -334,7 +419,7 @@ export function ProjectRepositoriesSettings({
                     </>
                   )}
                   {info.can_manage && (
-                    <details className="text-sm mt-4">
+                    <details className="mt-4 border-t border-subtle pt-3 text-body-sm-regular">
                       <summary className="cursor-pointer">{text("manage")}</summary>
                       <form
                         className="my-3 flex flex-wrap gap-2"
@@ -380,16 +465,16 @@ export function ProjectRepositoriesSettings({
                           {text(row.enabled ? "disable" : "enable")}
                         </Button>
                       </form>
+                      {row.purpose !== "reference" && (
+                        <RepositoryMemberPermissions
+                          base={base}
+                          repositoryId={row.id}
+                          csrf={info.csrf_token}
+                          busy={busy}
+                          action={action}
+                        />
+                      )}
                     </details>
-                  )}
-                  {info.can_manage && row.purpose !== "reference" && (
-                    <RepositoryMemberPermissions
-                      base={base}
-                      repositoryId={row.id}
-                      csrf={info.csrf_token}
-                      busy={busy}
-                      action={action}
-                    />
                   )}
                 </section>
               );
@@ -451,7 +536,7 @@ export function ProjectRepositoriesSettings({
           <h4 className="font-medium">
             {preview.repository.path} / {preview.value.path}
           </h4>
-          <p className="text-xs my-2 break-all text-tertiary">{preview.value.commit_sha}</p>
+          <p className="my-2 text-body-xs-regular break-all text-tertiary">{preview.value.commit_sha}</p>
           <a className="text-accent-primary" href={preview.value.source_url} target="_blank" rel="noopener noreferrer">
             {text("source")}
           </a>
@@ -514,7 +599,7 @@ export function ProjectRepositoriesSettings({
             </Button>
           )}
           {preview.value.content !== undefined && (
-            <pre className="text-sm mt-4 max-h-96 overflow-auto rounded bg-surface-2 p-4 break-words whitespace-pre-wrap">
+            <pre className="mt-4 max-h-96 overflow-auto rounded bg-surface-2 p-4 text-body-sm-regular break-words whitespace-pre-wrap">
               {preview.value.content}
             </pre>
           )}
