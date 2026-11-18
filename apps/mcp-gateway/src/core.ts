@@ -263,6 +263,20 @@ export const inputs = {
   update_work_item: z.object({ ...nativeProject, item_id: z.uuid(), fields, ...retry, ...version }).strict(),
   delete_work_item: z.object({ ...nativeProject, item_id: z.uuid(), ...retry, ...version }).strict(),
   list_project_repositories: z.object({ project_ref: reference, workspace: nullableString }).strict(),
+  resolve_project_repository: z
+    .object({ project_ref: reference, workspace: nullableString, role: z.enum(["documentation", "prototype"]) })
+    .strict(),
+  read_bound_project_repository: z
+    .object({
+      project_ref: reference,
+      workspace: nullableString,
+      role: z.enum(["documentation", "prototype"]),
+      operation: z.enum(["tree", "file"]),
+      path: z.string().max(1024).default(""),
+      ref: z.string().max(255).default(""),
+      page: z.number().int().min(1).max(10000).default(1),
+    })
+    .strict(),
   read_project_repository: z
     .object({
       project_ref: reference,
@@ -386,6 +400,23 @@ export async function invoke(
     const a = inputs.list_project_repositories.parse(args);
     const r = await plane.resolve(bearer, a.project_ref, a.workspace);
     return r.ambiguity ?? plane.request(bearer, "GET", projectPath(r.project!) + "ai-repositories/");
+  }
+  if (name === "resolve_project_repository" || name === "read_bound_project_repository") {
+    const a =
+      name === "resolve_project_repository"
+        ? { ...inputs.resolve_project_repository.parse(args), operation: null, path: "", ref: "", page: 1 }
+        : inputs.read_bound_project_repository.parse(args);
+    const r = await plane.resolve(bearer, a.project_ref, a.workspace);
+    return (
+      r.ambiguity ??
+      plane.request(
+        bearer,
+        "GET",
+        projectPath(r.project!) + `ai-bound-repositories/${a.role}/` + (a.operation ? `${a.operation}/` : ""),
+        undefined,
+        a.operation ? { path: a.path, ref: a.ref, page: a.page } : {}
+      )
+    );
   }
   if (name === "read_project_repository") {
     const a = inputs.read_project_repository.parse(args);

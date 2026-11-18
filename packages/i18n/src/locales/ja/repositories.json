@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "プロジェクト文書",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Storybook プロトタイプ",
+    "bindings": "必須のリポジトリ設定",
+    "unbound": "未設定",
+    "binding_hint": "操作にはこの設定のみを使用します。未設定の場合は実行を停止し、リポジトリを自動作成しません。"
   }
 }

@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "Project documentation",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Storybook prototype",
+    "bindings": "Required repository bindings",
+    "unbound": "Not configured",
+    "binding_hint": "Operations use these bindings only. Missing bindings block execution; repositories are never created automatically."
   }
 }

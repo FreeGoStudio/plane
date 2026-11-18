@@ -28,7 +28,7 @@
     "purpose": "用途",
     "development": "开发",
     "reference": "参考",
-    "documentation": "文档",
+    "documentation": "项目文档仓库",
     "save": "保存",
     "disable": "停用仓库",
     "enable": "启用仓库",
@@ -53,6 +53,10 @@
       "binary_file": "二进制文件无法预览。",
       "lfs_file": "请在托管平台查看此 LFS 文件。",
       "configuration_conflict": "仓库已配置或配置发生冲突。"
-    }
+    },
+    "prototype": "Storybook 原型仓库",
+    "bindings": "专用仓库绑定",
+    "unbound": "尚未配置",
+    "binding_hint": "相关操作只能使用这里绑定的仓库。未绑定时停止执行，不会自动创建仓库。"
   }
 }

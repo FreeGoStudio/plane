@@ -38,6 +38,11 @@ function Button({
 }
 
 const field = "rounded-md border border-subtle bg-surface-1 px-3 py-2 text-sm text-primary";
+type RepositoryBindings = {
+  revision: number;
+  documentation_repository_id: string | null;
+  prototype_repository_id: string | null;
+};
 export function ProjectRepositoriesSettings({
   workspaceSlug,
   projectId,
@@ -56,11 +61,24 @@ export function ProjectRepositoriesSettings({
   const { data: info, mutate: refreshInfo } = useSWR<ConnectionInfo>(base + "repository-connections/", (url: string) =>
     api.read<ConnectionInfo>(url)
   );
+  const {
+    data: bindings,
+    error: bindingError,
+    mutate: refreshBindings,
+  } = useSWR<RepositoryBindings>(base + "repository-bindings/", (url: string) => api.read<RepositoryBindings>(url));
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [preview, setPreview] = useState<{ repository: Repository; value: RepositoryContent } | null>(null);
   const text = (key: string) => t(`repository_ui.${key}`);
   const feedback = (code: string) => {
+    if (
+      [
+        "repository_binding_revision_conflict",
+        "invalid_repository_binding",
+        "bound_repository_purpose_locked",
+      ].includes(code)
+    )
+      return text("results.configuration_conflict");
     const key = `repository_ui.results.${code}`;
     const translated = t(key);
     return translated === key ? text("failed") : translated;
@@ -79,7 +97,7 @@ export function ProjectRepositoriesSettings({
   async function write(path: string, data?: unknown, method: "POST" | "DELETE" | "PATCH" = "POST") {
     if (!info) return;
     await api.write(base + path, method, info.csrf_token, data);
-    await Promise.all([mutate(), refreshInfo()]);
+    await Promise.all([mutate(), refreshInfo(), refreshBindings()]);
     setStatus(text("saved"));
   }
   async function browse(
@@ -97,6 +115,64 @@ export function ProjectRepositoriesSettings({
   return (
     <SettingsContentWrapper>
       <SettingsHeading title={text("title")} description={text("description")} />
+      {bindingError && <p role="alert">{text("load_failed")}</p>}
+      {bindings && rows && info && (
+        <section className="mt-6 rounded-lg border border-subtle p-5">
+          <h3 className="font-medium">{text("bindings")}</h3>
+          <p className="text-sm my-3 text-secondary">{text("binding_hint")}</p>
+          <form
+            key={bindings.revision}
+            className="flex flex-col gap-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = new FormData(e.currentTarget);
+              const values = Object.fromEntries(
+                ["documentation", "prototype"].flatMap((role) => {
+                  const value = form.get(role);
+                  return value ? [[`${role}_repository_id`, value]] : [];
+                })
+              );
+              void action(async () => {
+                try {
+                  await write("repository-bindings/", { expected_revision: bindings.revision, ...values }, "PATCH");
+                } finally {
+                  await refreshBindings();
+                }
+              });
+            }}
+          >
+            {(["documentation", "prototype"] as const).map((role) => (
+              <label key={role} className="text-sm flex flex-col gap-2">
+                {text(role)}
+                <select
+                  name={role}
+                  aria-label={text(role)}
+                  className={field}
+                  disabled={busy || !info.can_manage}
+                  defaultValue={bindings[`${role}_repository_id`] || ""}
+                >
+                  <option value="" disabled>
+                    {text("unbound")}
+                  </option>
+                  {rows
+                    .filter((r) => r.purpose === role)
+                    .map((r) => (
+                      <option key={r.id} value={r.id} disabled={!r.enabled}>
+                        {r.instance_name} / {r.path}
+                        {!r.enabled ? ` (${text("disabled")})` : ""}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            ))}
+            {info.can_manage && (
+              <Button type="submit" disabled={busy}>
+                {text("save")}
+              </Button>
+            )}
+          </form>
+        </section>
+      )}
       <p className="text-sm my-4 text-secondary" role="status" aria-live="polite">
         {result}
       </p>
@@ -263,7 +339,7 @@ export function ProjectRepositoriesSettings({
                           defaultValue={row.purpose}
                           aria-label={text("purpose")}
                         >
-                          {["development", "reference", "documentation"].map((p) => (
+                          {["development", "reference", "documentation", "prototype"].map((p) => (
                             <option key={p} value={p}>
                               {text(p)}
                             </option>
@@ -316,7 +392,7 @@ export function ProjectRepositoriesSettings({
                 </select>
                 <Input size="md" name="path" required placeholder={text("path")} aria-label={text("path")} />
                 <select className={field} name="purpose" aria-label={text("purpose")}>
-                  {["development", "reference", "documentation"].map((p) => (
+                  {["development", "reference", "documentation", "prototype"].map((p) => (
                     <option key={p} value={p}>
                       {text(p)}
                     </option>

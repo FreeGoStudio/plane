@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "프로젝트 문서",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Storybook 프로토타입",
+    "bindings": "필수 저장소 연결",
+    "unbound": "설정되지 않음",
+    "binding_hint": "작업은 이 연결만 사용합니다. 연결이 없으면 실행이 차단되며 저장소가 자동으로 생성되지 않습니다."
   }
 }

@@ -9,6 +9,7 @@ from .company_views import company_account
 from .repository_views import repository_settings
 from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectRepositories, RepositoryAccess
 from .repository_api import ProjectRepositoryConnections, DelegatedRepositoryRead
+from .repository_api import ProjectRepositoryBindings, BoundRepositoryRead, DelegatedBoundRepositoryRead
 from .repository_oauth import callback as repository_callback
 
 auth_patterns = [
@@ -30,6 +31,11 @@ urlpatterns = [
     path(base + "repository-connections/", ProjectRepositoryConnections.as_view()),
     path(base + "repositories/<uuid:pk>/connection/", ProjectRepositoryConnections.as_view()),
     path(base + "ai-repositories/", DelegatedRepositoryRead.as_view()),
+    path(base + "repository-bindings/", ProjectRepositoryBindings.as_view()),
+    path(base + "bound-repositories/<str:role>/", BoundRepositoryRead.as_view()),
+    path(base + "bound-repositories/<str:role>/<str:operation>/", BoundRepositoryRead.as_view()),
+    path(base + "ai-bound-repositories/<str:role>/", DelegatedBoundRepositoryRead.as_view()),
+    path(base + "ai-bound-repositories/<str:role>/<str:operation>/", DelegatedBoundRepositoryRead.as_view()),
     path(base + "ai-repositories/<uuid:pk>/tree/", DelegatedRepositoryRead.as_view(), {"operation": "tree"}),
     path(base + "ai-repositories/<uuid:pk>/file/", DelegatedRepositoryRead.as_view(), {"operation": "file"}),
     path("repository-hosts/", RepositoryInstances.as_view()),

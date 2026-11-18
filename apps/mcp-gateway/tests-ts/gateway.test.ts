@@ -51,7 +51,7 @@ const prepare = {
   workspace: "test",
 };
 test("native and repository tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 19);
+  assert.equal(tools.length, 21);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
@@ -230,7 +230,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 19);
+    assert.equal((await listed.json()).result.tools.length, 21);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;
@@ -368,5 +368,25 @@ test("WBS tools delegate commands and require explicit human approval", async ()
     decision: "approve",
   });
   assert.equal(JSON.parse(f.calls.at(-1)!.body!).decision, "approve");
+  f.vault.close();
+});
+
+test("bound repository tools resolve roles without accepting arbitrary repository targets", async () => {
+  const f = fixture();
+  const base = { project_ref: "POS", workspace: "test", role: "documentation" };
+  await invoke(f.plane, "bearer", "resolve_project_repository", base);
+  assert.match(f.calls.at(-1)!.url.pathname, /ai-bound-repositories\/documentation\/$/);
+  await invoke(f.plane, "bearer", "read_bound_project_repository", {
+    ...base,
+    operation: "file",
+    path: "requirements/a.md",
+    ref: "a".repeat(40),
+  });
+  assert.match(f.calls.at(-1)!.url.pathname, /ai-bound-repositories\/documentation\/file\/$/);
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("ref"), "a".repeat(40));
+  await assert.rejects(
+    invoke(f.plane, "bearer", "read_bound_project_repository", { ...base, operation: "file", repository_id: id })
+  );
+  await assert.rejects(invoke(f.plane, "bearer", "resolve_project_repository", { ...base, role: "other" }));
   f.vault.close();
 });

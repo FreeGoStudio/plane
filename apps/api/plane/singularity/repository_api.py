@@ -6,7 +6,7 @@
 
 from collections.abc import Mapping
 from django.conf import settings
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, transaction, models
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -25,6 +25,9 @@ from plane.db.models import (
     RepositorySelection,
     RepositoryAccessAudit,
     ProjectMember,
+    Project,
+    ProjectRepositoryBinding,
+    ProjectRepositoryBindingRevision,
 )
 from plane.license.models import InstanceAdmin
 from .api import visible_projects, PersonalThrottle, WriteThrottle, DelegatedAuthentication
@@ -70,12 +73,14 @@ class AccessInput(StrictSerializer):
 class RepositoryInput(AccessInput):
     instance_id = serializers.UUIDField()
     path = serializers.CharField(max_length=512)
-    purpose = serializers.ChoiceField(choices=["development", "reference", "documentation"])
+    purpose = serializers.ChoiceField(choices=["development", "reference", "documentation", "prototype"])
     default_branch = serializers.CharField(max_length=255, required=False, allow_blank=True)
 
 
 class RepositoryUpdate(StrictSerializer):
-    purpose = serializers.ChoiceField(choices=["development", "reference", "documentation"], required=False)
+    purpose = serializers.ChoiceField(
+        choices=["development", "reference", "documentation", "prototype"], required=False
+    )
     default_branch = serializers.CharField(max_length=255, required=False, allow_blank=True)
     enabled = serializers.BooleanField(required=False)
 
@@ -119,12 +124,13 @@ class RepositoryAPI(APIView):
     throttle_classes = [PersonalThrottle, WriteThrottle]
     repository = None
     credential = None
+    allow_bot_read = False
 
     def initial(self, request, *args, **kwargs):
         if not settings.SINGULARITY_REPOSITORIES_ENABLED:
             raise Http404
         super().initial(request, *args, **kwargs)
-        if not request.user.is_active or request.user.is_bot:
+        if not request.user.is_active or (request.user.is_bot and not self.allow_bot_read):
             raise PermissionDenied("Active human account required")
 
     def handle_exception(self, error):
@@ -274,17 +280,70 @@ class ProjectRepositories(RepositoryAPI):
         self.repository = row
         return Response({"id": str(row.pk), **metadata}, status=201)
 
+    @transaction.atomic
     def patch(self, request, slug, project_id, pk=None):
         if pk is None:
             raise MethodNotAllowed("PATCH")
         project = self.project(request, slug, project_id, admin=True)
+        Project.objects.select_for_update().get(pk=project.pk)
         row = get_object_or_404(ProjectRepository, project=project, pk=pk)
         data = validated(RepositoryUpdate, request.data)
+        if (
+            data.get("purpose", row.purpose) != row.purpose
+            and ProjectRepositoryBinding.objects.filter(
+                models.Q(documentation_repository=row) | models.Q(prototype_repository=row)
+            ).exists()
+        ):
+            raise RepositoryError("bound_repository_purpose_locked", 409)
         for field, value in data.items():
             setattr(row, field, value)
         row.save()
         self.repository = row
         return Response({"id": str(row.pk), "enabled": row.enabled})
+
+
+class BindingInput(StrictSerializer):
+    expected_revision = serializers.IntegerField(min_value=0)
+    documentation_repository_id = serializers.UUIDField(required=False)
+    prototype_repository_id = serializers.UUIDField(required=False)
+
+
+class ProjectRepositoryBindings(RepositoryAPI):
+    def get(self, request, slug, project_id):
+        from .repository_bindings import binding_data
+
+        project = self.project(request, slug, project_id)
+        binding = ProjectRepositoryBinding.objects.filter(project=project).first()
+        return Response(binding_data(binding))
+
+    @transaction.atomic
+    def patch(self, request, slug, project_id):
+        from .repository_bindings import binding_data, ROLES
+
+        project = self.project(request, slug, project_id, admin=True)
+        data = validated(BindingInput, request.data)
+        # Serialize first configuration as well as concurrent replacements.
+        Project.objects.select_for_update().get(pk=project.pk)
+        binding, _ = ProjectRepositoryBinding.objects.get_or_create(project=project)
+        if binding.revision != data["expected_revision"]:
+            raise RepositoryError("repository_binding_revision_conflict", 409)
+        changed = False
+        for role in ROLES:
+            field = role + "_repository_id"
+            if field not in data:
+                continue
+            row = get_object_or_404(ProjectRepository, pk=data[field], project=project)
+            if row.purpose != role or not row.enabled or not row.instance.enabled:
+                raise RepositoryError("invalid_repository_binding", 400)
+            changed |= getattr(binding, field) != row.pk
+            setattr(binding, role + "_repository", row)
+        if changed:
+            binding.revision += 1
+            binding.save()
+            ProjectRepositoryBindingRevision.objects.create(
+                project=project, revision=binding.revision, snapshot=binding_data(binding), changed_by=request.user
+            )
+        return Response(binding_data(binding))
 
 
 class RepositoryAccess(RepositoryAPI):
@@ -435,3 +494,32 @@ class DelegatedRepositoryRead(RepositoryAccess):
             response = ProjectRepositories.get(self, request, slug, project_id)
             return Response({"results": response.data})
         return super().get(request, slug, project_id, pk, operation)
+
+    def row(self, request, slug, project_id, pk):
+        from .repository_bindings import resolve_repository, ROLES
+
+        row = super().row(request, slug, project_id, pk)
+        if row.purpose in ROLES:
+            bound, _ = resolve_repository(row.project, row.purpose)
+            if bound.pk != row.pk:
+                raise RepositoryError("repository_not_project_binding", 409)
+        return row
+
+
+class BoundRepositoryRead(RepositoryAccess):
+    def get(self, request, slug, project_id, role, operation=None):
+        from .repository_bindings import resolve_repository, repository_identity
+
+        project = self.project(request, slug, project_id)
+        row, revision = resolve_repository(project, role)
+        self.repository = row
+        if operation is None:
+            return Response({**repository_identity(row), "binding_revision": revision})
+        return super().get(request, slug, project_id, row.pk, operation)
+
+
+class DelegatedBoundRepositoryRead(BoundRepositoryRead, DelegatedRepositoryRead):
+    authentication_classes = [DelegatedAuthentication]
+    http_method_names = ["get", "head", "options"]
+    # Execution PATs may resolve project identity; configuration stays human-only.
+    allow_bot_read = True

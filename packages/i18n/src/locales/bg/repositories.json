@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "Документация на проекта",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Прототип в Storybook",
+    "bindings": "Задължителни връзки с хранилища",
+    "unbound": "Не е конфигурирано",
+    "binding_hint": "Операциите използват само тези връзки. Липсващите връзки блокират изпълнението; хранилища никога не се създават автоматично."
   }
 }

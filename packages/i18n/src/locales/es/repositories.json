@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "Documentación del proyecto",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Prototipo de Storybook",
+    "bindings": "Vinculaciones de repositorios obligatorias",
+    "unbound": "Sin configurar",
+    "binding_hint": "Las operaciones solo usan estas vinculaciones. Si faltan, se bloquea la ejecución; nunca se crean repositorios automáticamente."
   }
 }

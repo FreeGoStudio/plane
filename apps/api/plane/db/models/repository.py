@@ -38,7 +38,12 @@ class ProjectRepository(models.Model):
     path = models.CharField(max_length=512)
     purpose = models.CharField(
         max_length=16,
-        choices=[("development", "Development"), ("reference", "Reference"), ("documentation", "Documentation")],
+        choices=[
+            ("development", "Development"),
+            ("reference", "Reference"),
+            ("documentation", "Documentation"),
+            ("prototype", "Storybook prototype"),
+        ],
     )
     default_branch = models.CharField(max_length=255, blank=True)
     enabled = models.BooleanField(default=True)
@@ -47,6 +52,40 @@ class ProjectRepository(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["project", "instance", "external_id"], name="unique_project_repository")
+        ]
+
+
+class ProjectRepositoryBinding(models.Model):
+    """One authoritative pair of repository slots per Plane project."""
+
+    project = models.OneToOneField("db.Project", primary_key=True, on_delete=models.CASCADE)
+    documentation_repository = models.ForeignKey(
+        ProjectRepository, null=True, on_delete=models.PROTECT, related_name="documentation_bindings"
+    )
+    prototype_repository = models.ForeignKey(
+        ProjectRepository, null=True, on_delete=models.PROTECT, related_name="prototype_bindings"
+    )
+    revision = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=~Q(documentation_repository=models.F("prototype_repository")),
+                name="distinct_project_repository_slots",
+            )
+        ]
+
+
+class ProjectRepositoryBindingRevision(models.Model):
+    project = models.ForeignKey("db.Project", on_delete=models.CASCADE)
+    revision = models.PositiveIntegerField()
+    snapshot = models.JSONField()
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["project", "revision"], name="unique_repository_binding_revision")
         ]
 
 

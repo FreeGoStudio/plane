@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "Tài liệu dự án",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Nguyên mẫu Storybook",
+    "bindings": "Liên kết kho lưu trữ bắt buộc",
+    "unbound": "Chưa cấu hình",
+    "binding_hint": "Các thao tác chỉ sử dụng những liên kết này. Thiếu liên kết sẽ chặn thực thi; kho lưu trữ không bao giờ được tạo tự động."
   }
 }

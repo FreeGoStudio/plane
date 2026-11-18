@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "專案文件儲存庫",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Storybook 原型儲存庫",
+    "bindings": "專用儲存庫綁定",
+    "unbound": "尚未設定",
+    "binding_hint": "相關操作只能使用此處綁定的儲存庫。未綁定時停止執行，不會自動建立儲存庫。"
   }
 }

@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "Documentation du projet",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Prototype Storybook",
+    "bindings": "Associations de dépôts requises",
+    "unbound": "Non configuré",
+    "binding_hint": "Les opérations utilisent uniquement ces associations. Une association manquante bloque l’exécution ; aucun dépôt n’est créé automatiquement."
   }
 }

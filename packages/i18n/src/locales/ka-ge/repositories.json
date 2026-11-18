@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "პროექტის დოკუმენტაცია",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Storybook პროტოტიპი",
+    "bindings": "რეპოზიტორიების სავალდებულო კავშირები",
+    "unbound": "არ არის კონფიგურირებული",
+    "binding_hint": "ოპერაციები მხოლოდ ამ კავშირებს იყენებს. კავშირის არარსებობა შესრულებას ბლოკავს; რეპოზიტორიები ავტომატურად არასოდეს იქმნება."
   }
 }

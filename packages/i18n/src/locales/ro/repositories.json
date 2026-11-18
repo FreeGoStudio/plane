@@ -28,7 +28,7 @@
     "purpose": "Purpose",
     "development": "Development",
     "reference": "Reference",
-    "documentation": "Documentation",
+    "documentation": "Documentația proiectului",
     "save": "Save",
     "disable": "Disable repository",
     "enable": "Enable repository",
@@ -53,6 +53,10 @@
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
       "configuration_conflict": "This repository is already configured or its settings conflict."
-    }
+    },
+    "prototype": "Prototip Storybook",
+    "bindings": "Asocieri obligatorii ale depozitelor",
+    "unbound": "Neconfigurat",
+    "binding_hint": "Operațiile folosesc doar aceste asocieri. Asocierile lipsă blochează execuția; depozitele nu sunt create niciodată automat."
   }
 }

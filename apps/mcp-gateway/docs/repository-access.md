@@ -1,5 +1,64 @@
 # Repository access
 
+## Required project repository bindings (2026-11-18)
+
+Projects now have two explicit slots in `ProjectRepositoryBinding`:
+`documentation_repository_id` (项目文档仓库) and `prototype_repository_id`
+(Storybook 原型仓库). Each slot references an existing `ProjectRepository`, whose
+stable identity is hosting instance plus upstream repository ID. URLs are access
+metadata, not identity. Development/reference mappings remain plural.
+
+The database enforces one binding row per project and distinct repositories for
+the two slots. The service validates project ownership, purpose and availability.
+Only a project administrator using a CSRF-protected session can configure slots;
+AI/delegated callers cannot configure or create repositories. Changes use
+`expected_revision`, serialize on the project row and append an immutable API-level
+history snapshot with actor and time. Existing repository mappings are not deleted.
+Changing the purpose of a bound mapping is refused. Disabling it blocks execution
+instead of selecting another repository. Historical snapshots retain old identities.
+
+Configuration: project settings → repositories → required repository bindings.
+Register an existing repository with purpose `documentation` or `prototype`, then
+explicitly assign it to its slot. Registration does not select a slot implicitly.
+The settings API is `GET/PATCH .../repository-bindings/`; null cannot clear an
+existing slot. A project may be incompletely configured, but operations requiring
+an absent slot return `project_repository_binding_required` (409).
+
+`resolve_project_repository` resolves a role without accepting a URL/repository ID.
+`read_bound_project_repository` reads through that role with the caller's own
+connection. Both require `repositories:read`, project membership and current
+availability. Existing delegated reads by ID also refuse an unbound documentation
+or prototype mapping. General development/reference browsing remains available.
+Session preview of registered repositories is retained for administrator setup.
+
+Migration `0134_project_repository_bindings` is additive and deliberately does not
+guess bindings from names or select the first existing repository. Apply it before
+deploying API/Web/Gateway, explicitly configure existing projects, then deploy the
+workbench consumer. Text-only WBS operations do not acquire a new repository
+prerequisite; freezing Git PRD/Storybook inputs into WBS is a separate design item.
+
+The workbench source now resolves Plane bindings, rejects mismatched local IDs,
+GitLab instances and Git origin/push URLs, and disables runtime repository creation
+and fork/import creation paths. Its initialization reuses already-bound repositories.
+Deploy with a project-scoped execution identity that cannot create repositories;
+the operator must verify denied creation with that identity. Application checks do
+not revoke unrelated GitLab credentials or constrain arbitrary external CLI use.
+No live GitLab account permissions or existing project bindings were changed by
+this source implementation.
+
+Execution PAT bot identities may resolve/read bindings; they cannot configure them.
+
+Validation: 22 API contracts (including permissions, stale revisions, history,
+missing/disabled bindings and ID bypass), migration consistency, 24 Gateway tests,
+Web type checking and targeted lint passed. An isolated Chrome component harness
+with mocked API verified Chinese labels, slot submission, revision-conflict handling
+and member read-only controls with zero page errors. This is not live deployment
+acceptance. Repository locale keys are synchronized;
+the full locale check still reports 886 pre-existing missing keys in most locales.
+New/updated translations are `machine_translated`; native-language review remains
+follow-up work. Deployment and real-project acceptance are separate from these
+local checks.
+
 ## Project-native connections (2026-11-14)
 
 The native route `/{workspace}/settings/projects/{project}/repositories/` owns
