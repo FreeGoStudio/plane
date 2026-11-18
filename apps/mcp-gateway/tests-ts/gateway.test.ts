@@ -121,8 +121,37 @@ test("module creation forwards fields and preserves native errors without blind 
   );
   f.vault.close();
 });
+test("module update and delete preserve PATCH semantics and native failures", async () => {
+  const f = fixture();
+  const base = { workspace: "test", project_id: id, module_id: decision };
+  const fields = { description: "Updated", target_date: null, members: [] };
+  await invoke(f.plane, "bearer", "update_module", { ...base, fields });
+  assert.equal(f.calls.at(-1)!.method, "PATCH");
+  assert.equal(f.calls.at(-1)!.url.pathname, `/api/v1/workspaces/test/projects/${id}/modules/${decision}/`);
+  assert.deepEqual(JSON.parse(f.calls.at(-1)!.body!), fields);
+  await invoke(f.plane, "bearer", "delete_module", base);
+  assert.equal(f.calls.at(-1)!.method, "DELETE");
+  assert.equal(f.calls.at(-1)!.body, undefined);
+  await assert.rejects(invoke(f.plane, "bearer", "delete_module", { ...base, module_id: "bad" }));
+  for (const status of [400, 403, 404]) {
+    f.state.status = status;
+    // Each native failure must remain a failure, including repeated deletion.
+    // eslint-disable-next-line no-await-in-loop
+    await assert.rejects(
+      invoke(f.plane, "bearer", "delete_module", base),
+      (error: unknown) => error instanceof PlaneError && error.status === status
+    );
+  }
+  f.state.fail = true;
+  await assert.rejects(
+    invoke(f.plane, "bearer", "update_module", { ...base, fields }),
+    (error: unknown) =>
+      error instanceof PlaneError && error.code === "outcome_unknown_check_project_modules_before_retry"
+  );
+  f.vault.close();
+});
 test("native and repository tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 26);
+  assert.equal(tools.length, 28);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
@@ -301,7 +330,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 26);
+    assert.equal((await listed.json()).result.tools.length, 28);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;

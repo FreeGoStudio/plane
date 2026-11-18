@@ -6,6 +6,7 @@
 
 from concurrent.futures import ThreadPoolExecutor
 import threading
+from django.utils import timezone
 
 import pytest
 from django.core.cache import cache
@@ -181,6 +182,55 @@ def test_module_creation_scopes_fields_and_validation(world):
     world[3].module_view = False
     world[3].save()
     assert post(writer, root, {"name": "Disabled modules"}).status_code == 400
+
+
+def test_module_update_delete_scopes_and_preserved_work_items(world):
+    world[3].module_view = True
+    world[3].save()
+    module = Module.objects.create(project=world[3], workspace=world[2], name="Lifecycle", description="Keep")
+    item = Issue.objects.create(project=world[3], workspace=world[2], name="Survives module")
+    ModuleIssue.objects.create(project=world[3], workspace=world[2], module=module, issue=item)
+    url = path(world).replace("work-items/", "modules/") + f"{module.pk}/"
+    reader, _, _, _ = login(world[0], ["workitems:read"])
+    writer, _, _, _ = login(world[0], ["workitems:write"])
+    deleter, _, _, _ = login(world[0], ["workitems:delete"])
+    def patch(api, data):
+        return api.patch(url, data, content_type="application/json")
+    assert patch(reader, {"name": "Denied"}).status_code == 403
+    result = patch(writer, {"name": "Updated", "target_date": None, "members": []})
+    assert result.status_code == 200, result.content
+    module.refresh_from_db()
+    assert module.name == "Updated" and module.description == "Keep" and module.target_date is None
+    assert patch(writer, {"name": ""}).status_code == 400
+    module.archived_at = timezone.now()
+    module.save()
+    assert patch(writer, {"name": "Archived edit"}).status_code == 400
+    assert writer.delete(url).status_code == 403
+    assert reader.delete(url).status_code == 403
+    assert deleter.delete(url).status_code == 204
+    assert not Module.objects.filter(pk=module.pk).exists()
+    assert not ModuleIssue.objects.filter(module_id=module.pk).exists()
+    assert Issue.objects.filter(pk=item.pk).exists()
+    assert deleter.delete(url).status_code == 404
+
+
+@pytest.mark.parametrize("role,active,creator", [(20, True, False), (15, True, False),
+                                              (15, True, True), (5, True, True), (15, False, True)])
+def test_module_update_delete_native_roles(world, role, active, creator):
+    world[3].module_view = True
+    world[3].save()
+    member = ProjectMember.objects.get(project=world[3], member=world[1])
+    member.role, member.is_active = role, active
+    member.save()
+    _, direct, delegated = clients(world[1])
+    for index, api in enumerate((direct, delegated)):
+        with impersonate(world[1] if creator else world[0]):
+            module = Module.objects.create(project=world[3], workspace=world[2], name=f"Role lifecycle {index}")
+        url = path(world).replace("work-items/", "modules/") + f"{module.pk}/"
+        result = api.patch(url, {"description": "Changed"}, content_type="application/json")
+        assert result.status_code == (200 if active and role >= 15 else 403), result.content
+        result = api.delete(url)
+        assert result.status_code == (204 if active and role >= 15 and (role == 20 or creator) else 403), result.content
 
 
 @pytest.mark.parametrize("role,active", [(20, True), (15, True), (5, True), (15, False)])

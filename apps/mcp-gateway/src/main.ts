@@ -25,6 +25,10 @@ const descriptions: Record<keyof typeof inputs, string> = {
     "List active project modules to select a module UUID. query accepts native cursor, per_page, fields, expand and order_by. Requires workitems:read.",
   create_module:
     "Create a project module. fields requires name and accepts description, start_date, target_date, status, lead, members, external_source and external_id. Native project permissions, module enablement and field validation apply. Requires workitems:write. No idempotency receipt: after an uncertain response inspect list_project_modules before retrying; never silently reuse an existing module with the same name.",
+  update_module:
+    "Partially update a module by UUID. fields accepts native writable fields: name, description, start_date, target_date, status, lead, members, external_source, external_id. Omitted fields remain unchanged; native validation and archived-module restrictions apply. Requires workitems:write and native project permissions. No version lock or idempotency receipt: inspect current module state after an uncertain response before retrying.",
+  delete_module:
+    "Delete the specified module and its work-item associations; the work items themselves remain. Requires workitems:delete consent and native admin-or-creator permission. No idempotency receipt: inspect current module state after an uncertain response before retrying. A missing module returns the native error, not assumed success.",
   list_module_work_items:
     "Read work items assigned to a module, with native pagination via query. Use to verify assignment or removal. Requires workitems:read.",
   assign_module_work_items:

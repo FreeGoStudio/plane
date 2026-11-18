@@ -251,6 +251,8 @@ export const inputs = {
   get_project_metadata: z.object({ ...nativeProject, kind: z.enum(["states", "labels", "members"]), query }).strict(),
   list_work_items: z.object({ ...nativeProject, query }).strict(),
   list_project_modules: z.object({ ...nativeProject, query }).strict(),
+  update_module: z.object({ ...nativeProject, module_id: z.uuid(), fields }).strict(),
+  delete_module: z.object({ ...nativeProject, module_id: z.uuid() }).strict(),
   create_module: z
     .object({ ...nativeProject, fields: z.object({ name: z.string().min(1) }).catchall(z.unknown()) })
     .strict(),
@@ -386,6 +388,20 @@ export async function invoke(
     const a = inputs.create_module.parse(args);
     try {
       return await native("POST", nativePath(a) + "modules/", a.fields);
+    } catch (error) {
+      if (error instanceof PlaneError && error.code === "outcome_unknown_check_result_or_retry_same_idempotency_key")
+        throw new PlaneError(503, "outcome_unknown_check_project_modules_before_retry");
+      throw error;
+    }
+  }
+  if (name === "update_module" || name === "delete_module") {
+    const a = inputs[name].parse(args);
+    try {
+      return await native(
+        name === "update_module" ? "PATCH" : "DELETE",
+        nativePath(a) + `modules/${a.module_id}/`,
+        "fields" in a ? a.fields : undefined
+      );
     } catch (error) {
       if (error instanceof PlaneError && error.code === "outcome_unknown_check_result_or_retry_same_idempotency_key")
         throw new PlaneError(503, "outcome_unknown_check_project_modules_before_retry");
