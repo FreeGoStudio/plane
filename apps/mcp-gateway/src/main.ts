@@ -23,6 +23,8 @@ const descriptions: Record<keyof typeof inputs, string> = {
     "List native work items. query accepts native filters (state, priority, assignees, labels), order_by, cursor, per_page, fields, expand. Unsupported edition features return the same native error.",
   list_project_modules:
     "List active project modules to select a module UUID. query accepts native cursor, per_page, fields, expand and order_by. Requires workitems:read.",
+  create_module:
+    "Create a project module. fields requires name and accepts description, start_date, target_date, status, lead, members, external_source and external_id. Native project permissions, module enablement and field validation apply. Requires workitems:write. No idempotency receipt: after an uncertain response inspect list_project_modules before retrying; never silently reuse an existing module with the same name.",
   list_module_work_items:
     "Read work items assigned to a module, with native pagination via query. Use to verify assignment or removal. Requires workitems:read.",
   assign_module_work_items:

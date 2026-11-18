@@ -153,9 +153,48 @@ def test_module_assignment_read_write_scopes_and_removal(world):
     assert writer.delete(url + f"{item.pk}/").status_code == 204
     assert not ModuleIssue.objects.filter(module=module, issue=item).exists()
     assert Issue.objects.filter(pk=item.pk).exists()
-    # Assignment consent must not enable module creation or work-item deletion.
-    assert post(writer, root, {"name": "Not authorized"}).status_code == 403
+    # Module writes must not enable work-item deletion.
     assert writer.delete(path(world, item.pk)).status_code == 403
+
+
+def test_module_creation_scopes_fields_and_validation(world):
+    world[3].module_view = True
+    world[3].save()
+    root = path(world).replace("work-items/", "modules/")
+    reader, _, _, _ = login(world[0], ["workitems:read"])
+    writer, _, _, _ = login(world[0], ["workitems:write"])
+    assert post(reader, root, {"name": "Read only"}).status_code == 403
+    fields = {"name": "MCP created module", "description": "Module description",
+              "start_date": "2026-11-18", "target_date": "2026-11-30", "status": "planned",
+              "lead": str(world[0].pk), "members": [str(world[1].pk)]}
+    result = post(writer, root, fields)
+    assert result.status_code == 201, result.content
+    module = Module.objects.get(pk=result.json()["id"])
+    assert module.name == fields["name"] and module.description == fields["description"]
+    assert module.project_id == world[3].pk and module.lead_id == world[0].pk
+    assert module.members.filter(pk=world[1].pk).exists()
+    assert str(module.start_date) == fields["start_date"] and module.status == "planned"
+    assert post(writer, root, fields).status_code == 400
+    assert Module.objects.filter(project=world[3], name=fields["name"]).count() == 1
+    for invalid in ({}, {"name": ""}, {"name": "Dates", "start_date": "2026-11-30", "target_date": "2026-11-18"}):
+        assert post(writer, root, invalid).status_code == 400
+    world[3].module_view = False
+    world[3].save()
+    assert post(writer, root, {"name": "Disabled modules"}).status_code == 400
+
+
+@pytest.mark.parametrize("role,active", [(20, True), (15, True), (5, True), (15, False)])
+def test_module_creation_preserves_native_permissions(world, role, active):
+    world[3].module_view = True
+    world[3].save()
+    member = ProjectMember.objects.get(project=world[3], member=world[1])
+    member.role, member.is_active = role, active
+    member.save()
+    _, direct, delegated = clients(world[1])
+    root = path(world).replace("work-items/", "modules/")
+    responses = [post(api, root, {"name": f"Native module {index}"})
+                 for index, api in enumerate((direct, delegated))]
+    assert responses[0].status_code == responses[1].status_code == (201 if active and role >= 15 else 403)
 
 
 @pytest.mark.parametrize("role,active", [(20, True), (15, True), (5, True), (15, False)])

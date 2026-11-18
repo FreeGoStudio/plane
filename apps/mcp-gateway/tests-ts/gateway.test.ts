@@ -90,8 +90,39 @@ test("module assignment uses native routes, IDs and pagination without deleting 
   );
   f.vault.close();
 });
+test("module creation forwards fields and preserves native errors without blind retries", async () => {
+  const f = fixture();
+  const base = { workspace: "test", project_id: id };
+  const fields = {
+    name: "Delivery",
+    description: "Scope",
+    members: [decision],
+    lead: id,
+    start_date: "2026-11-18",
+    target_date: null,
+    status: "planned",
+  };
+  await invoke(f.plane, "bearer", "create_module", { ...base, fields });
+  assert.equal(f.calls.at(-1)!.method, "POST");
+  assert.equal(f.calls.at(-1)!.url.pathname, `/api/v1/workspaces/test/projects/${id}/modules/`);
+  assert.deepEqual(JSON.parse(f.calls.at(-1)!.body!), fields);
+  await assert.rejects(invoke(f.plane, "bearer", "create_module", { ...base, fields: {} }));
+  await assert.rejects(invoke(f.plane, "bearer", "create_module", { ...base, fields: { name: "" } }));
+  f.state.status = 403;
+  await assert.rejects(
+    invoke(f.plane, "bearer", "create_module", { ...base, fields }),
+    (error: unknown) => error instanceof PlaneError && error.status === 403
+  );
+  f.state.fail = true;
+  await assert.rejects(
+    invoke(f.plane, "bearer", "create_module", { ...base, fields }),
+    (error: unknown) =>
+      error instanceof PlaneError && error.code === "outcome_unknown_check_project_modules_before_retry"
+  );
+  f.vault.close();
+});
 test("native and repository tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 25);
+  assert.equal(tools.length, 26);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
@@ -270,7 +301,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 25);
+    assert.equal((await listed.json()).result.tools.length, 26);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;

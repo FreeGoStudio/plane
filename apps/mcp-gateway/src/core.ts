@@ -251,6 +251,9 @@ export const inputs = {
   get_project_metadata: z.object({ ...nativeProject, kind: z.enum(["states", "labels", "members"]), query }).strict(),
   list_work_items: z.object({ ...nativeProject, query }).strict(),
   list_project_modules: z.object({ ...nativeProject, query }).strict(),
+  create_module: z
+    .object({ ...nativeProject, fields: z.object({ name: z.string().min(1) }).catchall(z.unknown()) })
+    .strict(),
   list_module_work_items: z.object({ ...nativeProject, module_id: z.uuid(), query }).strict(),
   assign_module_work_items: z
     .object({ ...nativeProject, module_id: z.uuid(), item_ids: z.array(z.uuid()).min(1) })
@@ -378,6 +381,16 @@ export async function invoke(
   if (name === "list_project_modules") {
     const a = inputs.list_project_modules.parse(args);
     return native("GET", nativePath(a) + "modules/", undefined, a.query);
+  }
+  if (name === "create_module") {
+    const a = inputs.create_module.parse(args);
+    try {
+      return await native("POST", nativePath(a) + "modules/", a.fields);
+    } catch (error) {
+      if (error instanceof PlaneError && error.code === "outcome_unknown_check_result_or_retry_same_idempotency_key")
+        throw new PlaneError(503, "outcome_unknown_check_project_modules_before_retry");
+      throw error;
+    }
   }
   if (name === "list_module_work_items") {
     const a = inputs.list_module_work_items.parse(args);
