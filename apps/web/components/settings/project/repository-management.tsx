@@ -90,6 +90,7 @@ export function RepositoryInitialization({
   const progress = submitting ? "submitting" : (data?.status ?? "not_started");
   if (!data) return error ? <p role="alert">{t("repository_ui.load_failed")}</p> : null;
   if (!data.enabled) return null;
+  if (data.status === "ready" && allBound && !running && !error && !submissionFailed && !data.error_code) return null;
   return (
     <section className="mt-5 rounded-lg bg-surface-2 px-4 py-3 text-body-sm-regular">
       <p className="my-2" role="status" aria-live="polite">

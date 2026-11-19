@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "Документы проекта",
+      "prototype": "Прототип",
+      "development": "Репозитории кода",
+      "reference": "Другие репозитории"
+    },
+    "connected": "Подключено",
+    "expired": "Срок действия истёк",
+    "details": "Подробнее"
   }
 }

@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "Dokumenty projektu",
+      "prototype": "Prototyp",
+      "development": "Repozitáre kódu",
+      "reference": "Ostatné repozitáre"
+    },
+    "connected": "Pripojené",
+    "expired": "Platnosť vypršala",
+    "details": "Podrobnosti"
   }
 }

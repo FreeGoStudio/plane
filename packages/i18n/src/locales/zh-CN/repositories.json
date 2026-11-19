@@ -84,6 +84,15 @@
     "select_binding": "选择仓库",
     "cancel_edit": "取消",
     "connection_options": "其他连接方式",
-    "binding_saved": "仓库绑定已更新。"
+    "binding_saved": "仓库绑定已更新。",
+    "sections": {
+      "documentation": "项目文档",
+      "prototype": "原型",
+      "development": "代码仓库",
+      "reference": "其他仓库"
+    },
+    "connected": "已连接",
+    "expired": "已过期",
+    "details": "详情"
   }
 }

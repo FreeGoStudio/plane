@@ -5,7 +5,13 @@
  */
 
 import useSWR from "swr";
-import { Link } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
+import { List } from "@makeplane/propel/components/list";
+import { PagesOutline, ViewsOutline, ModuleOutline, LabelsOutline } from "@makeplane/propel/icons";
+import { SettingsSidebarItem } from "./item";
+import { SettingsSidebarSectionHeading } from "./section-heading";
+import { repositorySections, selectedRepositorySection, type RepositoryBindings } from "../project/repository-sections";
+import { repositoryBase, repositoryService, type Repository } from "@/services/repository.service";
 import { API_BASE_URL } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 
@@ -15,19 +21,53 @@ async function repositoryFeatureAvailable(url: string): Promise<boolean> {
   return response.ok;
 }
 
-/** Navigate to the server-owned configuration UI only when repository access is enabled. */
+/** Group project repository settings by purpose when repository access is enabled. */
 export function RepositorySettingsLink(props: { workspaceSlug?: string; projectId?: string }) {
   const { t } = useTranslation();
   const { data: enabled } = useSWR(`${API_BASE_URL}/api/singularity/v1/repository-hosts/`, repositoryFeatureAvailable, {
     shouldRetryOnError: false,
   });
+  const [params] = useSearchParams();
+  const { pathname } = useLocation();
+  const base = props.workspaceSlug && props.projectId ? repositoryBase(props.workspaceSlug, props.projectId) : null;
+  const resolveTarget =
+    enabled &&
+    base &&
+    params.has("repository") &&
+    !repositorySections.some((section) => section === params.get("section"));
+  const { data: rows } = useSWR<Repository[]>(resolveTarget ? base + "repositories/" : null, (url: string) =>
+    repositoryService.read<Repository[]>(url)
+  );
+  const { data: bindings } = useSWR<RepositoryBindings>(
+    resolveTarget ? base + "repository-bindings/" : null,
+    (url: string) => repositoryService.read<RepositoryBindings>(url)
+  );
   if (!enabled) return null;
   const project = props.workspaceSlug && props.projectId;
   if (!project) return null;
   const path = `/${encodeURIComponent(props.workspaceSlug!)}/settings/projects/${encodeURIComponent(props.projectId!)}/repositories/`;
+  const selected = selectedRepositorySection(params, rows, bindings);
+  const icons = {
+    documentation: PagesOutline,
+    prototype: ViewsOutline,
+    development: ModuleOutline,
+    reference: LabelsOutline,
+  };
   return (
-    <Link to={path} className="text-sm block rounded-sm px-3 py-2 text-secondary hover:bg-layer-2 hover:text-primary">
-      {t(project ? "singularity_settings.repositories" : "singularity_settings.repository_access")}
-    </Link>
+    <div className="shrink-0 py-3">
+      <SettingsSidebarSectionHeading>{t("singularity_settings.repositories")}</SettingsSidebarSectionHeading>
+      <List gap="px" aria-label={t("singularity_settings.repositories")}>
+        {repositorySections.map((section) => (
+          <SettingsSidebarItem
+            key={section}
+            as="link"
+            href={`${path}?section=${section}`}
+            isActive={pathname === path && selected === section}
+            icon={icons[section]}
+            label={t(`repository_ui.sections.${section}`)}
+          />
+        ))}
+      </List>
+    </div>
   );
 }

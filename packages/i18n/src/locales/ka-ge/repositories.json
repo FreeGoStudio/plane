@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "პროექტის დოკუმენტები",
+      "prototype": "პროტოტიპი",
+      "development": "კოდის რეპოზიტორიები",
+      "reference": "სხვა რეპოზიტორიები"
+    },
+    "connected": "დაკავშირებულია",
+    "expired": "ვადა გასულია",
+    "details": "დეტალები"
   }
 }

@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "Projectdocumenten",
+      "prototype": "Prototype",
+      "development": "Coderepositories",
+      "reference": "Overige repositories"
+    },
+    "connected": "Verbonden",
+    "expired": "Verlopen",
+    "details": "Details"
   }
 }

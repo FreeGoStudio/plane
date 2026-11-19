@@ -12,6 +12,7 @@ import { Input } from "@makeplane/propel/components/input";
 import { useTranslation } from "@plane/i18n";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 import { SettingsHeading } from "@/components/settings/heading";
+import { repositorySection, selectedRepositorySection, type RepositoryBindings } from "./repository-sections";
 import { RepositoryInitialization, RepositoryMemberPermissions } from "./repository-management";
 import {
   repositoryService as api,
@@ -39,11 +40,6 @@ function Button({
 }
 
 const field = "rounded-md border border-subtle bg-surface-1 px-3 py-2 text-body-sm-regular text-primary";
-type RepositoryBindings = {
-  revision: number;
-  documentation_repository_id: string | null;
-  prototype_repository_id: string | null;
-};
 type BindingRole = "documentation" | "prototype";
 const bindingRoles: BindingRole[] = ["documentation", "prototype"];
 
@@ -135,7 +131,7 @@ export function ProjectRepositoriesSettings({
   projectId: string;
 }) {
   const { t } = useTranslation();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const base = repositoryBase(workspaceSlug, projectId);
   const {
     data: rows,
@@ -150,6 +146,8 @@ export function ProjectRepositoriesSettings({
     error: bindingError,
     mutate: refreshBindings,
   } = useSWR<RepositoryBindings>(base + "repository-bindings/", (url: string) => api.read<RepositoryBindings>(url));
+  const section = selectedRepositorySection(params, rows, bindings);
+  const [expanded, setExpanded] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const [preview, setPreview] = useState<{ repository: Repository; value: RepositoryContent } | null>(null);
@@ -224,11 +222,11 @@ export function ProjectRepositoriesSettings({
   const orderedRows = [
     ...bindingRoles.flatMap((role) => rows?.filter((row) => row.id === bindings?.[`${role}_repository_id`]) ?? []),
     ...(rows?.filter((row) => !bindingRoles.some((role) => row.id === bindings?.[`${role}_repository_id`])) ?? []),
-  ];
+  ].filter((row) => repositorySection(row, bindings) === section);
   const result = status || (params.get("connection") ? feedback(params.get("connection")!) : "");
   return (
     <SettingsContentWrapper>
-      <SettingsHeading title={text("title")} description={text("description")} />
+      <SettingsHeading title={text(`sections.${section}`)} description={text("description")} />
       {info && (
         <RepositoryInitialization
           base={base}
@@ -259,10 +257,12 @@ export function ProjectRepositoriesSettings({
         <p>{text("loading")}</p>
       ) : (
         <>
-          <div className="mt-5 space-y-4">
+          <div
+            className={`mt-5 ${bindingRoles.includes(section as BindingRole) ? "space-y-4" : "overflow-hidden rounded-lg border border-subtle"}`}
+          >
             {bindings &&
               bindingRoles
-                .filter((role) => !rows.some((row) => row.id === bindings[`${role}_repository_id`]))
+                .filter((role) => role === section && !rows.some((row) => row.id === bindings[`${role}_repository_id`]))
                 .map((role) => (
                   <section key={role} className="rounded-lg border border-subtle p-5">
                     <div className="flex flex-wrap items-center justify-between gap-3">
@@ -275,207 +275,250 @@ export function ProjectRepositoriesSettings({
                     {info.can_manage && bindingEditor(role)}
                   </section>
                 ))}
+            {orderedRows.length === 0 && !bindingRoles.includes(section as BindingRole) && (
+              <p className="rounded-lg border border-dashed border-subtle p-6 text-body-sm-regular text-secondary">
+                {text("empty")}
+              </p>
+            )}
             {orderedRows.map((row) => {
               const boundRole = bindingRoles.find((role) => bindings?.[`${role}_repository_id`] === row.id);
               const credential = info.credentials.find((c) => c.id === row.credential_id);
               const host = info.hosts.find((h) => h.id === row.instance_id);
+              const access = credential
+                ? text(
+                    credential.expires_at && Date.parse(credential.expires_at) <= Date.now() ? "expired" : "connected"
+                  )
+                : text(row.anonymous ? "anonymous" : "personal_not_connected");
+              const isExpanded = expanded === row.id;
               return (
                 <section
                   key={row.id}
                   id={row.id}
-                  className={`rounded-lg border p-5 ${params.get("repository") === row.id ? "border-accent-strong" : "border-subtle"}`}
+                  className={`${bindingRoles.includes(section as BindingRole) ? "rounded-lg border p-5" : "border-b px-4 py-3 last:border-b-0"} ${params.get("repository") === row.id ? "border-accent-strong bg-surface-2" : "border-subtle"}`}
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-h6-medium text-primary">{text(boundRole || row.purpose)}</h3>
-                      <p className="mt-1 text-body-xs-regular text-tertiary">{row.instance_name}</p>
+                      <h3 className="truncate text-h6-medium text-primary" title={row.path}>
+                        {boundRole ? text(`sections.${boundRole}`) : row.path.split("/").pop()}
+                      </h3>
+                      {boundRole && <p className="mt-1 text-body-xs-regular text-tertiary">{row.instance_name}</p>}
                       <p className="mt-1 truncate text-body-sm-regular text-secondary" title={row.path}>
                         {row.path}
                       </p>
                     </div>
                     <span className="shrink-0 rounded bg-surface-2 px-2 py-1 text-body-xs-regular text-secondary">
-                      {text(!row.enabled ? "disabled" : boundRole ? "bound" : "registered")}
+                      {text(
+                        !row.enabled ? "disabled" : boundRole ? "bound" : `sections.${repositorySection(row, bindings)}`
+                      )}
                     </span>
                   </div>
-                  {boundRole && info.can_manage && <div className="mt-3">{bindingEditor(boundRole)}</div>}
-                  <div className="mt-4 border-t border-subtle pt-4">
-                    <p className="text-body-xs-regular font-medium text-tertiary">{text("personal_access")}</p>
-                    <p className="mt-1 text-body-sm-regular break-words text-secondary">
-                      {credential
-                        ? `${text("account")}: ${credential.external_actor_label || credential.label}${credential.expires_at ? ` · ${text("expires")}: ${new Date(credential.expires_at).toLocaleString()}` : ""}`
-                        : row.anonymous
-                          ? text("anonymous")
-                          : text("personal_not_connected")}
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-body-xs-regular text-secondary">
+                      {text("personal_access")} · {access}
                     </p>
-                  </div>
-                  {row.enabled && (
-                    <>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Button
-                          disabled={busy || !host?.oauth_available}
-                          onClick={() =>
-                            void action(async () => {
-                              const authorization = await api.write<{ authorization_url: string }>(
-                                base + `repositories/${row.id}/connection/`,
-                                "POST",
-                                info.csrf_token,
-                                { method: "oauth" }
-                              );
-                              window.location.assign(authorization.authorization_url);
-                            })
-                          }
-                        >
-                          {text("connect")} {row.provider === "github" ? "GitHub" : "GitLab"}
-                        </Button>
+                    <div className="flex flex-wrap gap-2">
+                      {row.enabled && (
                         <Button disabled={busy} onClick={() => void action(() => browse(row))}>
                           {text("browse")}
                         </Button>
-                        {(row.credential_id || row.anonymous) && (
+                      )}
+                      <Button
+                        aria-expanded={isExpanded}
+                        aria-controls={`repository-details-${row.id}`}
+                        onClick={() => setExpanded(isExpanded ? null : row.id)}
+                      >
+                        {text("details")}
+                      </Button>
+                    </div>
+                  </div>
+                  <div id={`repository-details-${row.id}`} hidden={!isExpanded}>
+                    <p className="mt-4 text-body-sm-regular break-all text-secondary">
+                      {row.instance_name} / {row.path}
+                    </p>
+                    <div className="mt-4 border-t border-subtle pt-4">
+                      <p className="text-body-xs-regular font-medium text-tertiary">{text("personal_access")}</p>
+                      <p className="mt-1 text-body-sm-regular break-words text-secondary">
+                        {credential
+                          ? `${text("account")}: ${credential.external_actor_label || credential.label}${credential.expires_at ? ` · ${text("expires")}: ${new Date(credential.expires_at).toLocaleString()}` : ""}`
+                          : row.anonymous
+                            ? text("anonymous")
+                            : text("personal_not_connected")}
+                      </p>
+                    </div>
+                    {row.enabled && (
+                      <>
+                        <div className="mt-3 flex flex-wrap gap-2">
                           <Button
-                            disabled={busy}
+                            disabled={busy || !host?.oauth_available}
                             onClick={() =>
-                              void action(() => write(`repositories/${row.id}/connection/`, undefined, "DELETE"))
+                              void action(async () => {
+                                const authorization = await api.write<{ authorization_url: string }>(
+                                  base + `repositories/${row.id}/connection/`,
+                                  "POST",
+                                  info.csrf_token,
+                                  { method: "oauth" }
+                                );
+                                window.location.assign(authorization.authorization_url);
+                              })
                             }
                           >
-                            {text("disconnect")}
+                            {text("connect")} {row.provider === "github" ? "GitHub" : "GitLab"}
                           </Button>
-                        )}
-                      </div>
-                      <details className="mt-4 text-body-sm-regular">
-                        <summary className="cursor-pointer text-secondary">{text("connection_options")}</summary>
-                        <p className="my-3 text-body-xs-regular text-tertiary">
-                          {host?.oauth_available
-                            ? text(row.provider === "github" ? "github_scope" : "scope")
-                            : text("oauth_unavailable")}
-                        </p>
+                          {(row.credential_id || row.anonymous) && (
+                            <Button
+                              disabled={busy}
+                              onClick={() =>
+                                void action(() => write(`repositories/${row.id}/connection/`, undefined, "DELETE"))
+                              }
+                            >
+                              {text("disconnect")}
+                            </Button>
+                          )}
+                        </div>
+                        <details className="mt-4 text-body-sm-regular">
+                          <summary className="cursor-pointer text-secondary">{text("connection_options")}</summary>
+                          <p className="my-3 text-body-xs-regular text-tertiary">
+                            {host?.oauth_available
+                              ? text(row.provider === "github" ? "github_scope" : "scope")
+                              : text("oauth_unavailable")}
+                          </p>
+                          <form
+                            className="my-3 flex flex-wrap gap-2"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const form = e.currentTarget;
+                              const data = new FormData(form);
+                              void action(() =>
+                                write(
+                                  `repositories/${row.id}/access/`,
+                                  data.get("credential") === "anonymous"
+                                    ? { anonymous: true }
+                                    : { credential_id: data.get("credential") }
+                                )
+                              );
+                            }}
+                          >
+                            <select
+                              className={field}
+                              name="credential"
+                              required
+                              aria-label={text("choose")}
+                              defaultValue={row.anonymous ? "anonymous" : row.credential_id || ""}
+                            >
+                              <option value="" disabled>
+                                {text("choose")}
+                              </option>
+                              {info.credentials
+                                .filter(
+                                  (c) =>
+                                    c.instance_id === row.instance_id &&
+                                    (!c.expires_at || Date.parse(c.expires_at) > Date.now())
+                                )
+                                .map((c) => (
+                                  <option value={c.id} key={c.id}>
+                                    {c.label} · {c.external_actor_label}
+                                  </option>
+                                ))}
+                              <option value="anonymous">{text("anonymous")}</option>
+                            </select>
+                            <Button type="submit" disabled={busy}>
+                              {text("use_connection")}
+                            </Button>
+                          </form>
+                          <form
+                            className="flex flex-wrap gap-2"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              const form = e.currentTarget;
+                              const data = new FormData(form);
+                              const token = String(data.get("token"));
+                              form.reset();
+                              void action(() =>
+                                write(`repositories/${row.id}/connection/`, { label: row.path, token })
+                              );
+                            }}
+                          >
+                            <Input
+                              size="md"
+                              name="token"
+                              type="password"
+                              required
+                              autoComplete="new-password"
+                              placeholder={text("token_placeholder")}
+                              aria-label={text("token_placeholder")}
+                            />
+                            <Button type="submit" disabled={busy}>
+                              {text("verify_save")}
+                            </Button>
+                          </form>
+                        </details>
+                      </>
+                    )}
+                    {info.can_manage && (
+                      <details className="mt-4 border-t border-subtle pt-3 text-body-sm-regular">
+                        <summary className="cursor-pointer">{text("manage")}</summary>
+                        {boundRole && <div className="mt-3">{bindingEditor(boundRole)}</div>}
                         <form
                           className="my-3 flex flex-wrap gap-2"
                           onSubmit={(e) => {
                             e.preventDefault();
-                            const form = e.currentTarget;
-                            const data = new FormData(form);
+                            const data = new FormData(e.currentTarget);
                             void action(() =>
                               write(
-                                `repositories/${row.id}/access/`,
-                                data.get("credential") === "anonymous"
-                                  ? { anonymous: true }
-                                  : { credential_id: data.get("credential") }
+                                `repositories/${row.id}/`,
+                                {
+                                  default_branch: data.get("branch"),
+                                  purpose: data.get("purpose"),
+                                  path: data.get("path"),
+                                },
+                                "PATCH"
                               )
                             );
                           }}
                         >
-                          <select
-                            className={field}
-                            name="credential"
-                            required
-                            aria-label={text("choose")}
-                            defaultValue={row.anonymous ? "anonymous" : row.credential_id || ""}
-                          >
-                            <option value="" disabled>
-                              {text("choose")}
-                            </option>
-                            {info.credentials
-                              .filter(
-                                (c) =>
-                                  c.instance_id === row.instance_id &&
-                                  (!c.expires_at || Date.parse(c.expires_at) > Date.now())
-                              )
-                              .map((c) => (
-                                <option value={c.id} key={c.id}>
-                                  {c.label} · {c.external_actor_label}
-                                </option>
-                              ))}
-                            <option value="anonymous">{text("anonymous")}</option>
-                          </select>
-                          <Button type="submit" disabled={busy}>
-                            {text("use_connection")}
-                          </Button>
-                        </form>
-                        <form
-                          className="flex flex-wrap gap-2"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            const form = e.currentTarget;
-                            const data = new FormData(form);
-                            const token = String(data.get("token"));
-                            form.reset();
-                            void action(() => write(`repositories/${row.id}/connection/`, { label: row.path, token }));
-                          }}
-                        >
                           <Input
                             size="md"
-                            name="token"
-                            type="password"
-                            required
-                            autoComplete="new-password"
-                            placeholder={text("token_placeholder")}
-                            aria-label={text("token_placeholder")}
+                            name="branch"
+                            defaultValue={row.default_branch}
+                            aria-label={text("branch")}
                           />
+                          <Input size="md" name="path" defaultValue={row.path} aria-label={text("path")} required />
+                          <select
+                            className={field}
+                            name="purpose"
+                            defaultValue={row.purpose}
+                            aria-label={text("purpose")}
+                          >
+                            {["development", "reference", "documentation", "prototype"].map((p) => (
+                              <option key={p} value={p}>
+                                {text(p)}
+                              </option>
+                            ))}
+                          </select>
                           <Button type="submit" disabled={busy}>
-                            {text("verify_save")}
+                            {text("save")}
+                          </Button>
+                          <Button
+                            disabled={busy}
+                            onClick={() =>
+                              void action(() => write(`repositories/${row.id}/`, { enabled: !row.enabled }, "PATCH"))
+                            }
+                          >
+                            {text(row.enabled ? "disable" : "enable")}
                           </Button>
                         </form>
+                        {row.purpose !== "reference" && (
+                          <RepositoryMemberPermissions
+                            base={base}
+                            repositoryId={row.id}
+                            csrf={info.csrf_token}
+                            busy={busy}
+                            action={action}
+                          />
+                        )}
                       </details>
-                    </>
-                  )}
-                  {info.can_manage && (
-                    <details className="mt-4 border-t border-subtle pt-3 text-body-sm-regular">
-                      <summary className="cursor-pointer">{text("manage")}</summary>
-                      <form
-                        className="my-3 flex flex-wrap gap-2"
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const data = new FormData(e.currentTarget);
-                          void action(() =>
-                            write(
-                              `repositories/${row.id}/`,
-                              {
-                                default_branch: data.get("branch"),
-                                purpose: data.get("purpose"),
-                                path: data.get("path"),
-                              },
-                              "PATCH"
-                            )
-                          );
-                        }}
-                      >
-                        <Input size="md" name="branch" defaultValue={row.default_branch} aria-label={text("branch")} />
-                        <Input size="md" name="path" defaultValue={row.path} aria-label={text("path")} required />
-                        <select
-                          className={field}
-                          name="purpose"
-                          defaultValue={row.purpose}
-                          aria-label={text("purpose")}
-                        >
-                          {["development", "reference", "documentation", "prototype"].map((p) => (
-                            <option key={p} value={p}>
-                              {text(p)}
-                            </option>
-                          ))}
-                        </select>
-                        <Button type="submit" disabled={busy}>
-                          {text("save")}
-                        </Button>
-                        <Button
-                          disabled={busy}
-                          onClick={() =>
-                            void action(() => write(`repositories/${row.id}/`, { enabled: !row.enabled }, "PATCH"))
-                          }
-                        >
-                          {text(row.enabled ? "disable" : "enable")}
-                        </Button>
-                      </form>
-                      {row.purpose !== "reference" && (
-                        <RepositoryMemberPermissions
-                          base={base}
-                          repositoryId={row.id}
-                          csrf={info.csrf_token}
-                          busy={busy}
-                          action={action}
-                        />
-                      )}
-                    </details>
-                  )}
+                    )}
+                  </div>
                 </section>
               );
             })}
@@ -488,16 +531,17 @@ export function ProjectRepositoriesSettings({
                 onSubmit={(e) => {
                   e.preventDefault();
                   const data = new FormData(e.currentTarget);
-                  void action(() =>
-                    write("repositories/", {
+                  void action(async () => {
+                    await write("repositories/", {
                       instance_id: data.get("host"),
                       path: data.get("path"),
                       purpose: data.get("purpose"),
                       ...(data.get("credential") === "anonymous"
                         ? { anonymous: true }
                         : { credential_id: data.get("credential") }),
-                    })
-                  );
+                    });
+                    setParams({ section: String(data.get("purpose")) });
+                  });
                 }}
               >
                 <select className={field} name="host" aria-label={text("host")}>
@@ -508,7 +552,13 @@ export function ProjectRepositoriesSettings({
                   ))}
                 </select>
                 <Input size="md" name="path" required placeholder={text("path")} aria-label={text("path")} />
-                <select className={field} name="purpose" aria-label={text("purpose")}>
+                <select
+                  key={section}
+                  className={field}
+                  name="purpose"
+                  defaultValue={section}
+                  aria-label={text("purpose")}
+                >
                   {["development", "reference", "documentation", "prototype"].map((p) => (
                     <option key={p} value={p}>
                       {text(p)}
@@ -531,7 +581,7 @@ export function ProjectRepositoriesSettings({
           )}
         </>
       )}
-      {preview && (
+      {preview && repositorySection(preview.repository, bindings) === section && (
         <section className="mt-6 rounded-lg border border-subtle p-5">
           <h4 className="font-medium">
             {preview.repository.path} / {preview.value.path}

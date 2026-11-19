@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "Документи проєкту",
+      "prototype": "Прототип",
+      "development": "Репозиторії коду",
+      "reference": "Інші репозиторії"
+    },
+    "connected": "Підключено",
+    "expired": "Термін дії минув",
+    "details": "Докладніше"
   }
 }

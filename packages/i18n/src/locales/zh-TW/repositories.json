@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "專案文件",
+      "prototype": "原型",
+      "development": "程式碼儲存庫",
+      "reference": "其他儲存庫"
+    },
+    "connected": "已連線",
+    "expired": "已過期",
+    "details": "詳細資料"
   }
 }

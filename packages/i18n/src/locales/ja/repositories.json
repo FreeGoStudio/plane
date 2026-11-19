@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "プロジェクト文書",
+      "prototype": "プロトタイプ",
+      "development": "コードリポジトリ",
+      "reference": "その他のリポジトリ"
+    },
+    "connected": "接続済み",
+    "expired": "有効期限切れ",
+    "details": "詳細"
   }
 }

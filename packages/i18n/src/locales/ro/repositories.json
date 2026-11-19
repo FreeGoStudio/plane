@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "Documentele proiectului",
+      "prototype": "Prototip",
+      "development": "Depozite de cod",
+      "reference": "Alte depozite"
+    },
+    "connected": "Conectat",
+    "expired": "Expirat",
+    "details": "Detalii"
   }
 }

@@ -84,6 +84,15 @@
     "select_binding": "Select repository",
     "cancel_edit": "Cancel",
     "connection_options": "Other connection methods",
-    "binding_saved": "Repository binding updated."
+    "binding_saved": "Repository binding updated.",
+    "sections": {
+      "documentation": "프로젝트 문서",
+      "prototype": "프로토타입",
+      "development": "코드 저장소",
+      "reference": "기타 저장소"
+    },
+    "connected": "연결됨",
+    "expired": "만료됨",
+    "details": "상세 정보"
   }
 }
