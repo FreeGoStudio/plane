@@ -248,7 +248,11 @@ def process_connection(pk, client):
                 }:
                     raise CompanyError("managed_token_identity_mismatch")
                 renewal_window = min(timedelta(days=7), timedelta(days=days) / 4)
-                if row.credential.expires_at > timezone.now() + renewal_window and not current.get("expired"):
+                upstream_expiry = datetime.combine(
+                    datetime.strptime(current["expires_at"], "%Y-%m-%d").date(), midnight(), utc.utc
+                )
+                effective_expiry = min(row.credential.expires_at, upstream_expiry)
+                if effective_expiry > timezone.now() + renewal_window and current.get("active", True):
                     row.status, row.error_code = "ready", ""
                     row.next_attempt_at = timezone.now() + timedelta(minutes=5)
                     row.save()

@@ -236,7 +236,8 @@ def test_concurrent_workers_issue_once(world, managed):
 def test_upstream_expiry_recovers_in_same_read_without_oauth(world, managed):
     client, row = managed
     process_connection(row.pk, client)
-    client.tokens[1]["expired"] = True
+    client.tokens[1]["expires_at"] = (timezone.now().date() - timedelta(days=1)).isoformat()
+    client.tokens[1]["active"] = False
     alice, _, repo, *_ = world
 
     def recover(owner, credential):
