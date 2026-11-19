@@ -9,7 +9,7 @@
     "empty": "No repositories configured. Ask a project administrator to add one.",
     "account": "Connected account",
     "expires": "Expires",
-    "anonymous": "Explicit anonymous access (public repositories only)",
+    "anonymous": "Tambahkan tanpa masuk (repositori publik)",
     "not_connected": "Not connected. You can connect when access is needed.",
     "disabled": "Repository disabled",
     "connect": "Connect",
@@ -52,7 +52,9 @@
       "file_too_large": "File exceeds the preview size limit. Open it on the hosting platform.",
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
-      "configuration_conflict": "This repository is already configured or its settings conflict."
+      "configuration_conflict": "This repository is already configured or its settings conflict.",
+      "invalid_repository_url": "Masukkan URL repositori yang valid.",
+      "repository_host_not_configured": "Situs hosting ini belum dikonfigurasi. Hubungi administrator."
     },
     "prototype": "Prototipe Storybook",
     "bindings": "Tautan repositori wajib",
@@ -74,7 +76,9 @@
       "ready": "Repository initialization complete. Required repositories are bound.",
       "blocked": "Repository initialization could not finish. Check the error details and retry.",
       "not_started": "Repository initialization has not started.",
-      "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status."
+      "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status.",
+      "syncing": "Menyinkronkan akses anggota…",
+      "sync_error": "Sinkronisasi akses gagal. Lihat detail kesalahan."
     },
     "bound": "Bound",
     "registered": "Additional repository",
@@ -93,6 +97,8 @@
     },
     "connected": "Terhubung",
     "expired": "Kedaluwarsa",
-    "details": "Detail"
+    "details": "Detail",
+    "repository_url": "URL repositori",
+    "continue_add": "Lanjutkan"
   }
 }

@@ -25,6 +25,8 @@ export type ConnectionInfo = {
   credentials: {
     id: string;
     instance_id: string;
+    kind?: string;
+    external_actor_id?: string;
     label: string;
     external_actor_label: string;
     expires_at: string | null;

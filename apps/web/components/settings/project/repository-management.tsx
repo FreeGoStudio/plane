@@ -70,7 +70,7 @@ export function RepositoryInitialization({
       },
     }
   );
-  const running = submitting || ["pending", "processing", "retry"].includes(data?.status ?? "");
+  const running = submitting || ["pending", "processing", "retry", "syncing"].includes(data?.status ?? "");
   /** Publish the accepted state through SWR so older polling responses cannot overwrite it. */
   async function initialize() {
     if (submittingRef.current || busy || running) return;
@@ -90,7 +90,15 @@ export function RepositoryInitialization({
   const progress = submitting ? "submitting" : (data?.status ?? "not_started");
   if (!data) return error ? <p role="alert">{t("repository_ui.load_failed")}</p> : null;
   if (!data.enabled) return null;
-  if (data.status === "ready" && allBound && !running && !error && !submissionFailed && !data.error_code) return null;
+  if (
+    ["ready", "syncing"].includes(data.status) &&
+    allBound &&
+    !submitting &&
+    !error &&
+    !submissionFailed &&
+    !data.error_code
+  )
+    return null;
   return (
     <section className="mt-5 rounded-lg bg-surface-2 px-4 py-3 text-body-sm-regular">
       <p className="my-2" role="status" aria-live="polite">
@@ -104,7 +112,7 @@ export function RepositoryInitialization({
           <code>{data.error_code}</code>
         </details>
       )}
-      {canManage && (!allBound || data.status !== "ready") && (
+      {canManage && !allBound && (
         <Button
           label={t("repository_ui.initialize")}
           size="md"

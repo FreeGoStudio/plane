@@ -399,3 +399,23 @@ def test_manual_migration_remains_authoritative_and_reconciles_only_owned_grants
     assert client.direct[("500", "11")] == 40
     assert len([c for c in client.calls if c[:2] == ("POST", "/projects")]) == 2
     assert old.external_id in client.projects  # Never delete an old repository during migration.
+
+
+def test_ready_reconciliation_never_reports_creation(managed):
+    initialize(managed)
+    _, _, repo, client = managed
+    with (
+        patch("plane.singularity.repository_management.provision_slots") as provision,
+        patch("plane.singularity.repository_management.sync_members") as sync,
+    ):
+
+        def observe(row, client):
+            assert RepositoryProvisioning.objects.get(project=repo.project).status == "syncing"
+
+        sync.side_effect = observe
+        process_project(repo.project_id, client)
+        provision.assert_called_once()
+        assert RepositoryProvisioning.objects.get(project=repo.project).status == "ready"
+        sync.side_effect = RepositoryError("upstream_unavailable", 503)
+        process_project(repo.project_id, client)
+        assert RepositoryProvisioning.objects.get(project=repo.project).status == "sync_error"

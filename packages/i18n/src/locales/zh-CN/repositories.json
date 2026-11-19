@@ -9,7 +9,7 @@
     "empty": "项目尚未配置仓库，请项目管理员添加。",
     "account": "连接账号",
     "expires": "到期时间",
-    "anonymous": "明确匿名访问（仅公开仓库）",
+    "anonymous": "无需登录（仅公开仓库）",
     "not_connected": "尚未连接，可在需要访问时再授权。",
     "disabled": "仓库已停用",
     "connect": "连接",
@@ -52,7 +52,9 @@
       "file_too_large": "文件超过预览大小限制，请在托管平台查看。",
       "binary_file": "二进制文件无法预览。",
       "lfs_file": "请在托管平台查看此 LFS 文件。",
-      "configuration_conflict": "仓库已配置或配置发生冲突。"
+      "configuration_conflict": "仓库已配置或配置发生冲突。",
+      "invalid_repository_url": "请输入有效的仓库完整地址。",
+      "repository_host_not_configured": "尚未配置该仓库站点，请联系管理员。"
     },
     "prototype": "Storybook 原型仓库",
     "bindings": "专用仓库绑定",
@@ -74,7 +76,9 @@
       "ready": "仓库初始化完成，专用仓库已绑定。",
       "blocked": "仓库初始化未完成，请检查错误详情后重试。",
       "not_started": "尚未开始初始化仓库。",
-      "status_unavailable": "暂时无法更新进度，后台操作可能仍在执行，请恢复连接后查看状态。"
+      "status_unavailable": "暂时无法更新进度，后台操作可能仍在执行，请恢复连接后查看状态。",
+      "syncing": "正在同步成员权限…",
+      "sync_error": "成员权限同步失败，请查看错误详情。"
     },
     "bound": "已绑定",
     "registered": "其他仓库",
@@ -93,6 +97,8 @@
     },
     "connected": "已连接",
     "expired": "已过期",
-    "details": "详情"
+    "details": "详情",
+    "repository_url": "仓库地址",
+    "continue_add": "下一步"
   }
 }

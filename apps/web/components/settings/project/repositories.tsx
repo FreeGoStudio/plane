@@ -13,6 +13,7 @@ import { useTranslation } from "@plane/i18n";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 import { SettingsHeading } from "@/components/settings/heading";
 import { repositorySection, selectedRepositorySection, type RepositoryBindings } from "./repository-sections";
+import { RepositoryAdd } from "./repository-add";
 import { RepositoryInitialization, RepositoryMemberPermissions } from "./repository-management";
 import {
   repositoryService as api,
@@ -414,9 +415,19 @@ export function ProjectRepositoriesSettings({
                                     c.instance_id === row.instance_id &&
                                     (!c.expires_at || Date.parse(c.expires_at) > Date.now())
                                 )
+                                .filter(
+                                  (c, index, choices) =>
+                                    c.kind !== "oauth" ||
+                                    !c.external_actor_id ||
+                                    choices.findIndex(
+                                      (other) =>
+                                        other.kind === "oauth" && other.external_actor_id === c.external_actor_id
+                                    ) === index
+                                )
                                 .map((c) => (
                                   <option value={c.id} key={c.id}>
-                                    {c.label} · {c.external_actor_label}
+                                    {c.label}
+                                    {c.kind && c.kind !== "oauth" ? ` · Token ${c.id.slice(0, 8)}` : ""}
                                   </option>
                                 ))}
                               <option value="anonymous">{text("anonymous")}</option>
@@ -524,60 +535,18 @@ export function ProjectRepositoriesSettings({
             })}
           </div>
           {info.can_manage && (
-            <details className="mt-6 rounded-lg border border-subtle p-5">
-              <summary className="cursor-pointer">{text("add")}</summary>
-              <form
-                className="mt-4 flex flex-col gap-3"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const data = new FormData(e.currentTarget);
-                  void action(async () => {
-                    await write("repositories/", {
-                      instance_id: data.get("host"),
-                      path: data.get("path"),
-                      purpose: data.get("purpose"),
-                      ...(data.get("credential") === "anonymous"
-                        ? { anonymous: true }
-                        : { credential_id: data.get("credential") }),
-                    });
-                    setParams({ section: String(data.get("purpose")) });
-                  });
-                }}
-              >
-                <select className={field} name="host" aria-label={text("host")}>
-                  {info.hosts.map((h) => (
-                    <option key={h.id} value={h.id}>
-                      {h.name}
-                    </option>
-                  ))}
-                </select>
-                <Input size="md" name="path" required placeholder={text("path")} aria-label={text("path")} />
-                <select
-                  key={section}
-                  className={field}
-                  name="purpose"
-                  defaultValue={section}
-                  aria-label={text("purpose")}
-                >
-                  {["development", "reference", "documentation", "prototype"].map((p) => (
-                    <option key={p} value={p}>
-                      {text(p)}
-                    </option>
-                  ))}
-                </select>
-                <select className={field} name="credential" required aria-label={text("choose")}>
-                  <option value="anonymous">{text("anonymous")}</option>
-                  {info.credentials.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-                <Button type="submit" disabled={busy}>
-                  {text("add")}
-                </Button>
-              </form>
-            </details>
+            <RepositoryAdd
+              key={section}
+              base={base}
+              csrf={info.csrf_token}
+              section={section}
+              busy={busy}
+              action={action}
+              onAdded={async (purpose) => {
+                await Promise.all([mutate(), refreshInfo(), refreshBindings()]);
+                setParams({ section: purpose });
+              }}
+            />
           )}
         </>
       )}

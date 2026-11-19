@@ -11,6 +11,7 @@ from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectR
 from .repository_api import ProjectRepositoryConnections, DelegatedRepositoryRead
 from .repository_api import ProjectRepositoryBindings, BoundRepositoryRead, DelegatedBoundRepositoryRead
 from .repository_oauth import callback as repository_callback
+from .repository_add import AddRepository
 from .repository_management_api import RepositoryManagement, RepositoryMembers
 
 auth_patterns = [
@@ -29,6 +30,7 @@ base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
 urlpatterns = [
     path(base + "work-items/<uuid:pk>/wbs/", WbsAPI.as_view()),
     path(base + "work-items/<uuid:pk>/wbs/<uuid:run_id>/", WbsAPI.as_view()),
+    path(base + "repository-add/", AddRepository.as_view()),
     path(base + "repository-connections/", ProjectRepositoryConnections.as_view()),
     path(base + "repositories/<uuid:pk>/connection/", ProjectRepositoryConnections.as_view()),
     path(base + "ai-repositories/", DelegatedRepositoryRead.as_view()),

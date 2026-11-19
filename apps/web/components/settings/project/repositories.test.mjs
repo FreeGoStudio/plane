@@ -110,6 +110,10 @@ function renderPage(section, overrides = {}) {
       RepositoryInitialization: () => null,
       RepositoryMemberPermissions: () => React.createElement("span", null, "member-permissions"),
     },
+    "./repository-add": {
+      RepositoryAdd: ({ section: addSection }) =>
+        React.createElement("span", { "data-add-section": addSection }, "repository_ui.add"),
+    },
     "./repository-sections": sections,
     "@/services/repository.service": { repositoryBase: () => "/test/", repositoryService: {} },
   };
@@ -152,7 +156,7 @@ test("non-admin keeps personal access and browsing but has no binding/member/con
 });
 test("add repository defaults to the current category", () => {
   for (const section of sections.repositorySections)
-    assert.match(renderPage(section), new RegExp(`value="${section}" selected=""`));
+    assert.match(renderPage(section), new RegExp(`data-add-section="${section}"`));
 });
 test("ready initialization is hidden only when both active bindings exist; errors remain visible", () => {
   function render(status, allBound, error = undefined) {
@@ -174,6 +178,9 @@ test("ready initialization is hidden only when both active bindings exist; error
     );
   }
   assert.equal(render("ready", true), "");
+  assert.equal(render("syncing", true), "");
+  assert.match(render("sync_error", true), /initialization.sync_error/);
+  assert.doesNotMatch(render("sync_error", true), /repository_ui.initialize/);
   assert.match(render("ready", false), /repository_ui.initialize/);
   assert.match(render("processing", true), /repository_ui.initialization.processing/);
   assert.match(render("ready", true, new Error("offline")), /status_unavailable/);

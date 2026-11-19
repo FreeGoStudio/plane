@@ -9,7 +9,7 @@
     "empty": "No repositories configured. Ask a project administrator to add one.",
     "account": "Connected account",
     "expires": "Expires",
-    "anonymous": "Explicit anonymous access (public repositories only)",
+    "anonymous": "Ajouter sans connexion (dépôts publics)",
     "not_connected": "Not connected. You can connect when access is needed.",
     "disabled": "Repository disabled",
     "connect": "Connect",
@@ -52,7 +52,9 @@
       "file_too_large": "File exceeds the preview size limit. Open it on the hosting platform.",
       "binary_file": "Binary files cannot be previewed.",
       "lfs_file": "Open this LFS file on the hosting platform.",
-      "configuration_conflict": "This repository is already configured or its settings conflict."
+      "configuration_conflict": "This repository is already configured or its settings conflict.",
+      "invalid_repository_url": "Saisissez une URL de dépôt valide.",
+      "repository_host_not_configured": "Ce service d’hébergement n’est pas configuré. Contactez un administrateur."
     },
     "prototype": "Prototype Storybook",
     "bindings": "Associations de dépôts requises",
@@ -74,7 +76,9 @@
       "ready": "Repository initialization complete. Required repositories are bound.",
       "blocked": "Repository initialization could not finish. Check the error details and retry.",
       "not_started": "Repository initialization has not started.",
-      "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status."
+      "status_unavailable": "Unable to refresh progress. The background operation may still be running; reconnect to check its status.",
+      "syncing": "Synchronisation des accès des membres…",
+      "sync_error": "Échec de la synchronisation des accès. Consultez les détails de l’erreur."
     },
     "bound": "Bound",
     "registered": "Additional repository",
@@ -93,6 +97,8 @@
     },
     "connected": "Connecté",
     "expired": "Expiré",
-    "details": "Détails"
+    "details": "Détails",
+    "repository_url": "URL du dépôt",
+    "continue_add": "Continuer"
   }
 }

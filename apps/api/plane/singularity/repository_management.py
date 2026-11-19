@@ -391,7 +391,9 @@ def process_project(project_id, client):
     try:
         with project_lock(project_id):
             row = RepositoryProvisioning.objects.select_related("project__created_by").get(project_id=project_id)
-            row.status, row.error_code = "processing", ""
+            binding = ProjectRepositoryBinding.objects.filter(project_id=project_id).first()
+            initialized = bool(binding and all(getattr(binding, role + "_repository_id") for role in ROLES))
+            row.status, row.error_code = ("syncing" if initialized else "processing"), ""
             row.attempts += 1
             row.next_attempt_at = timezone.now() + timedelta(minutes=2)
             row.save()
@@ -401,7 +403,11 @@ def process_project(project_id, client):
                 row.status, row.error_code = "ready", ""
             except RepositoryError as error:
                 row.status = (
-                    "blocked" if error.status == 409 and error.code != "project_administrator_pending" else "retry"
+                    "sync_error"
+                    if initialized
+                    else (
+                        "blocked" if error.status == 409 and error.code != "project_administrator_pending" else "retry"
+                    )
                 )
                 row.error_code = error.code
                 event(row.project, "repository_initialization_retry", {"error_code": error.code})

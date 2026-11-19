@@ -96,6 +96,7 @@ def validated(serializer, data):
 def credential_data(row):
     return {
         "id": str(row.pk),
+        "kind": row.kind,
         "instance_id": str(row.instance_id),
         "label": row.label,
         "expires_at": row.expires_at,

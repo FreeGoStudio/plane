@@ -22,11 +22,11 @@ from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
-from plane.db.models import ProjectRepository, RepositoryCredential, RepositorySelection, ProjectMember
+from plane.db.models import ProjectRepository, RepositorySelection, ProjectMember, Project, RepositoryInstance
 from .api import visible_projects
 from .repository_provider import RepositoryProvider
 from .repository_transport import RepositoryError, RepositoryTransport
-from .vault import VaultError, seal
+from .vault import VaultError
 
 
 def project_url(repository):
@@ -53,19 +53,24 @@ def callback_url():
     return settings.WEB_URL.rstrip("/") + "/auth/singularity/repository-callback/"
 
 
-def start(request, repository):
+def start(request, repository, draft=None):
     config = oauth_config(repository.instance)
     verifier = secrets.token_urlsafe(48)
     nonce = secrets.token_urlsafe(32)
     state = signing.dumps(
-        {"nonce": nonce, "owner": str(request.user.pk), "repository": str(repository.pk)}, salt="repository-oauth"
+        {
+            "nonce": nonce,
+            "owner": str(request.user.pk),
+            **({"draft": True} if draft else {"repository": str(repository.pk)}),
+        },
+        salt="repository-oauth",
     )
     # Server-side session; multiple repository tabs can complete independently.
     pending = request.session.get("repository_oauth", {})
     pending = {key: value for key, value in pending.items() if value["expires"] > timezone.now().timestamp()}
     if len(pending) >= 10:
         raise RepositoryError("too_many_pending_connections", 429)
-    pending[nonce] = {"verifier": verifier, "expires": timezone.now().timestamp() + 600}
+    pending[nonce] = {"verifier": verifier, "expires": timezone.now().timestamp() + 600, "draft": draft}
     request.session["repository_oauth"] = pending
     scope = "read_api" if repository.instance.provider == "gitlab" else "repo"
     params = dict(
@@ -79,6 +84,20 @@ def start(request, repository):
     )
     path = "/oauth/authorize" if repository.instance.provider == "gitlab" else "/login/oauth/authorize"
     return {"authorization_url": repository.instance.web_url.rstrip("/") + path + "?" + urlencode(params)}
+
+
+def start_add(request, project, instance, path, purpose):
+    """Keep an unsaved repository draft in the owner session until OAuth verifies access."""
+    return start(
+        request,
+        SimpleNamespace(instance=instance),
+        {
+            "project": str(project.pk),
+            "instance": str(instance.pk),
+            "path": path,
+            "purpose": purpose,
+        },
+    )
 
 
 def exchange(instance, config, code, verifier):
@@ -129,14 +148,25 @@ def callback(request):
         return HttpResponseBadRequest(
             "Connection expired or does not belong to this session. Return to the project and retry."
         )
-    repository = get_object_or_404(
-        ProjectRepository.objects.select_related("instance", "project__workspace"),
-        pk=data["repository"],
-        enabled=True,
-        instance__enabled=True,
-        project__in=visible_projects(request.user),
-        project_id__in=ProjectMember.objects.filter(member=request.user, is_active=True).values("project_id"),
-    )
+    draft = entry.get("draft") if data.get("draft") else None
+    if draft:
+        project = get_object_or_404(
+            Project.objects.select_related("workspace"),
+            pk=draft["project"],
+            pk__in=visible_projects(request.user).values("pk"),
+            id__in=ProjectMember.objects.filter(member=request.user, role=20, is_active=True).values("project_id"),
+        )
+        instance = get_object_or_404(RepositoryInstance, pk=draft["instance"], enabled=True)
+        repository = SimpleNamespace(instance=instance, project=project, project_id=project.pk, pk="")
+    else:
+        repository = get_object_or_404(
+            ProjectRepository.objects.select_related("instance", "project__workspace"),
+            pk=data["repository"],
+            enabled=True,
+            instance__enabled=True,
+            project__in=visible_projects(request.user),
+            project_id__in=ProjectMember.objects.filter(member=request.user, is_active=True).values("project_id"),
+        )
     result = "cancelled"
     if not request.GET.get("error") and request.GET.get("code"):
         try:
@@ -149,31 +179,35 @@ def callback(request):
             provider = RepositoryProvider(repository.instance, raw)
             actor_id, actor_label = provider.actor()
             # A login is not proof of repository access. Verify before saving a selection.
-            provider.metadata(repository.external_id)
+            metadata = (
+                provider.metadata(draft["path"], by_id=False) if draft else provider.metadata(repository.external_id)
+            )
             expires = token.get("expires_in")
             if expires is not None and not 0 < int(expires) <= 315360000:
                 raise RepositoryError("authorization_failed")
             with transaction.atomic():
-                row = RepositoryCredential(
-                    owner=request.user,
-                    instance=repository.instance,
-                    kind="oauth",
-                    label=f"{repository.instance.name} · {actor_label}"[:160],
-                    external_actor_id=actor_id,
-                    external_actor_label=actor_label,
-                    validated_at=timezone.now(),
-                    validation_status="identity_verified",
-                    expires_at=timezone.now() + timedelta(seconds=int(expires)) if expires else None,
+                from .repository_add import save_oauth, finish_add
+
+                row = save_oauth(
+                    request.user,
+                    repository.instance,
+                    raw,
+                    actor_id,
+                    actor_label,
+                    timezone.now() + timedelta(seconds=int(expires)) if expires else None,
                 )
-                seal(row, raw)
-                row.save()
+                if draft:
+                    repository = finish_add(project, request.user, instance, metadata, draft["purpose"], row)
                 RepositorySelection.objects.update_or_create(
                     owner=request.user, repository=repository, defaults={"credential": row, "anonymous": False}
                 )
             result = "connected"
         except (RepositoryError, VaultError, ValueError, TypeError) as error:
             result = error.code if isinstance(error, RepositoryError) else "authorization_failed"
-    response = redirect(project_url(repository) + "&connection=" + quote(result, safe=""))
+    target = project_url(repository)
+    if draft:
+        target += "&section=" + quote(draft["purpose"], safe="")
+    response = redirect(target + "&connection=" + quote(result, safe=""))
     response["Cache-Control"] = "no-store"
     response["Referrer-Policy"] = "no-referrer"
     return response
