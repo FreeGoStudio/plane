@@ -111,6 +111,11 @@ def selected_credential(user, repository):
         .select_related("credential__instance")
         .first()
     )
+    from .repository_managed import managed_credential
+
+    managed = managed_credential(user, repository, selection)
+    if managed:
+        return managed, unseal(managed)
     if not selection:
         raise VaultError("select_repository_credential")
     if selection.anonymous:

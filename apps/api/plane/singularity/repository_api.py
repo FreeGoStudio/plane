@@ -24,6 +24,8 @@ from plane.db.models import (
     RepositoryCredential,
     RepositorySelection,
     RepositoryAccessAudit,
+    ManagedRepositoryConnection,
+    RepositoryConnectionOptOut,
     ProjectMember,
     Project,
     ProjectRepositoryBinding,
@@ -214,6 +216,8 @@ class RepositoryCredentials(RepositoryAPI):
         data = validated(CredentialInput, request.data)
         if pk:
             row = get_object_or_404(RepositoryCredential.objects.select_for_update(), pk=pk, owner=request.user)
+            if row.kind == "managed_pat":
+                raise serializers.ValidationError("Managed credentials cannot be edited")
             if row.revoked_at or (data.get("instance_id") and data["instance_id"] != row.instance_id):
                 raise serializers.ValidationError("Revoked credentials and credential instances cannot be changed")
         else:
@@ -234,6 +238,9 @@ class RepositoryCredentials(RepositoryAPI):
         if pk is None:
             raise MethodNotAllowed("DELETE")
         row = get_object_or_404(RepositoryCredential, owner=request.user, pk=pk)
+        ManagedRepositoryConnection.objects.filter(owner=request.user, credential=row).update(
+            status="revoked", next_attempt_at=timezone.now()
+        )
         row.revoked_at, row.encrypted_material, row.validation_status = timezone.now(), "", "revoked"
         row.save(update_fields=["revoked_at", "encrypted_material", "validation_status", "updated_at"])
         self.credential = row
@@ -415,6 +422,7 @@ class RepositoryAccess(RepositoryAPI):
         RepositorySelection.objects.update_or_create(
             owner=request.user, repository=row, defaults={"credential": self.credential, "anonymous": data["anonymous"]}
         )
+        RepositoryConnectionOptOut.objects.filter(owner=request.user, repository=row).delete()
         return Response({"configured": True})
 
     def get(self, request, slug, project_id, pk, operation=None):
@@ -422,17 +430,30 @@ class RepositoryAccess(RepositoryAPI):
             raise MethodNotAllowed("GET")
         row = self.row(request, slug, project_id, pk)
         self.credential, token = selected_credential(request.user, row)
-        provider = RepositoryProvider(row.instance, token)
         ref, path = request.query_params.get("ref", ""), request.query_params.get("path", "")
         if operation == "tree":
             try:
                 page = int(request.query_params.get("page", "1"))
             except ValueError:
                 raise serializers.ValidationError("Invalid page") from None
-            result = provider.directory(row, ref, path, page)
-        else:
-            result = provider.file(row, ref, path)
-        return Response(result)
+
+        def read(material):
+            provider = RepositoryProvider(row.instance, material)
+            return provider.directory(row, ref, path, page) if operation == "tree" else provider.file(row, ref, path)
+
+        try:
+            return Response(read(token))
+        except RepositoryError as error:
+            if (
+                error.code != "upstream_authentication_required"
+                or not self.credential
+                or self.credential.kind != "managed_pat"
+            ):
+                raise
+            from .repository_managed import recover_managed_read
+
+            self.credential = recover_managed_read(request.user, self.credential)
+            return Response(read(unseal(self.credential)))
 
 
 class ProjectRepositoryConnections(RepositoryAccess):
@@ -504,6 +525,10 @@ class ProjectRepositoryConnections(RepositoryAccess):
 
     def delete(self, request, slug, project_id, pk):
         row = self.row(request, slug, project_id, pk)
+        from .repository_managed import managed_instance
+
+        if managed_instance(row.instance):
+            RepositoryConnectionOptOut.objects.get_or_create(owner=request.user, repository=row)
         RepositorySelection.objects.filter(owner=request.user, repository=row).delete()
         return Response(status=204)
 

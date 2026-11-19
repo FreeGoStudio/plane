@@ -4,6 +4,6 @@
 # A merge conflict here means another PR added a migration to the same app first:
 # merge preview, delete your migration, and run makemigrations again.
 
-db: 0136_repository_oauth_application
+db: 0137_managed_repository_connections
 
 license: 0006_instance_is_current_version_deprecated

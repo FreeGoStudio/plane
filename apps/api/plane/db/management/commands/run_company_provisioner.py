@@ -32,6 +32,9 @@ class Command(BaseCommand):
             )
             for user_id in list(rows.order_by("next_attempt_at").values_list("user_id", flat=True)[:100]):
                 process_account(user_id, client)
+            from plane.singularity.repository_managed import maintain_connections
+
+            maintain_connections(client)
             if options["once"]:
                 return
             time.sleep(5)

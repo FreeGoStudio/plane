@@ -8,6 +8,7 @@ import uuid
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 
 
 class RepositoryInstance(models.Model):
@@ -159,3 +160,37 @@ class RepositoryOAuthApplication(models.Model):
     encrypted_secret = models.TextField()
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class ManagedRepositoryConnection(models.Model):
+    """Durable owner-scoped PAT issuance/renewal; plaintext remains in the vault."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    instance = models.ForeignKey(RepositoryInstance, on_delete=models.PROTECT)
+    external_actor_id = models.CharField(max_length=255)
+    credential = models.OneToOneField(RepositoryCredential, null=True, on_delete=models.PROTECT)
+    remote_token_id = models.PositiveBigIntegerField(null=True)
+    retired_token_ids = models.JSONField(default=list)
+    pending_name = models.CharField(max_length=160, blank=True)
+    status = models.CharField(max_length=24, default="pending")
+    error_code = models.CharField(max_length=80, blank=True)
+    next_attempt_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["owner", "instance"], name="unique_managed_repository_connection")
+        ]
+
+
+class RepositoryConnectionOptOut(models.Model):
+    """A deliberate disconnect must not silently recreate automatic access."""
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    repository = models.ForeignKey(ProjectRepository, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["owner", "repository"], name="unique_repository_connection_optout")
+        ]

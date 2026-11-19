@@ -97,6 +97,8 @@ from .company_account import CompanyAccount
 from .repository import (
     RepositoryInstance,
     RepositoryOAuthApplication,
+    ManagedRepositoryConnection,
+    RepositoryConnectionOptOut,
     ProjectRepository,
     ProjectRepositoryBinding,
     ProjectRepositoryBindingRevision,
