@@ -99,6 +99,13 @@
     "expired": "已过期",
     "details": "详情",
     "repository_url": "仓库地址",
-    "continue_add": "下一步"
+    "continue_add": "下一步",
+    "oauth_setup": {
+      "title": "配置仓库授权",
+      "create": "前往创建 OAuth 应用",
+      "github_steps": "创建 OAuth App，不启用 Device Flow。创建后将 Client ID 和 Client Secret 填回下方。",
+      "gitlab_steps": "选择 Add new application，勾选 Confidential 和 read_api。创建后将 Application ID 和 Secret 填回下方。",
+      "private_networks": "允许访问的内网网段（选填，CIDR 格式，逗号分隔）"
+    }
   }
 }

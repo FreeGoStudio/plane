@@ -99,6 +99,13 @@
     "expired": "有効期限切れ",
     "details": "詳細",
     "repository_url": "リポジトリの URL",
-    "continue_add": "次へ"
+    "continue_add": "次へ",
+    "oauth_setup": {
+      "title": "リポジトリの認可を設定",
+      "create": "OAuth アプリを作成",
+      "github_steps": "Device Flow を無効にして OAuth App を作成し、Client ID と Client Secret を下に入力してください。",
+      "gitlab_steps": "Add new application を選び、Confidential と read_api を有効にしてください。作成後、Application ID と Secret を下に入力してください。",
+      "private_networks": "許可するプライベートネットワーク（任意、CIDR をカンマ区切りで入力）"
+    }
   }
 }

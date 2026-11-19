@@ -99,6 +99,13 @@
     "expired": "Verlopen",
     "details": "Details",
     "repository_url": "Repository-URL",
-    "continue_add": "Doorgaan"
+    "continue_add": "Doorgaan",
+    "oauth_setup": {
+      "title": "Repository-autorisatie configureren",
+      "create": "OAuth-applicatie maken",
+      "github_steps": "Maak een OAuth App met Device Flow uitgeschakeld. Voer daarna hieronder Client ID en Client Secret in.",
+      "gitlab_steps": "Selecteer Add new application, Confidential en read_api. Voer daarna hieronder Application ID en Secret in.",
+      "private_networks": "Toegestane privénetwerken (optioneel, kommagescheiden CIDRs)"
+    }
   }
 }

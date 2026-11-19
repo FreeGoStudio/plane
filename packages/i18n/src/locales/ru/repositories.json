@@ -99,6 +99,13 @@
     "expired": "Срок действия истёк",
     "details": "Подробнее",
     "repository_url": "URL репозитория",
-    "continue_add": "Продолжить"
+    "continue_add": "Продолжить",
+    "oauth_setup": {
+      "title": "Настроить авторизацию репозиториев",
+      "create": "Создать приложение OAuth",
+      "github_steps": "Создайте OAuth App с выключенным Device Flow. Затем введите Client ID и Client Secret ниже.",
+      "gitlab_steps": "Выберите Add new application, Confidential и read_api. Затем введите Application ID и Secret ниже.",
+      "private_networks": "Разрешённые частные сети (необязательно, CIDR через запятую)"
+    }
   }
 }

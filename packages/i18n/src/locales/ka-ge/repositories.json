@@ -99,6 +99,13 @@
     "expired": "ვადა გასულია",
     "details": "დეტალები",
     "repository_url": "რეპოზიტორიის URL",
-    "continue_add": "გაგრძელება"
+    "continue_add": "გაგრძელება",
+    "oauth_setup": {
+      "title": "რეპოზიტორიების ავტორიზაციის გამართვა",
+      "create": "OAuth აპლიკაციის შექმნა",
+      "github_steps": "შექმენით OAuth App გამორთული Device Flow-ით. შემდეგ ქვემოთ შეიყვანეთ Client ID და Client Secret.",
+      "gitlab_steps": "აირჩიეთ Add new application, Confidential და read_api. შემდეგ ქვემოთ შეიყვანეთ Application ID და Secret.",
+      "private_networks": "დაშვებული კერძო ქსელები (არასავალდებულო, მძიმით გამოყოფილი CIDR)"
+    }
   }
 }

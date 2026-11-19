@@ -99,6 +99,13 @@
     "expired": "만료됨",
     "details": "상세 정보",
     "repository_url": "저장소 URL",
-    "continue_add": "계속"
+    "continue_add": "계속",
+    "oauth_setup": {
+      "title": "저장소 인증 설정",
+      "create": "OAuth 앱 만들기",
+      "github_steps": "Device Flow를 비활성화한 OAuth App을 만든 후 Client ID와 Client Secret을 아래에 입력하세요.",
+      "gitlab_steps": "Add new application을 선택하고 Confidential과 read_api를 활성화하세요. 생성 후 Application ID와 Secret을 아래에 입력하세요.",
+      "private_networks": "허용할 사설 네트워크 (선택 사항, 쉼표로 구분한 CIDR)"
+    }
   }
 }

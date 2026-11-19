@@ -99,6 +99,13 @@
     "expired": "Đã hết hạn",
     "details": "Chi tiết",
     "repository_url": "URL kho mã",
-    "continue_add": "Tiếp tục"
+    "continue_add": "Tiếp tục",
+    "oauth_setup": {
+      "title": "Cấu hình ủy quyền kho mã",
+      "create": "Tạo ứng dụng OAuth",
+      "github_steps": "Tạo OAuth App với Device Flow bị tắt. Sau đó nhập Client ID và Client Secret bên dưới.",
+      "gitlab_steps": "Chọn Add new application, Confidential và read_api. Sau đó nhập Application ID và Secret bên dưới.",
+      "private_networks": "Mạng riêng được phép (tùy chọn, CIDR phân tách bằng dấu phẩy)"
+    }
   }
 }

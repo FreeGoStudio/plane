@@ -99,6 +99,13 @@
     "expired": "已過期",
     "details": "詳細資料",
     "repository_url": "儲存庫網址",
-    "continue_add": "下一步"
+    "continue_add": "下一步",
+    "oauth_setup": {
+      "title": "設定儲存庫授權",
+      "create": "前往建立 OAuth 應用程式",
+      "github_steps": "建立 OAuth App，不啟用 Device Flow。建立後將 Client ID 和 Client Secret 填回下方。",
+      "gitlab_steps": "選擇 Add new application，勾選 Confidential 和 read_api。建立後將 Application ID 和 Secret 填回下方。",
+      "private_networks": "允許存取的內部網段（選填，CIDR 格式，以逗號分隔）"
+    }
   }
 }

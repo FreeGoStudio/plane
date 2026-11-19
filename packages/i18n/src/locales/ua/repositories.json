@@ -99,6 +99,13 @@
     "expired": "Термін дії минув",
     "details": "Докладніше",
     "repository_url": "URL репозиторію",
-    "continue_add": "Продовжити"
+    "continue_add": "Продовжити",
+    "oauth_setup": {
+      "title": "Налаштувати авторизацію репозиторіїв",
+      "create": "Створити застосунок OAuth",
+      "github_steps": "Створіть OAuth App із вимкненим Device Flow. Потім введіть Client ID і Client Secret нижче.",
+      "gitlab_steps": "Виберіть Add new application, Confidential і read_api. Потім введіть Application ID і Secret нижче.",
+      "private_networks": "Дозволені приватні мережі (необов’язково, CIDR через кому)"
+    }
   }
 }

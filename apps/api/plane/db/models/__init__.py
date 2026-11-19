@@ -96,6 +96,7 @@ from .delegation import Delegation, DelegationCode, DelegationToken, DiscussionR
 from .company_account import CompanyAccount
 from .repository import (
     RepositoryInstance,
+    RepositoryOAuthApplication,
     ProjectRepository,
     ProjectRepositoryBinding,
     ProjectRepositoryBindingRevision,

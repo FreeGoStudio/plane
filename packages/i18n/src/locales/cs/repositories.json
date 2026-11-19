@@ -99,6 +99,13 @@
     "expired": "Platnost vypršela",
     "details": "Podrobnosti",
     "repository_url": "URL repozitáře",
-    "continue_add": "Pokračovat"
+    "continue_add": "Pokračovat",
+    "oauth_setup": {
+      "title": "Nastavit autorizaci repozitářů",
+      "create": "Vytvořit aplikaci OAuth",
+      "github_steps": "Vytvořte OAuth App s vypnutým Device Flow. Poté níže zadejte Client ID a Client Secret.",
+      "gitlab_steps": "Vyberte Add new application, Confidential a read_api. Poté níže zadejte Application ID a Secret.",
+      "private_networks": "Povolené soukromé sítě (volitelné, CIDR oddělené čárkami)"
+    }
   }
 }

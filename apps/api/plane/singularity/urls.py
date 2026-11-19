@@ -12,6 +12,7 @@ from .repository_api import ProjectRepositoryConnections, DelegatedRepositoryRea
 from .repository_api import ProjectRepositoryBindings, BoundRepositoryRead, DelegatedBoundRepositoryRead
 from .repository_oauth import callback as repository_callback
 from .repository_add import AddRepository
+from .repository_oauth_setup import RepositoryOAuthSetup
 from .repository_management_api import RepositoryManagement, RepositoryMembers
 
 auth_patterns = [
@@ -44,6 +45,7 @@ urlpatterns = [
     path(base + "ai-bound-repositories/<str:role>/<str:operation>/", DelegatedBoundRepositoryRead.as_view()),
     path(base + "ai-repositories/<uuid:pk>/tree/", DelegatedRepositoryRead.as_view(), {"operation": "tree"}),
     path(base + "ai-repositories/<uuid:pk>/file/", DelegatedRepositoryRead.as_view(), {"operation": "file"}),
+    path("repository-oauth-setup/", RepositoryOAuthSetup.as_view()),
     path("repository-hosts/", RepositoryInstances.as_view()),
     path("repository-credentials/", RepositoryCredentials.as_view()),
     path("repository-credentials/<uuid:pk>/", RepositoryCredentials.as_view()),

@@ -539,6 +539,7 @@ export function ProjectRepositoriesSettings({
               key={section}
               base={base}
               csrf={info.csrf_token}
+              canConfigureOAuth={info.can_configure_oauth}
               section={section}
               busy={busy}
               action={action}

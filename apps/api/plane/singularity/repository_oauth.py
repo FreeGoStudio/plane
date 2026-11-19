@@ -39,6 +39,13 @@ def project_url(repository):
 
 
 def oauth_config(instance):
+    """Prefer encrypted administrator configuration, retaining legacy file fallback."""
+    from plane.db.models import RepositoryOAuthApplication
+    from .repository_oauth_setup import application_secret
+
+    app = RepositoryOAuthApplication.objects.filter(instance=instance).first()
+    if app:
+        return {"client_id": app.client_id, "client_secret": application_secret(app)}
     try:
         configs = json.loads(Path(settings.SINGULARITY_REPOSITORY_OAUTH_FILE).read_text())
         config = configs[str(instance.pk)]

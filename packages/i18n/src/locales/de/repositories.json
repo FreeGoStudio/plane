@@ -99,6 +99,13 @@
     "expired": "Abgelaufen",
     "details": "Details",
     "repository_url": "Repository-URL",
-    "continue_add": "Weiter"
+    "continue_add": "Weiter",
+    "oauth_setup": {
+      "title": "Repository-Autorisierung konfigurieren",
+      "create": "OAuth-Anwendung erstellen",
+      "github_steps": "Erstellen Sie eine OAuth App mit deaktiviertem Device Flow. Tragen Sie anschließend Client ID und Client Secret hier ein.",
+      "gitlab_steps": "Wählen Sie Add new application, Confidential und read_api. Tragen Sie anschließend Application ID und Secret hier ein.",
+      "private_networks": "Erlaubte private Netzwerke (optional, kommagetrennte CIDRs)"
+    }
   }
 }

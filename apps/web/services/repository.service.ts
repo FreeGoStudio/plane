@@ -21,6 +21,7 @@ export type Repository = {
 export type ConnectionInfo = {
   csrf_token: string;
   can_manage: boolean;
+  can_configure_oauth?: boolean;
   hosts: { id: string; name: string; provider: string; oauth_available: boolean }[];
   credentials: {
     id: string;

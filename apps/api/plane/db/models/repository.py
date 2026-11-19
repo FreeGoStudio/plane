@@ -148,3 +148,14 @@ class RepositoryAccessAudit(models.Model):
     operation = models.CharField(max_length=40)
     result = models.CharField(max_length=40)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class RepositoryOAuthApplication(models.Model):
+    """Platform-managed OAuth client; secrets use the repository vault keyring."""
+
+    instance = models.OneToOneField(RepositoryInstance, primary_key=True, on_delete=models.CASCADE)
+    client_id = models.CharField(max_length=255)
+    key_version = models.CharField(max_length=32)
+    encrypted_secret = models.TextField()
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    updated_at = models.DateTimeField(auto_now=True)

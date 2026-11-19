@@ -461,6 +461,7 @@ class ProjectRepositoryConnections(RepositoryAccess):
                 "hosts": [host_data(host) for host in hosts],
                 "credentials": [credential_data(row) for row in credentials],
                 "can_manage": can_manage,
+                "can_configure_oauth": InstanceAdmin.objects.filter(user=request.user, role__gte=15).exists(),
             }
         )
 

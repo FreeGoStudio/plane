@@ -99,6 +99,13 @@
     "expired": "Expiré",
     "details": "Détails",
     "repository_url": "URL du dépôt",
-    "continue_add": "Continuer"
+    "continue_add": "Continuer",
+    "oauth_setup": {
+      "title": "Configurer l’autorisation des dépôts",
+      "create": "Créer une application OAuth",
+      "github_steps": "Créez une OAuth App sans Device Flow. Revenez saisir Client ID et Client Secret ci-dessous.",
+      "gitlab_steps": "Sélectionnez Add new application, Confidential et read_api. Revenez saisir Application ID et Secret ci-dessous.",
+      "private_networks": "Réseaux privés autorisés (facultatif, CIDR séparés par des virgules)"
+    }
   }
 }

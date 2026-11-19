@@ -99,6 +99,13 @@
     "expired": "Süresi doldu",
     "details": "Ayrıntılar",
     "repository_url": "Depo URL’si",
-    "continue_add": "Devam"
+    "continue_add": "Devam",
+    "oauth_setup": {
+      "title": "Depo yetkilendirmesini yapılandır",
+      "create": "OAuth uygulaması oluştur",
+      "github_steps": "Device Flow kapalı bir OAuth App oluşturun. Ardından Client ID ve Client Secret değerlerini aşağıya girin.",
+      "gitlab_steps": "Add new application, Confidential ve read_api seçeneklerini seçin. Ardından Application ID ve Secret değerlerini aşağıya girin.",
+      "private_networks": "İzin verilen özel ağlar (isteğe bağlı, virgülle ayrılmış CIDR)"
+    }
   }
 }

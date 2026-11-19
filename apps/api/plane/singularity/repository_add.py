@@ -119,7 +119,29 @@ class AddRepository(RepositoryAPI):
 
         project = self.project(request, slug, project_id, admin=True)
         data = validated(AddInput, request.data)
-        host, path = resolve_address(data["url"])
+        try:
+            host, path = resolve_address(data["url"])
+        except RepositoryError as error:
+            from .repository_oauth_setup import can_configure
+
+            if (
+                error.code != "repository_host_not_configured"
+                or data["method"] != "inspect"
+                or not can_configure(request.user)
+            ):
+                raise
+            address = urlsplit(data["url"].strip())
+            return Response(
+                {
+                    "instance_id": None,
+                    "name": address.netloc,
+                    "provider": "gitlab",
+                    "path": address.path.lstrip("/"),
+                    "oauth_available": False,
+                    "credentials": [],
+                    "unregistered": True,
+                }
+            )
         choices = available_credentials(request.user, host)
         if data["method"] == "inspect":
             try:

@@ -99,6 +99,13 @@
     "expired": "Expirat",
     "details": "Detalii",
     "repository_url": "URL-ul depozitului",
-    "continue_add": "Continuați"
+    "continue_add": "Continuați",
+    "oauth_setup": {
+      "title": "Configurați autorizarea depozitelor",
+      "create": "Creați o aplicație OAuth",
+      "github_steps": "Creați o OAuth App cu Device Flow dezactivat. Apoi introduceți Client ID și Client Secret mai jos.",
+      "gitlab_steps": "Selectați Add new application, Confidential și read_api. Apoi introduceți Application ID și Secret mai jos.",
+      "private_networks": "Rețele private permise (opțional, CIDR separate prin virgule)"
+    }
   }
 }

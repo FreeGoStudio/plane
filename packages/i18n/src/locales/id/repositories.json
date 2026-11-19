@@ -99,6 +99,13 @@
     "expired": "Kedaluwarsa",
     "details": "Detail",
     "repository_url": "URL repositori",
-    "continue_add": "Lanjutkan"
+    "continue_add": "Lanjutkan",
+    "oauth_setup": {
+      "title": "Konfigurasi otorisasi repositori",
+      "create": "Buat aplikasi OAuth",
+      "github_steps": "Buat OAuth App dengan Device Flow dinonaktifkan. Kemudian masukkan Client ID dan Client Secret di bawah.",
+      "gitlab_steps": "Pilih Add new application, Confidential, dan read_api. Kemudian masukkan Application ID dan Secret di bawah.",
+      "private_networks": "Jaringan privat yang diizinkan (opsional, CIDR dipisahkan koma)"
+    }
   }
 }

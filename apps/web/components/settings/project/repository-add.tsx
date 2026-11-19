@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * See the LICENSE file for details.
  */
+import { RepositoryOAuthSetup } from "./repository-oauth-setup";
 import { useState } from "react";
 import { Button } from "@makeplane/propel/components/button";
 import { Input, InputGroup } from "@makeplane/propel/components/input";
@@ -10,6 +11,8 @@ import { useTranslation } from "@plane/i18n";
 import { repositoryService as api } from "@/services/repository.service";
 
 type Host = {
+  instance_id?: string | null;
+  unregistered?: boolean;
   name: string;
   provider: string;
   path: string;
@@ -24,9 +27,11 @@ export function RepositoryAdd({
   busy,
   action,
   onAdded,
+  canConfigureOAuth = false,
 }: {
   base: string;
   csrf: string;
+  canConfigureOAuth?: boolean;
   section: string;
   busy: boolean;
   action: (fn: () => Promise<void>) => Promise<void>;
@@ -37,6 +42,15 @@ export function RepositoryAdd({
   const [host, setHost] = useState<Host | null>(null);
   const [credential, setCredential] = useState("");
   const [token, setToken] = useState("");
+  const inspect = async () => {
+    const result = await api.write<Host>(base + "repository-add/", "POST", csrf, {
+      url,
+      purpose: section,
+      method: "inspect",
+    });
+    setHost(result);
+    setCredential(result.credentials[0]?.id || "");
+  };
   const add = (method: string) =>
     void action(async () => {
       const result = await api.write<{ authorization_url?: string; purpose: string }>(
@@ -67,15 +81,7 @@ export function RepositoryAdd({
         className="mt-4 flex flex-col gap-3"
         onSubmit={(event) => {
           event.preventDefault();
-          void action(async () => {
-            const result = await api.write<Host>(base + "repository-add/", "POST", csrf, {
-              url,
-              purpose: section,
-              method: "inspect",
-            });
-            setHost(result);
-            setCredential(result.credentials[0]?.id || "");
-          });
+          void action(inspect);
         }}
       >
         <label htmlFor="repository-url">{t("repository_ui.repository_url")}</label>
@@ -152,49 +158,62 @@ export function RepositoryAdd({
           ) : (
             <p className="text-body-sm-regular text-secondary">{t("repository_ui.oauth_unavailable")}</p>
           )}
-          <details>
-            <summary className="cursor-pointer">{t("repository_ui.connection_options")}</summary>
-            <div className="mt-3 space-y-3">
-              <Button
-                disabled={busy}
-                onClick={() => add("anonymous")}
-                label={t("repository_ui.anonymous")}
-                size="md"
-                variant="secondary"
-                stretch="auto"
-              />
-              <form
-                className="flex flex-col gap-3"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  add("token");
-                }}
-              >
-                <InputGroup size="xl">
-                  <Input
-                    name="token"
-                    type="password"
-                    autoComplete="off"
-                    required
-                    size="md"
-                    aria-label={t("repository_ui.token_placeholder")}
-                    placeholder={t("repository_ui.token_placeholder")}
-                    value={token}
-                    disabled={busy}
-                    onChange={(e) => setToken(e.target.value)}
-                  />
-                </InputGroup>
+          {canConfigureOAuth && (
+            <RepositoryOAuthSetup
+              key={host.instance_id || url}
+              instanceId={host.instance_id}
+              repositoryUrl={url}
+              csrf={csrf}
+              busy={busy}
+              action={action}
+              onConfigured={inspect}
+            />
+          )}
+          {!host.unregistered && (
+            <details>
+              <summary className="cursor-pointer">{t("repository_ui.connection_options")}</summary>
+              <div className="mt-3 space-y-3">
                 <Button
-                  type="submit"
                   disabled={busy}
-                  label={t("repository_ui.verify_save")}
+                  onClick={() => add("anonymous")}
+                  label={t("repository_ui.anonymous")}
                   size="md"
                   variant="secondary"
                   stretch="auto"
                 />
-              </form>
-            </div>
-          </details>
+                <form
+                  className="flex flex-col gap-3"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    add("token");
+                  }}
+                >
+                  <InputGroup size="xl">
+                    <Input
+                      name="token"
+                      type="password"
+                      autoComplete="off"
+                      required
+                      size="md"
+                      aria-label={t("repository_ui.token_placeholder")}
+                      placeholder={t("repository_ui.token_placeholder")}
+                      value={token}
+                      disabled={busy}
+                      onChange={(e) => setToken(e.target.value)}
+                    />
+                  </InputGroup>
+                  <Button
+                    type="submit"
+                    disabled={busy}
+                    label={t("repository_ui.verify_save")}
+                    size="md"
+                    variant="secondary"
+                    stretch="auto"
+                  />
+                </form>
+              </div>
+            </details>
+          )}
         </div>
       )}
     </section>

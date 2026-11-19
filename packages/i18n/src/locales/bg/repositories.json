@@ -99,6 +99,13 @@
     "expired": "С изтекъл срок",
     "details": "Подробности",
     "repository_url": "URL на хранилището",
-    "continue_add": "Продължаване"
+    "continue_add": "Продължаване",
+    "oauth_setup": {
+      "title": "Настройване на оторизацията на хранилищата",
+      "create": "Създаване на OAuth приложение",
+      "github_steps": "Създайте OAuth App с изключен Device Flow. След това въведете Client ID и Client Secret по-долу.",
+      "gitlab_steps": "Изберете Add new application, Confidential и read_api. След това въведете Application ID и Secret по-долу.",
+      "private_networks": "Разрешени частни мрежи (незадължително, CIDR, разделени със запетаи)"
+    }
   }
 }
