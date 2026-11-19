@@ -5,7 +5,7 @@
  */
 import { useState } from "react";
 import { Button } from "@makeplane/propel/components/button";
-import { Input } from "@makeplane/propel/components/input";
+import { Input, InputGroup } from "@makeplane/propel/components/input";
 import { useTranslation } from "@plane/i18n";
 import { repositoryService as api } from "@/services/repository.service";
 
@@ -79,21 +79,23 @@ export function RepositoryAdd({
         }}
       >
         <label htmlFor="repository-url">{t("repository_ui.repository_url")}</label>
-        <Input
-          id="repository-url"
-          name="url"
-          type="url"
-          required
-          size="md"
-          value={url}
-          disabled={busy}
-          placeholder="https://github.com/organization/repository"
-          onChange={(e) => {
-            setUrl(e.target.value);
-            setHost(null);
-            setToken("");
-          }}
-        />
+        <InputGroup size="xl">
+          <Input
+            id="repository-url"
+            name="url"
+            type="url"
+            required
+            size="md"
+            value={url}
+            disabled={busy}
+            placeholder="https://github.com/organization/repository"
+            onChange={(e) => {
+              setUrl(e.target.value);
+              setHost(null);
+              setToken("");
+            }}
+          />
+        </InputGroup>
         <Button
           type="submit"
           disabled={busy}
@@ -168,18 +170,20 @@ export function RepositoryAdd({
                   add("token");
                 }}
               >
-                <Input
-                  name="token"
-                  type="password"
-                  autoComplete="off"
-                  required
-                  size="md"
-                  aria-label={t("repository_ui.token_placeholder")}
-                  placeholder={t("repository_ui.token_placeholder")}
-                  value={token}
-                  disabled={busy}
-                  onChange={(e) => setToken(e.target.value)}
-                />
+                <InputGroup size="xl">
+                  <Input
+                    name="token"
+                    type="password"
+                    autoComplete="off"
+                    required
+                    size="md"
+                    aria-label={t("repository_ui.token_placeholder")}
+                    placeholder={t("repository_ui.token_placeholder")}
+                    value={token}
+                    disabled={busy}
+                    onChange={(e) => setToken(e.target.value)}
+                  />
+                </InputGroup>
                 <Button
                   type="submit"
                   disabled={busy}
