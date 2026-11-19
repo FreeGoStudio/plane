@@ -55,7 +55,7 @@ def seal(credential, raw):
     credential.encrypted_material = base64.b64encode(nonce + encrypted).decode()
 
 
-def unseal(credential):
+def unseal_material(credential):
     """Ciphertext copied between users or instances cannot be decrypted."""
     _, keys = keyring()
     try:
@@ -63,6 +63,27 @@ def unseal(credential):
         return AESGCM(keys[credential.key_version]).decrypt(value[:12], value[12:], aad(credential)).decode()
     except (KeyError, ValueError, InvalidTag, UnicodeError):
         raise VaultError("credential_unreadable") from None
+
+
+def oauth_material(credential):
+    raw = unseal_material(credential)
+    if raw.startswith('{"oauth_v1":'):
+        return json.loads(raw)["oauth_v1"]
+    return {"access_token": raw}
+
+
+def seal_oauth(credential, access_token, refresh_token=None):
+    for value in (access_token, refresh_token):
+        if value is not None and (not isinstance(value, str) or not value or any(c in value for c in "\r\n\x00")):
+            raise VaultError("invalid_credential")
+    seal(
+        credential,
+        json.dumps({"oauth_v1": {"access_token": access_token, "refresh_token": refresh_token}}, separators=(",", ":")),
+    )
+
+
+def unseal(credential):
+    return oauth_material(credential)["access_token"] if credential.kind == "oauth" else unseal_material(credential)
 
 
 def require_owner(credential, user):
@@ -95,6 +116,12 @@ def selected_credential(user, repository):
     if selection.anonymous:
         return None, None
     credential = selection.credential
+    if credential.owner_id != user.pk or credential.instance_id != repository.instance_id:
+        raise VaultError("credential_unavailable")
+    if credential.kind == "oauth":
+        from .repository_connection import usable_connection
+
+        credential = usable_connection(user, credential)
     require_owner(credential, user)
     if credential.instance_id != repository.instance_id:
         raise VaultError("credential_unavailable")
@@ -109,7 +136,7 @@ def rotate_credentials():
     for credential in (
         RepositoryCredential.objects.select_for_update().filter(revoked_at__isnull=True).exclude(key_version=current)
     ):
-        seal(credential, unseal(credential))
+        seal(credential, unseal_material(credential))
         credential.save(update_fields=["key_version", "encrypted_material", "updated_at"])
         count += 1
     return count

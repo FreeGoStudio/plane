@@ -108,6 +108,10 @@ def start_add(request, project, instance, path, purpose):
 
 
 def exchange(instance, config, code, verifier):
+    return token_request(instance, config, dict(grant_type="authorization_code", code=code, code_verifier=verifier))
+
+
+def token_request(instance, config, grant):
     # GitLab may have a separately registered internal API authority. It is still
     # checked/pinned by the existing transport, including explicit private CIDRs.
     base = instance.api_url.removesuffix("/api/v4") if instance.provider == "gitlab" else instance.web_url
@@ -121,17 +125,24 @@ def exchange(instance, config, code, verifier):
         enabled=instance.enabled,
     )
     path = "/oauth/token" if instance.provider == "gitlab" else "/login/oauth/access_token"
-    return RepositoryTransport(endpoint).post(
+    result = RepositoryTransport(endpoint).request(
+        "POST",
         path,
-        dict(
+        body=dict(
             client_id=config["client_id"],
             client_secret=config.get("client_secret", ""),
-            grant_type="authorization_code",
-            code=code,
             redirect_uri=callback_url(),
-            code_verifier=verifier,
+            **grant,
         ),
+        success_statuses=(200, 400),
     )
+    if not isinstance(result, dict):
+        raise RepositoryError("invalid_upstream_response", 502)
+    if result.get("error"):
+        if result["error"] == "invalid_grant":
+            raise RepositoryError("upstream_authentication_required", 401)
+        raise RepositoryError("repository_oauth_configuration_error", 503)
+    return result
 
 
 @require_GET
@@ -202,6 +213,7 @@ def callback(request):
                     actor_id,
                     actor_label,
                     timezone.now() + timedelta(seconds=int(expires)) if expires else None,
+                    refresh_token=token.get("refresh_token"),
                 )
                 if draft:
                     repository = finish_add(project, request.user, instance, metadata, draft["purpose"], row)

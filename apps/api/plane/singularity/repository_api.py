@@ -117,6 +117,10 @@ def chosen(user, instance, data):
         owner=user,
         instance=instance,
     )
+    if credential.kind == "oauth":
+        from .repository_connection import usable_connection
+
+        credential = usable_connection(user, credential)
     require_owner(credential, user)
     return credential, unseal(credential)
 

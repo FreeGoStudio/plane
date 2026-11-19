@@ -14,7 +14,7 @@ from plane.db.models import RepositoryInstance, RepositoryCredential, Repository
 from .repository_api import RepositoryAPI, StrictSerializer, validated
 from .repository_provider import RepositoryProvider, safe_path
 from .repository_transport import RepositoryError
-from .vault import unseal, seal
+from .vault import unseal, seal, seal_oauth, oauth_material
 
 
 def resolve_address(address):
@@ -53,13 +53,21 @@ def available_credentials(owner, instance=None):
     """Return usable choices, grouping OAuth sessions for the same host/account only."""
     rows = (
         RepositoryCredential.objects.filter(owner=owner, revoked_at__isnull=True)
-        .filter(Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now()))
+        .filter(Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now()) | Q(kind="oauth"))
         .order_by("-validated_at", "-created_at", "id")
     )
     if instance is not None:
         rows = rows.filter(instance=instance)
     seen, result = set(), []
     for row in rows:
+        if (
+            row.expires_at
+            and row.expires_at <= timezone.now()
+            and not (
+                row.kind == "oauth" and row.instance.provider == "gitlab" and oauth_material(row).get("refresh_token")
+            )
+        ):
+            continue
         key = (row.instance_id, row.external_actor_id) if row.kind == "oauth" and row.external_actor_id else row.pk
         if key not in seen:
             seen.add(key)
@@ -68,7 +76,7 @@ def available_credentials(owner, instance=None):
 
 
 @transaction.atomic
-def save_oauth(owner, instance, raw, actor_id, actor_label, expires):
+def save_oauth(owner, instance, raw, actor_id, actor_label, expires, refresh_token=None):
     """Refresh one account connection and repoint old OAuth selections without deleting history."""
     User.objects.select_for_update().get(pk=owner.pk)
     rows = RepositoryCredential.objects.filter(
@@ -80,7 +88,7 @@ def save_oauth(owner, instance, raw, actor_id, actor_label, expires):
     row.label = f"{instance.name} · {actor_label}"[:160]
     row.external_actor_id, row.external_actor_label = actor_id, actor_label
     row.validated_at, row.validation_status, row.expires_at = timezone.now(), "identity_verified", expires
-    seal(row, raw)
+    seal_oauth(row, raw, refresh_token)
     row.save()
     RepositorySelection.objects.filter(owner=owner, credential__in=rows.exclude(pk=row.pk)).update(credential=row)
     rows.exclude(pk=row.pk).update(revoked_at=timezone.now())
@@ -173,6 +181,10 @@ class AddRepository(RepositoryAPI):
             credential = next((c for c in choices if str(c.pk) == str(data.get("credential_id"))), None)
             if credential is None:
                 raise RepositoryError("repository_authorization_required", 403)
+            if credential.kind == "oauth":
+                from .repository_connection import usable_connection
+
+                credential = usable_connection(request.user, credential)
             token = unseal(credential)
         elif data["method"] == "token":
             token = data.get("token")
