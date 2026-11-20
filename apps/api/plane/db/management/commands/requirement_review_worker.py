@@ -33,6 +33,7 @@ def dispatch_pending(task):
         row = (
             RequirementReviewRun.objects.select_for_update(skip_locked=True)
             .filter(status__in=["queued", "running"], attempts__lt=3)
+            .exclude(merge_request={})
             .filter(Q(dispatch_at__isnull=True) | Q(dispatch_at__lt=timezone.now() - timedelta(minutes=6)))
             .filter(Q(lease_until__isnull=True) | Q(lease_until__lt=timezone.now()))
             .order_by("created_at")

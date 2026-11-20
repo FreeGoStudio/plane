@@ -6,6 +6,7 @@
 
 import re
 import os
+import json
 from html import escape
 from html.parser import HTMLParser
 from datetime import timedelta
@@ -18,6 +19,7 @@ from rest_framework.exceptions import ValidationError
 from plane.db.models import RequirementReviewConfig, RequirementReviewRun, RequirementAdoption, RequirementReviewEvent
 from .repository_bindings import resolve_repository
 from .repository_provider import RepositoryProvider, safe_path
+from .repository_provider import component
 from .repository_transport import RepositoryError
 from .vault import selected_credential
 from .wbs import require_member, digest, WbsConflict
@@ -191,7 +193,26 @@ def capture(config, source_sha=None):
     if old:
         return old
     documents = read_documents(config, provider, commit)
-    baseline = provider.resolve(config.repository, "main")[2]
+    baseline = target_head(config, provider)
+    if set(baseline) == {"0"}:
+        try:
+            marker = json.loads(provider.file(config.repository, commit, ".singularity/requirement.json")["content"])
+            baseline = marker["base_sha"]
+            if not re.fullmatch(r"[a-f0-9]{40}|[a-f0-9]{64}", baseline):
+                raise ValidationError("Invalid requirement baseline")
+            main = provider.resolve(config.repository, "main")[2]
+            for descendant in (main, commit):
+                ancestor = provider.http.get(
+                    "/projects/" + component(config.repository.external_id) + "/repository/merge_base",
+                    {"refs[]": [baseline, descendant]},
+                )
+                if ancestor.get("id") != baseline:
+                    raise ValidationError("Requirement baseline must belong to main and the draft history")
+        except RepositoryError as error:
+            if error.status not in (404, 422):
+                raise
+            # Explicit legacy branches predate the workspace marker.
+            baseline = provider.resolve(config.repository, "main")[2]
     snapshot = {
         "documents": documents,
         "basis": source_basis,
@@ -280,6 +301,7 @@ def retry_run(user, row, key):
             "source_sha": row.source_sha,
             "snapshot": row.snapshot,
             "input_digest": row.input_digest,
+            "merge_request": row.merge_request,
             "retry_of": row,
         },
     )

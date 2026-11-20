@@ -2,93 +2,69 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-"""Isolated Git writer: fast-forward, compare-and-swap and recoverable adoption."""
+"""Isolated GitLab MR executor: exact source checks and recoverable remote merges."""
 
-import base64
-import os
-import subprocess
-import tempfile
-from pathlib import Path
-from urllib.parse import quote
 from django.db import transaction
 from django.utils import timezone
 from plane.db.models import RequirementAdoption, RequirementReviewConfig
-from .requirement_review import current_input, provider_for, authority, target_head
+from .requirement_review import current_input, provider_for, target_head
+from .requirement_merge_request import ensure_merge_request, check_merge_request, prepare_one, report_one
 from .wbs import require_member
 
 
 def move_branch(row):
-    """Fetch trusted refs, verify ancestry and CAS the exact pre-authorized update."""
+    """Merge the reviewed source on GitLab; the hook enforces the exact target and content."""
     config = current_input(row.run)
     require_member(row.actor, config.issue.project, True)
-    repo = authority(config)
-    provider = provider_for(config)
-    metadata = provider.metadata(repo.external_id)
-    head = target_head(config, provider)
-    if head == row.source_sha:
-        return  # Recover an acknowledged-or-lost successful CAS.
-    if head != row.target_sha:
-        raise ValueError("target_changed")
     if config.revision != row.config_revision:
         raise ValueError("configuration_changed")
-    token = Path(os.environ["DOCUMENT_ADOPTION_TOKEN_FILE"]).read_text(encoding="utf-8-sig").strip()
-    url = repo.instance.web_url.rstrip("/") + "/" + quote(metadata["path"], safe="/") + ".git"
-    header = "Authorization: Basic " + base64.b64encode(("oauth2:" + token).encode()).decode()
-    env = {
-        **os.environ,
-        "GIT_TERMINAL_PROMPT": "0",
-        "GIT_CONFIG_NOSYSTEM": "1",
-        "GIT_CONFIG_GLOBAL": "/dev/null",
-        "GIT_CONFIG_COUNT": "1",
-        "GIT_CONFIG_KEY_0": "http.extraHeader",
-        "GIT_CONFIG_VALUE_0": header,
-    }
-    if repo.instance.ca_file:
-        env.update(GIT_CONFIG_COUNT="2", GIT_CONFIG_KEY_1="http.sslCAInfo", GIT_CONFIG_VALUE_1=repo.instance.ca_file)
-    with tempfile.TemporaryDirectory(prefix="requirement-adopt-") as work:
-
-        def git(*args, error_code="git_operation_failed"):
-            result = subprocess.run(
-                ["git", "-C", work, "-c", "protocol.file.allow=never", *args], env=env, capture_output=True, timeout=90
-            )
-            if result.returncode:
-                raise ValueError(error_code)  # Never expose remote diagnostics or credentials.
-            return result.stdout.decode().strip()
-
-        git("init", "--bare")
-        git("remote", "add", "origin", url)
-        unborn = set(row.target_sha) == {"0"}
-        git(
-            "fetch",
-            "--no-tags",
-            "origin",
-            f"refs/heads/{config.draft_branch}:refs/heads/draft",
-            "refs/heads/main:refs/heads/main" if unborn else f"refs/heads/{config.adopted_branch}:refs/heads/adopted",
-        )
-        git("merge-base", "--is-ancestor", row.source_sha, "refs/heads/draft", error_code="source_no_longer_reachable")
-        git(
-            "merge-base",
-            "--is-ancestor",
-            row.run.snapshot["baseline_sha"] if unborn else row.target_sha,
-            row.source_sha,
-            error_code="non_fast_forward",
-        )
-        # The server hook independently checks this exact grant, actor and current membership.
-        git(
-            "push",
-            "origin",
-            f"{row.source_sha}:refs/heads/{config.adopted_branch}",
-            f"--force-with-lease=refs/heads/{config.adopted_branch}:{'' if unborn else row.target_sha}",
-        )
-    _, _, head, _ = provider.resolve(repo, config.adopted_branch)
-    if head != row.source_sha:
+    http, path = ensure_merge_request(row.run)
+    mr = http.get(path)
+    check_merge_request(config, mr, row.source_sha)
+    provider = provider_for(config)
+    head = target_head(config, provider)
+    if mr["state"] == "merged":
+        merged = mr.get("merge_commit_sha") or row.source_sha
+        if head != merged:
+            raise ValueError("target_changed")
+        return merged  # Recover a lost merge response using actual MR evidence.
+    if mr["state"] != "opened":
+        raise ValueError("merge_request_closed")
+    if head != row.target_sha:
+        raise ValueError("target_changed")
+    if provider.resolve(config.repository, config.draft_branch)[2] != row.source_sha:
+        raise ValueError("source_changed")
+    # The remote SHA precondition rejects a push arriving after the above read.
+    # The server hook independently verifies target SHA and merged tree content.
+    http.request(
+        "PUT",
+        path + "/merge",
+        body={
+            "sha": row.source_sha,
+            "squash": "false",
+            "should_remove_source_branch": "false",
+        },
+    )
+    mr = http.get(path)
+    check_merge_request(config, mr, row.source_sha)
+    if mr["state"] != "merged":
+        raise ValueError("merge_pending")
+    merged = mr.get("merge_commit_sha") or row.source_sha
+    if target_head(config, provider) != merged:
         raise ValueError("target_verification_failed")
+    return merged
 
 
 def process_one():
     """Hold a DB advisory lock per operation; recover running writes after process death."""
     from django.db import connection
 
+    prepare_one()
+    # Status publication must not prevent a previously authorized merge recovering.
+    try:
+        report_one()
+    except Exception:
+        pass  # Reconcile on the next loop; the exact grant remains the merge gate.
     row = RequirementAdoption.objects.filter(status__in=["pending", "running"]).order_by("created_at").first()
     if not row:
         return
@@ -104,14 +80,16 @@ def process_one():
         row.status = "running"
         row.save(update_fields=["status"])
         try:
-            move_branch(row)
+            merged = move_branch(row)
         except Exception as error:
             # A failed push might have succeeded remotely: leave the same grant recoverable.
             row.error = str(error) if type(error) is ValueError else type(error).__name__
             if row.error in (
                 "target_changed",
                 "configuration_changed",
-                "source_no_longer_reachable",
+                "source_changed",
+                "merge_request_changed",
+                "merge_request_closed",
                 "non_fast_forward",
                 "WbsConflict",
                 "PermissionDenied",
@@ -123,10 +101,11 @@ def process_one():
             config = RequirementReviewConfig.objects.select_for_update().get(pk=row.config_id)
             if config.revision != row.config_revision:
                 raise RuntimeError("Configuration changed during adoption")
-            config.adopted_sha = row.source_sha
+            config.adopted_sha = merged
+            row.merged_sha = merged
             config.save(update_fields=["adopted_sha", "updated_at"])
             row.status, row.error, row.completed_at = "completed", "", timezone.now()
-            row.save(update_fields=["status", "error", "completed_at"])
+            row.save(update_fields=["status", "error", "completed_at", "merged_sha"])
     finally:
         with connection.cursor() as cursor:
             cursor.execute("SELECT pg_advisory_unlock(%s)", [key])

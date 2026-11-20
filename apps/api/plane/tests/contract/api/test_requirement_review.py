@@ -21,7 +21,14 @@ from plane.db.models import (
     RequirementReviewEvent,
     ProjectMember,
 )
-from plane.singularity.requirement_review import configure, capture, adopt, retry_run, poll_one, WbsConflict
+from plane.singularity.requirement_review import (
+    configure,
+    capture as capture_snapshot,
+    adopt,
+    retry_run,
+    poll_one,
+    WbsConflict,
+)
 from plane.singularity.requirement_review_generation import execute, validate_result
 from plane.db.management.commands.requirement_review_worker import dispatch_pending
 from .test_singularity import world, config  # noqa: F401
@@ -51,8 +58,19 @@ def review(world, monkeypatch):
     provider = Mock()
     provider.resolve.return_value = ({}, "", "a" * 40, None)
     provider.file.return_value = {"commit_sha": "a" * 40, "content": "# Login\nAC01: Login page"}
-    with patch("plane.singularity.requirement_review.provider_for", return_value=provider):
+    with (
+        patch("plane.singularity.requirement_review.provider_for", return_value=provider),
+        patch("plane.singularity.requirement_review_api.provider_for", return_value=provider),
+    ):
         yield row, provider
+
+
+def capture(config, source_sha=None):
+    """Existing review tests start after the independently tested MR preparation."""
+    row = capture_snapshot(config, source_sha)
+    row.merge_request = {"iid": 7, "web_url": "https://git.example/team/docs/-/merge_requests/7"}
+    row.save(update_fields=["merge_request"])
+    return row
 
 
 def result(verdict="passed"):
@@ -271,39 +289,174 @@ def test_expired_last_execution_is_failed_and_can_be_retried(review):
     assert retry_run(review[0].owner, row, "retry-expired").status == "queued"
 
 
-def test_adoption_writer_checks_ancestry_and_uses_exact_lease(review, world, monkeypatch, tmp_path):
+def mr_value(review, state="opened", source="a" * 40, merged=None):
+    config = review[0]
+    return {
+        "iid": 7,
+        "state": state,
+        "sha": source,
+        "merge_commit_sha": merged,
+        "source_project_id": 22,
+        "target_project_id": 22,
+        "source_branch": config.draft_branch,
+        "target_branch": config.adopted_branch,
+    }
+
+
+def test_adoption_merges_remote_mr_with_exact_sha_and_retains_draft(review, world):
     from plane.singularity.requirement_adoption import move_branch
 
     row = ready(review)
     grant = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "adopt-writer"})
-    token = tmp_path / "token"
-    token.write_text("test-private-token")
-    monkeypatch.setenv("DOCUMENT_ADOPTION_TOKEN_FILE", str(token))
-    review[1].metadata.return_value = {"path": "team/docs"}
+    http = Mock()
+    http.get.side_effect = [mr_value(review), mr_value(review, "merged", merged="c" * 40)]
     with (
+        patch("plane.singularity.requirement_adoption.ensure_merge_request", return_value=(http, "/mr/7")),
         patch("plane.singularity.requirement_adoption.provider_for", return_value=review[1]),
-        patch("plane.singularity.requirement_adoption.target_head", return_value="b" * 40),
-        patch("plane.singularity.requirement_adoption.subprocess.run") as process,
+        patch("plane.singularity.requirement_adoption.target_head", side_effect=["b" * 40, "c" * 40]),
     ):
-        process.return_value = Mock(returncode=0, stdout=b"")
-        move_branch(grant)
-        commands = [call.args[0] for call in process.call_args_list]
-        assert any("merge-base" in cmd and "--is-ancestor" in cmd for cmd in commands)
-        push = next(cmd for cmd in commands if "push" in cmd)
-        assert "--force-with-lease=refs/heads/POS-1:" + "b" * 40 in push
-        assert "a" * 40 + ":refs/heads/POS-1" in push
-        assert "test-private-token" not in str(commands)
+        assert move_branch(grant) == "c" * 40
+        http.request.assert_called_once_with(
+            "PUT", "/mr/7/merge", body={"sha": "a" * 40, "squash": "false", "should_remove_source_branch": "false"}
+        )
 
 
-def test_adoption_recovers_lost_push_response_without_second_write(review, world):
+def test_adoption_recovers_lost_merge_response_without_second_write(review, world):
     from plane.singularity.requirement_adoption import move_branch
 
     row = ready(review)
     grant = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "adopt-recovery"})
+    http = Mock()
+    http.get.return_value = mr_value(review, "merged", merged="c" * 40)
     with (
+        patch("plane.singularity.requirement_adoption.ensure_merge_request", return_value=(http, "/mr/7")),
         patch("plane.singularity.requirement_adoption.provider_for", return_value=review[1]),
-        patch("plane.singularity.requirement_adoption.target_head", return_value=row.source_sha),
-        patch("plane.singularity.requirement_adoption.subprocess.run") as process,
+        patch("plane.singularity.requirement_adoption.target_head", return_value="c" * 40),
     ):
-        move_branch(grant)
-        process.assert_not_called()
+        assert move_branch(grant) == "c" * 40
+        http.request.assert_not_called()
+
+
+@pytest.mark.parametrize("changed", ["source", "target", "closed", "repository"])
+def test_stale_or_changed_mr_cannot_merge(review, world, changed):
+    from plane.singularity.requirement_adoption import move_branch
+
+    row = ready(review)
+    grant = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "adopt-stale"})
+    http = Mock()
+    mr = mr_value(review)
+    if changed == "source":
+        mr["sha"] = "d" * 40
+    if changed == "closed":
+        mr["state"] = "closed"
+    if changed == "repository":
+        mr["source_project_id"] = 23
+    http.get.return_value = mr
+    with (
+        patch("plane.singularity.requirement_adoption.ensure_merge_request", return_value=(http, "/mr/7")),
+        patch("plane.singularity.requirement_adoption.provider_for", return_value=review[1]),
+        patch(
+            "plane.singularity.requirement_adoption.target_head",
+            return_value=("d" if changed == "target" else "b") * 40,
+        ),
+    ):
+        with pytest.raises(ValueError):
+            move_branch(grant)
+        http.request.assert_not_called()
+
+
+def test_review_waits_for_remote_merge_request(review):
+    row = capture_snapshot(review[0])
+    task = Mock()
+    dispatch_pending(task)
+    task.run.assert_not_called()
+    row.merge_request = {"iid": 7}
+    row.save()
+    dispatch_pending(task)
+    task.run.assert_called_once()
+
+
+def test_merge_request_creation_reuses_remote_pair_after_lost_response(review):
+    from plane.singularity.requirement_merge_request import ensure_merge_request
+
+    row = capture_snapshot(review[0])
+    http = Mock()
+    http.get.return_value = [{**mr_value(review), "web_url": "https://git.example/mr/7"}]
+    with patch("plane.singularity.requirement_merge_request.transport", return_value=http):
+        _, path = ensure_merge_request(row)
+        assert path.endswith("/merge_requests/7")
+        http.request.assert_not_called()
+        row.refresh_from_db()
+        assert row.merge_request["iid"] == 7
+
+
+def test_new_mr_is_created_before_review_and_keeps_both_branches(review):
+    from plane.singularity.requirement_merge_request import ensure_merge_request
+
+    row = capture_snapshot(review[0])
+    http = Mock()
+    http.get.return_value = []
+    http.request.return_value = {"iid": 8, "web_url": "https://git.example/mr/8"}
+    with patch("plane.singularity.requirement_merge_request.transport", return_value=http):
+        ensure_merge_request(row)
+    args = http.request.call_args
+    assert args.args == ("POST", "/projects/22/merge_requests")
+    assert args.kwargs["body"]["source_branch"] == "draft/POS-1"
+    assert args.kwargs["body"]["target_branch"] == "POS-1"
+    assert args.kwargs["body"]["remove_source_branch"] == "false"
+
+
+def test_first_baseline_cannot_include_unreviewed_documents(review):
+    config, provider = review
+    provider.resolve.side_effect = lambda repo, ref: ({}, "", "a" * 40, None)
+    provider.file.side_effect = lambda repo, sha, path: {
+        "commit_sha": sha,
+        "content": '{"base_sha":"' + "b" * 40 + '"}' if path.startswith(".singularity/") else "# Login",
+    }
+    provider.http.get.return_value = {"id": "c" * 40}
+    with patch("plane.singularity.requirement_review.target_head", return_value="0" * 40):
+        with pytest.raises(ValidationError):
+            capture_snapshot(config)
+    assert not RequirementReviewRun.objects.exists()
+
+
+@pytest.mark.parametrize("verdict,expected", [("passed", "success"), ("changes_requested", "failed")])
+def test_remote_status_uses_exact_reviewed_commit(review, verdict, expected):
+    from plane.singularity.requirement_merge_request import report_one
+
+    row = ready(review)
+    row.result = result(verdict)
+    row.save()
+    http = Mock()
+    with patch("plane.singularity.requirement_merge_request.transport", return_value=http):
+        report_one()
+        report_one()
+    http.request.assert_called_once()
+    assert http.request.call_args.args[1] == "/projects/22/statuses/" + row.source_sha
+    assert http.request.call_args.kwargs["body"]["state"] == expected
+
+
+def test_merge_gate_accepts_only_verified_merge_source_and_exact_old_target(review, world, monkeypatch):
+    row = ready(review)
+    grant = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "adopt-merge-gate"})
+    grant.status = "running"
+    grant.save()
+    monkeypatch.setenv("DOCUMENT_REVIEW_GATE_SECRET", "test-gate")
+    monkeypatch.setenv("DOCUMENT_REVIEW_EXECUTOR_GL_ID", "user-99")
+    payload = {
+        "repository_id": str(row.config.repository_id),
+        "ref": "refs/heads/POS-1",
+        "old_sha": "b" * 40,
+        "new_sha": "c" * 40,
+        "merge_source": "a" * 40,
+        "actor": "user-99",
+    }
+    client = Client()
+    url = "/api/singularity/v1/requirement-review/adoption-gate/"
+    headers = {"HTTP_X_REVIEW_GATE_TOKEN": "test-gate"}
+    assert client.post(url, payload, content_type="application/json", **headers).status_code == 200
+    for change in ({"merge_source": None}, {"old_sha": "d" * 40}, {"merge_source": "d" * 40}):
+        assert client.post(url, {**payload, **change}, content_type="application/json", **headers).status_code == 403
+    review[1].resolve.return_value = ({}, "", "d" * 40, None)
+    with patch("plane.singularity.requirement_review_api.provider_for", return_value=review[1]):
+        assert client.post(url, payload, content_type="application/json", **headers).status_code == 403

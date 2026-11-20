@@ -112,7 +112,7 @@ class RepositoryTransport:
             pool = urllib3.HTTPConnectionPool(addresses[0], port=port, **options)
         target = url.path.rstrip("/") + path
         if params:
-            target += "?" + urlencode(params)
+            target += "?" + urlencode(params, doseq=True)
         response = None
         try:
             response = pool.urlopen(

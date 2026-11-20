@@ -43,6 +43,7 @@ def run_data(row):
     return {
         "id": str(row.pk),
         "source_sha": row.source_sha,
+        "merge_request": row.merge_request,
         "status": row.status,
         "result": row.result,
         "result_digest": row.result_digest,
@@ -62,6 +63,8 @@ def adoption_data(row):
         "run_id": str(row.run_id),
         "source_sha": row.source_sha,
         "target_sha": row.target_sha,
+        "merged_sha": row.merged_sha,
+        "merge_request": row.run.merge_request,
         "kind": row.kind,
         "reason": row.reason,
         "actor_id": str(row.actor_id),
@@ -177,7 +180,10 @@ class RequirementAdoptionGate(APIView):
         """Trusted GitLab hook checks every protected ref against a durable grant."""
         internal_secret(request, "DOCUMENT_REVIEW_GATE_SECRET", "X-Review-Gate-Token")
         data = request.data
-        if set(data) != {"repository_id", "ref", "old_sha", "new_sha", "actor"}:
+        if set(data) not in (
+            {"repository_id", "ref", "old_sha", "new_sha", "actor"},
+            {"repository_id", "ref", "old_sha", "new_sha", "actor", "merge_source"},
+        ):
             raise ValidationError("Invalid gate request")
         config = RequirementReviewConfig.objects.filter(
             repository_id=data["repository_id"], adopted_branch=str(data["ref"]).removeprefix("refs/heads/")
@@ -186,10 +192,18 @@ class RequirementAdoptionGate(APIView):
             return Response({"allowed": True, "reason": "unmanaged_branch"})
         if not config.enabled or data["actor"] != os.environ.get("DOCUMENT_REVIEW_EXECUTOR_GL_ID"):
             return Response({"allowed": False, "reason": "use_requirement_adoption"}, status=403)
+        if data["old_sha"] == "0" * len(data["old_sha"]) and not config.adopted_sha:
+            initial = RequirementReviewRun.objects.filter(config=config, snapshot__baseline_sha=data["new_sha"]).first()
+            if initial:
+                current_input(initial)
+                return Response({"allowed": True, "reason": "initialize_requirement_baseline"})
+        # merge_source is computed by the authenticated GitLab hook, only when
+        # the merge has the exact old parent and the reviewed source's full tree.
+        source = data.get("merge_source") or data["new_sha"]
         rows = RequirementAdoption.objects.filter(
             config=config,
             status="running",
-            source_sha=data["new_sha"],
+            source_sha=source,
             target_sha=data["old_sha"],
             config_revision=config.revision,
         )
@@ -198,4 +212,8 @@ class RequirementAdoptionGate(APIView):
             return Response({"allowed": False, "reason": "no_exact_adoption_grant"}, status=403)
         require_member(row.actor, config.issue.project, True)
         current_input(row.run)
+        if not row.run.merge_request:
+            return Response({"allowed": False, "reason": "merge_request_required"}, status=403)
+        if provider_for(config).resolve(config.repository, config.draft_branch)[2] != source:
+            return Response({"allowed": False, "reason": "source_changed"}, status=403)
         return Response({"allowed": True, "adoption_id": str(row.pk), "kind": row.kind, "checked_at": timezone.now()})
