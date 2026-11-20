@@ -6,6 +6,8 @@
 
 import re
 import os
+from html import escape
+from html.parser import HTMLParser
 from datetime import timedelta
 from pathlib import PurePosixPath
 
@@ -66,8 +68,36 @@ def target_head(config, provider):
         raise
 
 
+def normalize_basis(value):
+    """Ignore editor-only wrappers/attributes while retaining text, structure and links."""
+    parts = []
+
+    class Parser(HTMLParser):
+        def handle_starttag(self, tag, attrs):
+            if tag in ("div", "span"):
+                return
+            semantic = sorted(
+                (key, val or "")
+                for key, val in attrs
+                if key in ("href", "src", "alt", "title", "colspan", "rowspan", "checked", "start", "value")
+            )
+            parts.append("<" + tag + "".join(f' {key}="{escape(val, quote=True)}"' for key, val in semantic) + ">")
+
+        def handle_endtag(self, tag):
+            if tag not in ("div", "span"):
+                parts.append("</" + tag + ">")
+
+        def handle_data(self, data):
+            parts.append(escape(data))
+
+    parser = Parser()
+    parser.feed(value["description_html"] or "")
+    parser.close()
+    return {"title": value["title"], "description_html": "".join(parts)}
+
+
 def basis(issue):
-    return {"title": issue.name, "description_html": issue.description_html or ""}
+    return normalize_basis({"title": issue.name, "description_html": issue.description_html or ""})
 
 
 @transaction.atomic
@@ -228,7 +258,7 @@ def current_input(row):
     authority(config)
     if (
         config.revision != row.snapshot["config_revision"]
-        or basis(config.issue) != row.snapshot["basis"]
+        or basis(config.issue) != normalize_basis(row.snapshot["basis"])
         or row.snapshot["rules"] != RULE_VERSION
     ):
         raise WbsConflict("Review inputs changed; request a new review")

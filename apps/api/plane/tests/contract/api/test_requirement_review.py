@@ -245,6 +245,21 @@ def test_rapid_pushes_are_reviewed_at_each_event_commit(review):
     assert not RequirementReviewEvent.objects.filter(processed_at__isnull=True).exists()
 
 
+def test_opening_editor_does_not_invalidate_review_but_business_changes_do(review):
+    from plane.singularity.requirement_review import current_input
+
+    row = ready(review)
+    issue = row.config.issue
+    issue.description_html = '<div><p class="editor-paragraph-block" data-id="new-id">AC01: Login page</p></div>'
+    issue.save()
+    assert current_input(row).pk == row.config_id
+    assert capture(review[0]).pk == row.pk
+    issue.description_html = "<p>AC01: Different page</p>"
+    issue.save()
+    with pytest.raises(WbsConflict):
+        current_input(row)
+
+
 def test_expired_last_execution_is_failed_and_can_be_retried(review):
     row = capture(review[0])
     row.status, row.attempts = "running", 3
