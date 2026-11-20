@@ -12,6 +12,27 @@ import { Plane, PlaneError, invoke, type Transport } from "../src/core.js";
 import { createGateway, tools } from "../src/main.js";
 const id = "11111111-1111-4111-8111-111111111111",
   decision = "22222222-2222-4222-8222-222222222222";
+
+test("document reviews bind exact versions and cannot forge human overrides", async () => {
+  const f = fixture();
+  const base = { workspace: "test", project_id: id, item_id: decision };
+  await invoke(f.plane, "bearer", "configure_requirement_review", {
+    ...base,
+    draft_branch: "draft/POS-1",
+    adopted_branch: "POS-1",
+    paths: ["requirements/req1"],
+    expected_revision: 0,
+  });
+  assert.match(f.calls.at(-1)!.url.pathname, /requirement-review\/configure\/$/);
+  await invoke(f.plane, "bearer", "get_requirement_review", { ...base, source_sha: "a".repeat(40), offset: 20 });
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("source_sha"), "a".repeat(40));
+  assert.equal(f.calls.at(-1)!.url.searchParams.get("offset"), "20");
+  const adopt = { ...base, run_id: id, target_sha: "b".repeat(40), idempotency_key: "adopt-12345" };
+  await assert.rejects(invoke(f.plane, "bearer", "adopt_requirement_revision", { ...adopt, override: true }));
+  await invoke(f.plane, "bearer", "adopt_requirement_revision", adopt);
+  assert.equal(JSON.parse(f.calls.at(-1)!.body!).target_sha, "b".repeat(40));
+  f.vault.close();
+});
 function fixture() {
   const path = join(mkdtempSync(join(tmpdir(), "singularity-ts-")), "vault.sqlite"),
     key = randomBytes(32).toString("base64url"),
@@ -151,7 +172,7 @@ test("module update and delete preserve PATCH semantics and native failures", as
   f.vault.close();
 });
 test("native and repository tools with no secret/user/admin parameters", () => {
-  assert.equal(tools.length, 28);
+  assert.equal(tools.length, 32);
   for (const tool of tools) {
     assert.doesNotMatch(JSON.stringify(tool.inputSchema), /user_id|access_token|password/);
   }
@@ -395,7 +416,7 @@ test("official SDK HTTP initializes, lists tools and rejects revoked/missing aut
     });
     assert.equal(init.status, 200);
     const listed = await rpc("tools/list", {});
-    assert.equal((await listed.json()).result.tools.length, 28);
+    assert.equal((await listed.json()).result.tools.length, 32);
     const call = await rpc("tools/call", { name: "list_accessible_projects", arguments: {} });
     assert.equal((await call.json()).result.structuredContent.results.length, 1);
     f.state.revoked = true;

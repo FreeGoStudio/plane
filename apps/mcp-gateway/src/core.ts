@@ -226,6 +226,37 @@ const version = { expected_updated_at: z.string().optional() };
 // Native IssueSerializer owns field validation, nullability and defaults.
 const fields = z.record(z.string(), z.unknown());
 export const inputs = {
+  configure_requirement_review: z
+    .object({
+      ...nativeProject,
+      item_id: z.uuid(),
+      draft_branch: reference,
+      adopted_branch: reference,
+      paths: z.array(z.string().min(1)).min(1).max(20),
+      expected_revision: z.number().int().min(0),
+    })
+    .strict(),
+  get_requirement_review: z
+    .object({
+      ...nativeProject,
+      item_id: z.uuid(),
+      run_id: z.uuid().optional(),
+      source_sha: z.string().optional(),
+      offset: z.number().int().min(0).optional(),
+    })
+    .strict(),
+  retry_requirement_review: z
+    .object({ ...nativeProject, item_id: z.uuid(), run_id: z.uuid(), idempotency_key: z.string().min(8).max(100) })
+    .strict(),
+  adopt_requirement_revision: z
+    .object({
+      ...nativeProject,
+      item_id: z.uuid(),
+      run_id: z.uuid(),
+      target_sha: z.string().regex(/^[a-f0-9]{40}([a-f0-9]{24})?$/),
+      idempotency_key: z.string().min(8).max(100),
+    })
+    .strict(),
   start_wbs: z
     .object({
       ...nativeProject,
@@ -339,6 +370,47 @@ export async function invoke(
   name: string,
   args: unknown
 ): Promise<Record<string, unknown>> {
+  if (
+    [
+      "configure_requirement_review",
+      "get_requirement_review",
+      "retry_requirement_review",
+      "adopt_requirement_revision",
+    ].includes(name)
+  ) {
+    const key = name as
+      | "configure_requirement_review"
+      | "get_requirement_review"
+      | "retry_requirement_review"
+      | "adopt_requirement_revision";
+    const a = inputs[key].parse(args);
+    const path = nativePath(a) + `work-items/${a.item_id}/requirement-review/`;
+    if (key === "get_requirement_review") {
+      const p = inputs.get_requirement_review.parse(args);
+      return plane.request(bearer, "GET", path + (p.run_id ? `${p.run_id}/` : ""), undefined, {
+        ...(p.source_sha ? { source_sha: p.source_sha } : {}),
+        ...(p.offset !== undefined ? { offset: p.offset } : {}),
+      });
+    }
+    if (key === "configure_requirement_review") {
+      const p = inputs.configure_requirement_review.parse(args);
+      return plane.request(bearer, "POST", path + "configure/", {
+        draft_branch: p.draft_branch,
+        adopted_branch: p.adopted_branch,
+        paths: p.paths,
+        expected_revision: p.expected_revision,
+      });
+    }
+    if (key === "retry_requirement_review") {
+      const p = inputs.retry_requirement_review.parse(args);
+      return plane.request(bearer, "POST", path + `${p.run_id}/retry/`, { idempotency_key: p.idempotency_key });
+    }
+    const p = inputs.adopt_requirement_revision.parse(args);
+    return plane.request(bearer, "POST", path + `${p.run_id}/adopt/`, {
+      idempotency_key: p.idempotency_key,
+      target_sha: p.target_sha,
+    });
+  }
   if (name === "start_wbs" || name === "get_wbs" || name === "review_wbs") {
     const a = inputs[name].parse(args);
     const path = nativePath(a) + `work-items/${a.item_id}/wbs/` + ("run_id" in a && a.run_id ? `${a.run_id}/` : "");

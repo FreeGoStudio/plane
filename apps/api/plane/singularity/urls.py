@@ -5,6 +5,7 @@
 from django.urls import path
 from . import api, auth_views
 from .wbs import WbsAPI
+from .requirement_review_api import RequirementReviewAPI, RequirementPushWebhook, RequirementAdoptionGate
 from .company_views import company_account
 from .repository_views import repository_settings
 from .repository_api import RepositoryInstances, RepositoryCredentials, ProjectRepositories, RepositoryAccess
@@ -29,6 +30,12 @@ auth_patterns = [
 ]
 base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
 urlpatterns = [
+    path("requirement-review/push/<uuid:repository_id>/", RequirementPushWebhook.as_view()),
+    path("requirement-review/adoption-gate/", RequirementAdoptionGate.as_view()),
+    path(base + "work-items/<uuid:pk>/requirement-review/", RequirementReviewAPI.as_view()),
+    path(base + "work-items/<uuid:pk>/requirement-review/configure/", RequirementReviewAPI.as_view(), {"action": "configure"}),
+    path(base + "work-items/<uuid:pk>/requirement-review/<uuid:run_id>/", RequirementReviewAPI.as_view()),
+    path(base + "work-items/<uuid:pk>/requirement-review/<uuid:run_id>/<str:action>/", RequirementReviewAPI.as_view()),
     path(base + "work-items/<uuid:pk>/wbs/", WbsAPI.as_view()),
     path(base + "work-items/<uuid:pk>/wbs/<uuid:run_id>/", WbsAPI.as_view()),
     path(base + "repository-add/", AddRepository.as_view()),

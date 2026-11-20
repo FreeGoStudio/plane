@@ -10,6 +10,14 @@ import { z } from "zod";
 import { Plane, PlaneError, inputs, invoke, transport } from "./core.js";
 import { Vault } from "./vault.js";
 const descriptions: Record<keyof typeof inputs, string> = {
+  configure_requirement_review:
+    "Register the verified documentation draft/adopted branches and complete document paths. Pushes trigger asynchronous AI reviews. Does not merge or approve anything.",
+  get_requirement_review:
+    "Read document AI review status, exact source SHA, findings and adoption/override history. Filter by source_sha or page with offset. A push is not an AI approval.",
+  retry_requirement_review:
+    "Retry a failed document review execution with a stable idempotency key. Preserves the original run and reasons.",
+  adopt_requirement_revision:
+    "Adopt an AI-passed exact document revision for prototype generation, using the expected current target SHA. Poll adoption status before using it. Human overrides are only available in the signed-in Plane UI.",
   start_wbs:
     "Ask Plane to freeze the explicitly confirmed saved requirement version and queue a Hatchet WBS draft. Does not create child work items. Reuse the same idempotency_key after uncertain responses.",
   get_wbs: "Read WBS execution status and the draft for human review. Omit run_id to list recent runs.",

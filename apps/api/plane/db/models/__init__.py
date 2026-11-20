@@ -91,6 +91,7 @@ from .sticky import Sticky
 
 from .description import Description, DescriptionVersion
 from .wbs import WbsRun
+from .requirement_review import RequirementReviewConfig, RequirementReviewRun, RequirementAdoption, RequirementReviewEvent
 from .repository_management import RepositoryProvisioning, RepositoryMemberGrant, RepositoryManagementEvent
 from .delegation import Delegation, DelegationCode, DelegationToken, DiscussionReceipt, DelegationAudit, APIMutationReceipt
 from .company_account import CompanyAccount

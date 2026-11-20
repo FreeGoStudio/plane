@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@makeplane/propel/components/button";
 import { useTranslation } from "@plane/i18n";
 import { repositoryBase, repositoryService } from "@/services/repository.service";
+import { RequirementReviewPanel } from "./requirement-review";
 
 type Task = {
   id: string;
@@ -101,94 +102,102 @@ export function WbsPanel({
   };
   if (!data?.can_start) return null;
   return (
-    <section className="mb-4 space-y-3 rounded-md border border-subtle p-4" aria-label={t("wbs.title")}>
-      <h3 className="font-medium">{t("wbs.title")}</h3>
-      <p className="text-sm text-secondary">{t("wbs.description")}</p>
-      {error && (
-        <p role="alert" className="text-sm text-danger-primary">
-          {error}
-        </p>
-      )}
-      {run && <p role="status">{t(`wbs.status_${run.status}`)}</p>}
-      {run?.error && <p role="alert">{run.error}</p>}
-      {(!run || ["completed", "rejected", "failed"].includes(run.status)) && (
-        <>
-          <label className="text-sm flex items-center gap-2">
-            <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} />
-            {t("wbs.confirm_source")}
-          </label>
-          <Button
-            size="sm"
-            stretch="auto"
-            variant="primary"
-            disabled={disabled || busy || !confirmed}
-            onClick={() => void submit()}
-            label={t("wbs.start")}
-          />
-        </>
-      )}
-      {run?.result.summary && <p className="text-sm whitespace-pre-wrap">{run.result.summary}</p>}
-      {run?.result.coverage?.map((c) => (
-        <p key={c.criterion_id} className="text-sm">
-          {c.criterion_id} · {c.task_ids.join(", ")} — {c.basis}
-        </p>
-      ))}
-      {run?.result.tasks?.map((task) => (
-        <article key={task.id} className="text-sm space-y-2 rounded-md border border-subtle p-3">
-          <h4 className="font-medium">
-            {task.id} · {task.title}
-          </h4>
-          <p>
-            {task.role} · {task.criteria.join(", ")}
+    <>
+      <RequirementReviewPanel
+        workspaceSlug={workspaceSlug}
+        projectId={projectId}
+        issueId={issueId}
+        disabled={disabled}
+      />
+      <section className="mb-4 space-y-3 rounded-md border border-subtle p-4" aria-label={t("wbs.title")}>
+        <h3 className="font-medium">{t("wbs.title")}</h3>
+        <p className="text-sm text-secondary">{t("wbs.description")}</p>
+        {error && (
+          <p role="alert" className="text-sm text-danger-primary">
+            {error}
           </p>
-          <p className="whitespace-pre-wrap">{task.scope}</p>
-          <p className="whitespace-pre-wrap">
-            {t("wbs.deliverable")}: {task.deliverable}
+        )}
+        {run && <p role="status">{t(`wbs.status_${run.status}`)}</p>}
+        {run?.error && <p role="alert">{run.error}</p>}
+        {(!run || ["completed", "rejected", "failed"].includes(run.status)) && (
+          <>
+            <label className="text-sm flex items-center gap-2">
+              <input type="checkbox" checked={confirmed} onChange={(e) => setConfirmed(e.target.checked)} />
+              {t("wbs.confirm_source")}
+            </label>
+            <Button
+              size="sm"
+              stretch="auto"
+              variant="primary"
+              disabled={disabled || busy || !confirmed}
+              onClick={() => void submit()}
+              label={t("wbs.start")}
+            />
+          </>
+        )}
+        {run?.result.summary && <p className="text-sm whitespace-pre-wrap">{run.result.summary}</p>}
+        {run?.result.coverage?.map((c) => (
+          <p key={c.criterion_id} className="text-sm">
+            {c.criterion_id} · {c.task_ids.join(", ")} — {c.basis}
           </p>
-          <p className="whitespace-pre-wrap">
-            {t("wbs.acceptance")}: {task.acceptance}
+        ))}
+        {run?.result.tasks?.map((task) => (
+          <article key={task.id} className="text-sm space-y-2 rounded-md border border-subtle p-3">
+            <h4 className="font-medium">
+              {task.id} · {task.title}
+            </h4>
+            <p>
+              {task.role} · {task.criteria.join(", ")}
+            </p>
+            <p className="whitespace-pre-wrap">{task.scope}</p>
+            <p className="whitespace-pre-wrap">
+              {t("wbs.deliverable")}: {task.deliverable}
+            </p>
+            <p className="whitespace-pre-wrap">
+              {t("wbs.acceptance")}: {task.acceptance}
+            </p>
+            <p>
+              {t("wbs.dependencies")}: {task.dependencies.join(", ") || "—"}
+            </p>
+          </article>
+        ))}
+        {run?.result.questions?.map((q) => (
+          <p key={q} className="text-sm">
+            {q}
           </p>
-          <p>
-            {t("wbs.dependencies")}: {task.dependencies.join(", ") || "—"}
-          </p>
-        </article>
-      ))}
-      {run?.result.questions?.map((q) => (
-        <p key={q} className="text-sm">
-          {q}
-        </p>
-      ))}
-      {run?.status === "ready" && (
-        <>
-          <label className="text-sm flex items-center gap-2">
-            <input type="checkbox" checked={approved} onChange={(e) => setApproved(e.target.checked)} />
-            {t("wbs.confirm_draft")}
-          </label>
-          <Button
-            size="sm"
-            stretch="auto"
-            variant="primary"
-            disabled={disabled || busy || !approved}
-            onClick={() => void submit("approve")}
-            label={t("wbs.approve")}
-          />
-          <textarea
-            aria-label={t("wbs.reason")}
-            placeholder={t("wbs.reason")}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            className="block w-full rounded border border-subtle bg-transparent p-2"
-          />
-          <Button
-            size="sm"
-            stretch="auto"
-            variant="secondary"
-            disabled={disabled || busy || !reason.trim()}
-            onClick={() => void submit("reject")}
-            label={t("wbs.reject")}
-          />
-        </>
-      )}
-    </section>
+        ))}
+        {run?.status === "ready" && (
+          <>
+            <label className="text-sm flex items-center gap-2">
+              <input type="checkbox" checked={approved} onChange={(e) => setApproved(e.target.checked)} />
+              {t("wbs.confirm_draft")}
+            </label>
+            <Button
+              size="sm"
+              stretch="auto"
+              variant="primary"
+              disabled={disabled || busy || !approved}
+              onClick={() => void submit("approve")}
+              label={t("wbs.approve")}
+            />
+            <textarea
+              aria-label={t("wbs.reason")}
+              placeholder={t("wbs.reason")}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              className="block w-full rounded border border-subtle bg-transparent p-2"
+            />
+            <Button
+              size="sm"
+              stretch="auto"
+              variant="secondary"
+              disabled={disabled || busy || !reason.trim()}
+              onClick={() => void submit("reject")}
+              label={t("wbs.reject")}
+            />
+          </>
+        )}
+      </section>
+    </>
   );
 }

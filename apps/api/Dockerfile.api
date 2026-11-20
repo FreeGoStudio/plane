@@ -27,6 +27,7 @@ RUN echo "apk-security-patch ${APK_SECURITY_PATCH}" && apk update && apk upgrade
 WORKDIR /code
 
 RUN apk add --no-cache --upgrade \
+    "git" \
     "libpq" \
     "libxslt" \
     "xmlsec" \
