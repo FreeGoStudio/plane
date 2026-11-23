@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from plane.db.models import CodeReviewLink, CodeReviewRun, ProjectRepository
 from .wbs import WbsAPI
-from .code_review import add_link, remove_link, revision
+from .code_review import add_link, remove_link, revision, rerun
 from .code_review_provider import list_merge_requests
 from .repository_transport import RepositoryError
 
@@ -96,4 +96,7 @@ class CodeReviewAPI(WbsAPI):
         if action == "remove":
             link = get_object_or_404(CodeReviewLink, pk=link_id, issue=issue)
             return Response(link_data(remove_link(request.user, link, request.data)))
+        if action == "rerun":
+            link = get_object_or_404(CodeReviewLink, pk=link_id, issue=issue)
+            return Response(run_data(rerun(request.user, link, request.data)), status=202)
         raise ValidationError("Unknown code review operation")

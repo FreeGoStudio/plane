@@ -14,7 +14,13 @@ immediately invalidates acceptance. Native OCR only, Chinese, Responses protocol
 1. Associations / four persistent record types / API / audit: implemented and automatically verified.
    Evidence: four new contracts and eleven WBS regressions passed; Ruff passed;
    generated migration 0141 applied to isolated PostgreSQL; migration drift check clean.
-2. Fixed-version OCR / Hatchet delivery / authenticated events / reconciliation: pending.
+2. Fixed-version OCR / Hatchet delivery / authenticated events / reconciliation: implemented;
+   13 execution/event contracts passed serially. Native real small-diff probe passed using
+   gpt-6.1-sol with openai-responses: exit 0, complete manifest, one finding, 2026-11-23.
+   OCR 1.14.1 Linux amd64 SHA256:
+   7d31862a1b9c6f9cea02141673f7b814071d2f36f1a9e6ce2f14d39d959229f4.
+   Two test processes initially shared a DB; those conflicting runs are discarded.
+   All following tests run serially. End-to-end GitLab/Hatchet deployment remains pending.
 3. Human decisions / UI / shared completion gate on all mutation paths: pending.
 4. Private deployment / real model compatibility / end-to-end / regressions: pending.
 

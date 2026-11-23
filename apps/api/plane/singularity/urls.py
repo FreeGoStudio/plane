@@ -30,7 +30,10 @@ auth_patterns = [
 ]
 base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
 from .code_review_api import CodeReviewAPI
+from .code_review_webhook import CodeReviewWebhook
 urlpatterns = [
+    path("code-review/events/<uuid:repository_id>/", CodeReviewWebhook.as_view()),
+    path(base + "work-items/<uuid:pk>/code-review/links/<uuid:link_id>/rerun/", CodeReviewAPI.as_view(), {"action": "rerun"}),
     path(base + "work-items/<uuid:pk>/code-review/", CodeReviewAPI.as_view()),
     path(base + "work-items/<uuid:pk>/code-review/merge-requests/", CodeReviewAPI.as_view(), {"action": "merge-requests"}),
     path(base + "work-items/<uuid:pk>/code-review/links/", CodeReviewAPI.as_view(), {"action": "links"}),

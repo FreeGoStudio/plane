@@ -4,6 +4,7 @@
 """Task-locked code review commands. Remote observations never complete tasks."""
 
 import os
+import re
 import uuid
 from datetime import timedelta
 from django.db import transaction
@@ -145,3 +146,51 @@ def remove_link(user, link, data):
     link.save(update_fields=["active"])
     audit(link, "unlinked", user, reason=reason)
     return link
+
+
+def request_key(data):
+    key = data.get("idempotency_key", "")
+    if not isinstance(key, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,100}", key):
+        raise ValidationError("An idempotency_key is required")
+    return key
+
+
+@transaction.atomic
+def rerun(user, link, data):
+    require_member(user, link.issue.project, True)
+    issue = lock_issue(link.issue_id)
+    key = "manual:" + request_key(data)
+    previous = CodeReviewRun.objects.filter(link=link, request_key=key).first()
+    if previous:
+        return previous
+    expect_revision(issue, data)
+    link.refresh_from_db()
+    if not link.active:
+        raise ReviewConflict("Association removed")
+    version = remote_version(link)
+    if not eligible(version):
+        raise ReviewConflict("Draft or closed MR cannot be reviewed for completion")
+    link.generation += 1
+    link.version = version
+    snapshot = {
+        "repository_id": str(link.repository_id),
+        "mr_iid": link.mr_iid,
+        "generation": link.generation,
+        "version": version,
+        "settings": review_settings(),
+    }
+    row = CodeReviewRun.objects.create(
+        link=link,
+        request_key=key,
+        generation=link.generation,
+        snapshot=snapshot,
+        input_digest=digest(snapshot),
+        source_sha=version["source_sha"],
+        target_sha=version["target_sha"],
+        merge_base=version["merge_base"],
+    )
+    link.current_run = row
+    link.error = ""
+    link.save()
+    audit(link, "rerun", user, run_id=str(row.pk))
+    return row
