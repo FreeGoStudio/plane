@@ -7,6 +7,8 @@
 import difflib
 import json
 import re
+from pathlib import PurePosixPath
+from types import SimpleNamespace
 
 import nh3
 from crum import impersonate
@@ -28,7 +30,46 @@ from plane.db.models import (
 from .wbs import WbsConflict, digest
 
 
-def source_for(issue):
+PRIMARY_PRD_POLICY = "primary-prd-v1"
+
+
+def primary_prd_paths(paths):
+    """Resolve the registered delivery directory, never search the repository."""
+    from .requirement_review import TEXT_SUFFIXES
+
+    candidates = set()
+    for value in paths:
+        path = PurePosixPath(value)
+        if path.name == "prd.md":
+            candidates.add(str(path))
+        elif path.suffix.lower() not in TEXT_SUFFIXES:
+            candidates.add(str(path / "prd.md"))
+    if len(candidates) != 1:
+        raise WbsConflict(
+            "Register one delivery directory or its prd.md for WBS; primary prd.md is missing or ambiguous"
+        )
+    return sorted(candidates)
+
+
+def read_wbs_documents(config, provider, commit, paths):
+    """Reuse fixed-SHA/size validation without modifying the review configuration."""
+    from .requirement_review import read_documents
+    from .repository_transport import RepositoryError
+
+    try:
+        documents = read_documents(SimpleNamespace(repository=config.repository, paths=paths), provider, commit)
+    except RepositoryError as error:
+        if error.code in {"file_not_found", "upstream_resource_invisible", "file_not_found_or_directory_limit"}:
+            raise WbsConflict(
+                f"Primary prd.md is missing or unreadable at {paths[0]}; no alternative file was selected"
+            ) from None
+        raise
+    if any(not body.strip() for body in documents.values()):
+        raise WbsConflict("Primary prd.md is empty; complete the implementation requirements before WBS")
+    return documents
+
+
+def source_for(issue, primary_only=True):
     from .requirement_review import provider_for, read_documents, basis
 
     config = RequirementReviewConfig.objects.filter(issue=issue).first()
@@ -37,16 +78,22 @@ def source_for(issue):
         return {"kind": "body", "basis": body, "digest": digest(body)}
     provider = provider_for(config)
     commit = provider.resolve(config.repository, config.draft_branch)[2]
-    documents = read_documents(config, provider, commit)
+    paths = primary_prd_paths(config.paths) if primary_only else config.paths
+    documents = (
+        read_wbs_documents(config, provider, commit, paths)
+        if primary_only
+        else read_documents(config, provider, commit)
+    )
     return {
         "kind": "documents",
         "repository_id": str(config.repository_id),
         "revision": config.revision,
         "commit": commit,
-        "paths": config.paths,
+        "paths": paths,
         "documents": documents,
         "basis": basis(issue),
         "digest": digest(documents),
+        **({"input_policy": PRIMARY_PRD_POLICY} if primary_only else {}),
     }
 
 
@@ -101,6 +148,9 @@ def snapshot_for(issue, previous):
     source = source_for(issue)
     text = source_text(source)
     old = previous.snapshot.get("source") if previous else None
+    comparable = old and all(
+        old.get(key) == source.get(key) for key in ("kind", "repository_id", "paths", "input_policy")
+    )
     children = children_for(issue)
     return {
         "workflow": 2,
@@ -114,13 +164,15 @@ def snapshot_for(issue, previous):
         "previous_result": previous.result if previous else {},
         "source_diff": "\n".join(
             difflib.unified_diff(
-                source_text(old).splitlines() if old else [],
+                source_text(old).splitlines(),
                 text.splitlines(),
                 fromfile="previous",
                 tofile="current",
                 lineterm="",
             )
-        ),
+        )
+        if comparable
+        else "",
         "scenario": "development"
         if any(c["stage"] != "unstarted" for c in children)
         else "created"
@@ -154,7 +206,10 @@ def start_update(user, issue, data, skill_files):
 
 
 def ensure_current(row, lock=False):
-    if source_for(row.issue) != row.snapshot["source"]:
+    if (
+        source_for(row.issue, primary_only=row.snapshot["source"].get("input_policy") == PRIMARY_PRD_POLICY)
+        != row.snapshot["source"]
+    ):
         raise WbsConflict("PRD changed; update WBS again")
     if children_for(row.issue, lock=lock) != row.snapshot["existing_children"]:
         raise WbsConflict("Child tasks changed; update WBS again")
@@ -181,16 +236,26 @@ def ensure_adopted(row):
         .order_by("-completed_at")
         .first()
     )
+    reviewed_documents = adoption.run.snapshot.get("documents", {}) if adoption else {}
+    if source.get("input_policy") == PRIMARY_PRD_POLICY:
+        reviewed_documents = {path: reviewed_documents.get(path) for path in source["paths"]}
     if (
         not adoption
-        or adoption.run.snapshot.get("documents") != source["documents"]
+        or reviewed_documents != source["documents"]
         or not adoption.run.snapshot.get("basis")
         or normalize_basis(adoption.run.snapshot["basis"]) != source["basis"]
     ):
         raise WbsConflict("Confirm this PRD version before applying WBS changes")
     provider = provider_for(config)
     target = target_head(config, provider)
-    if target != adoption.merged_sha or read_documents(config, provider, target) != source["documents"]:
+    if target != adoption.merged_sha:
+        raise WbsConflict("The adopted PRD no longer matches this analysis")
+    documents = (
+        read_wbs_documents(config, provider, target, source["paths"])
+        if source.get("input_policy") == PRIMARY_PRD_POLICY
+        else read_documents(config, provider, target)
+    )
+    if documents != source["documents"]:
         raise WbsConflict("The adopted PRD no longer matches this analysis")
 
 

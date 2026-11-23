@@ -10,10 +10,102 @@ import pytest
 from plane.db.models import Issue, State, IssueActivity, IssueRelation, RequirementAdoption, RequirementReviewRun
 from plane.singularity.wbs import start_run, review_run, digest, WbsConflict
 from plane.singularity.wbs_generation import execute, validate_draft
+from plane.singularity.wbs_update import source_for, snapshot_for, ensure_current
 from .test_wbs import world, config, requirement, payload, draft, decision  # noqa: F401
 from .test_requirement_review import review  # noqa: F401
 
 pytestmark = pytest.mark.django_db(transaction=True)
+
+
+def test_directory_input_reads_only_primary_prd(review):
+    cfg, provider = review
+    cfg.paths = ["docs"]
+    cfg.save()
+    provider.directory.return_value = {
+        "commit_sha": "a" * 40,
+        "entries": [{"type": "blob", "path": p} for p in ["docs/prd.md", "docs/history.md"]],
+        "next_page": None,
+    }
+    source = source_for(cfg.issue)
+    assert list(source["documents"]) == ["docs/prd.md"]
+    assert source["paths"] == ["docs/prd.md"]
+    provider.directory.assert_not_called()
+    provider.file.assert_called_once_with(cfg.repository, "a" * 40, "docs/prd.md")
+
+
+@pytest.mark.parametrize("paths", [["docs/android.md"], ["docs/prd.md", "other/prd.md"]])
+def test_missing_or_ambiguous_primary_is_not_guessed(review, paths):
+    cfg, provider = review
+    cfg.paths = paths
+    cfg.save()
+    with pytest.raises(WbsConflict, match="prd.md"):
+        source_for(cfg.issue)
+    provider.file.assert_not_called()
+
+
+def test_missing_primary_content_does_not_fallback(review):
+    cfg, provider = review
+    provider.file.return_value["content"] = "  "
+    with pytest.raises(WbsConflict, match="prd.md"):
+        source_for(cfg.issue)
+    provider.directory.assert_not_called()
+
+
+def test_missing_primary_file_reports_selected_path(review):
+    from plane.singularity.repository_transport import RepositoryError
+
+    cfg, provider = review
+    provider.file.side_effect = RepositoryError("upstream_resource_invisible", 404)
+    with pytest.raises(WbsConflict, match="docs/prd.md"):
+        source_for(cfg.issue)
+    provider.directory.assert_not_called()
+
+
+def test_primary_read_retains_version_guard(review):
+    from rest_framework.exceptions import ValidationError
+
+    cfg, provider = review
+    provider.file.return_value["commit_sha"] = "b" * 40
+    with pytest.raises(ValidationError, match="different commit"):
+        source_for(cfg.issue)
+
+
+def test_existing_primary_diff_contains_real_change(world, review):
+    cfg, provider = review
+    old = start(world[0], cfg.issue)
+    provider.file.return_value["content"] = "# Login\nAC01: Changed login page"
+    snapshot = snapshot_for(cfg.issue, old)
+    assert "-AC01: Login page" in snapshot["source_diff"]
+    assert "+AC01: Changed login page" in snapshot["source_diff"]
+
+
+def test_first_analysis_has_no_full_document_diff(world, review):
+    cfg, _ = review
+    row = start(world[0], cfg.issue)
+    assert row.snapshot["source_diff"] == ""
+
+
+def test_legacy_baseline_does_not_repeat_full_document(world, review):
+    cfg, _ = review
+    previous = start(world[0], cfg.issue)
+    previous.snapshot.pop("source")
+    assert snapshot_for(cfg.issue, previous)["source_diff"] == ""
+
+
+def test_changed_input_scope_does_not_include_old_scope_in_diff(world, review):
+    cfg, _ = review
+    previous = start(world[0], cfg.issue)
+    previous.snapshot["source"]["paths"] = ["other/prd.md"]
+    previous.snapshot["source"]["documents"] = {"other/prd.md": "AC99: Build backend"}
+    assert snapshot_for(cfg.issue, previous)["source_diff"] == ""
+
+
+def test_legacy_run_still_uses_original_document_input(world, review):
+    cfg, _ = review
+    row = start(world[0], cfg.issue)
+    row.snapshot["source"].pop("input_policy", None)
+    row.save()
+    ensure_current(row)
 
 
 def start(user, issue, key="update-123"):
@@ -181,7 +273,10 @@ def test_bound_prd_requires_matching_completed_adoption(world, review):
         config=cfg,
         source_sha="a" * 40,
         input_digest="x" * 64,
-        snapshot={"documents": row.snapshot["source"]["documents"], "basis": row.snapshot["source"]["basis"]},
+        snapshot={
+            "documents": {**row.snapshot["source"]["documents"], "docs/history.md": "Not WBS input"},
+            "basis": row.snapshot["source"]["basis"],
+        },
         request_key="review-123",
     )
     RequirementAdoption.objects.create(

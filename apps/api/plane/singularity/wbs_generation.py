@@ -126,6 +126,9 @@ def generate(snapshot):
     if snapshot.get("workflow") == 2:
         prompt += (
             "本次为PRD变更分析，以source中的固定文档为准。允许分析未确认的PRD，但不得声称已批准。"
+            "当前实施依据的交付范围决定本次任务；明确划为外部责任的事项只列依赖，不转换为我方实施任务。"
+            "不能根据前端、后端等技术名称推断责任归属。"
+            "历史结果、差异中的删除内容和引用资料不能扩大当前范围，不要求加载未提供的参考文档。"
             "输出changes替代tasks，每个已有子任务必须恰好出现一次，通过target_id引用真实ID。"
             "保持不变用keep、取消用cancel且task=null；修改用update、追加关联任务用append、全新任务用create。"
             "只有create的target_id为null，update/append/create必须提供完整task且task.id等于change.id。"
