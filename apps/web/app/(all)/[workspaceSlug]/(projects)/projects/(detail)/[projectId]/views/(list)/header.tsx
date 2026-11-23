@@ -60,7 +60,7 @@ export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
               variant="primary"
               size="md"
               stretch="auto"
-              label="Add view"
+              label={t("workspace_views.add_view")}
               onClick={() => toggleCreateViewModal(true)}
             />
           </div>

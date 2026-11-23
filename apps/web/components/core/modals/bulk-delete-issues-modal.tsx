@@ -103,8 +103,8 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
     if (!data.delete_issue_ids || data.delete_issue_ids.length === 0) {
       setToast({
         type: "error",
-        title: "Error!",
-        message: "Please select at least one work item.",
+        title: t("error"),
+        message: t("issue.select.error"),
       });
       return;
     }
@@ -115,16 +115,18 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
       .then(() => {
         setToast({
           type: "success",
-          title: "Success!",
-          message: "Work items deleted successfully!",
+          title: t("success"),
+          message: t("web_ui.work_items_deleted_successfully"),
         });
         handleClose();
+
+        return undefined;
       })
       .catch(() =>
         setToast({
           type: "error",
-          title: "Error!",
-          message: "Something went wrong. Please try again.",
+          title: t("error"),
+          message: t("something_went_wrong_please_try_again"),
         })
       );
   };
@@ -206,12 +208,12 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
           </Combobox>
           {issues.length > 0 && (
             <DialogActions>
-              <Button variant="secondary" size="md" stretch="auto" label="Cancel" onClick={handleClose} />
+              <Button variant="secondary" size="md" stretch="auto" label={t("cancel")} onClick={handleClose} />
               <Button
                 variant="danger"
                 size="md"
                 stretch="auto"
-                label={isSubmitting ? "Deleting..." : "Delete selected work items"}
+                label={isSubmitting ? t("deleting") : t("web_ui.delete_selected_work_items")}
                 onClick={() => void handleSubmit(handleDelete)()}
                 loading={isSubmitting}
               />

@@ -102,7 +102,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
       setToast({
         type: "error",
         title: t("sso.providers.saml.configure.toast.error_title"),
-        message: "Editor is still processing changes. Please wait before proceeding.",
+        message: t("web_ui.editor_is_still_processing_changes_please_wait_before_proceeding"),
       });
       event.preventDefault(); // Prevent default action if editor is not ready to discard
     }
@@ -134,7 +134,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
       setToast({
         type: "error",
         title: t("sso.providers.saml.configure.toast.error_title"),
-        message: "Editor is still processing changes. Please wait before proceeding.",
+        message: t("web_ui.editor_is_still_processing_changes_please_wait_before_proceeding"),
       });
       return;
     }
@@ -168,15 +168,15 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
         }
         setToast({
           type: "success",
-          title: `Success!`,
-          message: "Work item created successfully.",
+          title: t("success"),
+          message: t("issue_created_successfully"),
         });
       })
       .catch((error) => {
         console.error(error);
         setToast({
           type: "error",
-          title: `Error!`,
+          title: t("error"),
           message: t("common.error.message"),
         });
       });
@@ -251,7 +251,7 @@ export const InboxIssueCreateRoot = observer(function InboxIssueCreateRoot(props
                   setToast({
                     type: "error",
                     title: t("sso.providers.saml.configure.toast.error_title"),
-                    message: "Editor is still processing changes. Please wait before proceeding.",
+                    message: t("web_ui.editor_is_still_processing_changes_please_wait_before_proceeding"),
                   });
                 }
               }}

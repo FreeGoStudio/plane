@@ -55,7 +55,7 @@ export function ProductUpdatesFooter() {
             className="text-body-xs-regular text-secondary underline-offset-1 outline-none hover:text-primary hover:underline"
             rel="noreferrer"
           >
-            Forum
+            {t("forum")}{" "}
           </a>
         </div>
       </DialogInfo>

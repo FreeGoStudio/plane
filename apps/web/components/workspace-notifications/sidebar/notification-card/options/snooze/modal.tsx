@@ -169,7 +169,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
                   <Controller
                     name="date"
                     control={control}
-                    rules={{ required: "Please select a date" }}
+                    rules={{ required: t("web_ui.please_select_a_date") }}
                     render={({ field: { value, onChange } }) => (
                       <DateSelect
                         value={value ?? null}
@@ -193,7 +193,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
                   <Controller
                     control={control}
                     name="time"
-                    rules={{ required: "Please select a time" }}
+                    rules={{ required: t("web_ui.please_select_a_time") }}
                     render={({ field: { value, onChange } }) => (
                       <Select<TTimeOption>
                         value={timeStamps.find((option) => option.value === value) ?? null}

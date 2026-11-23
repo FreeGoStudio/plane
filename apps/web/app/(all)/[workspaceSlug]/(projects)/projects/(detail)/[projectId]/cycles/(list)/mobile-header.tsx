@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type React from "react";
 import { observer } from "mobx-react";
 // ui
@@ -17,29 +18,30 @@ import { Menu, MenuContent, MenuItem, MenuTrigger } from "@makeplane/propel/comp
 import { useCycleFilter } from "@/hooks/store/use-cycle-filter";
 import { useProject } from "@/hooks/store/use-project";
 
-const CYCLE_VIEW_LAYOUTS: {
-  key: TCycleLayoutOptions;
-  icon: React.FC<ISvgIcons>;
-  title: string;
-}[] = [
-  {
-    key: "list",
-    icon: ListOutline,
-    title: "List layout",
-  },
-  {
-    key: "board",
-    icon: GridOutline,
-    title: "Gallery layout",
-  },
-  {
-    key: "gantt",
-    icon: TimelineOutline,
-    title: "Timeline layout",
-  },
-];
-
 export const CyclesListMobileHeader = observer(function CyclesListMobileHeader() {
+  const { t } = useTranslation();
+  const CYCLE_VIEW_LAYOUTS: {
+    key: TCycleLayoutOptions;
+    icon: React.FC<ISvgIcons>;
+    title: string;
+  }[] = [
+    {
+      key: "list",
+      icon: ListOutline,
+      title: t("project_modules.layout.list"),
+    },
+    {
+      key: "board",
+      icon: GridOutline,
+      title: t("project_modules.layout.board"),
+    },
+    {
+      key: "gantt",
+      icon: TimelineOutline,
+      title: t("project_modules.layout.timeline"),
+    },
+  ];
+
   const { currentProjectDetails } = useProject();
   // hooks
   const { updateDisplayFilters } = useCycleFilter();

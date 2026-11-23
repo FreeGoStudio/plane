@@ -48,7 +48,7 @@ export const useRealtimePageEvents = ({
   customRealtimeEventHandlers,
   handlers,
 }: UsePageEventsProps) => {
-  useTranslation();
+  const { t } = useTranslation();
   const router = useAppRouter();
   const { removePage, getPageById } = usePageStore(storeType);
 
@@ -60,12 +60,12 @@ export const useRealtimePageEvents = ({
       if (!userId) return "";
       try {
         const userDetails = getUserDetails(userId);
-        return getUserDisplayName(userDetails) ? ` by ${getUserDisplayName(userDetails)}` : "";
+        return getUserDisplayName(userDetails) ? t("web_ui.by_user", { name: getUserDisplayName(userDetails) }) : "";
       } catch {
         return "";
       }
     },
-    [getUserDetails]
+    [getUserDetails, t]
   );
 
   const ACTION_HANDLERS = useMemo(
@@ -121,8 +121,8 @@ export const useRealtimePageEvents = ({
               if (page.id === pageId && data?.user_id !== currentUser?.id) {
                 setToast({
                   type: "error",
-                  title: "Page deleted",
-                  message: `Page deleted${getUserDisplayText(data.user_id)}`,
+                  title: t("web_ui.page_deleted"),
+                  message: t("web_ui.dynamic_page_deleted_value0", { value0: getUserDisplayText(data.user_id) }),
                 });
                 router.push(handlers.getRedirectionLink());
               } else if (page.id === pageId) {
@@ -175,7 +175,7 @@ export const useRealtimePageEvents = ({
         ...customRealtimeEventHandlers,
       };
     },
-    [getPageById, removePage, page, currentUser, getUserDisplayText, router, handlers, customRealtimeEventHandlers]
+    [t, getPageById, removePage, page, currentUser, getUserDisplayText, router, handlers, customRealtimeEventHandlers]
   );
 
   // The main function that will be returned from this hook

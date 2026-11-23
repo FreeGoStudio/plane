@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Dispatch, MouseEvent, MutableRefObject, SetStateAction } from "react";
 import { useRef, useState } from "react";
 import { observer } from "mobx-react";
@@ -169,6 +170,8 @@ interface IssueRowDetailsProps {
 }
 
 const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetailsProps) {
+  const { t } = useTranslation();
+
   const {
     displayProperties,
     issueId,
@@ -311,7 +314,7 @@ const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetails
               {/* select checkbox */}
               {projectId && canSelectIssues && (
                 <Tooltip
-                  label="Only work items within the current project can be selected."
+                  label={t("web_ui.only_work_items_within_the_current_project_can_be_selected")}
                   layout="stacked"
                   disabled={issueDetail.project_id === projectId}
                 >
@@ -391,6 +394,7 @@ const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetails
               "opacity-0 transition-opacity group-hover/spreadsheet-row:opacity-100 focus-within:opacity-100 has-[[aria-expanded=true]]:opacity-100",
               { "opacity-100": isMenuActive }
             )}
+            role="presentation"
             onClick={(e) => e.stopPropagation()}
           >
             {quickActions({

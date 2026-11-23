@@ -110,8 +110,8 @@ export function CreateApiTokenForm(props: Props) {
     if (!neverExpires && (!data.expired_at || (data.expired_at === "custom" && !customDate)))
       return setToast({
         type: "error",
-        title: "Error!",
-        message: "Please select an expiration date.",
+        title: t("error"),
+        message: t("web_ui.please_select_an_expiration_date"),
       });
 
     const payload: Partial<IApiToken> = {
@@ -228,7 +228,7 @@ export function CreateApiTokenForm(props: Props) {
                     onChange={(date) => setCustomDate(date)}
                     minDate={tomorrow}
                     icon={<CalendarOutline />}
-                    placeholder="Set date"
+                    placeholder={t("web_ui.set_date")}
                     disabled={neverExpires}
                     clearable
                     weekStartsOn={userProfile?.start_of_the_week}

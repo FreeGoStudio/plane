@@ -54,7 +54,7 @@ export const PageOptionsDropdown = observer(function PageOptionsDropdown(props: 
         {
           key: "full-screen",
           action: () => handleFullWidth(!isFullWidth),
-          title: "Full width",
+          title: t("web_ui.full_width"),
           // The row itself does the toggling; the switch is the state readout at the row's end.
           customContent: (
             <span className="pointer-events-none">
@@ -65,7 +65,7 @@ export const PageOptionsDropdown = observer(function PageOptionsDropdown(props: 
         {
           key: "sticky-toolbar",
           action: () => handleStickyToolbar(!isStickyToolbarEnabled),
-          title: "Sticky toolbar",
+          title: t("web_ui.sticky_toolbar"),
           customContent: (
             <span className="pointer-events-none">
               <Switch size="sm" checked={isStickyToolbarEnabled} aria-hidden tabIndex={-1} />
@@ -84,7 +84,7 @@ export const PageOptionsDropdown = observer(function PageOptionsDropdown(props: 
               message: t("issue.notifications.markdown_copied"),
             });
           },
-          title: "Copy markdown",
+          title: t("common.actions.copy_markdown"),
           icon: ClipboardOutline,
           shouldRender: true,
         },
@@ -99,20 +99,21 @@ export const PageOptionsDropdown = observer(function PageOptionsDropdown(props: 
             });
             router.push(updatedRoute);
           },
-          title: "Version history",
+          title: t("product_tour.page.step_five.title"),
           icon: HistoryOutline,
           shouldRender: true,
         },
         {
           key: "export",
           action: () => setIsExportModalOpen(true),
-          title: "Export",
+          title: t("export"),
           icon: ExportOutline,
           shouldRender: true,
         },
       ];
     },
     [
+      t,
       handleFullWidth,
       isFullWidth,
       handleStickyToolbar,
@@ -122,7 +123,6 @@ export const PageOptionsDropdown = observer(function PageOptionsDropdown(props: 
       updateQueryParams,
       router,
       setIsExportModalOpen,
-      t,
     ]
   );
 

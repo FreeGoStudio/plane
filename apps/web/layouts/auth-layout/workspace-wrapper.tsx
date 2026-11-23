@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { ReactNode } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -45,6 +46,8 @@ interface IWorkspaceAuthWrapper {
 }
 
 export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props: IWorkspaceAuthWrapper) {
+  const { t } = useTranslation();
+
   const { children, isLoading: isParentLoading = false } = props;
   // router params
   const { workspaceSlug } = useParams();
@@ -129,8 +132,8 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
     await signOut().catch(() =>
       setToast({
         type: "error",
-        title: "Error!",
-        message: "Failed to sign out. Please try again.",
+        title: t("error"),
+        message: t("auth.sign_out.toast.error.message"),
       })
     );
   };
@@ -157,10 +160,10 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
             </div>
             <div className="relative flex items-center gap-2">
               <div className="text-body-xs-medium">{currentUser?.email}</div>
-              <Tooltip label="Sign out" alignOffset={8} disabled={isMobile}>
+              <Tooltip label={t("sign_out")} alignOffset={8} disabled={isMobile}>
                 <button
                   type="button"
-                  aria-label="Sign out"
+                  aria-label={t("sign_out")}
                   className="relative flex h-6 w-6 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm hover:bg-layer-1"
                   onClick={() => void handleSignOut()}
                 >

@@ -95,7 +95,7 @@ export function IntegrationCard({ integration }: Props) {
               <img
                 src={integrationDetails[integration.integration_detail.provider].logo}
                 className="h-full w-full object-cover"
-                alt={`${integration.integration_detail.title} Logo`}
+                alt={t("web_ui.dynamic_value0_logo", { value0: integration.integration_detail.title })}
               />
             </div>
             <div>

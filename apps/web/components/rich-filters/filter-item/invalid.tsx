@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 import { WarningCircleOutline } from "@makeplane/propel/icons";
@@ -19,6 +20,8 @@ export const InvalidFilterItem = observer(function InvalidFilterItem<
   P extends TFilterProperty,
   E extends TExternalFilter,
 >(props: IFilterItemProps<P, E>) {
+  const { t } = useTranslation();
+
   const { condition, filter, isDisabled = false, showTransition = true } = props;
 
   return (
@@ -26,14 +29,14 @@ export const InvalidFilterItem = observer(function InvalidFilterItem<
       conditionValue={condition.value}
       showTransition={showTransition}
       variant="error"
-      label="Invalid filter"
+      label={t("web_ui.invalid_filter")}
       tooltipContent="This filter condition is no longer valid. The property may have been deleted or your access to it may have changed."
     >
       {/* Property section */}
       <FilterItemProperty
         conditionId={condition.id}
         icon={WarningCircleOutline}
-        label="Invalid filter"
+        label={t("web_ui.invalid_filter")}
         filter={filter}
         isDisabled={isDisabled}
       />

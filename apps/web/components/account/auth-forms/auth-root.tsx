@@ -52,7 +52,7 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
   // translation
   const { t } = useTranslation();
   // derived values
-  const oAuthActionText = authMode === EAuthModes.SIGN_UP ? "Sign up" : "Sign in";
+  const oAuthActionText = authMode === EAuthModes.SIGN_UP ? t("web_ui.sign_up_action") : t("web_ui.sign_in");
   const { isOAuthEnabled, oAuthOptions } = useOAuthConfig(oAuthActionText);
   const isEmailBasedAuthEnabled = config?.is_email_password_enabled || config?.is_magic_login_enabled;
   const noAuthMethodsAvailable = !isOAuthEnabled && !isEmailBasedAuthEnabled;
@@ -105,7 +105,7 @@ export const AuthRoot = observer(function AuthRoot(props: TAuthRoot) {
         setErrorInfo(errorhandler);
       }
     }
-  }, [error_code, authMode]);
+  }, [error_code, authMode, t]);
 
   if (!authMode) return <></>;
 

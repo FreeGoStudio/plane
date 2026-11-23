@@ -117,12 +117,12 @@ export const AllIssueLayoutRoot = observer(function AllIssueLayoutRoot(props: Pr
   if (!isLoading && !globalViewsLoading && !issuesLoading && !viewDetails && !isDefaultView) {
     return (
       <EmptyStateDetailed
-        title="View does not exist"
-        description="The view you are looking for does not exist or you don't have permission to view it."
+        title={t("web_ui.view_does_not_exist")}
+        description={t("web_ui.the_view_you_are_looking_for_does_not_exist_or_you_don_t_have_permission_to_view_it")}
         assetKey="view"
         actions={[
           {
-            label: "Go to All work items",
+            label: t("power_k.navigation_actions.nav_all_workspace_work_items"),
             onClick: () => router.push(`/${workspaceSlug}/workspace-views/all-issues`),
             variant: "primary",
           },

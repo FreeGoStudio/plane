@@ -22,7 +22,7 @@ type TArgs = {
 };
 
 export const useEditorMention = (args: TArgs) => {
-  useTranslation();
+  const { t } = useTranslation();
   const { enableAdvancedMentions = false, searchEntity } = args;
   // additional mentions
   const { editorMentionTypes, updateAdditionalSections } = useAdditionalEditorMention({
@@ -61,7 +61,7 @@ export const useEditorMention = (args: TArgs) => {
             }));
             suggestionSections.push({
               key: "users",
-              title: "Users",
+              title: t("common.users"),
               items,
             });
           }
@@ -75,7 +75,7 @@ export const useEditorMention = (args: TArgs) => {
         throw error;
       }
     },
-    [editorMentionTypes, searchEntity, updateAdditionalSections]
+    [t, editorMentionTypes, searchEntity, updateAdditionalSections]
   );
 
   return {

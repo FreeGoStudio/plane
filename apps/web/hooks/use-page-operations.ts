@@ -75,14 +75,14 @@ export const usePageOperations = (
           await duplicate();
           setToast({
             type: "success",
-            title: "Success!",
-            message: "Page duplicated successfully.",
+            title: t("success"),
+            message: t("web_ui.page_duplicated_successfully"),
           });
         } catch (_error) {
           setToast({
             type: "error",
-            title: "Error!",
-            message: "Page could not be duplicated. Please try again later.",
+            title: t("error"),
+            message: t("web_ui.page_could_not_be_duplicated_please_try_again_later"),
           });
         }
       },
@@ -96,14 +96,19 @@ export const usePageOperations = (
           else await executeCollaborativeAction({ type: "sendMessageToServer", message: "make-public" });
           setToast({
             type: "success",
-            title: "Success!",
-            message: `The page has been marked ${changedPageType} and moved to the ${changedPageType} section.`,
+            title: t("success"),
+            message: t("web_ui.dynamic_the_page_has_been_marked_value0_and_moved_to_the_value1_section", {
+              value0: t(changedPageType),
+              value1: t(changedPageType),
+            }),
           });
         } catch (_error) {
           setToast({
             type: "error",
-            title: "Error!",
-            message: `The page couldn't be marked ${changedPageType}. Please try again.`,
+            title: t("error"),
+            message: t("web_ui.dynamic_the_page_couldn_t_be_marked_value0_please_try_again", {
+              value0: t(changedPageType),
+            }),
           });
         }
       },
@@ -113,14 +118,14 @@ export const usePageOperations = (
             await executeCollaborativeAction({ type: "sendMessageToServer", message: "unarchive" });
             setToast({
               type: "success",
-              title: "Success!",
-              message: "Page restored successfully.",
+              title: t("success"),
+              message: t("web_ui.page_restored_successfully"),
             });
           } catch (_error) {
             setToast({
               type: "error",
-              title: "Error!",
-              message: "Page could not be restored. Please try again later.",
+              title: t("error"),
+              message: t("web_ui.page_could_not_be_restored_please_try_again_later"),
             });
           }
         } else {
@@ -128,14 +133,14 @@ export const usePageOperations = (
             await executeCollaborativeAction({ type: "sendMessageToServer", message: "archive" });
             setToast({
               type: "success",
-              title: "Success!",
-              message: "Page archived successfully.",
+              title: t("success"),
+              message: t("web_ui.page_archived_successfully"),
             });
           } catch (_error) {
             setToast({
               type: "error",
-              title: "Error!",
-              message: "Page could not be archived. Please try again later.",
+              title: t("error"),
+              message: t("web_ui.page_could_not_be_archived_please_try_again_later"),
             });
           }
         }
@@ -146,14 +151,14 @@ export const usePageOperations = (
             await removePageFromFavorites();
             setToast({
               type: "success",
-              title: "Success!",
-              message: "Page removed from favorites.",
+              title: t("success"),
+              message: t("web_ui.page_removed_from_favorites"),
             });
           } catch (_error) {
             setToast({
               type: "error",
-              title: "Error!",
-              message: "Page could not be removed from favorites. Please try again later.",
+              title: t("error"),
+              message: t("web_ui.page_could_not_be_removed_from_favorites_please_try_again_later"),
             });
           }
         } else {
@@ -162,14 +167,14 @@ export const usePageOperations = (
             if (!isFavoriteMenuOpen) toggleFavoriteMenu(true);
             setToast({
               type: "success",
-              title: "Success!",
-              message: "Page added to favorites.",
+              title: t("success"),
+              message: t("web_ui.page_added_to_favorites"),
             });
           } catch (_error) {
             setToast({
               type: "error",
-              title: "Error!",
-              message: "Page could not be added to favorites. Please try again later.",
+              title: t("error"),
+              message: t("web_ui.page_could_not_be_added_to_favorites_please_try_again_later"),
             });
           }
         }
@@ -180,14 +185,14 @@ export const usePageOperations = (
             await executeCollaborativeAction({ type: "sendMessageToServer", message: "unlock" });
             setToast({
               type: "success",
-              title: "Success!",
-              message: "Page unlocked successfully.",
+              title: t("success"),
+              message: t("web_ui.page_unlocked_successfully"),
             });
           } catch (_error) {
             setToast({
               type: "error",
-              title: "Error!",
-              message: "Page could not be unlocked. Please try again later.",
+              title: t("error"),
+              message: t("web_ui.page_could_not_be_unlocked_please_try_again_later"),
             });
           }
         } else {
@@ -195,20 +200,21 @@ export const usePageOperations = (
             await executeCollaborativeAction({ type: "sendMessageToServer", message: "lock" });
             setToast({
               type: "success",
-              title: "Success!",
-              message: "Page locked successfully.",
+              title: t("success"),
+              message: t("web_ui.page_locked_successfully"),
             });
           } catch (_error) {
             setToast({
               type: "error",
-              title: "Error!",
-              message: "Page could not be locked. Please try again later.",
+              title: t("error"),
+              message: t("web_ui.page_could_not_be_locked_please_try_again_later"),
             });
           }
         }
       },
     };
   }, [
+    t,
     access,
     addToFavorites,
     archived_at,
@@ -220,7 +226,6 @@ export const usePageOperations = (
     isFavoriteMenuOpen,
     removePageFromFavorites,
     toggleFavoriteMenu,
-    t,
   ]);
   return {
     pageOperations,

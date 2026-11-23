@@ -121,7 +121,11 @@ export const IssueRelationSelect = observer(function IssueRelationSelect(props: 
                     key={relationIssueId}
                     className={`group flex items-center gap-1 rounded-sm px-1.5 pt-1 pb-1 leading-3 hover:bg-surface-2 ${currRelationOption?.className}`}
                   >
-                    <Tooltip label={`Title: ${currentIssue.name}`} layout="stacked" disabled={isMobile}>
+                    <Tooltip
+                      label={t("web_ui.dynamic_title_value0", { value0: currentIssue.name })}
+                      layout="stacked"
+                      disabled={isMobile}
+                    >
                       <Link
                         href={generateWorkItemLink({
                           workspaceSlug,

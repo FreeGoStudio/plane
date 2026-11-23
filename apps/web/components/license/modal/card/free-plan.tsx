@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { CloseCircleOutline } from "@makeplane/propel/icons";
 // plane constants
@@ -16,13 +17,15 @@ type FreePlanCardProps = {
 };
 
 export const FreePlanCard = observer(function FreePlanCard(props: FreePlanCardProps) {
+  const { t } = useTranslation();
+
   const { isOnFreePlan } = props;
   return (
     <div className="rounded-xl bg-layer-1 px-2 py-4">
       {isOnFreePlan && (
         <div className="px-3 py-2">
           <span className="rounded-sm border border-subtle-1 bg-layer-2 px-2 py-1 text-caption-md-medium text-tertiary">
-            Your plan
+            {t("web_ui.your_plan")}{" "}
           </span>
         </div>
       )}

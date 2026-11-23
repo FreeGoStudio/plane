@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useRef, useState } from "react";
 import { omit } from "lodash-es";
 import { observer } from "mobx-react";
@@ -33,8 +34,10 @@ type Props = {
 };
 
 export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
+  const { t } = useTranslation();
+
   // props
-  const { workspaceSlug, issueId } = props;
+  const { workspaceSlug, issueId: localIssueId0 } = props;
   // states
   const [moveToIssue, setMoveToIssue] = useState(false);
   const [createUpdateIssueModal, setCreateUpdateIssueModal] = useState(false);
@@ -47,7 +50,7 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
   // ref
   const issueRef = useRef<HTMLDivElement | null>(null);
   // derived values
-  const issue = getIssueById(issueId);
+  const issue = getIssueById(localIssueId0);
   const projectIdentifier = (issue && issue.project_id && getProjectIdentifierById(issue.project_id)) || undefined;
   // Room for the property chips while the row is single-line (`md:flex-row` / `lg:flex-row` below).
   const { rowRef, leadingRef, quickActionsRef, budgetPx } = useListRowPropertiesBudget({
@@ -68,7 +71,7 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
   const MENU_ITEMS: TContextMenuItem[] = [
     {
       key: "edit",
-      title: "edit",
+      title: t("edit"),
       icon: EditOutline,
       action: () => {
         setIssueToEdit(issue);
@@ -95,7 +98,7 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
     },
     {
       key: "delete",
-      title: "delete",
+      title: t("delete"),
       icon: DeleteOutline,
       action: () => {
         setDeleteIssueModal(true);
@@ -109,7 +112,7 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
         data={issue}
         isOpen={deleteIssueModal}
         handleClose={() => setDeleteIssueModal(false)}
-        onSubmit={async () => deleteIssue(workspaceSlug, issueId)}
+        onSubmit={async () => deleteIssue(workspaceSlug, localIssueId0)}
       />
       <CreateUpdateIssueModal
         isOpen={createUpdateIssueModal}
@@ -120,7 +123,7 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
         }}
         data={issueToEdit ?? duplicateIssuePayload}
         onSubmit={async (data) => {
-          if (issueToEdit) await updateIssue(workspaceSlug, issueId, data);
+          if (issueToEdit) await updateIssue(workspaceSlug, localIssueId0, data);
         }}
         storeType={EIssuesStoreType.WORKSPACE_DRAFT}
         fetchIssueDetails={false}

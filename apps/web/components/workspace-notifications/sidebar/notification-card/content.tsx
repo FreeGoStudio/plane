@@ -158,7 +158,7 @@ export function NotificationContent({
   renderCommentBox?: boolean;
   isUnread?: boolean;
 }) {
-  useTranslation();
+  const { t } = useTranslation();
   const { data, triggered_by_details: triggeredBy } = notification;
   const emphasisClassName = isUnread ? "font-semibold" : "font-medium";
   const notificationField = data?.issue_activity.field;
@@ -228,7 +228,7 @@ export function NotificationContent({
       <span className="text-tertiary">{renderAction()} </span>
       {verb !== "deleted" && (
         <>
-          {showConnector && <span className="text-tertiary">to </span>}
+          {showConnector && <span className="text-tertiary">{t("web_ui.to")} </span>}
           <span className={cn("text-primary", emphasisClassName)}>{renderValue()}</span>
           {notificationField === "comment" && renderCommentBox && (
             <div className="origin-left scale-75">

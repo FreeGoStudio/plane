@@ -51,7 +51,7 @@ export const FiltersRow = observer(function FiltersRow<K extends TFilterProperty
   };
 
   const modalButtonConfig: Partial<TAddFilterButtonProps<K, E>["buttonConfig"]> = {
-    label: !hasAnyConditions ? "Filters" : null,
+    label: !hasAnyConditions ? t("common.filters") : null,
   };
 
   const handleUpdate = useCallback(async () => {

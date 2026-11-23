@@ -255,10 +255,11 @@ export const IssueDescriptionEditor = observer(function IssueDescriptionEditor(p
                 tabIndex={getIndex("feeling_lucky")}
               >
                 {iAmFeelingLucky ? (
-                  "Generating response"
+                  t("web_ui.generating_response")
                 ) : (
                   <>
-                    <AiStar1Outline className="h-3.5 w-3.5" />I{"'"}m feeling lucky
+                    <AiStar1Outline className="h-3.5 w-3.5" />
+                    {t("web_ui.feeling_lucky")}
                   </>
                 )}
               </button>

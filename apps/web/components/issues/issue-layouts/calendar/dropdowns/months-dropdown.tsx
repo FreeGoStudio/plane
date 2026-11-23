@@ -39,14 +39,14 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
   const getWeekLayoutHeader = (): string => {
     const allDaysOfActiveWeek = issueCalendarView.allDaysOfActiveWeek;
 
-    if (!allDaysOfActiveWeek) return "Week view";
+    if (!allDaysOfActiveWeek) return t("web_ui.week_view");
 
     const daysList = Object.keys(allDaysOfActiveWeek);
 
     const firstDay = getDate(daysList[0]);
     const lastDay = getDate(daysList[daysList.length - 1]);
 
-    if (!firstDay || !lastDay) return "Week view";
+    if (!firstDay || !lastDay) return t("web_ui.week_view");
 
     const first = formatCalendarDate(firstDay, "MMMM yyyy");
     const last = formatCalendarDate(lastDay, "MMMM yyyy");

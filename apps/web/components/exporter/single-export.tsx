@@ -19,7 +19,7 @@ type Props = {
 };
 
 export function SingleExport({ service, refreshing }: Props) {
-  useTranslation();
+  const { t } = useTranslation();
   const { renderFormattedDate } = useDateFormatter();
   const provider = service.provider;
 
@@ -39,9 +39,15 @@ export function SingleExport({ service, refreshing }: Props) {
       <div>
         <h4 className="flex items-center gap-2 text-body-xs-regular">
           <span>
-            Export to{" "}
+            {t("workspace_settings.settings.exports.modal.title")}{" "}
             <span className="font-medium">
-              {provider === "csv" ? "CSV" : provider === "xlsx" ? "Excel" : provider === "json" ? "JSON" : ""}
+              {provider === "csv"
+                ? "CSV"
+                : provider === "xlsx"
+                  ? "Excel"
+                  : provider === "json"
+                    ? t("exporter.json.title")
+                    : ""}
             </span>{" "}
           </span>
           <span
@@ -57,7 +63,7 @@ export function SingleExport({ service, refreshing }: Props) {
                       : ""
             }`}
           >
-            {refreshing ? "Refreshing..." : service.status}
+            {refreshing ? t("refreshing") : service.status}
           </span>
         </h4>
         <div className="mt-2 flex items-center gap-2 text-caption-sm-regular text-secondary">

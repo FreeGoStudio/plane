@@ -4,8 +4,9 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type React from "react";
-import { useEffect, useEffectEvent, useState, useRef } from "react";
+import { useCallback, useEffect, useEffectEvent, useState, useRef } from "react";
 import { Controller, useForm } from "react-hook-form"; // services
 import { WarningCircleOutline } from "@makeplane/propel/icons";
 // plane imports
@@ -44,6 +45,15 @@ type FormData = {
 };
 
 export function GptAssistantPopover(props: Props) {
+  const initialFocusTarget = useRef<HTMLElement | null>(null);
+  const focusInputOnMount = useCallback((element: HTMLElement | null) => {
+    if (!element || initialFocusTarget.current === element) return;
+    initialFocusTarget.current = element;
+    const input = element instanceof HTMLInputElement ? element : element.querySelector("input");
+    input?.focus();
+  }, []);
+  const { t } = useTranslation();
+
   const {
     isOpen,
     handleClose,
@@ -95,7 +105,7 @@ export function GptAssistantPopover(props: Props) {
 
     setToast({
       type: "error",
-      title: "Error!",
+      title: t("error"),
       message: errorMessage,
     });
 
@@ -121,8 +131,8 @@ export function GptAssistantPopover(props: Props) {
   const handleInvalidTask = () => {
     setToast({
       type: "error",
-      title: "Error!",
-      message: "Please enter some task to get AI assistance.",
+      title: t("error"),
+      message: t("web_ui.please_enter_some_task_to_get_ai_assistance"),
     });
   };
 
@@ -174,7 +184,7 @@ export function GptAssistantPopover(props: Props) {
       variant="primary"
       size="sm"
       stretch="auto"
-      label="Use this response"
+      label={t("web_ui.use_this_response")}
       onClick={() => {
         onResponse(response);
         onClose();
@@ -256,7 +266,7 @@ export function GptAssistantPopover(props: Props) {
               control={control}
               name="task"
               render={({ field: { value, onChange, ref } }) => (
-                <InputGroup size="2xl">
+                <InputGroup ref={focusInputOnMount} size="2xl">
                   <Input
                     size="2xl"
                     id="task"
@@ -265,12 +275,11 @@ export function GptAssistantPopover(props: Props) {
                     value={value}
                     onChange={onChange}
                     ref={ref}
-                    placeholder={`${
+                    placeholder={
                       prompt && prompt !== ""
-                        ? "Tell AI what action to perform on this content..."
-                        : "Ask AI anything..."
-                    }`}
-                    autoFocus
+                        ? t("web_ui.tell_ai_what_action_to_perform_on_this_content")
+                        : t("web_ui.ask_ai_anything")
+                    }
                   />
                 </InputGroup>
               )}
@@ -282,12 +291,16 @@ export function GptAssistantPopover(props: Props) {
                 <>
                   <div className="flex items-center justify-center gap-2 text-body-xs-regular text-tertiary">
                     <WarningCircleOutline className="h-4 w-4" />
-                    <p>By using this feature, you consent to sharing the message with a 3rd party service. </p>
+                    <p>
+                      {t(
+                        "web_ui.by_using_this_feature_you_consent_to_sharing_the_message_with_a_3rd_party_service"
+                      )}{" "}
+                    </p>
                   </div>
                 </>
               )}
               <div className="flex items-center gap-2">
-                <Button variant="secondary" size="sm" stretch="auto" label="Close" onClick={onClose} />
+                <Button variant="secondary" size="sm" stretch="auto" label={t("close")} onClick={onClose} />
                 <Button
                   variant="primary"
                   size="sm"

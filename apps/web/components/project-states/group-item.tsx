@@ -103,7 +103,11 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
       >
         {shouldShowEmptyState && (
           <div className="flex h-full flex-col items-center justify-center py-4 text-body-xs-regular text-tertiary">
-            <div>{t("project_settings.states.empty_state.title", { groupKey })}</div>
+            <div>
+              {t("project_settings.states.empty_state.title", {
+                groupKey: currentLocale === "zh-CN" ? t(`workspace_projects.state.${groupKey}`) : groupKey,
+              })}
+            </div>
             {isEditable && <div>{t("project_settings.states.empty_state.description")}</div>}
           </div>
         )}

@@ -64,13 +64,13 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
       <input {...getInputProps()} />
       <span className="flex items-center gap-2">
         {isDragActive ? (
-          <p>Drop here...</p>
+          <p>{t("templates.settings.form.publish.cover_image.drop_here")}</p>
         ) : fileError ? (
           <p className="text-center text-danger-primary">{fileError}</p>
         ) : isLoading ? (
           <p className="text-center">{t("editor_ui.uploading")}</p>
         ) : (
-          <p className="text-center">Click or drag a file here</p>
+          <p className="text-center">{t("web_ui.click_or_drag_a_file_here")}</p>
         )}
       </span>
     </div>

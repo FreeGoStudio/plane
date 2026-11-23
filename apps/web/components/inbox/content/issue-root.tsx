@@ -93,7 +93,7 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
           setToast({
             title: t("sso.providers.saml.configure.toast.error_title"),
             type: "error",
-            message: "Work item delete failed",
+            message: t("web_ui.work_item_delete_failed"),
           });
         }
       },
@@ -102,9 +102,9 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
           await inboxIssue.updateIssue(data);
         } catch (_error) {
           setToast({
-            title: "Work item update failed",
+            title: t("web_ui.work_item_update_failed"),
             type: "error",
-            message: "Work item update failed",
+            message: t("web_ui.work_item_update_failed"),
           });
         }
       },
@@ -118,7 +118,7 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
       },
     }),
     // oxlint-disable-next-line eslint-plugin-react-hooks/exhaustive-deps
-    [inboxIssue]
+    [t, inboxIssue]
   );
 
   if (!issue) return <></>;

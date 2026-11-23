@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+import { useTranslation } from "@plane/i18n";
 // ui
 import { Button } from "@makeplane/propel/components/button";
 // assets
@@ -15,6 +16,7 @@ type Props = {
 };
 
 export function WebhooksEmptyState(props: Props) {
+  const { t } = useTranslation();
   const { onClick } = props;
   return (
     <div
@@ -22,9 +24,15 @@ export function WebhooksEmptyState(props: Props) {
     >
       <div className="flex w-full flex-col items-center text-center">
         <img src={EmptyWebhook} className="w-52 object-cover sm:w-60" alt="empty" />
-        <h6 className="mt-6 mb-3 text-h5-semibold sm:mt-8">No webhooks</h6>
-        <p className="mb-7 text-tertiary sm:mb-8">Create webhooks to receive real-time updates and automate actions</p>
-        <Button variant="primary" size="sm" stretch="auto" label="Add webhook" onClick={onClick} />
+        <h6 className="mt-6 mb-3 text-h5-semibold sm:mt-8">{t("web_ui.no_webhooks")}</h6>
+        <p className="mb-7 text-tertiary sm:mb-8">{t("workspace_settings.empty_state.webhooks.description")}</p>
+        <Button
+          variant="primary"
+          size="sm"
+          stretch="auto"
+          label={t("settings_empty_state.webhooks.cta_primary")}
+          onClick={onClick}
+        />
       </div>
     </div>
   );

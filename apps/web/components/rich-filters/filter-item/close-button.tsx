@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+
 import { observer } from "mobx-react";
 // plane imports
 import { Icon } from "@makeplane/propel/components/icon";
@@ -21,11 +23,15 @@ export const FilterItemCloseButton = observer(function FilterItemCloseButton<
   P extends TFilterProperty,
   E extends TExternalFilter,
 >(props: FilterItemCloseButtonProps<P, E>) {
+  const { t } = useTranslation();
+
   const { conditionId, filter } = props;
 
   const handleRemoveFilter = () => {
     filter.removeCondition(conditionId);
   };
 
-  return <IconPill onClick={handleRemoveFilter} aria-label="Remove filter" icon={<Icon icon={CloseOutline} />} />;
+  return (
+    <IconPill onClick={handleRemoveFilter} aria-label={t("web_ui.remove_filter")} icon={<Icon icon={CloseOutline} />} />
+  );
 });

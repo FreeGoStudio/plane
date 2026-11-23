@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useEffect, useMemo } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -39,13 +40,15 @@ const projectPageVersionService = new ProjectPageVersionService();
 const storeType = EPageStoreType.PROJECT;
 
 function PageDetailsPage({ params }: Route.ComponentProps) {
+  const { t } = useTranslation();
+
   // router
   const router = useAppRouter();
-  const { workspaceSlug, projectId, pageId } = params;
+  const { workspaceSlug, projectId, pageId: localPageId0 } = params;
   // store hooks
   const { createPage, fetchPageDetails } = usePageStore(storeType);
   const page = usePage({
-    pageId,
+    pageId: localPageId0,
     storeType,
   });
   const { getWorkspaceBySlug } = useWorkspace();
@@ -66,8 +69,8 @@ function PageDetailsPage({ params }: Route.ComponentProps) {
   const { getEditorFileHandlers } = useEditorConfig();
   // fetch page details
   const { error: pageDetailsError } = useSWR(
-    `PAGE_DETAILS_${pageId}`,
-    () => fetchPageDetails(workspaceSlug, projectId, pageId),
+    `PAGE_DETAILS_${localPageId0}`,
+    () => fetchPageDetails(workspaceSlug, projectId, localPageId0),
     {
       revalidateIfStale: true,
       revalidateOnFocus: true,
@@ -170,7 +173,7 @@ function PageDetailsPage({ params }: Route.ComponentProps) {
           stretch="auto"
           render={<Link href={`/${workspaceSlug}/projects/${projectId}/pages`} className="mt-5" />}
         >
-          View other Pages
+          {t("web_ui.view_other_pages")}{" "}
         </Button>
       </div>
     );

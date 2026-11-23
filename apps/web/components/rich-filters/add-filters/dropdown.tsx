@@ -21,6 +21,7 @@ import { useTranslation } from "@plane/i18n";
 import type { IFilterInstance } from "@plane/shared-state";
 import type { TExternalFilter, TFilterProperty, TSupportedOperators } from "@plane/types";
 import { cn, getOperatorForPayload } from "@plane/utils";
+import { getFilterPropertyLabel } from "../property-label";
 
 export type TAddFilterDropdownProps<P extends TFilterProperty, E extends TExternalFilter> = {
   customButton?: React.ReactNode;
@@ -55,7 +56,9 @@ export const AddFilterDropdown = observer(function AddFilterDropdown<
   const availableConfigs = filter.configManager.allAvailableConfigs;
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const visibleConfigs = normalizedQuery
-    ? availableConfigs.filter((config) => config.label.toLowerCase().includes(normalizedQuery))
+    ? availableConfigs.filter((config) =>
+        getFilterPropertyLabel(config.id, config.label, t).toLowerCase().includes(normalizedQuery)
+      )
     : availableConfigs;
   // Every filter already applied reads differently from a search that matched nothing.
   const emptyLabel = availableConfigs.length === 0 ? "All filters applied" : t("common.search.no_matching_results");
@@ -67,8 +70,8 @@ export const AddFilterDropdown = observer(function AddFilterDropdown<
       props.handleFilterSelect(property, operator, isNegation);
     } else {
       setToast({
-        title: "Filter configuration error",
-        message: "This filter is not properly configured and cannot be applied",
+        title: t("web_ui.filter_configuration_error"),
+        message: t("web_ui.this_filter_is_not_properly_configured_and_cannot_be_applied"),
         type: "error",
       });
     }
@@ -92,7 +95,7 @@ export const AddFilterDropdown = observer(function AddFilterDropdown<
           <ComboboxItem
             key={config.id}
             value={config.id}
-            label={config.label}
+            label={getFilterPropertyLabel(config.id, config.label, t)}
             icon={config.icon ? <config.icon className="size-4 text-tertiary" /> : undefined}
             trailing={config.rightContent ? <>{config.rightContent}</> : undefined}
           />

@@ -106,7 +106,9 @@ export const InboxIssueListItem = observer(function InboxIssueListItem(props: In
               {issue.label_ids && issue.label_ids.length > 3 ? (
                 <div className="relative flex !h-[17.5px] items-center gap-1 rounded-sm border border-strong px-1 text-caption-sm-regular">
                   <span className="bg-orange-400 h-2 w-2 rounded-full" />
-                  <span className="max-w-28 truncate normal-case">{`${issue.label_ids.length} labels`}</span>
+                  <span className="max-w-28 truncate normal-case">
+                    {t("web_ui.dynamic_value0_labels", { value0: issue.label_ids.length })}
+                  </span>
                 </div>
               ) : (
                 <>

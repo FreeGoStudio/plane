@@ -58,9 +58,9 @@ export function ConfirmIssueDiscard(props: Props) {
         <DialogMain>
           <DialogHeader>
             <DialogHeading>
-              <DialogTitle>Save this draft?</DialogTitle>
+              <DialogTitle>{t("web_ui.save_this_draft")}</DialogTitle>
               <DialogDescription>
-                You can save this work item to Drafts so you can come back to it later.
+                {t("web_ui.you_can_save_this_work_item_to_drafts_so_you_can_come_back_to_it_later")}{" "}
               </DialogDescription>
             </DialogHeading>
           </DialogHeader>
@@ -82,7 +82,7 @@ export function ConfirmIssueDiscard(props: Props) {
             stretch="auto"
             onClick={() => void handleDeletion()}
             loading={isLoading}
-            label={isLoading ? "Saving" : "Save to Drafts"}
+            label={isLoading ? t("saving") : t("save_to_drafts")}
           />
         </DialogActions>
       </DialogContent>

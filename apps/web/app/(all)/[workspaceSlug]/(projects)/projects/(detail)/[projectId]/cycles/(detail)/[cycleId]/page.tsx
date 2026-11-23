@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+
 import { observer } from "mobx-react";
 // plane imports
 import { EmptyStateDetailed } from "@plane/blocks/empty-state";
@@ -21,6 +23,8 @@ import useLocalStorage from "@/hooks/use-local-storage";
 import type { Route } from "./+types/page";
 
 function CycleDetailPage({ params }: Route.ComponentProps) {
+  const { t } = useTranslation();
+
   // router
   const router = useAppRouter();
   const { workspaceSlug, projectId, cycleId } = params;
@@ -37,7 +41,7 @@ function CycleDetailPage({ params }: Route.ComponentProps) {
     cycleId,
   });
   // derived values
-  const isSidebarCollapsed = storedValue ? (storedValue === true ? true : false) : false;
+  const isSidebarCollapsed = storedValue === true;
   const cycle = getCycleById(cycleId);
   const project = getProjectById(projectId);
   const pageTitle = project?.name && cycle?.name ? `${project?.name} - ${cycle?.name}` : undefined;
@@ -56,8 +60,8 @@ function CycleDetailPage({ params }: Route.ComponentProps) {
           align="center"
           assetKey="cycle"
           assetClassName="size-40"
-          title="Cycle does not exist"
-          description="The cycle you are looking for does not exist or has been deleted."
+          title={t("web_ui.cycle_does_not_exist")}
+          description={t("web_ui.the_cycle_you_are_looking_for_does_not_exist_or_has_been_deleted")}
           actions={[
             {
               label: "View other cycles",

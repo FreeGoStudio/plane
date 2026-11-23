@@ -84,7 +84,10 @@ export const IssuesHeader = observer(function IssuesHeader() {
           </Breadcrumbs>
           {issuesCount && issuesCount > 0 ? (
             <Tooltip
-              label={`There are ${issuesCount} ${issuesCount > 1 ? "work items" : "work item"} in this project`}
+              label={t("web_ui.dynamic_there_are_value0_value1_in_this_project", {
+                value0: issuesCount,
+                value1: issuesCount > 1 ? t("work_items") : t("common.work_item"),
+              })}
               layout="stacked"
               side="bottom"
               disabled={isMobile}

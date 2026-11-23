@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
+
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -30,6 +32,8 @@ import { WorkspaceService } from "@/services/workspace.service";
 const workspaceService = new WorkspaceService();
 
 function WorkspaceInvitationPage() {
+  const { t } = useTranslation();
+
   // router
   const router = useAppRouter();
   // query params
@@ -110,8 +114,10 @@ function WorkspaceInvitationPage() {
             <EmptyStateDetailed
               align="center"
               assetKey="inbox"
-              title={`You have been invited to ${invitationDetail.workspace.name}`}
-              description="Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Plane account."
+              title={t("web_ui.dynamic_you_have_been_invited_to_value0", { value0: invitationDetail.workspace.name })}
+              description={t(
+                "web_ui.your_workspace_is_where_you_ll_create_projects_collaborate_on_your_work_items_and_organize"
+              )}
               actions={[
                 { label: "Accept", variant: "primary", onClick: handleAccept },
                 { label: "Ignore", variant: "secondary", onClick: handleReject },
@@ -123,8 +129,12 @@ function WorkspaceInvitationPage() {
             <EmptyStateDetailed
               align="center"
               assetKey="project"
-              title={`You are already a member of ${invitationDetail.workspace.name}`}
-              description="Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Plane account."
+              title={t("web_ui.dynamic_you_are_already_a_member_of_value0", {
+                value0: invitationDetail.workspace.name,
+              })}
+              description={t(
+                "web_ui.your_workspace_is_where_you_ll_create_projects_collaborate_on_your_work_items_and_organize"
+              )}
               customButton={
                 <Button
                   variant="primary"
@@ -140,8 +150,10 @@ function WorkspaceInvitationPage() {
             <EmptyStateDetailed
               align="center"
               assetKey="invalid-link"
-              title="This invitation link is not active anymore."
-              description="Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Plane account."
+              title={t("web_ui.this_invitation_link_is_not_active_anymore")}
+              description={t(
+                "web_ui.your_workspace_is_where_you_ll_create_projects_collaborate_on_your_work_items_and_organize"
+              )}
               customButton={
                 <div className="flex flex-col items-center gap-4">
                   <Button

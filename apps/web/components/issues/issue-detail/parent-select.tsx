@@ -76,7 +76,7 @@ export const IssueParentSelect = observer(function IssueParentSelect(props: TIss
         issueId={issueId}
         isOpen={isParentIssueModalOpen === issueId}
         handleClose={() => toggleParentIssueModal(null)}
-        onChange={(issue: any) => handleParentIssue(issue?.id)}
+        onChange={(nextIssue: any) => handleParentIssue(nextIssue?.id)}
       />
       <div
         className={cn(
@@ -92,7 +92,11 @@ export const IssueParentSelect = observer(function IssueParentSelect(props: TIss
         {issue.parent_id && parentIssue ? (
           <>
             <div className="flex h-full min-w-0 flex-1 items-center gap-1.5">
-              <Tooltip label={`Title: ${parentIssue.name}`} layout="stacked" disabled={isMobile}>
+              <Tooltip
+                label={t("web_ui.dynamic_title_value0", { value0: parentIssue.name })}
+                layout="stacked"
+                disabled={isMobile}
+              >
                 <Link
                   href={workItemLink}
                   target="_blank"

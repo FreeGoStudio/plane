@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import Link from "next/link";
 // ui
 import { Button } from "@makeplane/propel/components/button";
@@ -17,6 +18,8 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 function PageNotFound() {
+  const { t } = useTranslation();
+
   return (
     <div className="h-screen w-full overflow-hidden bg-surface-1 p-4">
       <EmptyStateDetailed
@@ -30,7 +33,7 @@ function PageNotFound() {
             variant="primary"
             size="lg"
             stretch="auto"
-            label="Go to Home"
+            label={t("power_k.navigation_actions.nav_home")}
             nativeButton={false}
             render={<Link href="/" />}
           />

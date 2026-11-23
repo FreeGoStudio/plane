@@ -141,7 +141,11 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                         >
                           <div className="flex w-full min-w-24 flex-grow items-center gap-1.5 truncate">
                             <IssueIdentifier issueId={issue.id} projectId={projectId} size="xs" variant="secondary" />
-                            <Tooltip label={`Title: ${issue.name}`} layout="stacked" align="start">
+                            <Tooltip
+                              label={t("web_ui.dynamic_title_value0", { value0: issue.name })}
+                              layout="stacked"
+                              align="start"
+                            >
                               <span className="truncate text-body-xs-regular text-primary">{issue.name}</span>
                             </Tooltip>
                           </div>

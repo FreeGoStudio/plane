@@ -30,7 +30,7 @@ type Props = {
 };
 
 export const BlockItemAction = observer(function BlockItemAction(props: Props) {
-  useTranslation();
+  const { t } = useTranslation();
   const { renderFormattedDate } = useDateFormatter();
   const { page, parentRef, storeType } = props;
   // store hooks
@@ -47,7 +47,7 @@ export const BlockItemAction = observer(function BlockItemAction(props: Props) {
     <>
       {/* page access */}
       <div className="grid size-(--control-height-sm) cursor-default place-items-center text-icon-secondary [--node-size:var(--control-glyph-sm)]">
-        <Tooltip label={access === 0 ? "Public" : "Private"}>
+        <Tooltip label={access === 0 ? t("public") : t("private")}>
           <Icon icon={access === 0 ? GlobeOutline : LockOutline} />
         </Tooltip>
       </div>
@@ -64,7 +64,10 @@ export const BlockItemAction = observer(function BlockItemAction(props: Props) {
       </div>
       {/* page info */}
       <div className="grid size-(--control-height-sm) cursor-default place-items-center text-icon-secondary [--node-size:var(--control-glyph-sm)]">
-        <Tooltip label={`Created on ${renderFormattedDate(created_at)}`} layout="stacked">
+        <Tooltip
+          label={t("web_ui.dynamic_created_on_value0_551e0f", { value0: renderFormattedDate(created_at) })}
+          layout="stacked"
+        >
           <Icon icon={InfoOutline} />
         </Tooltip>
       </div>

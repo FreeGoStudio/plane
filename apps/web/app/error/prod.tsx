@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { AnchorButton } from "@makeplane/propel/components/anchor-button";
 import { Button } from "@makeplane/propel/components/button";
 import { EmptyStateDetailed } from "@plane/blocks/empty-state";
@@ -14,12 +15,12 @@ import DefaultLayout from "@/layouts/default-layout";
 const linkMap = [
   {
     key: "mail_to",
-    label: "Contact Support",
+    label: "web_ui.contact_support",
     value: "mailto:support@plane.so",
   },
   {
     key: "status",
-    label: "Status Page",
+    label: "common.status_page",
     value: "https://status.plane.so/",
   },
   {
@@ -36,6 +37,7 @@ interface ProdErrorComponentProps {
 }
 
 export function ProdErrorComponent({ onGoHome, onReload }: ProdErrorComponentProps) {
+  const { t } = useTranslation();
   return (
     <DefaultLayout>
       {/* The blocks illustration is themed through CSS tokens, so no theme lookup is needed here. */}
@@ -57,7 +59,7 @@ export function ProdErrorComponent({ onGoHome, onReload }: ProdErrorComponentPro
                     href={link.value}
                     target="_blank"
                     rel="noopener noreferrer"
-                    label={link.label}
+                    label={link.key === "twitter_handle" ? link.label : t(link.label)}
                   />
                 ))}
               </div>

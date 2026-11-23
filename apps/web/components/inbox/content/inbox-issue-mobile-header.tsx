@@ -124,14 +124,14 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
             variant="secondary"
             size="md"
             icon={<Icon icon={ChevronUpOutline} />}
-            aria-label="Previous work item"
+            aria-label={t("web_ui.previous_work_item")}
             onClick={() => handleInboxIssueNavigation("prev")}
           />
           <IconButton
             variant="secondary"
             size="md"
             icon={<Icon icon={ChevronDownOutline} />}
-            aria-label="Next work item"
+            aria-label={t("web_ui.next_work_item")}
             onClick={() => handleInboxIssueNavigation("next")}
           />
         </div>
@@ -171,7 +171,11 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
               {canMarkAsAccepted && !isAcceptedOrDeclined && (
                 <MenuItem
                   icon={<Icon icon={ClockOutline} />}
-                  label={inboxIssue?.snoozed_till && numberOfDaysLeft && numberOfDaysLeft > 0 ? "Un-snooze" : "Snooze"}
+                  label={
+                    inboxIssue?.snoozed_till && numberOfDaysLeft && numberOfDaysLeft > 0
+                      ? "Un-snooze"
+                      : t("inbox_issue.actions.snooze")
+                  }
                   onClick={() =>
                     handleActionWithPermission(
                       isProjectAdmin,

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState, useEffect, useRef } from "react";
 import { observer } from "mobx-react";
 import { LockedOutline, UnlockedOutline } from "@makeplane/propel/icons";
@@ -25,6 +26,8 @@ type Props = {
 };
 
 export const PageLockControl = observer(function PageLockControl({ page }: Props) {
+  const { t } = useTranslation();
+
   // Initial state: if locked, then "locked", otherwise default to "neutral"
   const [displayState, setDisplayState] = useState<LockDisplayState>(page.is_locked ? "locked" : "neutral");
   // derived values
@@ -81,14 +84,14 @@ export const PageLockControl = observer(function PageLockControl({ page }: Props
   return (
     <>
       {displayState === "neutral" && (
-        <Tooltip label="Lock" side="bottom">
+        <Tooltip label={t("power_k.contextual_actions.page.lock")} side="bottom">
           <IconButton
             type="button"
             onClick={toggleLock}
             variant="ghost"
             size="md"
             showTooltip={false}
-            aria-label="Lock"
+            aria-label={t("power_k.contextual_actions.page.lock")}
             icon={<Icon icon={LockedOutline} />}
           />
         </Tooltip>

@@ -19,6 +19,8 @@ import { useUserProfile } from "@/hooks/store/user";
 export const StartOfWeekPreference = observer(function StartOfWeekPreference(props: {
   option: { title: string; description: string };
 }) {
+  const { t } = useTranslation();
+
   // hooks
   const { currentLocale } = useTranslation();
   const { data: userProfile, updateUserProfile } = useUserProfile();
@@ -26,9 +28,13 @@ export const StartOfWeekPreference = observer(function StartOfWeekPreference(pro
   const handleStartOfWeekChange = async (val: EStartOfTheWeek) => {
     try {
       await updateUserProfile({ start_of_the_week: val });
-      setToast({ type: "success", title: "Success", message: "First day of the week updated successfully" });
+      setToast({
+        type: "success",
+        title: t("success"),
+        message: t("web_ui.first_day_of_the_week_updated_successfully"),
+      });
     } catch (_error) {
-      setToast({ type: "error", title: "Update failed", message: "Please try again later." });
+      setToast({ type: "error", title: t("web_ui.update_failed"), message: t("web_ui.please_try_again_later") });
     }
   };
 

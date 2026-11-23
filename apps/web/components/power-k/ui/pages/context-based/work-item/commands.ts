@@ -95,12 +95,14 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
       await updateEntity(workspaceSlug.toString(), entityDetails.project_id, entityDetails.id, formData).catch(() => {
         setToast({
           type: "error",
-          title: "Error!",
-          message: `${isEpic ? "Epic" : "Work item"} could not be updated. Please try again.`,
+          title: t("error"),
+          message: t("web_ui.dynamic_value0_could_not_be_updated_please_try_again", {
+            value0: isEpic ? t("epic.label") : t("common.work_item"),
+          }),
         });
       });
     },
-    [entityDetails, isEpic, updateEntity, workspaceSlug]
+    [t, entityDetails, isEpic, updateEntity, workspaceSlug]
   );
 
   const handleUpdateAssignee = useCallback(
@@ -140,7 +142,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createEntitySubscription, entityDetails, isSubscribed, removeEntitySubscription, workspaceSlug]);
+  }, [t, createEntitySubscription, entityDetails, isSubscribed, removeEntitySubscription, workspaceSlug]);
 
   const handleDeleteWorkItem = useCallback(() => {
     toggleDeleteIssueModal(true);
@@ -154,6 +156,8 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
           type: "success",
           title: t("power_k.contextual_actions.work_item.copy_id_toast_success"),
         });
+
+        return undefined;
       })
       .catch(() => {
         setToast({
@@ -162,7 +166,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entityDetails?.sequence_id, projectDetails?.identifier]);
+  }, [t, entityDetails?.sequence_id, projectDetails?.identifier]);
 
   const copyWorkItemTitleToClipboard = useCallback(() => {
     copyTextToClipboard(entityDetails?.name ?? "")
@@ -171,6 +175,8 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
           type: "success",
           title: t("power_k.contextual_actions.work_item.copy_title_toast_success"),
         });
+
+        return undefined;
       })
       .catch(() => {
         setToast({
@@ -179,7 +185,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entityDetails?.name]);
+  }, [t, entityDetails?.name]);
 
   const copyWorkItemUrlToClipboard = useCallback(() => {
     const url = new URL(window.location.href);
@@ -189,6 +195,8 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
           type: "success",
           title: t("power_k.contextual_actions.work_item.copy_url_toast_success"),
         });
+
+        return undefined;
       })
       .catch(() => {
         setToast({
@@ -197,7 +205,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [t]);
 
   return [
     {
@@ -325,8 +333,10 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
         } catch {
           setToast({
             type: "error",
-            title: "Error!",
-            message: `${entityDetails.is_epic ? "Epic" : "Work item"} could not be updated. Please try again.`,
+            title: t("error"),
+            message: t("web_ui.dynamic_value0_could_not_be_updated_please_try_again", {
+              value0: entityDetails.is_epic ? t("epic.label") : t("common.work_item"),
+            }),
           });
         }
       },
@@ -357,8 +367,10 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
         } catch {
           setToast({
             type: "error",
-            title: "Error!",
-            message: `${entityDetails.is_epic ? "Epic" : "Work item"} could not be updated. Please try again.`,
+            title: t("error"),
+            message: t("web_ui.dynamic_value0_could_not_be_updated_please_try_again", {
+              value0: entityDetails.is_epic ? t("epic.label") : t("common.work_item"),
+            }),
           });
         }
       },

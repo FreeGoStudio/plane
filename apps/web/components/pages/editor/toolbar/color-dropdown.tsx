@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { memo } from "react";
 import { ChevronDownOutline, DeactivatedOutline } from "@makeplane/propel/icons";
 import { Icon } from "@makeplane/propel/components/icon";
@@ -28,13 +29,15 @@ type Props = {
 };
 
 export const ColorDropdown = memo(function ColorDropdown(props: Props) {
+  const { t } = useTranslation();
+
   const { handleColorSelect, isColorActive } = props;
 
   return (
     <Popover>
       {/* Propel's ToolbarMenuTrigger only wraps a Menu; this is its Popover twin until Propel ships one */}
-      <PopoverTrigger render={<ToolbarMenuTriggerButton aria-label="Color" />}>
-        <ToolbarMenuTriggerLabel>Color</ToolbarMenuTriggerLabel>
+      <PopoverTrigger render={<ToolbarMenuTriggerButton aria-label={t("web_ui.color")} />}>
+        <ToolbarMenuTriggerLabel>{t("web_ui.color")}</ToolbarMenuTriggerLabel>
         <span className="inline-flex transition-transform duration-200 group-data-popup-open:rotate-180">
           <Icon icon={ChevronDownOutline} tint="secondary" />
         </span>
@@ -62,7 +65,7 @@ export const ColorDropdown = memo(function ColorDropdown(props: Props) {
             <IconButton
               variant="secondary"
               size="sm"
-              aria-label="Remove text color"
+              aria-label={t("web_ui.remove_text_color")}
               icon={<Icon icon={DeactivatedOutline} />}
               onClick={() => handleColorSelect("text-color", undefined)}
             />
@@ -90,7 +93,7 @@ export const ColorDropdown = memo(function ColorDropdown(props: Props) {
             <IconButton
               variant="secondary"
               size="sm"
-              aria-label="Remove background color"
+              aria-label={t("web_ui.remove_background_color")}
               icon={<Icon icon={DeactivatedOutline} />}
               onClick={() => handleColorSelect("background-color", undefined)}
             />

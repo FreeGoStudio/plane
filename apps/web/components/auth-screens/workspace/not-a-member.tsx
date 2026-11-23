@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import Link from "next/link";
 // ui
 import { Button } from "@makeplane/propel/components/button";
@@ -11,6 +12,8 @@ import { Button } from "@makeplane/propel/components/button";
 import DefaultLayout from "@/layouts/default-layout";
 
 export function NotAWorkspaceMember() {
+  const { t } = useTranslation();
+
   return (
     <DefaultLayout>
       <div className="grid h-full place-items-center p-4">
@@ -27,7 +30,7 @@ export function NotAWorkspaceMember() {
               variant="secondary"
               size="sm"
               stretch="auto"
-              label="Check pending invites"
+              label={t("web_ui.check_pending_invites")}
               nativeButton={false}
               render={<Link href="/invitations" />}
             />
@@ -35,7 +38,7 @@ export function NotAWorkspaceMember() {
               variant="primary"
               size="sm"
               stretch="auto"
-              label="Create new workspace"
+              label={t("web_ui.create_new_workspace")}
               nativeButton={false}
               render={<Link href="/create-workspace" />}
             />

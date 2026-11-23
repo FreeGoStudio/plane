@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState, useRef, useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -52,9 +53,20 @@ type Props<TFieldValues extends FieldValues = FieldValues> = {
 const fileService = new FileService();
 
 function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldValues>(props: Props<TFieldValues>) {
-  const { label, value, control, onChange, disabled = false, tabIndex, isProfileCover = false, projectId } = props;
+  const { t } = useTranslation();
+
+  const {
+    label,
+    value: localValue0,
+    control,
+    onChange,
+    disabled = false,
+    tabIndex,
+    isProfileCover = false,
+    projectId,
+  } = props;
   // states
-  const [image, setImage] = useState<File | null>(null);
+  const [localImage1, setImage] = useState<File | null>(null);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [searchParams, setSearchParams] = useState("");
@@ -76,16 +88,16 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
       },
       {
         key: "images",
-        title: "Images",
+        title: t("web_ui.images"),
         isEnabled: true,
       },
       {
         key: "upload",
-        title: "Upload",
+        title: t("web_ui.upload"),
         isEnabled: true,
       },
     ],
-    [hasUnsplashConfigured]
+    [t, hasUnsplashConfigured]
   );
 
   const enabledTabs = useMemo(() => tabOptions.filter((tab) => tab.isEnabled), [tabOptions]);
@@ -117,7 +129,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
   };
 
   const handleSubmit = async () => {
-    if (!image) return;
+    if (!localImage1) return;
     setIsImageUploading(true);
 
     const uploadCallback = (url: string) => {
@@ -134,7 +146,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
             entity_identifier: "",
             entity_type: EFileAssetType.USER_COVER,
           },
-          image
+          localImage1
         )
         .then((res) => uploadCallback(res.asset_url))
         .catch((error) => {
@@ -143,7 +155,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
           setToast({
             message: error?.error ?? "The image could not be uploaded",
             type: "error",
-            title: "Image not uploaded",
+            title: t("web_ui.image_not_uploaded"),
           });
         });
     } else {
@@ -155,7 +167,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
             entity_identifier: projectId?.toString() ?? "",
             entity_type: EFileAssetType.PROJECT_COVER,
           },
-          image
+          localImage1
         )
         .then((res) => uploadCallback(res.asset_url))
         .catch((error) => {
@@ -164,7 +176,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
           setToast({
             message: error?.error ?? "The image could not be uploaded",
             type: "error",
-            title: "Image not uploaded",
+            title: t("web_ui.image_not_uploaded"),
           });
         });
     }
@@ -232,7 +244,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                                       value={value}
                                       onChange={(e) => setFormData({ ...formData, search: e.target.value })}
                                       ref={ref}
-                                      placeholder="Search for images"
+                                      placeholder={t("web_ui.search_for_images")}
                                     />
                                   </InputGroup>
                                 )}
@@ -242,7 +254,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                               variant="primary"
                               size="lg"
                               stretch="auto"
-                              label="Search"
+                              label={t("search")}
                               onClick={() => setSearchParams(formData.search)}
                             />
                           </div>
@@ -255,7 +267,9 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                                     key={image.id}
                                     className="relative col-span-2 aspect-video md:col-span-1"
                                     aria-label={
-                                      image.alt_description ? `Select image: ${image.alt_description}` : "Select image"
+                                      image.alt_description
+                                        ? `Select image: ${image.alt_description}`
+                                        : t("web_ui.select_image")
                                     }
                                     onClick={() => {
                                       setIsOpen(false);
@@ -298,12 +312,12 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                           type="button"
                           key={imageUrl}
                           className="relative col-span-2 aspect-video md:col-span-1"
-                          aria-label={`Select cover image ${index + 1}`}
+                          aria-label={t("web_ui.dynamic_select_cover_image_value0", { value0: index + 1 })}
                           onClick={() => handleStaticImageSelect(imageUrl)}
                         >
                           <img
                             src={imageUrl}
-                            alt={`Cover image ${index + 1}`}
+                            alt={t("web_ui.dynamic_cover_image_value0", { value0: index + 1 })}
                             className="absolute top-0 left-0 h-full w-full cursor-pointer rounded-sm object-cover transition-opacity hover:opacity-80"
                           />
                         </button>
@@ -316,7 +330,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                         <div
                           {...getRootProps()}
                           className={`relative grid h-full w-full cursor-pointer place-items-center rounded-lg p-12 text-center focus:ring-2 focus:ring-accent-strong focus:ring-offset-2 focus:outline-none ${
-                            (image === null && isDragActive) || !value
+                            (localImage1 === null && isDragActive) || !localValue0
                               ? "border-2 border-dashed border-subtle hover:bg-surface-2"
                               : ""
                           }`}
@@ -324,18 +338,22 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                           <div className="absolute top-0 right-1 z-40">
                             <Button type="button" variant="tertiary" size="xs" stretch="auto" label="Edit" />
                           </div>
-                          {image !== null || (value && value !== "") ? (
+                          {localImage1 !== null || (localValue0 && localValue0 !== "") ? (
                             <>
                               <img
-                                src={image ? URL.createObjectURL(image) : getCoverImageDisplayURL(value, "")}
-                                alt="image"
+                                src={
+                                  localImage1
+                                    ? URL.createObjectURL(localImage1)
+                                    : getCoverImageDisplayURL(localValue0, "")
+                                }
+                                alt={t("web_ui.image")}
                                 className="h-full w-full rounded-lg object-cover"
                               />
                             </>
                           ) : (
                             <div>
                               <span className="mt-2 block text-body-xs-medium text-secondary">
-                                {isDragActive ? "Drop image here to upload" : "Drag & drop image here"}
+                                {isDragActive ? t("web_ui.drop_image_here_to_upload") : "Drag & drop image here"}
                               </span>
                             </div>
                           )}
@@ -347,7 +365,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                         <p className="text-body-xs-regular text-danger-primary">
                           {fileRejections[0].errors[0].code === "file-too-large"
                             ? "The image size cannot exceed 5 MB."
-                            : "Please upload a file in a valid format."}
+                            : t("web_ui.please_upload_a_file_in_a_valid_format")}
                         </p>
                       )}
 
@@ -360,7 +378,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                             variant="secondary"
                             size="md"
                             stretch="auto"
-                            label="Cancel"
+                            label={t("cancel")}
                             onClick={() => {
                               setIsOpen(false);
                               setImage(null);
@@ -370,9 +388,13 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                             variant="primary"
                             size="md"
                             stretch="auto"
-                            label={isImageUploading ? "Uploading" : "Upload & Save"}
+                            label={
+                              isImageUploading
+                                ? t("project.members_import.progress.uploading")
+                                : t("workspace_settings.settings.applications.upload_and_save")
+                            }
                             onClick={handleSubmit}
-                            disabled={!image}
+                            disabled={!localImage1}
                             loading={isImageUploading}
                           />
                         </div>

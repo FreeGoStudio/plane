@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 // icons
@@ -12,6 +13,8 @@ import { ThoughtsOutline } from "@makeplane/propel/icons";
 import latestFeatures from "@/app/assets/onboarding/onboarding-pages.webp?url";
 
 export function LatestFeatureBlock() {
+  const { t } = useTranslation();
+
   const { resolvedTheme } = useTheme();
 
   return (
@@ -33,7 +36,7 @@ export function LatestFeatureBlock() {
         <div className="h-[90%]">
           <img
             src={latestFeatures}
-            alt="Plane Work items"
+            alt={t("web_ui.plane_work_items")}
             className={`-mt-2 ml-10 h-full rounded-md ${resolvedTheme === "dark" ? "bg-surface-1" : "bg-layer-2"}`}
           />
         </div>

@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import React, { forwardRef, useEffect } from "react";
+import React, { forwardRef, useEffect, useCallback, useRef } from "react";
 import { observer } from "mobx-react";
 import type { SubmitHandler } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
@@ -47,8 +47,15 @@ const defaultValues: Partial<IIssueLabel> = {
 export const CreateUpdateLabelInline = observer(
   forwardRef(function CreateUpdateLabelInline(
     props: TCreateUpdateLabelInlineProps,
-    ref: React.ForwardedRef<HTMLDivElement>
+    localRef0: React.ForwardedRef<HTMLDivElement>
   ) {
+    const initialFocusTarget = useRef<HTMLElement | null>(null);
+    const focusInputOnMount = useCallback((element: HTMLElement | null) => {
+      if (!element || initialFocusTarget.current === element) return;
+      initialFocusTarget.current = element;
+      const input = element instanceof HTMLInputElement ? element : element.querySelector("input");
+      input?.focus();
+    }, []);
     const { labelForm, setLabelForm, isUpdating, labelOperationsCallbacks, labelToUpdate, onClose } = props;
     // form info
     const {
@@ -98,7 +105,7 @@ export const CreateUpdateLabelInline = observer(
       } catch (error) {
         const errorMessage = getErrorMessage(error, "create");
         setToast({
-          title: "Error!",
+          title: t("error"),
           type: "error",
           message: errorMessage,
         });
@@ -116,7 +123,7 @@ export const CreateUpdateLabelInline = observer(
       } catch (error) {
         const errorMessage = getErrorMessage(error, "update");
         setToast({
-          title: "Oops!",
+          title: t("web_ui.oops"),
           type: "error",
           message: errorMessage,
         });
@@ -158,7 +165,7 @@ export const CreateUpdateLabelInline = observer(
     return (
       <>
         <div
-          ref={ref}
+          ref={localRef0}
           className={`flex w-full scroll-m-8 items-center gap-2 bg-transparent ${labelForm ? "" : "hidden"}`}
         >
           <div className="shrink-0">
@@ -204,10 +211,12 @@ export const CreateUpdateLabelInline = observer(
                   id="labelName"
                   name="name"
                   type="text"
-                  autoFocus
                   value={value}
                   onChange={onChange}
-                  ref={ref}
+                  ref={(element) => {
+                    ref(element);
+                    focusInputOnMount(element);
+                  }}
                   aria-label={t("project_settings.labels.label_title")}
                   placeholder={t("project_settings.labels.label_title")}
                   error={errors.name?.message}

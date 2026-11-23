@@ -136,8 +136,13 @@ export function ExistingIssuesListModal(props: Props) {
     }
   }, [isOpen, issues, selectedWorkItemIds]);
 
+  const handleSearchRef = useRef(handleSearch);
   useEffect(() => {
-    handleSearch();
+    handleSearchRef.current = handleSearch;
+  });
+
+  useEffect(() => {
+    handleSearchRef.current();
   }, [debouncedSearchTerm, isOpen, isWorkspaceLevel, projectId, workspaceSlug]);
 
   const filteredIssues = issues.filter((issue) => !shouldHideIssue?.(issue));
@@ -186,7 +191,7 @@ export function ExistingIssuesListModal(props: Props) {
             {workspaceLevelToggle && (
               <>
                 <span className="h-5 border-s border-subtle" aria-hidden />
-                <Tooltip label="Toggle workspace level search" disabled={isMobile}>
+                <Tooltip label={t("web_ui.toggle_workspace_level_search")} disabled={isMobile}>
                   <div className="flex flex-shrink-0 items-center gap-2 text-body-xs-regular text-secondary">
                     <Switch
                       size="md"

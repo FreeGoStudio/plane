@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 // constants
@@ -15,6 +16,8 @@ interface IWebHookToggle {
 }
 
 export function WebhookToggle({ control }: IWebHookToggle) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex gap-6">
       <div className="text-body-xs-medium">Enable webhook</div>
@@ -22,7 +25,7 @@ export function WebhookToggle({ control }: IWebHookToggle) {
         control={control}
         name="is_active"
         render={({ field: { onChange, value } }) => (
-          <Switch size="sm" checked={value} onCheckedChange={onChange} aria-label="Enable webhook" />
+          <Switch size="sm" checked={value} onCheckedChange={onChange} aria-label={t("web_ui.enable_webhook")} />
         )}
       />
     </div>

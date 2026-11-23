@@ -171,7 +171,13 @@
     "workitem_resolved_vs_pending": "已解决与待处理的工作项",
     "projects_by_status": "按状态分类的项目",
     "active_users": "活跃用户",
-    "intake_trends": "入学趋势"
+    "intake_trends": "入学趋势",
+    "chart": {
+      "yesterday": "昨天",
+      "last_7_days": "过去 7 天",
+      "last_30_days": "过去 30 天",
+      "last_3_months": "过去 3 个月"
+    }
   },
   "workspace_projects": {
     "label": "{count, plural, one {项目} other {项目}}",
