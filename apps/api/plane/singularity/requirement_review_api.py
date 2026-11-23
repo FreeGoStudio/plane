@@ -22,7 +22,7 @@ from plane.db.models import (
     RequirementAdoption,
 )
 from .wbs import WbsAPI, require_member
-from .requirement_review import configure, retry_run, adopt, current_input, provider_for, target_head
+from .requirement_review import configure, retry_run, adopt, current_input, provider_for, target_head, version_adoption
 
 
 def config_data(row):
@@ -40,9 +40,11 @@ def config_data(row):
 
 
 def run_data(row):
+    adoption = version_adoption(row)
     return {
         "id": str(row.pk),
         "source_sha": row.source_sha,
+        "adoption_status": adoption.status if adoption else None,
         "merge_request": row.merge_request,
         "status": row.status,
         "result": row.result,

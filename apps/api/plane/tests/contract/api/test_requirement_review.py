@@ -177,6 +177,98 @@ def test_adoption_requires_pass_or_explicit_human_override(review, world):
     assert row.result["verdict"] == "changes_requested"
 
 
+@pytest.mark.parametrize("status", ["pending", "running", "completed"])
+def test_same_version_reuses_adoption_with_new_key_and_actor(review, world, status):
+    row = ready(review)
+    first = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "first-request"})
+    first.status = status
+    first.merged_sha = "c" * 40 if status == "completed" else ""
+    first.save()
+    repeated = adopt(world[1], row, {"target_sha": "c" * 40, "idempotency_key": "second-request"})
+    assert repeated.pk == first.pk
+    assert repeated.actor_id == world[0].pk
+    assert RequirementAdoption.objects.count() == 1
+
+
+def test_failed_adoption_can_retry_but_completed_version_cannot(review, world):
+    row = ready(review)
+    first = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "first-request"})
+    first.status = "failed"
+    first.save()
+    retry = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "retry-request"})
+    assert retry.pk != first.pk
+    retry.status = "completed"
+    retry.save()
+    # A new review of the same document SHA is still the same adopted version.
+    row.pk = None
+    row.request_key = "another-review"
+    row.save()
+    assert adopt(world[0], row, {"target_sha": "c" * 40, "idempotency_key": "third-request"}).pk == retry.pk
+    assert RequirementAdoption.objects.count() == 2
+
+
+@pytest.mark.parametrize("status", ["pending", "running", "completed", "failed"])
+def test_review_response_includes_version_adoption_status(review, world, status):
+    from plane.singularity.requirement_review_api import run_data
+
+    row = ready(review)
+    first = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "first-request"})
+    first.status = status
+    first.save()
+    assert run_data(row)["adoption_status"] == (None if status == "failed" else status)
+
+
+def test_concurrent_adoption_requests_create_one_operation(review, world):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    from django.db import close_old_connections
+
+    row = ready(review)
+    barrier = Barrier(2)
+
+    def request(key):
+        close_old_connections()
+        try:
+            barrier.wait(timeout=10)
+            return adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": key}).pk
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(request, ["concurrent-first", "concurrent-second"]))
+    assert results[0] == results[1]
+    assert RequirementAdoption.objects.count() == 1
+
+
+def test_adoption_status_survives_history_pagination_and_new_version_is_available(review, world):
+    row = ready(review)
+    first = adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "first-request"})
+    first.status = "completed"
+    first.save()
+    for index in range(21):
+        RequirementAdoption.objects.create(
+            config=row.config, run=row, actor=world[0], source_sha="d" * 40,
+            target_sha="b" * 40, config_revision=1, kind="ai_passed", status="failed",
+            request_key=f"historical-failure-{index}",
+        )
+    client = Client()
+    client.force_login(world[0])
+    url = (
+        f"/api/singularity/v1/workspaces/{world[2].slug}/projects/{world[3].pk}/"
+        f"work-items/{row.config_id}/requirement-review/"
+    )
+    response = client.get(url)
+    assert response.status_code == 200
+    assert str(first.pk) not in {item["id"] for item in response.json()["adoptions"]}
+    assert response.json()["results"][0]["adoption_status"] == "completed"
+    row.pk = None
+    row.source_sha = "e" * 40
+    row.request_key = "new-source-review"
+    row.save()
+    new = adopt(world[0], row, {"target_sha": "c" * 40, "idempotency_key": "new-source-adoption"})
+    assert new.pk != first.pk and new.status == "pending"
+
+
 def test_changed_basis_binding_and_removed_member_cannot_adopt(review, world):
     row = ready(review)
     row.config.issue.description_html = "Changed rules"

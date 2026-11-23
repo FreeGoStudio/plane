@@ -508,6 +508,8 @@
     "missing_information": "Missing information",
     "retry": "Retry execution",
     "adopt": "Adopt this revision",
+    "adopting": "採用中",
+    "adoption_completed": "已採用",
     "reason": "Reason for human override",
     "confirm_override": "I have reviewed the findings and explicitly accept this exact revision despite the AI result.",
     "override": "Adopt with human override",

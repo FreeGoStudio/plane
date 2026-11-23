@@ -24,6 +24,7 @@ type Run = {
   error: string;
   created_at: string;
   result: { verdict?: string; summary?: string; findings?: Finding[] };
+  adoption_status?: "pending" | "running" | "completed" | null;
 };
 type Adoption = {
   id: string;
@@ -66,6 +67,8 @@ export function RequirementReviewPanel({
   const [reason, setReason] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [submittingSource, setSubmittingSource] = useState<string>();
+  const inFlight = useRef(false);
   const [error, setError] = useState("");
   const requestKey = useRef(crypto.randomUUID());
   const epoch = useRef(0);
@@ -92,6 +95,10 @@ export function RequirementReviewPanel({
     };
   }, [refresh]);
   const run = data?.results.find((r) => r.id === selected) ?? data?.results[0];
+  const adopted = run?.adoption_status === "completed";
+  const adopting =
+    !!run && (submittingSource === run.source_sha || ["pending", "running"].includes(run.adoption_status ?? ""));
+  const adoptionLocked = adopted || adopting;
   useEffect(() => {
     setConfirmed(false);
     setReason("");
@@ -99,11 +106,13 @@ export function RequirementReviewPanel({
   }, [run?.id, data?.target_sha]);
   /** Reuse operation keys on transport failure; the server owns all permission checks. */
   const submit = async (action: "retry" | "adopt", override = false) => {
-    if (!data || !run) return;
+    if (!data || !run || disabled || inFlight.current || (action === "adopt" && adoptionLocked)) return;
+    inFlight.current = true;
+    if (action === "adopt") setSubmittingSource(run.source_sha);
     setBusy(true);
     setError("");
     try {
-      await repositoryService.write(
+      const response = await repositoryService.write<Adoption>(
         path + `${run.id}/${action}/`,
         "POST",
         data.csrf_token,
@@ -115,6 +124,20 @@ export function RequirementReviewPanel({
               ...(override ? { override: true, confirmed, reason } : {}),
             }
       );
+      // Retain the accepted operation even when the following refresh is offline.
+      if (action === "adopt") {
+        setData(
+          (current) =>
+            current && {
+              ...current,
+              results: current.results.map((item) =>
+                item.source_sha === run.source_sha
+                  ? { ...item, adoption_status: response.status as Run["adoption_status"] }
+                  : item
+              ),
+            }
+        );
+      }
       requestKey.current = crypto.randomUUID();
       setConfirmed(false);
       setReason("");
@@ -123,6 +146,8 @@ export function RequirementReviewPanel({
       const details = (failure as { response?: { data?: unknown } }).response?.data;
       setError(details ? JSON.stringify(details) : t("document_review.action_error"));
     } finally {
+      inFlight.current = false;
+      setSubmittingSource(undefined);
       setBusy(false);
     }
   };
@@ -185,17 +210,23 @@ export function RequirementReviewPanel({
                   label={t("document_review.retry")}
                 />
               )}
-              {run.result.verdict === "passed" && (
+              {(run.result.verdict === "passed" || adoptionLocked) && (
                 <Button
                   size="sm"
                   stretch="auto"
                   variant="primary"
-                  disabled={disabled || busy || !data.target_sha}
+                  disabled={disabled || busy || adoptionLocked || !data.target_sha}
                   onClick={() => void submit("adopt")}
-                  label={t("document_review.adopt")}
+                  label={t(
+                    adopted
+                      ? "document_review.adoption_completed"
+                      : adopting
+                        ? "document_review.adopting"
+                        : "document_review.adopt"
+                  )}
                 />
               )}
-              {["completed", "failed"].includes(run.status) && run.result.verdict !== "passed" && (
+              {!adoptionLocked && ["completed", "failed"].includes(run.status) && run.result.verdict !== "passed" && (
                 <>
                   <label className="block">
                     {t("document_review.reason")}

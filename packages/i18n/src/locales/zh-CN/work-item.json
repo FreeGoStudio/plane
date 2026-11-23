@@ -508,6 +508,8 @@
     "missing_information": "缺少信息",
     "retry": "重试执行",
     "adopt": "采用此版本",
+    "adopting": "采用中",
+    "adoption_completed": "已采用",
     "reason": "采用理由",
     "confirm_override": "我已查看 AI 验收意见，确认采用此版本，并说明采用理由。",
     "override": "人工确认采用",

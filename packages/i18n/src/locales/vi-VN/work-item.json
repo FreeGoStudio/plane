@@ -508,6 +508,8 @@
     "missing_information": "Missing information",
     "retry": "Retry execution",
     "adopt": "Adopt this revision",
+    "adopting": "Đang áp dụng",
+    "adoption_completed": "Đã áp dụng",
     "reason": "Reason for human override",
     "confirm_override": "I have reviewed the findings and explicitly accept this exact revision despite the AI result.",
     "override": "Adopt with human override",
