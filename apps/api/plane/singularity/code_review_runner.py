@@ -147,6 +147,12 @@ def process(args, cwd, env, deadline, allow_failure=False):
         return child.returncode, data
 
 
+def changed_paths(checkout, env, deadline, base, head):
+    """Inventory paths with the same rename semantics as Native OCR."""
+    _, paths = process(["git", "diff", "--name-only", "--find-renames", "-z", base, head], checkout, env, deadline)
+    return paths.decode("utf-8").rstrip("\0").split("\0") if paths else []
+
+
 def run_ocr(run):
     deadline = time.monotonic() + 1800
     repo = run.link.repository
@@ -235,13 +241,7 @@ def run_ocr(run):
         _, computed = process(["git", "merge-base", run.merge_base, run.source_sha], checkout, env, deadline)
         if computed.decode().strip() != run.merge_base:
             raise ExecutionFailure("merge_base_mismatch")
-        _, paths = process(
-            ["git", "diff", "--name-only", "--no-renames", "-z", run.merge_base, run.source_sha],
-            checkout,
-            env,
-            deadline,
-        )
-        diff_files = paths.decode("utf-8").rstrip("\0").split("\0") if paths else []
+        diff_files = changed_paths(checkout, env, deadline, run.merge_base, run.source_sha)
         # Never load repository-provided OCR/MCP configuration, hooks or symlinks.
         for path in checkout.rglob("*"):
             if path.is_symlink():
