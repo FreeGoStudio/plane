@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@makeplane/propel/components/button";
 import { useTranslation } from "@plane/i18n";
+import { useDateFormatter } from "@plane/utils";
 import { repositoryBase, repositoryService } from "@/services/repository.service";
 
 type Finding = {
@@ -60,6 +61,19 @@ export function RequirementReviewPanel({
   disabled: boolean;
 }) {
   const { t } = useTranslation();
+  const { locale, timeZone, renderFormattedDate } = useDateFormatter();
+  const formatTimestamp = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "—";
+    const time = new Intl.DateTimeFormat(locale, {
+      timeZone,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23",
+    }).format(date);
+    return `${renderFormattedDate(value)} ${time}`;
+  };
   const path = repositoryBase(workspaceSlug, projectId) + `work-items/${issueId}/requirement-review/`;
   const [data, setData] = useState<Data>();
   const [offset, setOffset] = useState(0);
@@ -175,7 +189,7 @@ export function RequirementReviewPanel({
             >
               {data.results.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {r.source_sha.slice(0, 12)} · {r.created_at}
+                  {r.source_sha.slice(0, 12)} · {formatTimestamp(r.created_at)}
                 </option>
               ))}
             </select>
@@ -279,7 +293,7 @@ export function RequirementReviewPanel({
               </summary>
               <p>{a.reason}</p>
               <p>
-                {a.actor_id} · {a.created_at}
+                {a.actor_id} · {formatTimestamp(a.created_at)}
               </p>
               <p role="status">{a.error}</p>
             </details>
