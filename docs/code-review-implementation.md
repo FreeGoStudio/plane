@@ -30,7 +30,23 @@ immediately invalidates acceptance. Native OCR only, Chinese, Responses protocol
    New translation keys match across all locales. Global sync-check still reports the
    pre-existing 886 missing keys in other locales; these are outside this change.
    Chinese Native report revalidated with OCR's explicit language configuration.
-4. Private deployment / real model compatibility / end-to-end / regressions: pending.
+4. Private deployment / real model compatibility / end-to-end / regressions: deployed.
+   Fixed runtime commit 81ea9ee336, additive migration 0141, original API/Web Dockerfiles;
+   independent OCR worker connected to existing Hatchet with no published ports.
+   Real GitLab repository 16 / MR !1 / Plane REPO-12 completed three distinct Native
+   runs through Hatchet, each in one attempt. The initial complete Chinese report found
+   the fixture's division-by-zero defect. Authentic push and MR events for each update
+   produced one new-version run, not duplicate runs.
+   Session/CSRF browser acceptance passed, including confirmed assignee self-acceptance,
+   no implicit task completion and an explicit completed transition. After a later
+   source commit the task stayed completed, the old decision remained historical and
+   the current report required a new decision. UI shows evidence inconsistency.
+   Candidate and deployed Web translation checks passed: 638 resource mappings,
+   Chinese/English switching, fallback, interpolation, plurals and form interaction.
+   Existing WBS/document-review regression suite passed 56 tests; their deployed
+   workers remained running. Six process/version unit checks passed, including real
+   rename inventory, historical merged baseline and pending GitLab diff handling.
+   Technical acceptance is complete; this does not substitute for the user's business sign-off.
 
 Pre-flight: all units consume the association's current run and immutable version fingerprint.
 Runs have independent execution status and append-only human decisions. Issue row locking
@@ -39,4 +55,25 @@ point-in-time observation; later commits preserve completed status and mark stal
 
 Ruling: use an isolated native worktree; the other existing code-review worktree has no
 attachment to this chat and is left untouched. Tests use new isolated containers without
-published ports. Production services remain unchanged until deployment validation.
+published ports. Production services remained unchanged through units 1–3. The temporary
+Web candidate used loopback only; it and the three test containers are now stopped.
+
+## Delivery commits and operations evidence
+
+- 82d40c3ae6: association, records and API (unit 1 checks above).
+- f9d90923df: Native OCR/Hatchet/events/reconciliation (unit 2 checks above).
+- 88743a4da2: browser decisions and shared completion guard (unit 3 checks above).
+- 81ea9ee336: rename coverage contract; real Git regression observed RED then GREEN.
+- 70ecd7ac79: historical/live baseline tests; six process/version checks passed.
+
+Operations: `D:/plane-ops/scripts/code-review-README.md`; fixed images and build logs in
+`D:/plane-ops/artifacts/ocr-81ea9ee336`. Sanitized acceptance evidence and screenshots in
+`D:/plane-ops/state/code-review`; protected credentials in that directory are not deliverables.
+Backup: `D:/plane-ops/backups/20261123-024042-code-review` (verified database dump and compose).
+Current maintenance and architecture updated in the shared platform repository. Only the
+dedicated test branch was changed, no MR was merged, and public access restrictions stayed intact.
+
+Validation harness corrections: current frontend bundles use locale/namespace mapping keys
+and mounted React providers; old preflight assumptions were updated without product changes.
+The live fixture now reads `state_id` and writes `assignee_ids`; self-acceptance was rerun
+after verifying the actual assignee rather than treating an ignored fixture field as evidence.
