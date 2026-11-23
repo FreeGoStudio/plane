@@ -310,6 +310,20 @@ def retry_run(user, row, key):
     return new
 
 
+def version_adoption(row):
+    """Find an effective adoption independently of request keys and history pages."""
+    return (
+        RequirementAdoption.objects.filter(
+            config_id=row.config_id,
+            config_revision=row.snapshot["config_revision"],
+            source_sha=row.source_sha,
+            status__in=["pending", "running", "completed"],
+        )
+        .order_by("status", "-created_at")
+        .first()
+    )
+
+
 @transaction.atomic
 def adopt(user, row, data, human_session=False):
     """Persist explicit immutable authorization; only the executor updates Git."""
@@ -344,6 +358,11 @@ def adopt(user, row, data, human_session=False):
         ):
             raise WbsConflict("Adoption key already used")
         return old
+    # The configuration lock serializes different clients/request keys too.
+    # Preserve the original authorization and audit actor; failed attempts can retry.
+    existing = version_adoption(row)
+    if existing:
+        return existing
     if RequirementAdoption.objects.filter(config=config, status__in=["pending", "running"]).exists():
         raise WbsConflict("An adoption is already active")
     return RequirementAdoption.objects.create(
