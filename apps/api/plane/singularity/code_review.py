@@ -56,7 +56,17 @@ def review_settings():
         "model": os.environ.get("CODE_REVIEW_MODEL", os.environ.get("DOCUMENT_REVIEW_MODEL", "gpt-6.1-sol")),
         "protocol": "openai-responses",
         "language": "zh-CN",
-        "rules": "plane-ocr-v1",
+        "rules": {
+            "exclude": [".opencodereview/**"],
+            "rules": [
+                {
+                    "path": "**/*",
+                    "rule": "所有代码审查问题的 content 必须使用简体中文。保留代码标识符原文。",
+                    "merge_system_rule": True,
+                }
+            ],
+        },
+        "model_url": os.environ.get("CODE_REVIEW_MODEL_URL", "https://api.openai.com/v1"),
         "effort": "medium",
         "excluded": [".opencodereview/**"],
     }

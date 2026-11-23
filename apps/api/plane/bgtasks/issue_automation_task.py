@@ -13,6 +13,8 @@ from django.db.models import Q
 
 # Django imports
 from django.utils import timezone
+from django.db import transaction
+from rest_framework.exceptions import APIException
 
 # Module imports
 from plane.bgtasks.issue_activities_task import issue_activity
@@ -127,12 +129,16 @@ def close_old_issues():
 
                 issues_to_update = []
                 for issue in issues:
-                    issue.state = close_state
-                    issues_to_update.append(issue)
+                    try:
+                        with transaction.atomic():
+                            issue.state = close_state
+                            issue.save(update_fields=["state"])
+                            issues_to_update.append(issue)
+                    except APIException:
+                        logger.info("Automatic close blocked by code review for issue %s", issue.pk)
 
                 # Bulk Update the issues and log the activity
                 if issues_to_update:
-                    Issue.objects.bulk_update(issues_to_update, ["state"], batch_size=100)
                     [
                         issue_activity.delay(
                             type="issue.activity.updated",

@@ -40,6 +40,8 @@ def remote_version(link):
         raise RepositoryError("review_mr_state_unknown", 503)
     refs = mr.get("diff_refs") or {}
     source = sha(refs.get("head_sha"))
+    if mr.get("sha") != source:
+        raise RepositoryError("review_diff_version_pending", 503)
     if state == "merged":
         # A previously observed final source is sufficient only when GitLab still
         # confirms it. Never recompute a historical baseline against today's target.

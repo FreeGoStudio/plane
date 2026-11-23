@@ -32,6 +32,7 @@ base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
 from .code_review_api import CodeReviewAPI
 from .code_review_webhook import CodeReviewWebhook
 urlpatterns = [
+    path(base + "work-items/<uuid:pk>/code-review/runs/<uuid:run_id>/decisions/", CodeReviewAPI.as_view(), {"action": "decisions"}),
     path("code-review/events/<uuid:repository_id>/", CodeReviewWebhook.as_view()),
     path(base + "work-items/<uuid:pk>/code-review/links/<uuid:link_id>/rerun/", CodeReviewAPI.as_view(), {"action": "rerun"}),
     path(base + "work-items/<uuid:pk>/code-review/", CodeReviewAPI.as_view()),

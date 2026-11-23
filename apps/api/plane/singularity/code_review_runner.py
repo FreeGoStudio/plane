@@ -4,6 +4,7 @@
 """Fixed-SHA Native OCR subprocess adapter. Never execute reviewed project code."""
 
 import ipaddress
+import base64
 import json
 import os
 import signal
@@ -106,14 +107,14 @@ def process(args, cwd, env, deadline, allow_failure=False):
     remaining = deadline - time.monotonic()
     if remaining <= 0:
         raise ExecutionFailure("execution_timeout", True)
-    with tempfile.TemporaryFile() as output:
+    with tempfile.TemporaryFile() as output, tempfile.TemporaryFile() as diagnostics:
         child = subprocess.Popen(
             args,
             cwd=cwd,
             env=env,
             stdin=subprocess.DEVNULL,
             stdout=output,
-            stderr=subprocess.DEVNULL,
+            stderr=diagnostics,
             start_new_session=True,
         )
         try:
@@ -127,7 +128,22 @@ def process(args, cwd, env, deadline, allow_failure=False):
         if len(data) > 10 * 1024 * 1024:
             raise ExecutionFailure("execution_output_too_large")
         if child.returncode and not allow_failure:
-            raise ExecutionFailure("repository_prepare_failed", True)
+            diagnostics.seek(0)
+            message = diagnostics.read(65536).lower()
+            transient = any(
+                value in message
+                for value in (
+                    b"timed out",
+                    b"could not resolve host",
+                    b"connection reset",
+                    b"connection refused",
+                    b"error: 429",
+                    b"error: 502",
+                    b"error: 503",
+                    b"error: 504",
+                )
+            )
+            raise ExecutionFailure("repository_prepare_failed", transient)
         return child.returncode, data
 
 
@@ -175,10 +191,13 @@ def run_ocr(run):
             for x in addresses
         ):
             raise ExecutionFailure("repository_address_not_allowed")
-        origin = f"{url.scheme}://{url.netloc}" + "/" + repo.path + ".git"
+        origin = (
+            f"{url.scheme}://{url.netloc}" + url.path.removesuffix("/api/v4").rstrip("/") + "/" + repo.path + ".git"
+        )
         # Token travels only in the Git child's environment; never argv or remote config.
         config = {
-            "http.extraHeader": "Authorization: Bearer " + provider.http.token,
+            "http.extraHeader": "Authorization: Basic "
+            + base64.b64encode(("oauth2:" + provider.http.token).encode()).decode(),
             "http.followRedirects": "false",
             "http.curloptResolve": f"{host}:{port}:{addresses[0]}",
             "core.hooksPath": "/dev/null",
@@ -242,10 +261,11 @@ def run_ocr(run):
                 {
                     "provider": "openai-responses",
                     "model": expected["model"],
+                    "language": "Simplified Chinese",
                     "providers": {
                         "openai-responses": {
                             "model": expected["model"],
-                            "url": os.environ.get("CODE_REVIEW_MODEL_URL", "https://api.openai.com/v1"),
+                            "url": expected["model_url"],
                         }
                     },
                     "mcp_servers": {},
@@ -255,7 +275,21 @@ def run_ocr(run):
         )
         env["OPENAI_RESPONSES_API_KEY"] = model_key
         rule = work / "rule.json"
-        rule.write_text(json.dumps({"excludes": [".opencodereview/**"]}), encoding="utf-8")
+        rule.write_text(
+            json.dumps(
+                {
+                    "exclude": [".opencodereview/**"],
+                    "rules": [
+                        {
+                            "path": "**/*",
+                            "rule": "所有代码审查问题的 content 必须使用简体中文。保留代码标识符原文。",
+                            "merge_system_rule": True,
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
         output = work / "report.json"
         code, _ = process(
             [

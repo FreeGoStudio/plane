@@ -3,7 +3,8 @@
 # See the LICENSE file for details.
 
 # Django imports
-from django.db import models
+from django.db import models, transaction
+from plane.db.review_guard import ReviewAllManager
 from django.template.defaultfilters import slugify
 from django.db.models import Q
 
@@ -93,7 +94,8 @@ class State(ProjectBaseModel):
     external_id = models.CharField(max_length=255, blank=True, null=True)
 
     objects = StateManager()
-    all_state_objects = models.Manager()
+    all_state_objects = ReviewAllManager()
+    all_objects = ReviewAllManager()
     triage_objects = TriageStateManager()
 
     def __str__(self):
@@ -114,7 +116,10 @@ class State(ProjectBaseModel):
         db_table = "states"
         ordering = ("sequence",)
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
+        from plane.singularity.code_review_gate import guard_state_save
+        guard_state_save(self, kwargs)
         self.slug = slugify(self.name)
         if self._state.adding:
             # Get the maximum sequence value from the database

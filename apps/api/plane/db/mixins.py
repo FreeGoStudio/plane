@@ -11,6 +11,7 @@ from django.utils import timezone
 
 # Module imports
 from plane.bgtasks.deletion_task import soft_delete_related_objects
+from plane.db.review_guard import ReviewQuerySetMixin
 
 
 class TimeAuditModel(models.Model):
@@ -45,7 +46,7 @@ class UserAuditModel(models.Model):
         abstract = True
 
 
-class SoftDeletionQuerySet(models.QuerySet):
+class SoftDeletionQuerySet(ReviewQuerySetMixin, models.QuerySet):
     def delete(self, soft=True):
         if soft:
             return self.update(deleted_at=timezone.now())

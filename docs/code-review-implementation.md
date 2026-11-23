@@ -21,7 +21,15 @@ immediately invalidates acceptance. Native OCR only, Chinese, Responses protocol
    7d31862a1b9c6f9cea02141673f7b814071d2f36f1a9e6ce2f14d39d959229f4.
    Two test processes initially shared a DB; those conflicting runs are discarded.
    All following tests run serially. End-to-end GitLab/Hatchet deployment remains pending.
-3. Human decisions / UI / shared completion gate on all mutation paths: pending.
+3. Human decisions / UI / shared completion gate on all mutation paths: implemented.
+   Evidence: 56 gate/WBS/document-review regression tests passed; the final scoped
+   association/session/gate suite passed 18 tests; two process tests and one rendered
+   report test passed. Web type checking and changed-file lint/format passed.
+   Independent review found and regression-tested null-default-state bypass and stale
+   model acceptance; State-before-Issue lock ordering is now shared by model and queryset writes.
+   New translation keys match across all locales. Global sync-check still reports the
+   pre-existing 886 missing keys in other locales; these are outside this change.
+   Chinese Native report revalidated with OCR's explicit language configuration.
 4. Private deployment / real model compatibility / end-to-end / regressions: pending.
 
 Pre-flight: all units consume the association's current run and immutable version fingerprint.

@@ -24,6 +24,7 @@ from .project import ProjectBaseModel
 from plane.utils.uuid import convert_uuid_to_integer
 from .description import Description
 from .state import StateGroup
+from plane.db.review_guard import ReviewAllManager
 
 
 def get_default_properties():
@@ -170,6 +171,7 @@ class Issue(ChangeTrackerMixin, ProjectBaseModel):
     )
 
     issue_objects = IssueManager()
+    all_objects = ReviewAllManager()
 
     class Meta:
         verbose_name = "Issue"
@@ -177,8 +179,11 @@ class Issue(ChangeTrackerMixin, ProjectBaseModel):
         db_table = "issues"
         ordering = ("-created_at",)
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
+        from plane.singularity.code_review_gate import guard_issue_save
         self._ensure_default_state()
+        guard_issue_save(self, kwargs)
         kwargs = self._sync_completed_at(kwargs)
 
         if self._state.adding:
