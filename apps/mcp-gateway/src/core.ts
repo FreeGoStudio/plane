@@ -264,6 +264,7 @@ export const inputs = {
       expected_updated_at: z.string().min(1),
       idempotency_key: z.string().min(8).max(128),
       confirmed: z.literal(true),
+      mode: z.literal("update").optional(),
     })
     .strict(),
   get_wbs: z.object({ ...nativeProject, item_id: z.uuid(), run_id: z.uuid().optional() }).strict(),
@@ -275,6 +276,25 @@ export const inputs = {
       result_digest: z.string().length(64),
       decision: z.enum(["approve", "reject"]),
       reason: z.string().max(5000).optional(),
+      choices: z.record(z.string(), z.enum(["keep", "update", "cancel", "append"])).optional(),
+      source_confirmed: z.boolean().optional(),
+      replacement_tasks: z
+        .record(
+          z.string(),
+          z
+            .object({
+              id: z.string(),
+              title: z.string().min(1).max(255),
+              role: z.string().min(1),
+              criteria: z.array(z.string()).min(1),
+              scope: z.string().min(1),
+              deliverable: z.string().min(1),
+              acceptance: z.string().min(1),
+              dependencies: z.array(z.string()),
+            })
+            .strict()
+        )
+        .optional(),
     })
     .strict(),
   get_current_user: z.object({}).strict(),
@@ -422,10 +442,18 @@ export async function invoke(
         expected_updated_at: input.expected_updated_at,
         idempotency_key: input.idempotency_key,
         confirmed: true,
+        ...(input.mode ? { mode: input.mode } : {}),
       };
     } else {
       const input = inputs.review_wbs.parse(args);
-      payload = { decision: input.decision, result_digest: input.result_digest, reason: input.reason ?? "" };
+      payload = {
+        decision: input.decision,
+        result_digest: input.result_digest,
+        reason: input.reason ?? "",
+        ...(input.choices ? { choices: input.choices } : {}),
+        ...(input.source_confirmed !== undefined ? { source_confirmed: input.source_confirmed } : {}),
+        ...(input.replacement_tasks ? { replacement_tasks: input.replacement_tasks } : {}),
+      };
     }
     return plane.request(bearer, "POST", path, payload);
   }

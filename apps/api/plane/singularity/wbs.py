@@ -68,6 +68,8 @@ def source_snapshot(issue):
 
 
 def run_data(row):
+    from .wbs_update import readiness
+
     return {
         "id": str(row.id),
         "issue_id": str(row.issue_id),
@@ -81,10 +83,18 @@ def run_data(row):
         "decision": row.decision,
         "decision_reason": row.decision_reason,
         "children": row.children,
+        "execution": row.execution,
         "requested_by": str(row.requested_by_id),
         "reviewed_by": str(row.reviewed_by_id) if row.reviewed_by_id else None,
         "created_at": row.created_at,
         "reviewed_at": row.reviewed_at,
+        "workflow": row.snapshot.get("workflow", 1),
+        "source": row.snapshot.get("source"),
+        "source_diff": row.snapshot.get("source_diff", ""),
+        "scenario": row.snapshot.get("scenario"),
+        "previous_run_id": row.snapshot.get("previous_run_id"),
+        "existing_children": row.snapshot.get("existing_children", []),
+        "readiness": readiness(row),
     }
 
 
@@ -92,7 +102,12 @@ def run_data(row):
 def start_run(user, issue, data):
     """Freeze the version explicitly submitted by a human; persist before dispatch."""
     require_member(user, issue.project, True)
-    if set(data) != {"expected_updated_at", "idempotency_key", "confirmed"} or data.get("confirmed") is not True:
+    if (
+        set(data) - {"expected_updated_at", "idempotency_key", "confirmed", "mode"}
+        or not {"expected_updated_at", "idempotency_key", "confirmed"} <= set(data)
+        or data.get("confirmed") is not True
+        or data.get("mode", "update") != "update"
+    ):
         raise ValidationError("Confirm the saved requirement version before requesting a draft")
     key = data["idempotency_key"]
     if not isinstance(key, str) or not re.fullmatch(r"[A-Za-z0-9_-]{8,128}", key):
@@ -109,7 +124,10 @@ def start_run(user, issue, data):
         version = None
     if version != issue.updated_at:
         raise WbsConflict("Requirement changed; reload and confirm the current version")
-    if issue.parent_id or not strip_tags(issue.description_html or "").strip():
+    from plane.db.models import RequirementReviewConfig
+
+    has_documents = RequirementReviewConfig.objects.filter(issue=issue).exists()
+    if issue.parent_id or (not has_documents and not strip_tags(issue.description_html or "").strip()):
         raise ValidationError("A root requirement with a description is required")
     snapshot = source_snapshot(issue)
     skill_dir = os.environ.get("WBS_SKILL_DIR")
@@ -119,6 +137,14 @@ def start_run(user, issue, data):
         if "SKILL.md" not in files or sum(len(x) for x in files.values()) > 150000:
             raise ValidationError("WBS skill is unavailable or exceeds the input limit")
         snapshot["skill_files"] = files
+    if (
+        data.get("mode") == "update"
+        or has_documents
+        or WbsRun.objects.filter(issue=issue, snapshot__workflow=2).exists()
+    ):
+        from .wbs_update import start_update
+
+        return start_update(user, issue, data, snapshot.get("skill_files"))
     active = WbsRun.objects.filter(issue=issue, status__in=["queued", "running", "ready"]).first()
     if active:
         raise WbsConflict("An active draft already exists; review it before starting another")
@@ -133,19 +159,43 @@ def review_run(user, row, data):
     require_member(user, row.issue.project, True)
     issue = Issue.issue_objects.select_for_update(of=("self",)).get(pk=row.issue_id)
     row = WbsRun.objects.select_for_update().get(pk=row.pk)
-    if set(data) - {"decision", "result_digest", "reason"} or data.get("decision") not in ["approve", "reject"]:
+    if set(data) - {
+        "decision",
+        "result_digest",
+        "reason",
+        "choices",
+        "source_confirmed",
+        "replacement_tasks",
+    } or data.get("decision") not in ["approve", "reject"]:
         raise ValidationError("Explicit approve or reject required")
     if not data.get("result_digest") or data["result_digest"] != row.result_digest:
         raise WbsConflict("Draft version changed")
     if row.decision:
         if row.decision != data["decision"]:
             raise WbsConflict("This draft already has a different decision")
+        if row.snapshot.get("workflow") == 2 and data.get("choices", {}) != row.execution.get("choices", {}):
+            raise WbsConflict("This draft was approved with different task actions")
+        if row.snapshot.get("workflow") == 2 and data.get("replacement_tasks", {}) != row.execution.get(
+            "replacement_tasks", {}
+        ):
+            raise WbsConflict("This draft was approved with different replacement task content")
         return row
     if row.status != "ready":
         raise WbsConflict("Draft is not ready for review")
     if data["decision"] == "reject" and not str(data.get("reason", "")).strip():
         raise ValidationError("A rejection reason is required")
+    if row.snapshot.get("workflow") == 2:
+        from .wbs_update import review_update
+
+        return review_update(user, row, data)
     if data["decision"] == "approve":
+        from plane.db.models import RequirementReviewConfig
+
+        if (
+            RequirementReviewConfig.objects.filter(issue=issue).exists()
+            or WbsRun.objects.filter(issue=issue, snapshot__workflow=2).exists()
+        ):
+            raise WbsConflict("Use Update WBS to analyze the current PRD before approval")
         if source_snapshot(issue) != {key: value for key, value in row.snapshot.items() if key != "skill_files"}:
             raise WbsConflict("Requirement or child tasks changed; reject this draft and regenerate")
         existing = {x["name"].strip().casefold() for x in row.snapshot["existing_children"]}

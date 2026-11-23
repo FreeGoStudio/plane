@@ -13,6 +13,31 @@ import { createGateway, tools } from "../src/main.js";
 const id = "11111111-1111-4111-8111-111111111111",
   decision = "22222222-2222-4222-8222-222222222222";
 
+test("WBS updates forward versioned analysis and explicit per-task decisions", async () => {
+  const f = fixture();
+  const base = { workspace: "test", project_id: id, item_id: decision };
+  await invoke(f.plane, "bearer", "start_wbs", {
+    ...base,
+    mode: "update",
+    confirmed: true,
+    expected_updated_at: "2026-11-23T00:00:00Z",
+    idempotency_key: "update-123",
+  });
+  assert.equal(JSON.parse(f.calls.at(-1)!.body!).mode, "update");
+  await invoke(f.plane, "bearer", "review_wbs", {
+    ...base,
+    run_id: id,
+    result_digest: "a".repeat(64),
+    decision: "approve",
+    source_confirmed: true,
+    choices: { T1: "append" },
+  });
+  const body = JSON.parse(f.calls.at(-1)!.body!);
+  assert.deepEqual(body.choices, { T1: "append" });
+  assert.equal(body.source_confirmed, true);
+  f.vault.close();
+});
+
 test("document reviews bind exact versions and cannot forge human overrides", async () => {
   const f = fixture();
   const base = { workspace: "test", project_id: id, item_id: decision };

@@ -13,6 +13,22 @@ The Hatchet `plane-wbs-generate` task receives only a business run UUID. A persi
 
 ## Current scope
 
+### PRD updates (2026-11-23)
+
+The requirement page now has **Update WBS**. It submits `mode: "update"` through the existing start endpoint. The four cases are initial analysis, replacing an unapproved draft, adjusting unstarted child tasks, and reviewing changes to started work. Mixed task states are processed individually. Analysis never changes child tasks.
+
+Update runs freeze the configured documentation repository, commit, paths, full documents and the Plane requirement basis. A configured but unreadable repository is an error, not a fallback to the issue body. Body-only requirements remain supported. The response includes `workflow: 2`, `source`, `source_diff`, `scenario`, `previous_run_id`, `existing_children`, `readiness`, and execution evidence. Historical runs remain readable.
+
+The generated result contains `changes` with stable change IDs, exact existing child `target_id` (null only for create), `action` (`keep/create/update/cancel/append`), requirement basis, impact and optional task content. Every existing child is accounted for. Completed work can only be retained or receive linked additional work. State history keeps a task in the started category even after it is returned to backlog or cancelled.
+
+Approval still uses the exact `result_digest`. It additionally accepts `choices` for affected started/uncertain tasks, and `source_confirmed: true` for exact body-only requirements. Bound PRDs require a completed adoption of the same documents and requirement basis, including legitimate human overrides; AI review alone does not grant approval. If a human chooses update/append instead of a proposed cancellation, `replacement_tasks` must contain the complete reviewed task including current criterion references. These choices and contents are part of the persisted, replay-checked execution evidence.
+
+Before applying, the server rechecks source, adoption, membership and all child snapshots. A changed source or task requires fresh analysis. Updates preserve task identity, assignees, schedule and history; cancellation uses an existing project cancelled state; append creates a native related work item. All writes and the decision commit in one transaction. Repeated approval cannot duplicate tasks or change the approved decision. New analysis supersedes old pending drafts and fences late worker results. Zero-change analysis does not manufacture work.
+
+Apply additive migration `0141_wbs_execution_evidence` before running the new API/worker. It stores approval evidence separately from immutable analysis input. This change has been verified in isolated tests and a component fixture; it is not a production deployment or user acceptance of a real PRD change.
+
+The following paragraphs describe compatibility with the original body-only workflow:
+
 This path uses an explicitly confirmed Plane text requirement; it does not require an old workbench prototype review. The legacy workbench flow is retained. Its coverage/reference/cycle and idempotency concepts are reused here with native Plane persistence. No old project mappings, approvals or drafts are migrated.
 
 Existing children are supplied as reuse evidence. The first version does not automatically read project repositories and does not claim source inspection; unknown implementation details must remain questions or concrete investigation tasks. Generated tasks retain criteria, dependencies, scope, deliverables and acceptance text. Dependencies are recorded in the task description, not native blocking relations.

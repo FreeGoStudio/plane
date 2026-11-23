@@ -19,10 +19,10 @@ const descriptions: Record<keyof typeof inputs, string> = {
   adopt_requirement_revision:
     "Adopt an AI-passed exact document revision for prototype generation, using the expected current target SHA. Poll adoption status before using it. Human overrides are only available in the signed-in Plane UI.",
   start_wbs:
-    "Ask Plane to freeze the explicitly confirmed saved requirement version and queue a Hatchet WBS draft. Does not create child work items. Reuse the same idempotency_key after uncertain responses.",
+    "Queue WBS analysis without changing work items. Use mode=update to freeze the current PRD and analyze changes at each task's development stage, including before PRD adoption. Reuse idempotency_key after uncertain responses.",
   get_wbs: "Read WBS execution status and the draft for human review. Omit run_id to list recent runs.",
   review_wbs:
-    "Only after the human explicitly approves or rejects this exact draft: submit its result_digest. Approval creates child work items atomically; rejection requires a reason. Never infer approval from a request to generate a draft.",
+    "Only after explicit human approval of this exact digest and per-task choices: apply changes atomically. Update runs require matching PRD adoption, or source_confirmed for body-only requirements. If choosing update/append instead of cancellation, include the human-reviewed replacement_tasks. Rejection requires a reason. Never infer approval from analysis requests.",
   get_current_user: "Read the authenticated Plane user's native API profile.",
   get_project: "Read native project details or summary with current membership permissions.",
   get_project_metadata:

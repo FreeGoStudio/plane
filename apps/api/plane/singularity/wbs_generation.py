@@ -48,8 +48,28 @@ class Draft(StrictModel):
     questions: list[str] = Field(max_length=20)
 
 
+class Change(StrictModel):
+    id: str = Field(pattern=r"^[A-Za-z0-9_-]+$")
+    target_id: str | None
+    action: Literal["keep", "create", "update", "cancel", "append"]
+    basis: str = Field(min_length=1, max_length=5000)
+    impact: str = Field(min_length=1, max_length=5000)
+    task: Task | None
+
+
+class ChangeDraft(StrictModel):
+    summary: str = Field(min_length=1, max_length=5000)
+    coverage: list[Coverage]
+    changes: list[Change] = Field(max_length=200)
+    questions: list[str] = Field(max_length=20)
+
+
 def validate_draft(value, snapshot):
     """Reject omitted criteria, invented references, duplicate tasks and cycles."""
+    if snapshot.get("workflow") == 2:
+        from .wbs_update import validate_changes
+
+        return validate_changes(value, snapshot)
     draft = Draft.model_validate(value)
     tasks = {t.id: t for t in draft.tasks}
     coverage = {c.criterion_id: c for c in draft.coverage}
@@ -103,7 +123,18 @@ def generate(snapshot):
     )
     if snapshot["criteria"] == ["REQ-1"]:
         prompt += "REQ-1 表示整份正文，须覆盖正文中的全部验收要求。"
-    schema = Draft.model_json_schema()
+    if snapshot.get("workflow") == 2:
+        prompt += (
+            "本次为PRD变更分析，以source中的固定文档为准。允许分析未确认的PRD，但不得声称已批准。"
+            "输出changes替代tasks，每个已有子任务必须恰好出现一次，通过target_id引用真实ID。"
+            "保持不变用keep、取消用cancel且task=null；修改用update、追加关联任务用append、全新任务用create。"
+            "只有create的target_id为null，update/append/create必须提供完整task且task.id等于change.id。"
+            "已完成任务只能keep或append。开发中变化先提出建议，人工会逐项确认。"
+            "每项basis指出原需求依据，impact区分已知进度、剩余与返工，缺代码证据明确待核实。"
+            "coverage.task_ids引用change.id；keep/cancel无需新任务内容。所有已有任务都要说明是否受影响。"
+            "之前的结果只是对比资料，不扩大需求。没有变化全部keep，明确无须调整。"
+        )
+    schema = (ChangeDraft if snapshot.get("workflow") == 2 else Draft).model_json_schema()
     # Bind the model contract to the original acceptance IDs, not skill examples.
     criterion = {"type": "string", "enum": snapshot["criteria"]}
     schema["$defs"]["Coverage"]["properties"]["criterion_id"] = criterion
@@ -146,8 +177,12 @@ def execute(run_id, hatchet_run_id):
     """Claim a bounded lease; stale attempts cannot overwrite a later attempt."""
     token = uuid.uuid4()
     with transaction.atomic():
-        row = WbsRun.objects.select_for_update().select_related("issue__project", "requested_by").get(pk=run_id)
-        if row.status in ["ready", "completed", "rejected"]:
+        row = (
+            WbsRun.objects.select_for_update(of=("self",))
+            .select_related("issue__project", "requested_by")
+            .get(pk=run_id)
+        )
+        if row.status in ["ready", "completed", "rejected", "superseded"]:
             return {"run_id": str(row.id), "status": row.status}
         if row.lease_until and row.lease_until > timezone.now():
             raise RuntimeError("WBS execution already leased")
@@ -162,7 +197,11 @@ def execute(run_id, hatchet_run_id):
     try:
         result = generate(snapshot)
         with transaction.atomic():
-            row = WbsRun.objects.select_for_update().select_related("issue__project", "requested_by").get(pk=run_id)
+            row = (
+                WbsRun.objects.select_for_update(of=("self",))
+                .select_related("issue__project", "requested_by")
+                .get(pk=run_id)
+            )
             require_member(row.requested_by, row.issue.project, True)
             if row.execution_token != token:
                 raise RuntimeError("Superseded execution")

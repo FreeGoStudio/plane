@@ -32,6 +32,7 @@ class WbsRun(models.Model):
     )
     reviewed_at = models.DateTimeField(null=True)
     children = models.JSONField(default=dict)
+    execution = models.JSONField(default=dict)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
