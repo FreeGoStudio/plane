@@ -29,7 +29,13 @@ auth_patterns = [
     path("exchange/", auth_views.exchange),
 ]
 base = "workspaces/<slug:slug>/projects/<uuid:project_id>/"
+from .code_review_api import CodeReviewAPI
 urlpatterns = [
+    path(base + "work-items/<uuid:pk>/code-review/", CodeReviewAPI.as_view()),
+    path(base + "work-items/<uuid:pk>/code-review/merge-requests/", CodeReviewAPI.as_view(), {"action": "merge-requests"}),
+    path(base + "work-items/<uuid:pk>/code-review/links/", CodeReviewAPI.as_view(), {"action": "links"}),
+    path(base + "work-items/<uuid:pk>/code-review/links/<uuid:link_id>/remove/", CodeReviewAPI.as_view(), {"action": "remove"}),
+    path(base + "work-items/<uuid:pk>/code-review/runs/<uuid:run_id>/", CodeReviewAPI.as_view()),
     path("requirement-review/push/<uuid:repository_id>/", RequirementPushWebhook.as_view()),
     path("requirement-review/adoption-gate/", RequirementAdoptionGate.as_view()),
     path(base + "work-items/<uuid:pk>/requirement-review/", RequirementReviewAPI.as_view()),
