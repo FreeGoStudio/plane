@@ -9,7 +9,7 @@ import os
 import uuid
 from datetime import timedelta
 from pathlib import Path
-from typing import Literal
+from typing import Annotated, Literal
 
 import requests
 from pydantic import BaseModel, ConfigDict, Field
@@ -37,7 +37,10 @@ class Task(StrictModel):
     criteria: list[str] = Field(min_length=1)
     scope: str = Field(min_length=1, max_length=5000)
     deliverable: str = Field(min_length=1, max_length=5000)
-    dependencies: list[str]
+    dependencies: list[Annotated[str, Field(pattern=r"^[A-Za-z0-9_-]+$")]] = Field(
+        description="Only prerequisite task IDs from this output (change.id in workflow 2). "
+        "Use [] if none. Put external contracts, environments and source evidence in scope/questions, not here."
+    )
     acceptance: str = Field(min_length=1, max_length=5000)
 
 
@@ -119,6 +122,10 @@ def generate(snapshot):
         "不确定事项列入 questions；任务应有明确范围、产出、验收和依赖。"
         "coverage 的 criterion_id 必须逐字使用输入 criteria，不能增加横线或重编号；每个原编号恰好出现一次。"
         "任务的 criteria 也只能引用这些原编号，不得额外创建验收编号。"
+        "dependencies仅填写本次输出中存在的前置任务ID，无前置任务用空数组。"
+        "外部接口、团队交付、测试环境和文档依据写入scope或questions，不得作为dependencies字符串或虚构任务。"
+        "按需求定义的交付目标拆分；PRD作者说明本轮仅编写文档，不等于其中的软件实施范围只含文档，"
+        "不能因此忽略已列明的软件验收条件；需求本身明确以文档为交付目标时仍遵从。"
         "遵循 skill_files 中的 WBS 技能和模板，输出适配当前 JSON 契约。"
     )
     if snapshot["criteria"] == ["REQ-1"]:
@@ -135,6 +142,8 @@ def generate(snapshot):
             "已完成任务只能keep或append。开发中变化先提出建议，人工会逐项确认。"
             "每项basis指出原需求依据，impact区分已知进度、剩余与返工，缺代码证据明确待核实。"
             "coverage.task_ids引用change.id；keep/cancel无需新任务内容。所有已有任务都要说明是否受影响。"
+            "dependencies只引用changes中存在的change.id，不引用外部依赖编号或已有工作项UUID。"
+            "逐一核对task.criteria与coverage.task_ids双向对应、task.id等于change.id，依赖无环。"
             "之前的结果只是对比资料，不扩大需求。没有变化全部keep，明确无须调整。"
         )
     schema = (ChangeDraft if snapshot.get("workflow") == 2 else Draft).model_json_schema()

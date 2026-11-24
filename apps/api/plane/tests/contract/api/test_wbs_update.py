@@ -130,6 +130,36 @@ def result(child=None, action="create"):
     }
 
 
+def test_model_schema_dependencies_are_ids_not_external_prose():
+    from plane.singularity.wbs_generation import ChangeDraft
+
+    item = ChangeDraft.model_json_schema()["$defs"]["Task"]["properties"]["dependencies"]["items"]
+    assert item["pattern"] == r"^[A-Za-z0-9_-]+$"
+
+
+@pytest.mark.parametrize(
+    "field,value,reason",
+    [
+        ("id", "OTHER", "task ID mismatch"),
+        ("dependencies", ["EXT-01"], "unknown task dependency"),
+        ("criteria", ["AC02"], "acceptance mapping mismatch"),
+    ],
+)
+def test_reference_error_identifies_relation_without_echoing_content(field, value, reason):
+    data = result()
+    data["changes"][0]["task"][field] = value
+    with pytest.raises(ValueError, match=reason):
+        validate_draft(data, {"workflow": 2, "criteria": ["AC01"], "existing_children": []})
+
+
+def test_external_dependency_stays_in_scope_not_task_edges():
+    data = result()
+    data["changes"][0]["task"]["scope"] += "; EXT-01 backend contract pending; use test adapter"
+    parsed = validate_draft(data, {"workflow": 2, "criteria": ["AC01"], "existing_children": []})
+    assert "EXT-01" in parsed["changes"][0]["task"]["scope"]
+    assert parsed["changes"][0]["task"]["dependencies"] == []
+
+
 def ready(user, issue, child=None, action="create"):
     row = start(user, issue)
     row.result = result(child, action)

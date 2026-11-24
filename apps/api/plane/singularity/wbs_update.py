@@ -297,12 +297,13 @@ def validate_changes(value, snapshot):
             raise ValueError("Invalid change action")
         if target and existing[target]["stage"] == "completed" and action not in ["keep", "append"]:
             raise ValueError("Completed tasks must retain their original acceptance")
-        if task and (
-            task["id"] != change["id"]
-            or not set(task["dependencies"]) <= changes.keys()
-            or any(c not in coverage or change["id"] not in coverage[c]["task_ids"] for c in task["criteria"])
-        ):
-            raise ValueError("Invalid task references")
+        if task:
+            if task["id"] != change["id"]:
+                raise ValueError("Invalid task references: task ID mismatch")
+            if not set(task["dependencies"]) <= changes.keys():
+                raise ValueError("Invalid task references: unknown task dependency")
+            if any(c not in coverage or change["id"] not in coverage[c]["task_ids"] for c in task["criteria"]):
+                raise ValueError("Invalid task references: acceptance mapping mismatch")
 
     def visit(key, active, done):
         if key in active:
