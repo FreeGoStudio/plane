@@ -17,7 +17,6 @@ type Host = {
   provider: string;
   path: string;
   oauth_available: boolean;
-  install_url?: string | null;
   credentials: { id: string; label: string }[];
 };
 /** Resolve a URL, then verify consent or an existing credential before registration. */
@@ -95,7 +94,7 @@ export function RepositoryAdd({
             size="md"
             value={url}
             disabled={busy}
-            placeholder="https://github.com/organization/repository"
+            placeholder="https://gitlab.com/group/repository"
             onChange={(e) => {
               setUrl(e.target.value);
               setHost(null);
@@ -144,32 +143,18 @@ export function RepositoryAdd({
           )}
           {host.oauth_available ? (
             <>
-              {host.install_url && (
-                <a
-                  className="text-accent-primary underline"
-                  href={host.install_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t("repository_ui.github_install")}
-                </a>
-              )}
-              <p className="text-body-sm-regular text-secondary">
-                {t(host.provider === "github" ? "repository_ui.github_scope" : "repository_ui.scope")}
-              </p>
+              <p className="text-body-sm-regular text-secondary">{t("repository_ui.scope")}</p>
               <Button
                 disabled={busy}
                 onClick={() => add("oauth")}
-                label={`${t("repository_ui.connect")} ${host.provider === "github" ? "GitHub" : "GitLab"}`}
+                label={`${t("repository_ui.connect")} GitLab`}
                 size="md"
                 variant="primary"
                 stretch="auto"
               />
             </>
           ) : (
-            <p className="text-body-sm-regular text-secondary">
-              {t(host.provider === "github" ? "repository_ui.github_unavailable" : "repository_ui.oauth_unavailable")}
-            </p>
+            <p className="text-body-sm-regular text-secondary">{t("repository_ui.oauth_unavailable")}</p>
           )}
           {canConfigureOAuth && (
             <RepositoryOAuthSetup
@@ -194,38 +179,36 @@ export function RepositoryAdd({
                   variant="secondary"
                   stretch="auto"
                 />
-                {host.provider !== "github" && (
-                  <form
-                    className="flex flex-col gap-3"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      add("token");
-                    }}
-                  >
-                    <InputGroup size="xl">
-                      <Input
-                        name="token"
-                        type="password"
-                        autoComplete="off"
-                        required
-                        size="md"
-                        aria-label={t("repository_ui.token_placeholder")}
-                        placeholder={t("repository_ui.token_placeholder")}
-                        value={token}
-                        disabled={busy}
-                        onChange={(e) => setToken(e.target.value)}
-                      />
-                    </InputGroup>
-                    <Button
-                      type="submit"
-                      disabled={busy}
-                      label={t("repository_ui.verify_save")}
+                <form
+                  className="flex flex-col gap-3"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    add("token");
+                  }}
+                >
+                  <InputGroup size="xl">
+                    <Input
+                      name="token"
+                      type="password"
+                      autoComplete="off"
+                      required
                       size="md"
-                      variant="secondary"
-                      stretch="auto"
+                      aria-label={t("repository_ui.token_placeholder")}
+                      placeholder={t("repository_ui.token_placeholder")}
+                      value={token}
+                      disabled={busy}
+                      onChange={(e) => setToken(e.target.value)}
                     />
-                  </form>
-                )}
+                  </InputGroup>
+                  <Button
+                    type="submit"
+                    disabled={busy}
+                    label={t("repository_ui.verify_save")}
+                    size="md"
+                    variant="secondary"
+                    stretch="auto"
+                  />
+                </form>
               </div>
             </details>
           )}

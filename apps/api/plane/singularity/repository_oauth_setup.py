@@ -43,7 +43,7 @@ def application_secret(application):
 
 class GuideInput(StrictSerializer):
     instance_id = serializers.UUIDField(required=False)
-    provider = serializers.ChoiceField(choices=["github", "gitlab"], required=False)
+    provider = serializers.ChoiceField(choices=["gitlab"], required=False)
     web_url = serializers.URLField(required=False)
     api_url = serializers.URLField(required=False)
     allowed_networks = serializers.ListField(child=serializers.CharField(), default=list)
@@ -52,16 +52,15 @@ class GuideInput(StrictSerializer):
 class SetupInput(GuideInput):
     client_id = serializers.CharField(max_length=255)
     client_secret = serializers.CharField(max_length=8192, trim_whitespace=False, write_only=True)
-    github_app_slug = serializers.RegexField(r"^[a-zA-Z0-9-]+$", max_length=100, required=False)
 
 
 def proposed_instance(data):
     """Resolve an existing host or validate a new administrator-supplied site without network access."""
     if data.get("instance_id"):
-        return get_object_or_404(RepositoryInstance, pk=data["instance_id"], enabled=True)
+        return get_object_or_404(RepositoryInstance, pk=data["instance_id"], enabled=True, provider="gitlab")
     web_url = data.get("web_url", "").rstrip("/")
     provider = data.get("provider")
-    if not web_url or not provider:
+    if not web_url or provider != "gitlab":
         raise RepositoryError("invalid_instance")
     existing = RepositoryInstance.objects.filter(web_url=web_url).first()
     if existing:
@@ -69,13 +68,9 @@ def proposed_instance(data):
             raise RepositoryError("configuration_conflict", 409)
         return existing
     parsed = urlsplit(web_url)
-    api_url = data.get("api_url") or (
-        "https://api.github.com"
-        if web_url == "https://github.com"
-        else web_url + ("/api/v4" if provider == "gitlab" else "/api/v3")
-    )
+    api_url = data.get("api_url") or web_url + "/api/v4"
     instance = RepositoryInstance(
-        name=("GitHub" if provider == "github" else "GitLab") + " · " + parsed.netloc,
+        name="GitLab" + " · " + parsed.netloc,
         provider=provider,
         web_url=web_url,
         api_url=api_url.rstrip("/"),
@@ -99,12 +94,10 @@ def guide(instance):
         "provider": instance.provider,
         "web_url": instance.web_url,
         "api_url": instance.api_url,
-        "create_url": instance.web_url.rstrip("/")
-        + ("/settings/apps/new" if instance.provider == "github" else "/-/user_settings/applications"),
+        "create_url": instance.web_url.rstrip("/") + "/-/user_settings/applications",
         "homepage_url": settings.WEB_URL.rstrip("/"),
         "callback_url": callback_url(),
-        "scope": "Contents: read; Metadata: read" if instance.provider == "github" else "read_api",
-        "github_app_slug": app.github_app_slug if app else "",
+        "scope": "read_api",
         "client_id": app.client_id if app else "",
         "configured": configured,
     }
@@ -125,13 +118,6 @@ class RepositoryOAuthSetup(RepositoryAPI):
         """Persist a validated host and encrypted OAuth secret atomically; saving is not consent."""
         data = validated(SetupInput, request.data)
         instance = proposed_instance(data)
-        github_app = None
-        if instance.provider == "github":
-            from .repository_github_app import app_metadata
-
-            if not data.get("github_app_slug"):
-                raise RepositoryError("github_app_configuration_invalid")
-            github_app = app_metadata(instance, data["github_app_slug"], data["client_id"])
         if any(c in data["client_secret"] for c in "\r\n\x00"):
             raise VaultError("invalid_credential")
         if instance._state.adding:
@@ -146,8 +132,6 @@ class RepositoryOAuthSetup(RepositoryAPI):
             instance=instance,
             defaults={
                 "client_id": data["client_id"],
-                "github_app_id": github_app["id"] if github_app else None,
-                "github_app_slug": github_app["slug"] if github_app else "",
                 "key_version": version,
                 "encrypted_secret": base64.b64encode(nonce + encrypted).decode(),
                 "updated_by": request.user,

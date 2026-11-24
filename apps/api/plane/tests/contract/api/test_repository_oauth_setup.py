@@ -5,7 +5,6 @@
 """Administrator registration guidance, encrypted storage and authorization continuation."""
 
 import json
-from unittest.mock import patch
 from urllib.parse import parse_qs, urlsplit
 import pytest
 from django.utils import timezone
@@ -71,7 +70,6 @@ def test_existing_host_guide_save_and_authorize(admin, world):
 @pytest.mark.parametrize(
     "provider,site,create,api",
     [
-        ("github", "https://github.com", "/settings/apps/new", "https://api.github.com"),
         ("gitlab", "https://git.example.test", "/-/user_settings/applications", "https://git.example.test/api/v4"),
     ],
 )
@@ -82,10 +80,7 @@ def test_new_host_guide_does_not_create_until_saved(admin, provider, site, creat
     assert response.json()["create_url"] == site + create
     assert response.json()["api_url"] == api
     assert not RepositoryInstance.objects.filter(web_url=site).exists()
-    if provider == "github":
-        data["github_app_slug"] = "plane-reader"
-    with patch("plane.singularity.repository_github_app.app_metadata", return_value={"id": 12, "slug": "plane-reader"}):
-        result = save(admin, **data, allowed_networks=["192.168.3.56/32"])
+    result = save(admin, **data, allowed_networks=["192.168.3.56/32"])
     assert result.status_code == 200, result.content
     host = RepositoryInstance.objects.get(web_url=site)
     assert host.allowed_networks == ["192.168.3.56/32"]

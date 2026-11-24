@@ -43,16 +43,9 @@ def oauth_config(instance):
     from plane.db.models import RepositoryOAuthApplication
     from .repository_oauth_setup import application_secret
 
+    if instance.provider != "gitlab":
+        raise RepositoryError("unsupported_provider")
     app = RepositoryOAuthApplication.objects.filter(instance=instance).first()
-    if instance.provider == "github":
-        if not app or not app.github_app_id or not app.github_app_slug:
-            raise RepositoryError("repository_oauth_not_configured", 503)
-        return {
-            "client_id": app.client_id,
-            "client_secret": application_secret(app),
-            "app_id": app.github_app_id,
-            "app_slug": app.github_app_slug,
-        }
     if app:
         return {"client_id": app.client_id, "client_secret": application_secret(app)}
     try:
@@ -93,7 +86,7 @@ def start(request, repository, draft=None):
         "client_id": config["client_id"],
     }
     request.session["repository_oauth"] = pending
-    scope = "read_api" if repository.instance.provider == "gitlab" else "offline_access"
+    scope = "read_api"
     params = dict(
         client_id=config["client_id"],
         redirect_uri=callback_url(),
@@ -103,7 +96,7 @@ def start(request, repository, draft=None):
         code_challenge_method="S256",
         code_challenge=base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode(),
     )
-    path = "/oauth/authorize" if repository.instance.provider == "gitlab" else "/login/oauth/authorize"
+    path = "/oauth/authorize"
     return {"authorization_url": repository.instance.web_url.rstrip("/") + path + "?" + urlencode(params)}
 
 
@@ -128,7 +121,7 @@ def exchange(instance, config, code, verifier):
 def token_request(instance, config, grant):
     # GitLab may have a separately registered internal API authority. It is still
     # checked/pinned by the existing transport, including explicit private CIDRs.
-    base = instance.api_url.removesuffix("/api/v4") if instance.provider == "gitlab" else instance.web_url
+    base = instance.api_url.removesuffix("/api/v4")
     endpoint = SimpleNamespace(
         api_url=base,
         web_url=instance.web_url,
@@ -138,7 +131,7 @@ def token_request(instance, config, grant):
         ca_file=instance.ca_file,
         enabled=instance.enabled,
     )
-    path = "/oauth/token" if instance.provider == "gitlab" else "/login/oauth/access_token"
+    path = "/oauth/token"
     result = RepositoryTransport(endpoint).request(
         "POST",
         path,
@@ -153,9 +146,7 @@ def token_request(instance, config, grant):
     if not isinstance(result, dict):
         raise RepositoryError("invalid_upstream_response", 502)
     if result.get("error"):
-        if result["error"] == "invalid_grant" or (
-            instance.provider == "github" and result["error"] == "bad_refresh_token"
-        ):
+        if result["error"] == "invalid_grant":
             raise RepositoryError("upstream_authentication_required", 401)
         raise RepositoryError("repository_oauth_configuration_error", 503)
     return result
@@ -205,8 +196,6 @@ def callback(request):
     if not request.GET.get("error") and request.GET.get("code"):
         try:
             config = oauth_config(repository.instance)
-            if repository.instance.provider == "github" and entry.get("client_id") != config["client_id"]:
-                raise RepositoryError("repository_oauth_configuration_error", 409)
             token = exchange(repository.instance, config, request.GET["code"], entry["verifier"])
             raw = token.get("access_token")
             if not isinstance(raw, str) or not raw:
@@ -217,41 +206,21 @@ def callback(request):
             metadata = (
                 provider.metadata(draft["path"], by_id=False) if draft else provider.metadata(repository.external_id)
             )
-            installed = None
-            if repository.instance.provider == "github":
-                from .repository_github_app import installation, scoped_token
-
-                installed = installation(repository.instance, raw, config, metadata["external_id"])
-                restricted = scoped_token(repository.instance, raw, config, metadata["external_id"], installed)
-                RepositoryProvider(repository.instance, restricted).metadata(metadata["external_id"])
             expires = token.get("expires_in")
             if expires is not None and not 0 < int(expires) <= 315360000:
                 raise RepositoryError("authorization_failed")
             with transaction.atomic():
                 from .repository_add import save_oauth, finish_add
 
-                if installed:
-                    from .repository_github_app import save_connection
-
-                    row = save_connection(
-                        request.user,
-                        repository.instance,
-                        token,
-                        (actor_id, actor_label),
-                        metadata,
-                        config,
-                        installed,
-                    )
-                else:
-                    row = save_oauth(
-                        request.user,
-                        repository.instance,
-                        raw,
-                        actor_id,
-                        actor_label,
-                        timezone.now() + timedelta(seconds=int(expires)) if expires else None,
-                        refresh_token=token.get("refresh_token"),
-                    )
+                row = save_oauth(
+                    request.user,
+                    repository.instance,
+                    raw,
+                    actor_id,
+                    actor_label,
+                    timezone.now() + timedelta(seconds=int(expires)) if expires else None,
+                    refresh_token=token.get("refresh_token"),
+                )
                 if draft:
                     repository = finish_add(project, request.user, instance, metadata, draft["purpose"], row)
                 RepositorySelection.objects.update_or_create(

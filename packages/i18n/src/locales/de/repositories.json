@@ -16,7 +16,6 @@
     "browse": "Read repository",
     "disconnect": "Disconnect from this repository",
     "scope": "Uses your own account. Authorization does not grant repository membership.",
-    "github_scope": "GitHub App reads only selected repositories with Contents and Metadata read access, within your own GitHub permissions. Install the app first, then connect your account. Existing OAuth/PAT connections must reconnect.",
     "oauth_unavailable": "Browser authorization is not configured for this host. An administrator must register the OAuth application; you can use a personal token below.",
     "manual": "Use an existing connection or personal token",
     "choose": "Choose your connection",
@@ -55,12 +54,7 @@
       "configuration_conflict": "This repository is already configured or its settings conflict.",
       "invalid_repository_url": "Geben Sie eine gültige Repository-URL ein.",
       "repository_host_not_configured": "Dieser Hosting-Dienst ist nicht konfiguriert. Wenden Sie sich an die Administration.",
-      "github_app_read_only_required": "Use a GitHub App with only Contents: read and Metadata: read. Remove other permissions.",
-      "github_app_configuration_invalid": "App slug and Client ID must identify the same GitHub App.",
-      "github_app_connection_required": "Reconnect using the GitHub App for this repository. OAuth App and personal tokens are no longer accepted.",
-      "github_selected_repository_required": "No active installation grants this account the selected repository. Ask its administrator to install or update the app with Only select repositories, include this repository, then reconnect. All repositories installations are not accepted.",
-      "github_expiring_tokens_required": "Enable expiring user access tokens in the GitHub App settings and reconnect.",
-      "github_installation_list_limit": "The installation list exceeds the verification limit. Contact the platform administrator."
+      "unsupported_provider": "Only GitLab repositories are supported. Enter the migrated GitLab repository URL."
     },
     "prototype": "Storybook-Prototyp",
     "bindings": "Erforderliche Repository-Zuordnungen",
@@ -109,12 +103,8 @@
     "oauth_setup": {
       "title": "Repository-Autorisierung konfigurieren",
       "create": "OAuth-Anwendung erstellen",
-      "github_steps": "Create a GitHub App. Set Contents to Read-only; Metadata is Read-only. Leave other permissions disabled. Enable expiring user access tokens; disable Device Flow and Webhooks. Copy the callback below into Callback URL. Install with Only select repositories, then return here with Client ID, Client Secret and the app slug.",
       "gitlab_steps": "Wählen Sie Add new application, Confidential und read_api. Tragen Sie anschließend Application ID und Secret hier ein.",
-      "private_networks": "Erlaubte private Netzwerke (optional, kommagetrennte CIDRs)",
-      "github_app_slug": "App slug (the last part of github.com/apps/your-app)"
-    },
-    "github_install": "Install GitHub App / select repositories",
-    "github_unavailable": "A GitHub App is not configured for this host. Ask a platform administrator to configure it, install it on selected repositories, then connect your account."
+      "private_networks": "Erlaubte private Netzwerke (optional, kommagetrennte CIDRs)"
+    }
   }
 }

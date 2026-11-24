@@ -45,6 +45,8 @@ def resolve_repository(project, role):
         raise RepositoryError("project_repository_binding_required", 409)
     if row.project_id != project.pk or row.purpose != role:
         raise RepositoryError("project_repository_binding_invalid", 409)
+    if row.instance.provider != "gitlab":
+        raise RepositoryError("unsupported_provider")
     if not row.enabled or not row.instance.enabled:
         raise RepositoryError("project_repository_binding_unavailable", 409)
     return row, binding.revision

@@ -16,7 +16,7 @@ from plane.singularity.repository_provider import RepositoryProvider, MAX_FILE, 
 COMMIT, TREE, BLOB = "a" * 40, "b" * 40, "c" * 40
 
 
-def host(provider="github", **kwargs):
+def host(provider="gitlab", **kwargs):
     return SimpleNamespace(
         provider=provider,
         api_url="https://api.example.test",
@@ -31,7 +31,7 @@ def host(provider="github", **kwargs):
 def provider(kind, content=b"<script>alert('untrusted')</script>"):
     adapter = RepositoryProvider(host(kind), "private-token")
     repo = SimpleNamespace(external_id="123", default_branch="main")
-    meta = {"id": 123, "path_with_namespace": "team/repo", "full_name": "team/repo", "default_branch": "main"}
+    meta = {"id": 123, "path_with_namespace": "team/repo", "default_branch": "main"}
     entry = {
         "name": "README.md",
         "path": "README.md",
@@ -50,21 +50,15 @@ def provider(kind, content=b"<script>alert('untrusted')</script>"):
     }
 
     def get(path, params=None):
-        if path in ("/repositories/123", "/projects/123"):
+        if path == "/projects/123":
             return meta
         if "/commits/" in path:
-            return {"id": COMMIT, "sha": COMMIT, "commit": {"tree": {"sha": TREE}}}
+            return {"id": COMMIT}
         if path.endswith("/repository/tree"):
             assert params["ref"] == COMMIT
             return [entry]
-        if "/git/trees/" in path:
-            assert path.endswith(TREE)
-            return {"tree": [entry], "truncated": False}
         if "/repository/files/" in path:
             assert params["ref"] == COMMIT
-            return blob
-        if "/git/blobs/" in path:
-            assert path.endswith(BLOB)
             return blob
         raise AssertionError(path)
 
@@ -72,7 +66,7 @@ def provider(kind, content=b"<script>alert('untrusted')</script>"):
     return adapter, repo, entry, blob
 
 
-@pytest.mark.parametrize("kind", ["github", "gitlab"])
+@pytest.mark.parametrize("kind", ["gitlab"])
 def test_real_content_contract_is_pinned_to_resolved_commit(kind):
     adapter, repo, _, _ = provider(kind)
     listing = adapter.directory(repo)
@@ -83,7 +77,7 @@ def test_real_content_contract_is_pinned_to_resolved_commit(kind):
     assert listing["entries"][0]["path"] == "README.md"
 
 
-@pytest.mark.parametrize("kind", ["github", "gitlab"])
+@pytest.mark.parametrize("kind", ["gitlab"])
 @pytest.mark.parametrize("mode", ["160000", "120000"])
 def test_submodules_and_symlinks_never_follow_other_repositories(kind, mode):
     adapter, repo, entry, _ = provider(kind)
@@ -92,7 +86,7 @@ def test_submodules_and_symlinks_never_follow_other_repositories(kind, mode):
         adapter.file(repo, "main", "README.md")
 
 
-@pytest.mark.parametrize("kind", ["github", "gitlab"])
+@pytest.mark.parametrize("kind", ["gitlab"])
 @pytest.mark.parametrize(
     "content,error",
     [
@@ -122,24 +116,6 @@ def test_private_dns_rejected_before_sending_credential():
         with pytest.raises(RepositoryError, match="address_not_allowed"):
             RepositoryTransport(host(), "private-token").get("/user")
         pool.assert_not_called()
-
-
-def test_github_scoped_token_basic_auth_uses_pinned_transport_and_json():
-    with patch("socket.getaddrinfo", return_value=dns("8.8.8.8")), patch("urllib3.HTTPSConnectionPool") as pool:
-        response = pool.return_value.urlopen.return_value
-        response.status, response.read.return_value = 200, b'{"token":"scoped"}'
-        body = {"repository_ids": [123], "permissions": {"contents": "read"}}
-        RepositoryTransport(host(), basic_auth=("client", "secret")).request(
-            "POST",
-            "/applications/client/token/scoped",
-            body=body,
-            json_body=True,
-        )
-        request = pool.return_value.urlopen.call_args.kwargs
-        assert request["headers"]["Authorization"] == "Basic " + base64.b64encode(b"client:secret").decode()
-        assert json.loads(request["body"]) == body
-        assert request["redirect"] is False
-        assert pool.call_args.kwargs["assert_hostname"] == "api.example.test"
 
 
 def test_explicit_network_pins_address_and_keeps_hostname_verification():
@@ -181,19 +157,27 @@ def test_upstream_errors_do_not_redirect_or_retry_anonymously(status, error):
         response.read.assert_not_called()
 
 
-def test_github_directory_pagination_without_silent_truncation():
-    adapter, repo, entry, _ = provider("github")
+def test_gitlab_directory_pagination():
+    adapter, repo, entry, _ = provider("gitlab")
     original = adapter.http.get.side_effect
     adapter.http.get.side_effect = (
-        lambda path, params=None: {"tree": [entry] * 101} if "/git/trees/" in path else original(path, params)
+        lambda path, params=None: ([entry] * 100 if params["page"] == 1 else [entry])
+        if path.endswith("/repository/tree")
+        else original(path, params)
     )
     assert adapter.directory(repo)["next_page"] == 2
     assert len(adapter.directory(repo, page=2)["entries"]) == 1
-    adapter.http.get.side_effect = (
-        lambda path, params=None: {"truncated": True} if "/git/trees/" in path else original(path, params)
-    )
-    with pytest.raises(RepositoryError, match="directory_too_large"):
-        adapter.directory(repo)
+    assert adapter.directory(repo, page=2)["next_page"] is None
+
+
+@pytest.mark.parametrize("kind", ["github", "unsupported"])
+def test_other_providers_rejected_before_network(kind):
+    with patch("socket.getaddrinfo") as dns:
+        with pytest.raises(RepositoryError, match="unsupported_provider"):
+            RepositoryProvider(host(kind), "private-token")
+        with pytest.raises(RepositoryError, match="unsupported_provider"):
+            RepositoryTransport(host(kind), "private-token").get("/user")
+        dns.assert_not_called()
 
 
 @pytest.mark.parametrize("method,status", [("POST", 201), ("PATCH", 200), ("DELETE", 204)])

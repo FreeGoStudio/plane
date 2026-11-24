@@ -1,13 +1,28 @@
 # Repository access
 
-## GitHub App connections (2026-11-24)
+## GitLab-only repository connections (2026-11-24)
 
-GitHub repository connections now use a read-only GitHub App installed on selected
-repositories, with each member's own user authorization and a repository-scoped
-token for content reads. Legacy GitHub OAuth/PAT connections must reconnect.
-See [configuration, migration and acceptance](github-app-repositories.md).
-This supersedes the GitHub `repo` scope setup in the historical sections below;
-GitLab and GitHub login configuration remain separate.
+Repository configuration, OAuth, personal tokens and content reads support GitLab
+only. GitHub repository entry points, App installation/token exchange and the
+GitHub content adapter have been removed. Use a migrated GitLab URL, for example
+`https://gitlab.com/group/repository`. GitLab `read_api`, refresh, personal tokens,
+explicit anonymous public reads and company-managed connections are retained.
+
+Migration `0144_gitlab_only_repository_connections` removes the six unused GitHub
+App fields and narrows the provider choice. Historical migrations remain intact.
+Existing GitLab hosts, project mappings, encrypted credentials and selections are
+preserved. Legacy non-GitLab rows are hidden from connection lists and cannot be
+used for authorization or reads. No upstream repository or account is deleted.
+Apply this migration with the matching API release; old API versions still expect
+the removed columns. Plane login providers are separate from repository access.
+
+Validation: 117 repository contracts passed, followed by 29 targeted contracts
+including three new GitLab-only/legacy-provider cases. Those three cases also
+passed with the full migration graph on a fresh isolated database. All 15 Web
+component tests, TypeScript, targeted Ruff/OxLint and migration drift checks passed.
+Repository translation keys match across 22 locales; global missing translation
+keys in unrelated namespaces remain unchanged. This cleanup is source-only;
+production deployment/migration and migrated user-repository acceptance are pending.
 
 ## Dedicated repository administration (2026-11-18)
 
@@ -105,16 +120,14 @@ Operator setup: register an OAuth application separately on each hosting instanc
 with exact callback `{WEB_URL}/auth/singularity/repository-callback/`. Mount a private
 JSON file only in the API and set `SINGULARITY_REPOSITORY_OAUTH_FILE` to its path.
 It maps instance UUIDs to `client_id` and `client_secret`. Do not commit the file.
-GitLab requests `read_api`; GitHub OAuth requests `repo` (upstream write capability
-is disclosed in the UI, while Plane only exposes reads). Without a registered app,
+GitLab requests `read_api`. Without a registered app,
 the UI explains the missing setup and retains personal-token configuration.
 For private GitLab API authorities, existing explicit CIDRs/TLS rules still apply.
 Set Gateway `PLANE_PUBLIC_URL` to the canonical Plane browser origin so it can
 validate authorization links independently of its internal `PLANE_URL` authority.
 
-Protocol references: [GitLab OAuth](https://docs.gitlab.com/api/oauth2/),
-[GitHub OAuth flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps).
-External GitLab/GitHub instances still require their operator-provided app setup
+Protocol reference: [GitLab OAuth](https://docs.gitlab.com/api/oauth2/).
+External GitLab instances still require their operator-provided app setup
 and real-account acceptance; local contracts do not substitute for those checks.
 
 ## Credential storage foundation
@@ -151,9 +164,8 @@ verification are subsequent P3 units. No repository MCP tool is added.
 
 ## Read adapters
 
-GitHub and GitLab adapters resolve refs to commit SHA before reading trees/files.
-Directory pages have 100 entries. GitHub uses nonrecursive Git trees; truncated
-upstream trees return an explicit limit error. Files are limited to 1 MiB UTF-8;
+The GitLab adapter resolves refs to commit SHA before reading trees/files.
+Directory pages have 100 entries. Files are limited to 1 MiB UTF-8;
 LFS pointers, symlinks and submodules are not followed. GitLab parent lookup is
 bounded at 100 pages and reports its limit explicitly. File content stays text;
 consumers must render via textContent rather than HTML.
@@ -164,14 +176,7 @@ redirects, bounds response bytes and has no credential/anonymous fallback. Priva
 ranges require explicit operator configuration per instance. HTTPS is default;
 HTTP is only an operator-enabled internal exception. Error bodies are not retained.
 
-Validation: 27 provider/transport contracts passed. A real anonymous read of public
-GitHub makeplane/plane resolved commit 290383d7f92fa8995ea2adbd12442220b3b9b525,
-listed 35 root entries, read the 7,740-byte README.md and independently recomputed
-its Git blob SHA matching the API result. This does not replace private-repository,
-two-user or multi-GitLab live acceptance.
-
-API contracts follow [GitHub contents](https://docs.github.com/en/rest/repos/contents),
-[GitLab repositories](https://docs.gitlab.com/api/repositories/) and
+API contracts follow [GitLab repositories](https://docs.gitlab.com/api/repositories/) and
 [GitLab files](https://docs.gitlab.com/api/repository_files/); pinned-IP TLS follows
 [urllib3 custom SNI](https://urllib3.readthedocs.io/en/stable/advanced-usage.html).
 

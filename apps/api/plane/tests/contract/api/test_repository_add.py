@@ -155,13 +155,11 @@ def test_github_never_lists_or_uses_gitlab_credentials(world):
     )
     client = login(alice)
     result = add(client, repo, url="https://github.com/team/new")
-    assert result.status_code == 200
-    assert result.json()["provider"] == "github"
-    assert result.json()["credentials"] == []
-    assert result.json()["oauth_available"] is False
+    assert result.status_code == 400
+    assert result.json()["error"] == "unsupported_provider"
     assert (
         add(client, repo, "existing", url="https://github.com/team/new", credential_id=str(credential.pk)).status_code
-        == 403
+        == 400
     )
 
 

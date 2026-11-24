@@ -83,11 +83,7 @@ def seal_oauth(credential, access_token, refresh_token=None):
 
 
 def unseal(credential):
-    return (
-        oauth_material(credential)["access_token"]
-        if credential.kind in ("oauth", "github_app")
-        else unseal_material(credential)
-    )
+    return oauth_material(credential)["access_token"] if credential.kind == "oauth" else unseal_material(credential)
 
 
 def require_owner(credential, user):
@@ -95,6 +91,8 @@ def require_owner(credential, user):
         raise VaultError("credential_unavailable")
     if credential.revoked_at or (credential.expires_at and credential.expires_at <= timezone.now()):
         raise VaultError("credential_unavailable")
+    if credential.instance.provider != "gitlab":
+        raise VaultError("repository_unavailable")
     if not credential.instance.enabled:
         raise VaultError("instance_disabled")
 
@@ -103,6 +101,8 @@ def selected_credential(user, repository):
     """Resolve only an explicit personal selection; never choose a fallback."""
     from .api import visible_projects
 
+    if repository.instance.provider != "gitlab":
+        raise VaultError("repository_unavailable")
     if not user.is_active or user.is_bot or not repository.enabled or not repository.instance.enabled:
         raise VaultError("repository_unavailable")
     if (
@@ -127,10 +127,6 @@ def selected_credential(user, repository):
     credential = selection.credential
     if credential.owner_id != user.pk or credential.instance_id != repository.instance_id:
         raise VaultError("credential_unavailable")
-    if repository.instance.provider == "github":
-        from .repository_github_app import read_token
-
-        return credential, read_token(user, credential, repository.external_id)
     if credential.kind == "oauth":
         from .repository_connection import usable_connection
 

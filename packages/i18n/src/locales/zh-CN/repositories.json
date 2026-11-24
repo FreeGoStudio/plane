@@ -16,7 +16,6 @@
     "browse": "读取仓库",
     "disconnect": "断开此仓库连接",
     "scope": "使用你本人的账号。授权不等于获得仓库成员权限。",
-    "github_scope": "GitHub App 仅以 Contents、Metadata 只读权限访问选中的仓库，同时受你自己的 GitHub 权限限制。请先安装应用并选择仓库，再连接个人账号。旧 OAuth/PAT 连接需重新授权。",
     "oauth_unavailable": "此实例尚未配置网页登录授权，请管理员登记 OAuth 应用；也可在下方使用个人 Token。",
     "manual": "使用已有连接或个人 Token",
     "choose": "选择本人连接",
@@ -55,12 +54,7 @@
       "configuration_conflict": "仓库已配置或配置发生冲突。",
       "invalid_repository_url": "请输入有效的仓库完整地址。",
       "repository_host_not_configured": "尚未配置该仓库站点，请联系管理员。",
-      "github_app_read_only_required": "GitHub App 只能配置 Contents: read 和 Metadata: read，请移除其他权限。",
-      "github_app_configuration_invalid": "应用 slug 与 Client ID 必须属于同一个 GitHub App。",
-      "github_app_connection_required": "请为此仓库重新连接 GitHub App。旧 OAuth App 和个人令牌不再用于 GitHub 仓库连接。",
-      "github_selected_repository_required": "当前账号没有可用的指定仓库安装授权。请让仓库管理员安装或调整应用，选择 Only select repositories 并包含此仓库，再重新连接。不接受 All repositories 安装。",
-      "github_expiring_tokens_required": "请在 GitHub App 设置中启用用户访问令牌过期，再重新连接。",
-      "github_installation_list_limit": "安装列表超出校验上限，请联系平台管理员。"
+      "unsupported_provider": "仅支持 GitLab 仓库。请填写迁移后的 GitLab 仓库地址。"
     },
     "prototype": "Storybook 原型仓库",
     "bindings": "专用仓库绑定",
@@ -109,12 +103,8 @@
     "oauth_setup": {
       "title": "配置仓库授权",
       "create": "前往创建 OAuth 应用",
-      "github_steps": "创建 GitHub App，将 Contents 设为 Read-only，Metadata 保持 Read-only，其他权限不启用。启用用户访问令牌过期，关闭 Device Flow 和 Webhooks。把下方回调地址填入 Callback URL。安装时选 Only select repositories；将 Client ID、Client Secret 和应用 slug 填回下方。",
       "gitlab_steps": "选择 Add new application，勾选 Confidential 和 read_api。创建后将 Application ID 和 Secret 填回下方。",
-      "private_networks": "允许访问的内网网段（选填，CIDR 格式，逗号分隔）",
-      "github_app_slug": "应用 slug（github.com/apps/ 后的名称）"
-    },
-    "github_install": "安装 GitHub App / 选择仓库",
-    "github_unavailable": "此实例尚未配置 GitHub App，请平台管理员先配置应用，再安装到指定仓库并连接个人账号。"
+      "private_networks": "允许访问的内网网段（选填，CIDR 格式，逗号分隔）"
+    }
   }
 }

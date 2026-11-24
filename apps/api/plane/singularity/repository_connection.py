@@ -22,6 +22,8 @@ def usable_connection(user, credential):
     credential = RepositoryCredential.objects.select_related("instance").get(pk=credential.pk)
     if not owner.is_active or owner.is_bot or credential.owner_id != owner.pk or credential.revoked_at:
         raise VaultError("credential_unavailable")
+    if credential.instance.provider != "gitlab":
+        raise RepositoryError("unsupported_provider")
     if not credential.instance.enabled:
         raise VaultError("instance_disabled")
     if credential.kind != "oauth" or not credential.external_actor_id:

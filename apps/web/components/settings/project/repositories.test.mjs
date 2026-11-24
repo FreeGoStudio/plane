@@ -158,54 +158,28 @@ test("add repository defaults to the current category", () => {
   for (const section of sections.repositorySections)
     assert.match(renderPage(section), new RegExp(`data-add-section="${section}"`));
 });
-test("GitHub offers selected installation and only the matching App connection, without PAT entry", () => {
-  const githubRows = [{ ...rows[2], provider: "github", instance_id: "github", external_id: "123" }];
-  const html = renderPage(
-    "development",
-    {
-      hosts: [{ id: "github", oauth_available: true, install_url: "https://github.com/apps/reader/installations/new" }],
-      credentials: [
-        {
-          id: "app",
-          instance_id: "github",
-          kind: "github_app",
-          github_repository_id: "123",
-          label: "matching-app",
-          expires_at: "2020-01-01T00:00:00Z",
-        },
-        {
-          id: "other",
-          instance_id: "github",
-          kind: "github_app",
-          github_repository_id: "456",
-          label: "other-repository",
-        },
-        { id: "pat", instance_id: "github", kind: "https_token", label: "legacy-pat" },
-      ],
-    },
-    githubRows
-  );
-  assert.match(html, /https:\/\/github.com\/apps\/reader\/installations\/new/);
-  assert.match(html, /matching-app/);
-  assert.doesNotMatch(html, /other-repository|legacy-pat|name="token"|repository_ui.verify_save/);
+test("GitLab retains OAuth, token and anonymous options", () => {
+  const html = renderPage("development", { hosts: [{ id: rows[2].instance_id, oauth_available: true }] });
+  assert.match(html, /GitLab/);
+  assert.match(html, /name="token"/);
   assert.match(html, /repository_ui.anonymous/);
+  assert.doesNotMatch(html, /GitHub|github_install/);
 });
 
-for (const provider of ["github", "gitlab"]) {
+for (const provider of ["gitlab"]) {
   test(`${provider}: setup submits the correct application fields and clears the secret`, async () => {
     const guide = {
       instance_id: "host",
       provider,
-      web_url: "https://github.com",
-      api_url: "https://api.github.com",
-      create_url: "https://github.com/settings/apps/new",
+      web_url: "https://gitlab.com",
+      api_url: "https://gitlab.com/api/v4",
+      create_url: "https://gitlab.com/-/user_settings/applications",
       homepage_url: "https://plane.test",
       callback_url: "https://plane.test/auth/singularity/repository-callback/",
-      scope: provider === "github" ? "Contents: read; Metadata: read" : "read_api",
-      github_app_slug: "reader",
+      scope: "read_api",
       configured: false,
     };
-    const state = [true, guide, guide.web_url, provider, "", "", "client", "secret", "reader", ""];
+    const state = [true, guide, guide.web_url, "", "", "client", "secret", ""];
     let cursor = 0;
     let pending;
     let submitted;
@@ -236,7 +210,7 @@ for (const provider of ["github", "gitlab"]) {
     });
     const tree = RepositoryOAuthSetup({
       instanceId: "host",
-      repositoryUrl: "https://github.com/team/repo",
+      repositoryUrl: "https://gitlab.com/team/repo",
       csrf: "csrf",
       busy: false,
       action: (fn) => {
@@ -257,7 +231,7 @@ for (const provider of ["github", "gitlab"]) {
     walk(tree);
     assert.equal(
       elements.some((node) => node.props?.id === "repository-github-app-slug"),
-      provider === "github"
+      false
     );
     assert.ok(elements.some((node) => node.props?.value === guide.callback_url && node.props.readOnly));
     elements.find((node) => node.type === "form").props.onSubmit({ preventDefault() {} });
@@ -267,9 +241,8 @@ for (const provider of ["github", "gitlab"]) {
       instance_id: "host",
       client_id: "client",
       client_secret: "secret",
-      ...(provider === "github" ? { github_app_slug: "reader" } : {}),
     });
-    assert.equal(state[7], "");
+    assert.equal(state[6], "");
     assert.equal(configured, true);
   });
 }
@@ -337,4 +310,29 @@ test("new repository labels are translated in every locale with matching keys", 
     assert.notEqual(local.sections.documentation, en.sections.documentation);
     for (const key of ["connected", "expired", "details"]) assert.ok(local[key]);
   }
+});
+
+test("repository address example uses GitLab", () => {
+  const { RepositoryAdd } = load("./repository-add.tsx", {
+    "./repository-oauth-setup": { RepositoryOAuthSetup: () => null },
+    "@makeplane/propel/components/button": { Button: button },
+    "@makeplane/propel/components/input": {
+      Input: (props) => React.createElement("input", props),
+      InputGroup: ({ children }) => React.createElement("div", null, children),
+    },
+    "@plane/i18n": { useTranslation: () => ({ t: (key) => key }) },
+    "@/services/repository.service": { repositoryService: {} },
+  });
+  const html = renderToStaticMarkup(
+    React.createElement(RepositoryAdd, {
+      base: "/test/",
+      csrf: "csrf",
+      section: "development",
+      busy: false,
+      action: async (fn) => fn(),
+      onAdded: async () => {},
+    })
+  );
+  assert.match(html, /placeholder="https:\/\/gitlab.com\/group\/repository"/);
+  assert.doesNotMatch(html, /github.com/);
 });
