@@ -18,6 +18,12 @@ from django.utils import timezone
 from plane.db.models import WbsRun
 from .wbs import digest, require_member
 
+MODEL_CONNECT_TIMEOUT = 10
+MODEL_READ_TIMEOUT = 300
+EXECUTION_TIMEOUT = timedelta(seconds=MODEL_CONNECT_TIMEOUT + MODEL_READ_TIMEOUT + 50)
+EXECUTION_LEASE = EXECUTION_TIMEOUT + timedelta(minutes=1)
+DISPATCH_RETRY_DELAY = EXECUTION_LEASE + timedelta(minutes=1)
+
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -169,7 +175,7 @@ def generate(snapshot):
                 }
             },
         },
-        timeout=120,
+        timeout=(MODEL_CONNECT_TIMEOUT, MODEL_READ_TIMEOUT),
     )
     response.raise_for_status()
     data = response.json()
@@ -202,7 +208,8 @@ def execute(run_id, hatchet_run_id):
         if row.attempts >= 3:
             raise RuntimeError("WBS retry limit reached")
         row.status, row.execution_token = "running", token
-        row.lease_until = timezone.now() + timedelta(minutes=4)
+        row.error = ""
+        row.lease_until = timezone.now() + EXECUTION_LEASE
         row.hatchet_run_id, row.attempts = str(hatchet_run_id), row.attempts + 1
         row.save()
         snapshot = row.snapshot

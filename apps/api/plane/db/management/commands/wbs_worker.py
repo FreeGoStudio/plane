@@ -14,7 +14,7 @@ from django.utils import timezone
 from hatchet_sdk import Hatchet
 from pydantic import BaseModel
 from plane.db.models import WbsRun
-from plane.singularity.wbs_generation import execute
+from plane.singularity.wbs_generation import execute, EXECUTION_TIMEOUT, DISPATCH_RETRY_DELAY
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class RunInput(BaseModel):
 
 def dispatch_pending(task):
     """Lease an outbox intent before sending; response loss permits safe replay."""
-    cutoff = timezone.now() - timedelta(minutes=6)
+    cutoff = timezone.now() - DISPATCH_RETRY_DELAY
     with transaction.atomic():
         row = (
             WbsRun.objects.select_for_update(skip_locked=True)
@@ -56,7 +56,7 @@ class Command(BaseCommand):
         @hatchet.task(
             name="plane-wbs-generate",
             input_validator=RunInput,
-            execution_timeout=timedelta(minutes=3),
+            execution_timeout=EXECUTION_TIMEOUT,
             schedule_timeout=timedelta(minutes=5),
             retries=2,
             backoff_factor=2,

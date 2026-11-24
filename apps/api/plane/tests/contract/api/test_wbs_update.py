@@ -160,6 +160,31 @@ def test_external_dependency_stays_in_scope_not_task_edges():
     assert parsed["changes"][0]["task"]["dependencies"] == []
 
 
+def test_slow_model_budget_fits_task_lease_and_recovery():
+    from plane.singularity import wbs_generation as gen
+
+    assert gen.MODEL_READ_TIMEOUT >= 300
+    assert gen.EXECUTION_TIMEOUT.total_seconds() > gen.MODEL_CONNECT_TIMEOUT + gen.MODEL_READ_TIMEOUT
+    assert gen.EXECUTION_LEASE > gen.EXECUTION_TIMEOUT
+    assert gen.DISPATCH_RETRY_DELAY > gen.EXECUTION_LEASE
+
+
+def test_retry_clears_previous_error_while_model_is_running(world, requirement):
+    from plane.db.models import WbsRun
+
+    row = start(world[0], requirement)
+    row.error = "ReadTimeout"
+    row.save()
+
+    def model(_):
+        current = WbsRun.objects.get(pk=row.pk)
+        assert current.status == "running" and current.error == ""
+        return result()
+
+    with patch("plane.singularity.wbs_generation.generate", side_effect=model):
+        assert execute(row.pk, "retry-test")["status"] == "ready"
+
+
 def ready(user, issue, child=None, action="create"):
     row = start(user, issue)
     row.result = result(child, action)
