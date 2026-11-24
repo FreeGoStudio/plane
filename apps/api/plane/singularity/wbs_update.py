@@ -191,10 +191,13 @@ def start_update(user, issue, data, skill_files):
     active = WbsRun.objects.filter(issue=issue, status__in=["queued", "running", "ready"])
     for old in active:
         if (
-            old.snapshot.get("source") == snapshot["source"]
+            old.pk == previous.pk
+            and old.snapshot.get("source") == snapshot["source"]
             and old.snapshot["existing_children"] == snapshot["existing_children"]
         ):
-            raise WbsConflict("An analysis of this version already exists")
+            # The UI refreshes the latest run after a successful POST. Reuse it
+            # without changing its author, execution, result or review decision.
+            return old
     active.update(status="superseded", execution_token=None, lease_until=None)
     return WbsRun.objects.create(
         issue=issue,

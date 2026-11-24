@@ -220,6 +220,42 @@ def test_first_update_needs_exact_body_confirmation_and_is_idempotent(world, req
     assert Issue.objects.filter(parent=requirement).count() == 1
 
 
+@pytest.mark.parametrize("status", ["queued", "running", "ready"])
+def test_repeated_update_returns_current_analysis_without_duplicate(world, requirement, status):
+    from django.test import Client
+    from plane.db.models import WbsRun
+    from .test_singularity import items
+
+    row = start(world[0], requirement)
+    row.status = status
+    row.result = result() if status == "ready" else {}
+    row.result_digest = digest(row.result) if row.result else ""
+    row.save()
+    client = Client()
+    client.force_login(world[0])
+    path = items(requirement.project, requirement.id) + "wbs/"
+    response = client.post(
+        path, {**payload(requirement, "new-click-456"), "mode": "update"}, content_type="application/json"
+    )
+    assert response.status_code == 202, response.content
+    assert response.json()["id"] == str(row.pk)
+    assert response.json()["status"] == status
+    assert response.json()["result_digest"] == row.result_digest
+    assert client.get(path).json()["results"][0]["id"] == str(row.pk)
+    row.refresh_from_db()
+    assert row.request_key == "update-123" and row.requested_by_id == world[0].pk
+    assert WbsRun.objects.filter(issue=requirement).count() == 1
+    assert not Issue.objects.filter(parent=requirement).exists()
+
+
+def test_failed_analysis_can_be_requested_again(world, requirement):
+    row = start(world[0], requirement)
+    row.status, row.error = "failed", "ReadTimeout"
+    row.save()
+    retried = start(world[0], requirement, "retry-click-456")
+    assert retried.pk != row.pk and retried.status == "queued"
+
+
 def test_changed_prd_supersedes_ready_draft_without_creating_children(world, requirement):
     old = ready(world[0], requirement)
     requirement.description_html = "<p>AC01: Changed login</p>"
