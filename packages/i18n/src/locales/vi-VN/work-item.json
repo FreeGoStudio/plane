@@ -508,7 +508,8 @@
     "status_rejected": "Rejected",
     "status_failed": "Generation failed; check execution status",
     "update_reused": "An analysis already exists for this version. Its current progress or draft is displayed; no duplicate analysis was started.",
-    "update_submitted": "Analysis submitted. Follow its progress below; the draft will appear when ready."
+    "update_submitted": "Analysis submitted. Follow its progress below; the draft will appear when ready.",
+    "confirm_prd_before_apply": "Adopt the PRD version used by this WBS in Document AI Review before approving and applying task changes."
   },
   "document_review": {
     "title": "Document AI review",

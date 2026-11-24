@@ -10,7 +10,14 @@ import { useTranslation } from "@plane/i18n";
 import { repositoryBase, repositoryService } from "@/services/repository.service";
 import { RequirementReviewPanel } from "./requirement-review";
 import { WbsChanges } from "./wbs-changes";
-import { choicesComplete, type ChangeAction, type WbsChange, type WbsChild, type WbsTask } from "./wbs-update";
+import {
+  choicesComplete,
+  readinessMessageKey,
+  type ChangeAction,
+  type WbsChange,
+  type WbsChild,
+  type WbsTask,
+} from "./wbs-update";
 
 type Task = {
   id: string;
@@ -88,6 +95,7 @@ export function WbsPanel({
     void refresh();
   }, [refresh]);
   const run = data?.results[0];
+  const readinessKey = readinessMessageKey(run?.readiness?.reason || "");
   useEffect(() => {
     if (!run || !["queued", "running"].includes(run.status)) return;
     const timer = setInterval(() => void refresh(), 4000);
@@ -237,7 +245,7 @@ export function WbsPanel({
         )}
         {run?.readiness && !run.readiness.can_apply && (
           <p role="status" className="text-sm text-warning-primary">
-            {run.readiness.reason}
+            {readinessKey ? t(readinessKey) : run.readiness.reason}
           </p>
         )}
         {run?.result.changes && (

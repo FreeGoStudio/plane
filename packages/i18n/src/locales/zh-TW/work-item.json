@@ -508,7 +508,8 @@
     "status_rejected": "Rejected",
     "status_failed": "Generation failed; check execution status",
     "update_reused": "目前版本已有分析，已顯示現有進度或草稿，無需重複分析。",
-    "update_submitted": "分析已提交，請查看下方進度；完成後將顯示拆分草稿。"
+    "update_submitted": "分析已提交，請查看下方進度；完成後將顯示拆分草稿。",
+    "confirm_prd_before_apply": "請先在「文件 AI 驗收」中採用本次 WBS 對應的 PRD 版本，再批准並執行任務變更。"
   },
   "document_review": {
     "title": "Document AI review",

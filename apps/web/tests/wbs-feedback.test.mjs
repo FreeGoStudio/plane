@@ -64,7 +64,7 @@ async function clickUpdate(previous, returned, failure) {
     },
     "./requirement-review": {},
     "./wbs-changes": {},
-    "./wbs-update": { choicesComplete: () => false },
+    "./wbs-update": { choicesComplete: () => false, readinessMessageKey: () => undefined },
   };
   const exports = {};
   runInNewContext(outputText, { exports, require: (name) => dependencies[name], crypto });
