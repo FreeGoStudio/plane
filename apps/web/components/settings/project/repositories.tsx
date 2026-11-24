@@ -285,11 +285,14 @@ export function ProjectRepositoriesSettings({
               const boundRole = bindingRoles.find((role) => bindings?.[`${role}_repository_id`] === row.id);
               const credential = info.credentials.find((c) => c.id === row.credential_id);
               const host = info.hosts.find((h) => h.id === row.instance_id);
-              const access = credential
-                ? text(
-                    credential.expires_at && Date.parse(credential.expires_at) <= Date.now() ? "expired" : "connected"
-                  )
-                : text(row.anonymous ? "anonymous" : "personal_not_connected");
+              const needsGitHubReconnect = row.provider === "github" && credential && credential.kind !== "github_app";
+              const access = needsGitHubReconnect
+                ? text("personal_not_connected")
+                : credential
+                  ? text(
+                      credential.expires_at && Date.parse(credential.expires_at) <= Date.now() ? "expired" : "connected"
+                    )
+                  : text(row.anonymous ? "anonymous" : "personal_not_connected");
               const isExpanded = expanded === row.id;
               return (
                 <section
@@ -345,10 +348,25 @@ export function ProjectRepositoriesSettings({
                             ? text("anonymous")
                             : text("personal_not_connected")}
                       </p>
+                      {needsGitHubReconnect && (
+                        <p className="mt-1 text-body-sm-regular text-secondary">
+                          {text("results.github_app_connection_required")}
+                        </p>
+                      )}
                     </div>
                     {row.enabled && (
                       <>
                         <div className="mt-3 flex flex-wrap gap-2">
+                          {host?.install_url && (
+                            <a
+                              className="text-accent-primary underline"
+                              href={host.install_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {text("github_install")}
+                            </a>
+                          )}
                           <Button
                             disabled={busy || !host?.oauth_available}
                             onClick={() =>
@@ -381,7 +399,7 @@ export function ProjectRepositoriesSettings({
                           <p className="my-3 text-body-xs-regular text-tertiary">
                             {host?.oauth_available
                               ? text(row.provider === "github" ? "github_scope" : "scope")
-                              : text("oauth_unavailable")}
+                              : text(row.provider === "github" ? "github_unavailable" : "oauth_unavailable")}
                           </p>
                           <form
                             className="my-3 flex flex-wrap gap-2"
@@ -413,7 +431,9 @@ export function ProjectRepositoriesSettings({
                                 .filter(
                                   (c) =>
                                     c.instance_id === row.instance_id &&
-                                    (!c.expires_at || Date.parse(c.expires_at) > Date.now())
+                                    (row.provider !== "github" ||
+                                      (c.kind === "github_app" && c.github_repository_id === row.external_id)) &&
+                                    (c.kind === "github_app" || !c.expires_at || Date.parse(c.expires_at) > Date.now())
                                 )
                                 .filter(
                                   (c, index, choices) =>
@@ -436,32 +456,34 @@ export function ProjectRepositoriesSettings({
                               {text("use_connection")}
                             </Button>
                           </form>
-                          <form
-                            className="flex flex-wrap gap-2"
-                            onSubmit={(e) => {
-                              e.preventDefault();
-                              const form = e.currentTarget;
-                              const data = new FormData(form);
-                              const token = String(data.get("token"));
-                              form.reset();
-                              void action(() =>
-                                write(`repositories/${row.id}/connection/`, { label: row.path, token })
-                              );
-                            }}
-                          >
-                            <Input
-                              size="md"
-                              name="token"
-                              type="password"
-                              required
-                              autoComplete="new-password"
-                              placeholder={text("token_placeholder")}
-                              aria-label={text("token_placeholder")}
-                            />
-                            <Button type="submit" disabled={busy}>
-                              {text("verify_save")}
-                            </Button>
-                          </form>
+                          {row.provider !== "github" && (
+                            <form
+                              className="flex flex-wrap gap-2"
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                const form = e.currentTarget;
+                                const data = new FormData(form);
+                                const token = String(data.get("token"));
+                                form.reset();
+                                void action(() =>
+                                  write(`repositories/${row.id}/connection/`, { label: row.path, token })
+                                );
+                              }}
+                            >
+                              <Input
+                                size="md"
+                                name="token"
+                                type="password"
+                                required
+                                autoComplete="new-password"
+                                placeholder={text("token_placeholder")}
+                                aria-label={text("token_placeholder")}
+                              />
+                              <Button type="submit" disabled={busy}>
+                                {text("verify_save")}
+                              </Button>
+                            </form>
+                          )}
                         </details>
                       </>
                     )}

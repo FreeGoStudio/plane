@@ -17,6 +17,7 @@ type Host = {
   provider: string;
   path: string;
   oauth_available: boolean;
+  install_url?: string | null;
   credentials: { id: string; label: string }[];
 };
 /** Resolve a URL, then verify consent or an existing credential before registration. */
@@ -143,6 +144,16 @@ export function RepositoryAdd({
           )}
           {host.oauth_available ? (
             <>
+              {host.install_url && (
+                <a
+                  className="text-accent-primary underline"
+                  href={host.install_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t("repository_ui.github_install")}
+                </a>
+              )}
               <p className="text-body-sm-regular text-secondary">
                 {t(host.provider === "github" ? "repository_ui.github_scope" : "repository_ui.scope")}
               </p>
@@ -156,7 +167,9 @@ export function RepositoryAdd({
               />
             </>
           ) : (
-            <p className="text-body-sm-regular text-secondary">{t("repository_ui.oauth_unavailable")}</p>
+            <p className="text-body-sm-regular text-secondary">
+              {t(host.provider === "github" ? "repository_ui.github_unavailable" : "repository_ui.oauth_unavailable")}
+            </p>
           )}
           {canConfigureOAuth && (
             <RepositoryOAuthSetup
@@ -181,36 +194,38 @@ export function RepositoryAdd({
                   variant="secondary"
                   stretch="auto"
                 />
-                <form
-                  className="flex flex-col gap-3"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    add("token");
-                  }}
-                >
-                  <InputGroup size="xl">
-                    <Input
-                      name="token"
-                      type="password"
-                      autoComplete="off"
-                      required
-                      size="md"
-                      aria-label={t("repository_ui.token_placeholder")}
-                      placeholder={t("repository_ui.token_placeholder")}
-                      value={token}
+                {host.provider !== "github" && (
+                  <form
+                    className="flex flex-col gap-3"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      add("token");
+                    }}
+                  >
+                    <InputGroup size="xl">
+                      <Input
+                        name="token"
+                        type="password"
+                        autoComplete="off"
+                        required
+                        size="md"
+                        aria-label={t("repository_ui.token_placeholder")}
+                        placeholder={t("repository_ui.token_placeholder")}
+                        value={token}
+                        disabled={busy}
+                        onChange={(e) => setToken(e.target.value)}
+                      />
+                    </InputGroup>
+                    <Button
+                      type="submit"
                       disabled={busy}
-                      onChange={(e) => setToken(e.target.value)}
+                      label={t("repository_ui.verify_save")}
+                      size="md"
+                      variant="secondary"
+                      stretch="auto"
                     />
-                  </InputGroup>
-                  <Button
-                    type="submit"
-                    disabled={busy}
-                    label={t("repository_ui.verify_save")}
-                    size="md"
-                    variant="secondary"
-                    stretch="auto"
-                  />
-                </form>
+                  </form>
+                )}
               </div>
             </details>
           )}

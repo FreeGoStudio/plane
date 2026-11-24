@@ -53,19 +53,19 @@ def available_credentials(owner, instance=None):
     """Return usable choices, grouping OAuth sessions for the same host/account only."""
     rows = (
         RepositoryCredential.objects.filter(owner=owner, revoked_at__isnull=True)
-        .filter(Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now()) | Q(kind="oauth"))
+        .filter(Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now()) | Q(kind__in=["oauth", "github_app"]))
         .order_by("-validated_at", "-created_at", "id")
     )
     if instance is not None:
         rows = rows.filter(instance=instance)
+        if instance.provider == "github":
+            rows = rows.filter(kind="github_app")
     seen, result = set(), []
     for row in rows:
         if (
             row.expires_at
             and row.expires_at <= timezone.now()
-            and not (
-                row.kind == "oauth" and row.instance.provider == "gitlab" and oauth_material(row).get("refresh_token")
-            )
+            and not (row.kind in ("oauth", "github_app") and oauth_material(row).get("refresh_token"))
         ):
             continue
         key = (row.instance_id, row.external_actor_id) if row.kind == "oauth" and row.external_actor_id else row.pk
@@ -152,6 +152,8 @@ class AddRepository(RepositoryAPI):
             )
         choices = available_credentials(request.user, host)
         if data["method"] == "inspect":
+            from .repository_github_app import install_url
+
             try:
                 oauth_config(host)
                 oauth = True
@@ -164,6 +166,7 @@ class AddRepository(RepositoryAPI):
                     "provider": host.provider,
                     "path": path,
                     "oauth_available": oauth,
+                    "install_url": install_url(host),
                     "credentials": [
                         {
                             "id": str(c.pk),
@@ -176,6 +179,8 @@ class AddRepository(RepositoryAPI):
             )
         if data["method"] == "oauth":
             return Response(start_add(request, project, host, path, data["purpose"]))
+        if host.provider == "github" and data["method"] == "token":
+            raise RepositoryError("github_app_connection_required", 403)
         credential, token = None, None
         if data["method"] == "existing":
             credential = next((c for c in choices if str(c.pk) == str(data.get("credential_id"))), None)
@@ -185,13 +190,20 @@ class AddRepository(RepositoryAPI):
                 from .repository_connection import usable_connection
 
                 credential = usable_connection(request.user, credential)
-            token = unseal(credential)
+            if host.provider == "github":
+                from .repository_github_app import read_token
+
+                token = read_token(request.user, credential, credential.github_repository_id)
+            else:
+                token = unseal(credential)
         elif data["method"] == "token":
             token = data.get("token")
             if not token:
                 raise RepositoryError("repository_authorization_required", 403)
         provider = RepositoryProvider(host, token)
         metadata = provider.metadata(path, by_id=False)
+        if host.provider == "github" and credential and metadata["external_id"] != credential.github_repository_id:
+            raise RepositoryError("github_app_connection_required", 403)
         with transaction.atomic():
             if data["method"] == "token":
                 actor_id, actor_label = provider.actor()

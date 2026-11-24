@@ -119,6 +119,10 @@ class RepositoryCredential(models.Model):
     validation_status = models.CharField(max_length=32, default="unverified")
     external_actor_id = models.CharField(max_length=255, blank=True)
     external_actor_label = models.CharField(max_length=255, blank=True)
+    github_client_id = models.CharField(max_length=255, blank=True)
+    github_repository_id = models.CharField(max_length=255, blank=True)
+    github_installation_id = models.PositiveBigIntegerField(null=True)
+    refresh_expires_at = models.DateTimeField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -156,6 +160,8 @@ class RepositoryOAuthApplication(models.Model):
 
     instance = models.OneToOneField(RepositoryInstance, primary_key=True, on_delete=models.CASCADE)
     client_id = models.CharField(max_length=255)
+    github_app_id = models.PositiveBigIntegerField(null=True)
+    github_app_slug = models.CharField(max_length=100, blank=True)
     key_version = models.CharField(max_length=32)
     encrypted_secret = models.TextField()
     updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

@@ -12,6 +12,7 @@ export type Repository = {
   instance_name: string;
   provider: string;
   path: string;
+  external_id: string;
   purpose: string;
   default_branch: string;
   enabled: boolean;
@@ -22,12 +23,13 @@ export type ConnectionInfo = {
   csrf_token: string;
   can_manage: boolean;
   can_configure_oauth?: boolean;
-  hosts: { id: string; name: string; provider: string; oauth_available: boolean }[];
+  hosts: { id: string; name: string; provider: string; oauth_available: boolean; install_url?: string | null }[];
   credentials: {
     id: string;
     instance_id: string;
     kind?: string;
     external_actor_id?: string;
+    github_repository_id?: string;
     label: string;
     external_actor_label: string;
     expires_at: string | null;

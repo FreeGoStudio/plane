@@ -52,6 +52,7 @@ class GuideInput(StrictSerializer):
 class SetupInput(GuideInput):
     client_id = serializers.CharField(max_length=255)
     client_secret = serializers.CharField(max_length=8192, trim_whitespace=False, write_only=True)
+    github_app_slug = serializers.RegexField(r"^[a-zA-Z0-9-]+$", max_length=100, required=False)
 
 
 def proposed_instance(data):
@@ -99,10 +100,11 @@ def guide(instance):
         "web_url": instance.web_url,
         "api_url": instance.api_url,
         "create_url": instance.web_url.rstrip("/")
-        + ("/settings/applications/new" if instance.provider == "github" else "/-/user_settings/applications"),
+        + ("/settings/apps/new" if instance.provider == "github" else "/-/user_settings/applications"),
         "homepage_url": settings.WEB_URL.rstrip("/"),
         "callback_url": callback_url(),
-        "scope": "repo" if instance.provider == "github" else "read_api",
+        "scope": "Contents: read; Metadata: read" if instance.provider == "github" else "read_api",
+        "github_app_slug": app.github_app_slug if app else "",
         "client_id": app.client_id if app else "",
         "configured": configured,
     }
@@ -123,6 +125,13 @@ class RepositoryOAuthSetup(RepositoryAPI):
         """Persist a validated host and encrypted OAuth secret atomically; saving is not consent."""
         data = validated(SetupInput, request.data)
         instance = proposed_instance(data)
+        github_app = None
+        if instance.provider == "github":
+            from .repository_github_app import app_metadata
+
+            if not data.get("github_app_slug"):
+                raise RepositoryError("github_app_configuration_invalid")
+            github_app = app_metadata(instance, data["github_app_slug"], data["client_id"])
         if any(c in data["client_secret"] for c in "\r\n\x00"):
             raise VaultError("invalid_credential")
         if instance._state.adding:
@@ -137,6 +146,8 @@ class RepositoryOAuthSetup(RepositoryAPI):
             instance=instance,
             defaults={
                 "client_id": data["client_id"],
+                "github_app_id": github_app["id"] if github_app else None,
+                "github_app_slug": github_app["slug"] if github_app else "",
                 "key_version": version,
                 "encrypted_secret": base64.b64encode(nonce + encrypted).decode(),
                 "updated_by": request.user,

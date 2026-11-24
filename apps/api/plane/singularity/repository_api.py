@@ -107,6 +107,7 @@ def credential_data(row):
         "validated_at": row.validated_at,
         "external_actor_id": row.external_actor_id,
         "external_actor_label": row.external_actor_label,
+        "github_repository_id": row.github_repository_id,
     }
 
 
@@ -119,6 +120,11 @@ def chosen(user, instance, data):
         owner=user,
         instance=instance,
     )
+    if instance.provider == "github":
+        if credential.kind != "github_app":
+            raise RepositoryError("github_app_connection_required", 403)
+        # Actual repository scope is checked by the caller before saving.
+        return credential, None
     if credential.kind == "oauth":
         from .repository_connection import usable_connection
 
@@ -223,6 +229,8 @@ class RepositoryCredentials(RepositoryAPI):
         else:
             instance = get_object_or_404(RepositoryInstance, pk=data.get("instance_id"), enabled=True)
             row = RepositoryCredential(owner=request.user, instance=instance)
+        if row.instance.provider == "github":
+            raise RepositoryError("github_app_connection_required", 403)
         row.label, row.expires_at = data["label"], data.get("expires_at")
         if row.expires_at and row.expires_at <= timezone.now():
             raise serializers.ValidationError("Expiry must be in the future")
@@ -283,7 +291,17 @@ class ProjectRepositories(RepositoryAPI):
         data = validated(RepositoryInput, request.data)
         instance = get_object_or_404(RepositoryInstance, pk=data["instance_id"], enabled=True)
         self.credential, token = chosen(request.user, instance, data)
+        if instance.provider == "github" and self.credential:
+            from .repository_github_app import read_token
+
+            token = read_token(request.user, self.credential, self.credential.github_repository_id)
         metadata = RepositoryProvider(instance, token).metadata(data["path"], by_id=False)
+        if (
+            instance.provider == "github"
+            and self.credential
+            and metadata["external_id"] != self.credential.github_repository_id
+        ):
+            raise RepositoryError("github_app_connection_required", 403)
         row = ProjectRepository.objects.create(project=project, instance=instance, **metadata, purpose=data["purpose"])
         if "default_branch" in data:
             row.default_branch = data["default_branch"]
@@ -399,7 +417,7 @@ class RepositoryAccess(RepositoryAPI):
             isinstance(error, VaultError)
             and str(error) in ("select_repository_credential", "credential_unavailable")
             or isinstance(error, RepositoryError)
-            and error.code == "upstream_authentication_required"
+            and error.code in ("upstream_authentication_required", "github_app_connection_required")
         ):
             return Response(
                 {
@@ -418,6 +436,10 @@ class RepositoryAccess(RepositoryAPI):
         row = self.row(request, slug, project_id, pk)
         data = validated(AccessInput, request.data)
         self.credential, token = chosen(request.user, row.instance, data)
+        if row.instance.provider == "github" and self.credential:
+            from .repository_github_app import read_token
+
+            token = read_token(request.user, self.credential, row.external_id)
         RepositoryProvider(row.instance, token).metadata(row.external_id)
         RepositorySelection.objects.update_or_create(
             owner=request.user, repository=row, defaults={"credential": self.credential, "anonymous": data["anonymous"]}
@@ -473,12 +495,20 @@ class ProjectRepositoryConnections(RepositoryAccess):
         from .repository_oauth import oauth_config
 
         def host_data(host):
+            from .repository_github_app import install_url
+
             try:
                 oauth_config(host)
                 available = True
             except RepositoryError:
                 available = False
-            return {"id": str(host.pk), "name": host.name, "provider": host.provider, "oauth_available": available}
+            return {
+                "id": str(host.pk),
+                "name": host.name,
+                "provider": host.provider,
+                "oauth_available": available,
+                "install_url": install_url(host),
+            }
 
         return Response(
             {
@@ -496,6 +526,8 @@ class ProjectRepositoryConnections(RepositoryAccess):
             from .repository_oauth import start
 
             return Response(start(request, row))
+        if row.instance.provider == "github":
+            raise RepositoryError("github_app_connection_required", 403)
         data = validated(CredentialInput, request.data)
         if data.get("instance_id") and data["instance_id"] != row.instance_id:
             raise serializers.ValidationError("Credential instance does not match repository")

@@ -5,6 +5,7 @@
 """Bounded API reads pinned to a validated IP of an operator-registered host."""
 
 import ipaddress
+import base64
 import json
 import socket
 from urllib.parse import urlencode, urlsplit
@@ -52,8 +53,9 @@ def validate_instance(instance):
 
 
 class RepositoryTransport:
-    def __init__(self, instance, token=None):
+    def __init__(self, instance, token=None, *, basic_auth=None):
         self.instance, self.token = instance, token
+        self.basic_auth = basic_auth
 
     def get(self, path, params=None):
         return self.request("GET", path, params=params)
@@ -95,6 +97,8 @@ class RepositoryTransport:
         }
         if self.token:
             headers["Authorization"] = "Bearer " + self.token
+        if self.basic_auth:
+            headers["Authorization"] = "Basic " + base64.b64encode(":".join(self.basic_auth).encode()).decode()
         if body is not None:
             headers["Content-Type"] = "application/json" if json_body else "application/x-www-form-urlencoded"
         options = dict(timeout=urllib3.Timeout(connect=5, read=20), retries=False)

@@ -20,6 +20,7 @@ type Guide = {
   scope: string;
   client_id: string;
   configured: boolean;
+  github_app_slug: string;
 };
 const endpoint = "/api/singularity/v1/repository-oauth-setup/";
 /** Administrator-only setup; opening provider registration never sends a client secret. */
@@ -47,6 +48,7 @@ export function RepositoryOAuthSetup({
   const [networks, setNetworks] = useState("");
   const [clientId, setClientId] = useState("");
   const [secret, setSecret] = useState("");
+  const [appSlug, setAppSlug] = useState("");
   const [copied, setCopied] = useState("");
   const inspect = async () => {
     const params = new URLSearchParams(
@@ -55,6 +57,7 @@ export function RepositoryOAuthSetup({
     const result = await api.read<Guide>(`${endpoint}?${params}`);
     setGuide(result);
     setClientId(result.client_id);
+    setAppSlug(result.github_app_slug || "");
     setSecret("");
   };
   const copy = (value: string) =>
@@ -145,7 +148,7 @@ export function RepositoryOAuthSetup({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t("repository_ui.oauth_setup.create")} · {guide.provider === "github" ? "GitHub" : "GitLab"}
+                {guide.provider === "github" ? "GitHub App" : t("repository_ui.oauth_setup.create")}
               </a>
               <p className="text-body-sm-regular text-secondary">
                 {t(`repository_ui.oauth_setup.${guide.provider}_steps`)}
@@ -171,7 +174,7 @@ export function RepositoryOAuthSetup({
                 </div>
               ))}
               <p className="text-body-sm-regular">
-                OAuth scope: <code>{guide.scope}</code>
+                {guide.provider === "github" ? "GitHub App" : "OAuth scope"}: <code>{guide.scope}</code>
               </p>
               {guide.provider === "github" && (
                 <p className="text-body-sm-regular text-secondary">{t("repository_ui.github_scope")}</p>
@@ -192,6 +195,7 @@ export function RepositoryOAuthSetup({
                           }),
                       client_id: clientId,
                       client_secret: secret,
+                      ...(guide.provider === "github" ? { github_app_slug: appSlug } : {}),
                     });
                     setSecret("");
                     setOpen(false);
@@ -199,6 +203,22 @@ export function RepositoryOAuthSetup({
                   });
                 }}
               >
+                {guide.provider === "github" && (
+                  <label className="block" htmlFor="repository-github-app-slug">
+                    {t("repository_ui.oauth_setup.github_app_slug")}
+                    <InputGroup size="xl">
+                      <Input
+                        size="xl"
+                        id="repository-github-app-slug"
+                        value={appSlug}
+                        required
+                        pattern="[a-zA-Z0-9-]+"
+                        disabled={busy}
+                        onChange={(e) => setAppSlug(e.target.value)}
+                      />
+                    </InputGroup>
+                  </label>
+                )}
                 <label className="block" htmlFor="repository-oauth-client-id">
                   Client ID / Application ID
                   <InputGroup size="xl">

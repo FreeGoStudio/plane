@@ -124,6 +124,24 @@ def test_private_dns_rejected_before_sending_credential():
         pool.assert_not_called()
 
 
+def test_github_scoped_token_basic_auth_uses_pinned_transport_and_json():
+    with patch("socket.getaddrinfo", return_value=dns("8.8.8.8")), patch("urllib3.HTTPSConnectionPool") as pool:
+        response = pool.return_value.urlopen.return_value
+        response.status, response.read.return_value = 200, b'{"token":"scoped"}'
+        body = {"repository_ids": [123], "permissions": {"contents": "read"}}
+        RepositoryTransport(host(), basic_auth=("client", "secret")).request(
+            "POST",
+            "/applications/client/token/scoped",
+            body=body,
+            json_body=True,
+        )
+        request = pool.return_value.urlopen.call_args.kwargs
+        assert request["headers"]["Authorization"] == "Basic " + base64.b64encode(b"client:secret").decode()
+        assert json.loads(request["body"]) == body
+        assert request["redirect"] is False
+        assert pool.call_args.kwargs["assert_hostname"] == "api.example.test"
+
+
 def test_explicit_network_pins_address_and_keeps_hostname_verification():
     with (
         patch("socket.getaddrinfo", return_value=dns("10.20.1.2")) as resolve,

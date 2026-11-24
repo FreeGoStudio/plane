@@ -1,5 +1,14 @@
 # Repository access
 
+## GitHub App connections (2026-11-24)
+
+GitHub repository connections now use a read-only GitHub App installed on selected
+repositories, with each member's own user authorization and a repository-scoped
+token for content reads. Legacy GitHub OAuth/PAT connections must reconnect.
+See [configuration, migration and acceptance](github-app-repositories.md).
+This supersedes the GitHub `repo` scope setup in the historical sections below;
+GitLab and GitHub login configuration remain separate.
+
 ## Dedicated repository administration (2026-11-18)
 
 Plane can provision and bind project repositories through an isolated management

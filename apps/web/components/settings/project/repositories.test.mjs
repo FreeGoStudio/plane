@@ -86,7 +86,7 @@ test("disabled and unknown-purpose repositories remain accessible, and binding t
 });
 const button = ({ label, children, stretch: _stretch, variant: _variant, ...props }) =>
   React.createElement("button", props, label ?? children);
-function renderPage(section, overrides = {}) {
+function renderPage(section, overrides = {}, repositoryRows = rows) {
   const currentInfo = { ...info, ...overrides };
   const mocks = {
     swr: {
@@ -95,7 +95,7 @@ function renderPage(section, overrides = {}) {
           ? bindings
           : url.endsWith("repository-connections/")
             ? currentInfo
-            : rows,
+            : repositoryRows,
       }),
     },
     "react-router": { useSearchParams: () => [new URLSearchParams(`section=${section}`)] },
@@ -158,6 +158,121 @@ test("add repository defaults to the current category", () => {
   for (const section of sections.repositorySections)
     assert.match(renderPage(section), new RegExp(`data-add-section="${section}"`));
 });
+test("GitHub offers selected installation and only the matching App connection, without PAT entry", () => {
+  const githubRows = [{ ...rows[2], provider: "github", instance_id: "github", external_id: "123" }];
+  const html = renderPage(
+    "development",
+    {
+      hosts: [{ id: "github", oauth_available: true, install_url: "https://github.com/apps/reader/installations/new" }],
+      credentials: [
+        {
+          id: "app",
+          instance_id: "github",
+          kind: "github_app",
+          github_repository_id: "123",
+          label: "matching-app",
+          expires_at: "2020-01-01T00:00:00Z",
+        },
+        {
+          id: "other",
+          instance_id: "github",
+          kind: "github_app",
+          github_repository_id: "456",
+          label: "other-repository",
+        },
+        { id: "pat", instance_id: "github", kind: "https_token", label: "legacy-pat" },
+      ],
+    },
+    githubRows
+  );
+  assert.match(html, /https:\/\/github.com\/apps\/reader\/installations\/new/);
+  assert.match(html, /matching-app/);
+  assert.doesNotMatch(html, /other-repository|legacy-pat|name="token"|repository_ui.verify_save/);
+  assert.match(html, /repository_ui.anonymous/);
+});
+
+for (const provider of ["github", "gitlab"]) {
+  test(`${provider}: setup submits the correct application fields and clears the secret`, async () => {
+    const guide = {
+      instance_id: "host",
+      provider,
+      web_url: "https://github.com",
+      api_url: "https://api.github.com",
+      create_url: "https://github.com/settings/apps/new",
+      homepage_url: "https://plane.test",
+      callback_url: "https://plane.test/auth/singularity/repository-callback/",
+      scope: provider === "github" ? "Contents: read; Metadata: read" : "read_api",
+      github_app_slug: "reader",
+      configured: false,
+    };
+    const state = [true, guide, guide.web_url, provider, "", "", "client", "secret", "reader", ""];
+    let cursor = 0;
+    let pending;
+    let submitted;
+    let configured = false;
+    const { RepositoryOAuthSetup } = load("./repository-oauth-setup.tsx", {
+      react: {
+        ...React,
+        useState: () => {
+          const index = cursor++;
+          return [
+            state[index],
+            (value) => {
+              state[index] = value;
+            },
+          ];
+        },
+      },
+      "@makeplane/propel/components/button": { Button: button },
+      "@makeplane/propel/components/input": { Input: "input", InputGroup: "div" },
+      "@plane/i18n": { useTranslation: () => ({ t: (key) => key }) },
+      "@/services/repository.service": {
+        repositoryService: {
+          write: async (...args) => {
+            submitted = args;
+          },
+        },
+      },
+    });
+    const tree = RepositoryOAuthSetup({
+      instanceId: "host",
+      repositoryUrl: "https://github.com/team/repo",
+      csrf: "csrf",
+      busy: false,
+      action: (fn) => {
+        pending = fn();
+        return pending;
+      },
+      onConfigured: async () => {
+        configured = true;
+      },
+    });
+    const elements = [];
+    function walk(node) {
+      if (!node || typeof node !== "object") return;
+      if (Array.isArray(node)) return node.forEach(walk);
+      elements.push(node);
+      walk(node.props?.children);
+    }
+    walk(tree);
+    assert.equal(
+      elements.some((node) => node.props?.id === "repository-github-app-slug"),
+      provider === "github"
+    );
+    assert.ok(elements.some((node) => node.props?.value === guide.callback_url && node.props.readOnly));
+    elements.find((node) => node.type === "form").props.onSubmit({ preventDefault() {} });
+    await pending;
+    assert.equal(submitted[0], "/api/singularity/v1/repository-oauth-setup/");
+    assert.deepEqual(submitted[3], {
+      instance_id: "host",
+      client_id: "client",
+      client_secret: "secret",
+      ...(provider === "github" ? { github_app_slug: "reader" } : {}),
+    });
+    assert.equal(state[7], "");
+    assert.equal(configured, true);
+  });
+}
 test("ready initialization is hidden only when both active bindings exist; errors remain visible", () => {
   function render(status, allBound, error = undefined) {
     const { RepositoryInitialization } = load("./repository-management.tsx", {
