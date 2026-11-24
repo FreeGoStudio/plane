@@ -27,6 +27,8 @@ let config;
 let checkedEmails;
 let codeEmails;
 let emailResponse;
+let csrfResponse;
+let toasts;
 const empty = () => null;
 function WorkspaceService() {}
 const mocks = {
@@ -48,7 +50,7 @@ const mocks = {
   "@/services/auth.service": {
     AuthService: class {
       requestCSRFToken() {
-        return Promise.resolve({ csrf_token: "test-token" });
+        return csrfResponse();
       }
       emailCheck({ email }) {
         checkedEmails.push(email);
@@ -71,6 +73,7 @@ const mocks = {
     Button: ({ label, variant, size, stretch, loading, ...props }) => h("button", props, label),
   },
   "@plane/blocks/auth": { PasswordStrengthIndicator: empty, OAuthOptions: empty },
+  "@plane/blocks/toast": { setToast: (toast) => toasts.push(toast) },
   "../terms-and-conditions": { TermsAndConditions: empty },
   "./auth-header": { AuthHeader: empty, AuthHeaderBase: empty },
   "./email": { AuthEmailForm: () => h("div", null, "email-step") },
@@ -97,6 +100,8 @@ function setup(mode = "SIGN_IN", overrides = {}) {
   checkedEmails = [];
   codeEmails = [];
   emailResponse = { existing: true, status: "CREDENTIAL" };
+  csrfResponse = () => Promise.resolve({ csrf_token: "test-token" });
+  toasts = [];
   return render(h(AuthRoot, { authMode: mode }));
 }
 function fill(view) {
@@ -141,6 +146,44 @@ test("edited email is used for password reset and switching to code sign-in", as
   await waitFor(() => assert.ok(view.getByText("code-step:person@example.com")));
   assert.deepEqual(codeEmails, ["person@example.com"]);
 });
+
+test("a login page opened before a cookie rotation submits the fresh token", async () => {
+  const view = setup();
+  fill(view);
+  // Simulate another tab changing the cookie after this page has mounted.
+  csrfResponse = () => Promise.resolve({ csrf_token: "rotated-token" });
+  const form = view.container.querySelector("form");
+  let submitted;
+  form.submit = () => {
+    submitted = new dom.window.FormData(form);
+  };
+  fireEvent.submit(form);
+  await waitFor(() => assert.ok(submitted));
+  assert.equal(submitted.get("csrfmiddlewaretoken"), "rotated-token");
+});
+
+for (const failure of [() => Promise.reject(new Error("offline")), () => Promise.resolve({})]) {
+  test("a failed or empty token response prevents submission and allows retry", async () => {
+    const view = setup();
+    fill(view);
+    csrfResponse = failure;
+    const form = view.container.querySelector("form");
+    let submitted;
+    form.submit = () => {
+      submitted = new dom.window.FormData(form);
+    };
+    fireEvent.submit(form);
+    await waitFor(() => assert.equal(checkedEmails.length, 1));
+    await waitFor(() => assert.equal(form.querySelector('button[type="submit"]').disabled, false));
+    assert.equal(submitted, undefined);
+    assert.equal(toasts[0].type, "error");
+    csrfResponse = () => Promise.resolve({ csrf_token: "retry-token" });
+    fireEvent.submit(form);
+    await waitFor(() => assert.ok(submitted));
+    assert.equal(submitted.get("csrfmiddlewaretoken"), "retry-token");
+    assert.equal(submitted.get("password"), "test-password");
+  });
+}
 
 test("registration and magic-only instances still start with email verification", () => {
   const signup = setup("SIGN_UP");

@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
 // icons
@@ -17,6 +17,7 @@ import { API_BASE_URL, E_PASSWORD_STRENGTH } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import { PasswordStrengthIndicator } from "@plane/blocks/auth";
+import { setToast } from "@plane/blocks/toast";
 import type { IEmailCheckData } from "@plane/types";
 import { checkEmailValidity, getPasswordStrength } from "@plane/utils";
 // helpers
@@ -54,7 +55,6 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
   // ref
   const formRef = useRef<HTMLFormElement>(null);
   // states
-  const [csrfPromise, setCsrfPromise] = useState<Promise<{ csrf_token: string }> | undefined>(undefined);
   const [passwordFormData, setPasswordFormData] = useState<TPasswordFormValues>({ ...defaultValues, email });
   const [showPassword, setShowPassword] = useState({
     password: false,
@@ -73,13 +73,6 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
     if (showSmtpError) setShowSmtpError(false);
     setPasswordFormData((prev) => ({ ...prev, [key]: value }));
   };
-
-  useEffect(() => {
-    if (csrfPromise === undefined) {
-      const promise = authService.requestCSRFToken();
-      setCsrfPromise(promise);
-    }
-  }, [csrfPromise]);
 
   const redirectToUniqueCodeSignIn = async () => {
     handleAuthStep(EAuthSteps.UNIQUE_CODE, passwordFormData.email);
@@ -139,9 +132,11 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
   const renderPasswordMatchError = !isRetryPasswordInputFocused || confirmPassword.length >= password.length;
 
   const handleCSRFToken = async () => {
-    if (!formRef || !formRef.current) return;
-    const token = await csrfPromise;
-    if (!token?.csrf_token) return;
+    if (!formRef.current) throw new Error("Login form unavailable");
+    // Another tab or application on the same host can rotate the CSRF cookie
+    // while this form is open. Fetch the matching token just before submitting.
+    const token = await authService.requestCSRFToken();
+    if (!token?.csrf_token) throw new Error("CSRF token unavailable");
     const csrfElement = formRef.current.querySelector("input[name=csrfmiddlewaretoken]");
     csrfElement?.setAttribute("value", token?.csrf_token);
   };
@@ -176,7 +171,19 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
               return;
             }
           }
-          await handleCSRFToken();
+          try {
+            await handleCSRFToken();
+          } catch {
+            // Keep the credentials in place and allow a retry after a failed
+            // token request. Never submit an empty or previously cached token.
+            setIsSubmitting(false);
+            setToast({
+              type: "error",
+              title: t("common.errors.default.title"),
+              message: t("common.errors.default.message"),
+            });
+            return;
+          }
           const isPasswordValid =
             mode === EAuthModes.SIGN_UP
               ? getPasswordStrength(passwordFormData.password) === E_PASSWORD_STRENGTH.STRENGTH_VALID

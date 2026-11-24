@@ -2,8 +2,13 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
+import logging
+
 # Django imports
+from django.conf import settings
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
 # Third party imports
 from rest_framework import status
@@ -26,6 +31,10 @@ from plane.authentication.utils.host import base_host
 from plane.authentication.rate_limit import AuthenticationThrottle
 
 
+logger = logging.getLogger("plane.authentication")
+
+
+@method_decorator(never_cache, name="dispatch")
 class CSRFTokenEndpoint(APIView):
     permission_classes = [AllowAny]
 
@@ -38,6 +47,36 @@ class CSRFTokenEndpoint(APIView):
 
 def csrf_failure(request, reason=""):
     """Custom CSRF failure view"""
+    # Django's Origin/Referer reasons contain untrusted URLs. Never log those
+    # values, query strings, credentials or token contents.
+    if reason.startswith("Origin checking failed"):
+        safe_reason = "origin_not_trusted"
+    elif reason.startswith("Referer checking failed"):
+        safe_reason = "referer_missing" if "no Referer" in reason else "referer_invalid"
+    elif reason == "CSRF cookie not set.":
+        safe_reason = "csrf_cookie_missing"
+    elif reason == "CSRF token missing.":
+        safe_reason = "csrf_token_missing"
+    elif reason.startswith("CSRF token from") and reason.endswith("incorrect."):
+        safe_reason = "csrf_token_mismatch"
+    elif reason.startswith("CSRF cookie"):
+        safe_reason = "csrf_cookie_malformed"
+    elif reason.startswith("CSRF token from"):
+        safe_reason = "csrf_token_malformed"
+    else:
+        safe_reason = "csrf_rejected"
+    logger.warning(
+        "CSRF verification failed",
+        extra={
+            "csrf_reason": safe_reason,
+            "view_name": getattr(request.resolver_match, "view_name", None),
+            "method": request.method,
+            "is_secure": request.is_secure(),
+            "csrf_cookie_present": settings.CSRF_COOKIE_NAME in request.COOKIES,
+            "origin_present": "HTTP_ORIGIN" in request.META,
+            "referer_present": "HTTP_REFERER" in request.META,
+        },
+    )
     return render(
         request,
         "csrf_failure.html",
