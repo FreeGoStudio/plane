@@ -506,7 +506,9 @@
     "status_ready": "等待人工评审",
     "status_completed": "已批准并创建子工作项",
     "status_rejected": "已驳回",
-    "status_failed": "生成失败，请检查执行状态"
+    "status_failed": "生成失败，请检查执行状态",
+    "update_reused": "当前版本已有分析，已显示现有进度或草稿，无需重复分析。",
+    "update_submitted": "分析已提交，请查看下方进度；完成后将显示拆分草稿。"
   },
   "document_review": {
     "title": "文档 AI 验收",

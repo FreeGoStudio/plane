@@ -506,7 +506,9 @@
     "status_ready": "Awaiting human review",
     "status_completed": "Approved; child work items created",
     "status_rejected": "Rejected",
-    "status_failed": "Generation failed; check execution status"
+    "status_failed": "Generation failed; check execution status",
+    "update_reused": "目前版本已有分析，已顯示現有進度或草稿，無需重複分析。",
+    "update_submitted": "分析已提交，請查看下方進度；完成後將顯示拆分草稿。"
   },
   "document_review": {
     "title": "Document AI review",

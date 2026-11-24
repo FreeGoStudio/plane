@@ -506,7 +506,9 @@
     "status_ready": "Awaiting human review",
     "status_completed": "Approved; child work items created",
     "status_rejected": "Rejected",
-    "status_failed": "Generation failed; check execution status"
+    "status_failed": "Generation failed; check execution status",
+    "update_reused": "An analysis already exists for this version. Its current progress or draft is displayed; no duplicate analysis was started.",
+    "update_submitted": "Analysis submitted. Follow its progress below; the draft will appear when ready."
   },
   "document_review": {
     "title": "Document AI review",

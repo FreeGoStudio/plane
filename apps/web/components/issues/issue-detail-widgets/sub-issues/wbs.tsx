@@ -5,6 +5,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@makeplane/propel/components/button";
+import { setToast } from "@plane/blocks/toast";
 import { useTranslation } from "@plane/i18n";
 import { repositoryBase, repositoryService } from "@/services/repository.service";
 import { RequirementReviewPanel } from "./requirement-review";
@@ -77,8 +78,10 @@ export function WbsPanel({
   const refresh = useCallback(async () => {
     try {
       setData(await repositoryService.read<Data>(path));
+      return true;
     } catch {
       setError(t("wbs.load_error"));
+      return false;
     }
   }, [path, t]);
   useEffect(() => {
@@ -102,7 +105,7 @@ export function WbsPanel({
     setBusy(true);
     setError("");
     try {
-      await repositoryService.write(
+      const updated = await repositoryService.write<Run>(
         path + (decision && run ? `${run.id}/` : ""),
         "POST",
         data.csrf_token,
@@ -138,7 +141,16 @@ export function WbsPanel({
       requestKey.current = crypto.randomUUID();
       setConfirmed(false);
       setApproved(false);
-      await refresh();
+      const refreshed = await refresh();
+      if (!decision && refreshed) {
+        setToast({
+          type: "success",
+          title: t(`wbs.status_${updated.status}`),
+          message: t(
+            updated.id === run?.id || updated.status === "ready" ? "wbs.update_reused" : "wbs.update_submitted"
+          ),
+        });
+      }
       if (decision === "approve") window.location.reload();
     } catch (failure) {
       const details = (failure as { response?: { data?: unknown } }).response?.data;
