@@ -6,6 +6,9 @@
 """Page/MCP parity and persistence of the human approval boundary."""
 
 import copy
+import io
+import json
+from pathlib import Path
 from unittest.mock import patch
 import pytest
 from django.test import Client
@@ -156,3 +159,68 @@ def test_revoked_reviewer_cannot_approve(world, requirement):
 
     with pytest.raises(PermissionDenied):
         review_run(world[0], row, decision(row))
+
+
+@pytest.mark.parametrize("mode", ["initial", "update", "document_snapshot"])
+def test_worker_warns_without_source_and_does_not_read_working_directory(
+    world, requirement, tmp_path, monkeypatch, mode
+):
+    from plane.singularity.wbs_generation import SOURCE_WARNING
+    from .test_wbs_update import result as change_draft
+
+    request = payload(requirement)
+    if mode != "initial":
+        request["mode"] = "update"
+    row = start_run(world[0], requirement, request)
+    if mode == "document_snapshot":
+        # A frozen PRD document must not be mistaken for implementation evidence.
+        row.snapshot["source"] = {
+            "kind": "documents",
+            "repository_id": "prd-only",
+            "documents": {"docs/prd.md": "AC01: Login page"},
+        }
+        row.save()
+    model_draft = draft() if mode == "initial" else change_draft()
+    key_file = tmp_path / "model-key"
+    key_file.write_text("test-only-key", encoding="utf-8")
+    unrelated = tmp_path / "unrelated-project"
+    unrelated.mkdir()
+    (unrelated / "login.py").write_text("UNRELATED_CODE_MUST_NOT_BE_READ", encoding="utf-8")
+    monkeypatch.chdir(unrelated)
+    monkeypatch.setenv("WBS_MODEL_KEY_FILE", str(key_file))
+    real_open = io.open
+    reads = []
+
+    def guarded_open(file, *args, **kwargs):
+        assert Path(file).resolve() == key_file.resolve(), f"Unexpected worker file access: {file}"
+        reads.append(str(file))
+        return real_open(file, *args, **kwargs)
+
+    with (
+        patch("plane.singularity.wbs_generation.requests.post") as post,
+        patch("builtins.open", side_effect=guarded_open),
+        patch("io.open", side_effect=guarded_open),
+        patch("os.scandir", side_effect=AssertionError("Worker must not scan directories")),
+        patch("subprocess.Popen", side_effect=AssertionError("Worker must not launch repository tools")),
+    ):
+        post.return_value.json.return_value = {
+            "status": "completed",
+            "output": [{"type": "message", "content": [{"type": "output_text", "text": json.dumps(model_draft)}]}],
+        }
+        assert execute(row.id, "simulated-hatchet-run")["status"] == "ready"
+    assert reads == [str(key_file)]
+    post.assert_called_once()
+    body = post.call_args.kwargs["json"]
+    assert "tools" not in body
+    assert "UNRELATED_CODE_MUST_NOT_BE_READ" not in json.dumps(body)
+    assert json.loads(body["input"]) == row.snapshot
+    row.refresh_from_db()
+    assert row.result["summary"] == SOURCE_WARNING + "\n\n" + model_draft["summary"]
+    assert row.result_digest == digest(row.result)
+    assert not Issue.objects.filter(parent=requirement).exists()
+    # Page and MCP read the same persisted warning; no repository gate was added.
+    client = Client()
+    client.force_login(world[0])
+    response = client.get(items(requirement.project, requirement.id) + f"wbs/{row.id}/")
+    assert response.status_code == 200
+    assert response.json()["result"]["summary"] == row.result["summary"]

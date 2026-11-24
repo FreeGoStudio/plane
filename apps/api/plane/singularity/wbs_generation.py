@@ -24,6 +24,14 @@ EXECUTION_TIMEOUT = timedelta(seconds=MODEL_CONNECT_TIMEOUT + MODEL_READ_TIMEOUT
 EXECUTION_LEASE = EXECUTION_TIMEOUT + timedelta(minutes=1)
 DISPATCH_RETRY_DELAY = EXECUTION_LEASE + timedelta(minutes=1)
 
+# Current snapshots contain requirements/children, never verified business source.
+# A PRD repository is not evidence that implementation code was inspected.
+SOURCE_WARNING = (
+    "代码核验风险：本次 WBS 未读取或核验目标项目的业务源码，仅依据需求资料和已有子任务生成待核验草稿。"
+    "所有验收点对应的实施范围、复用能力和依赖均待代码核验，存在重复开发、遗漏复用能力及误判修改范围和依赖的风险。"
+    "未配置代码仓库不代表空仓库；本草稿不代表开发任务已具备直接执行条件。"
+)
+
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -125,6 +133,10 @@ def generate(snapshot):
         "只拆解原需求和验收项，不添加功能、不分配个人、不估工时。逐一覆盖 criteria；"
         "已有子任务涵盖的内容应复用，不重复创建。existing 必须说明证据且 task_ids 为空；"
         "gap/unknown 必须有实施或核查任务。未提供源码，不得宣称已检查源码或编造实现路径。"
+        "本 worker 仅处理输入快照，不访问当前工作目录或自行寻找代码仓库；"
+        "即使输入包含 PRD 文档仓库，也不等于已核验业务源码。"
+        "代码仓库未配置不阻止生成草稿，也不能当作空仓库。"
+        "在相关任务的 scope/basis 中说明代码待核验，不将推测的实现缺口写成事实。"
         "不确定事项列入 questions；任务应有明确范围、产出、验收和依赖。"
         "coverage 的 criterion_id 必须逐字使用输入 criteria，不能增加横线或重编号；每个原编号恰好出现一次。"
         "任务的 criteria 也只能引用这些原编号，不得额外创建验收编号。"
@@ -153,6 +165,8 @@ def generate(snapshot):
             "之前的结果只是对比资料，不扩大需求。没有变化全部keep，明确无须调整。"
         )
     schema = (ChangeDraft if snapshot.get("workflow") == 2 else Draft).model_json_schema()
+    # Reserve room for the server-owned warning, even if the model omits it.
+    schema["properties"]["summary"]["maxLength"] = 5000 - len(SOURCE_WARNING) - 2
     # Bind the model contract to the original acceptance IDs, not skill examples.
     criterion = {"type": "string", "enum": snapshot["criteria"]}
     schema["$defs"]["Coverage"]["properties"]["criterion_id"] = criterion
@@ -188,7 +202,12 @@ def generate(snapshot):
         for b in item.get("content", [])
         if b.get("type") == "output_text"
     )
-    return validate_draft(json.loads(text), snapshot)
+    value = json.loads(text)
+    # Validate before accessing fields, then keep the warning in the persisted,
+    # digest-bound summary shared by the page and MCP. No new approval gate.
+    value = validate_draft(value, snapshot)
+    value["summary"] = SOURCE_WARNING + "\n\n" + value["summary"]
+    return validate_draft(value, snapshot)
 
 
 def execute(run_id, hatchet_run_id):
