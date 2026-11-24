@@ -626,6 +626,7 @@ export function ProjectRepositoriesSettings({
               section={section}
               busy={busy}
               registrations={registrations}
+              hosts={info.hosts}
               onAdded={async (purpose) => {
                 await Promise.all([refreshRegistrations(), mutate(), refreshInfo(), refreshBindings()]);
                 setParams({ section: purpose });

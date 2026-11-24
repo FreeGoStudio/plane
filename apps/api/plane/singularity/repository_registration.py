@@ -37,8 +37,8 @@ def registrations(project):
     ]
 
 
-def register(project, actor, address, purpose):
-    instance, path = resolve_address(address)
+def register(project, actor, address, purpose, instance_id=None):
+    instance, path = resolve_address(address, instance_id)
     if len(path) > 512:
         raise RepositoryError("invalid_repository_url", 400)
     with transaction.atomic():

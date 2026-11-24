@@ -200,6 +200,32 @@ def test_unconfigured_platform_is_visible_without_waiting_for_worker(managed, se
     assert response.json()["error_code"] == "repository_management_not_configured"
 
 
+def test_clone_formats_share_one_registration_without_personal_credentials(managed):
+    alice, _, repo, _ = managed
+    client = login(alice)
+    first = register(client, repo).json()["id"]
+    for address, extra in [
+        ("git@company.test:external/source.git", {}),
+        ("ssh://git@company.test:2424/external/source.git", {}),
+        ("git@ssh.company.test:external/source.git", {"instance_id": str(repo.instance_id)}),
+    ]:
+        response = client.post(
+            endpoint(repo).replace("repositories/", "repository-add/"),
+            json.dumps(
+                {
+                    "url": address,
+                    "purpose": "development",
+                    "method": "register",
+                    **extra,
+                }
+            ),
+            content_type="application/json",
+        )
+        assert response.status_code == 202, response.content
+        assert response.json()["id"] == first
+    assert RepositoryRegistration.objects.count() == 1
+
+
 def test_builtin_repository_registration_preserves_creation_rights_boundary(managed):
     from .test_repository_management import initialize
 

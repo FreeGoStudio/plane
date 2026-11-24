@@ -53,6 +53,69 @@ def test_address_resolves_nested_gitlab_without_network(world):
             resolve_address(address)
 
 
+@pytest.mark.parametrize(
+    "address",
+    [
+        "https://company.test/team/sub/new.git",
+        "https://company.test/team/sub/new",
+        "git@company.test:team/sub/new.git",
+        "ssh://git@company.test/team/sub/new.git",
+        "ssh://git@company.test:2424/team/sub/new.git",
+    ],
+)
+def test_clone_formats_resolve_same_identity(world, address):
+    host, path = resolve_address(address)
+    assert host == world[2].instance
+    assert path == "team/sub/new"
+
+
+def test_ssh_does_not_use_web_port_or_subpath(world):
+    host = world[2].instance
+    host.web_url = "https://company.test:8446/gitlab"
+    host.save()
+    assert resolve_address("git@company.test:team/new.git") == (host, "team/new")
+    assert resolve_address("ssh://git@company.test:2424/team/new.git") == (host, "team/new")
+    assert resolve_address("https://company.test:8446/gitlab/team/new.git") == (host, "team/new")
+
+
+def test_ssh_alias_and_ambiguous_host_require_explicit_registered_instance(world):
+    from plane.db.models import RepositoryInstance
+
+    host = world[2].instance
+    with pytest.raises(RepositoryError, match="repository_instance_required"):
+        resolve_address("git@ssh.company.test:team/new.git")
+    assert resolve_address("git@ssh.company.test:team/new.git", host.pk) == (host, "team/new")
+    other = RepositoryInstance.objects.create(
+        name="Other", provider="gitlab", web_url="https://company.test:8446", api_url="https://other.test/api/v4"
+    )
+    with pytest.raises(RepositoryError, match="repository_instance_required"):
+        resolve_address("git@company.test:team/new.git")
+    assert resolve_address("git@company.test:team/new.git", other.pk) == (other, "team/new")
+    host.enabled = False
+    host.save()
+    with pytest.raises(RepositoryError, match="repository_host_not_configured"):
+        resolve_address("git@company.test:team/new.git", host.pk)
+
+
+@pytest.mark.parametrize(
+    "address",
+    [
+        "ssh://git:secret@company.test/team/new.git",
+        "ssh://git@company.test:bad/team/new.git",
+        "git@company.test:team/../new.git",
+        "git@company.test:team/%2e%2e/new.git",
+        "git@company.test:team/new.git?secret=value",
+        "git@company.test:team/new.git#ref",
+        "git@company.test:~/team/new.git",
+        "git@company.test:team/new\n.git",
+        "file:///team/new.git",
+    ],
+)
+def test_invalid_clone_addresses_are_rejected(world, address):
+    with pytest.raises(RepositoryError):
+        resolve_address(address)
+
+
 def test_inspect_is_read_only_and_filters_expired_connections(world):
     alice, _, repo, credential, *_ = world
     client = login(alice)

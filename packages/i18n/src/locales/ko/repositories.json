@@ -54,7 +54,8 @@
       "configuration_conflict": "This repository is already configured or its settings conflict.",
       "invalid_repository_url": "유효한 저장소 URL을 입력하세요.",
       "repository_host_not_configured": "이 호스팅 사이트가 설정되지 않았습니다. 관리자에게 문의하세요.",
-      "unsupported_provider": "Only GitLab repositories are supported. Enter the migrated GitLab repository URL."
+      "unsupported_provider": "Only GitLab repositories are supported. Enter the migrated GitLab repository URL.",
+      "repository_instance_required": "Select the registered GitLab instance for this SSH address; it could not be identified uniquely."
     },
     "prototype": "Storybook 프로토타입",
     "bindings": "필수 저장소 연결",
@@ -117,7 +118,8 @@
       "sync_hint": "Check member identities and the platform account’s permission to manage members. Existing external permissions are preserved.",
       "retry": "Retry verification",
       "new_authorization": "Authorize another account",
-      "disabled": "Repository disabled"
+      "disabled": "Repository disabled",
+      "auto_instance": "Detect GitLab instance automatically"
     }
   }
 }

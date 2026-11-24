@@ -449,3 +449,52 @@ test("registration status survives reload and shows retry next to the affected a
   assert.match(html, /registration.retry/);
   assert.match(html, /registration.access_hint/);
 });
+
+for (const address of ["git@gitlab.com:team/repo.git", "ssh://git@gitlab.com:2424/team/repo.git"]) {
+  test(`SSH clone input is accepted and can select its registered instance: ${address}`, async () => {
+    const state = [address, false, "", false, null, "host"];
+    let cursor = 0;
+    let submitted;
+    const { RepositoryAdd } = load("./repository-add.tsx", {
+      react: {
+        ...React,
+        useRef: () => ({ current: false }),
+        useState: () => {
+          const index = cursor++;
+          return [
+            state[index],
+            (value) => {
+              state[index] = value;
+            },
+          ];
+        },
+      },
+      "@makeplane/propel/components/button": { Button: button },
+      "@makeplane/propel/components/input": { Input: "input", InputGroup: "div" },
+      "@plane/i18n": { useTranslation: () => ({ t: (key) => key }) },
+      "@/services/repository.service": {
+        repositoryService: {
+          write: async (...args) => {
+            submitted = args[3];
+            return { id: "registration", status: "pending", purpose: "development" };
+          },
+        },
+      },
+    });
+    const tree = RepositoryAdd({
+      base: "/test/",
+      csrf: "csrf",
+      section: "development",
+      busy: false,
+      hosts: [{ id: "host", name: "Company", web_url: "https://gitlab.com:8446" }],
+      onAdded: async () => {},
+    });
+    const html = renderToStaticMarkup(tree);
+    assert.match(html, /type="text"/);
+    assert.doesNotMatch(html, /type="url"/);
+    assert.match(html, /Company/);
+    tree.props.children.find((child) => child?.type === "form").props.onSubmit({ preventDefault() {} });
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.deepEqual(submitted, { url: address, purpose: "development", method: "register", instance_id: "host" });
+  });
+}

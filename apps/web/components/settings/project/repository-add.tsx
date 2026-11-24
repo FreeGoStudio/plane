@@ -10,6 +10,8 @@ import { Input, InputGroup } from "@makeplane/propel/components/input";
 import { useTranslation } from "@plane/i18n";
 import { repositoryService as api, type RepositoryRegistration } from "@/services/repository.service";
 
+const isSSH = (address: string) => /^(ssh:\/\/|[^@\s/:]+@)/i.test(address.trim());
+
 /** Project registration never reads or creates personal credentials. */
 export function RepositoryAdd({
   base,
@@ -17,6 +19,7 @@ export function RepositoryAdd({
   section,
   busy,
   registrations = [],
+  hosts = [],
   onAdded,
 }: {
   base: string;
@@ -24,6 +27,7 @@ export function RepositoryAdd({
   section: string;
   busy: boolean;
   registrations?: RepositoryRegistration[];
+  hosts?: { id: string; name: string; web_url: string }[];
   onAdded: (section: string) => void | Promise<void>;
 }) {
   const { t } = useTranslation();
@@ -33,6 +37,7 @@ export function RepositoryAdd({
   const [message, setMessage] = useState("");
   const [failed, setFailed] = useState(false);
   const [submittedId, setSubmittedId] = useState<string | null>(null);
+  const [instanceId, setInstanceId] = useState("");
   const currentRegistration = registrations.find((row) => row.id === submittedId);
   async function register(address: string) {
     if (submitting.current) return;
@@ -46,6 +51,7 @@ export function RepositoryAdd({
         url: address,
         purpose: section,
         method: "register",
+        ...(isSSH(address) && instanceId ? { instance_id: instanceId } : {}),
       });
       setMessage(t(`repository_ui.registration.${result.status}`));
       setSubmittedId(result.id);
@@ -83,15 +89,36 @@ export function RepositoryAdd({
           <Input
             id="repository-url"
             name="url"
-            type="url"
+            type="text"
             required
             size="md"
             value={url}
             disabled={busy || pending}
             placeholder="https://gitlab.com/group/repository"
-            onChange={(event) => setUrl(event.target.value)}
+            onChange={(event) => {
+              setUrl(event.target.value);
+              setInstanceId("");
+            }}
           />
         </InputGroup>
+        {isSSH(url) && (
+          <label className="flex flex-col gap-2">
+            {t("repository_ui.host")}
+            <select
+              value={instanceId}
+              disabled={busy || pending}
+              onChange={(event) => setInstanceId(event.target.value)}
+              className="rounded-md border border-subtle bg-surface-1 px-3 py-2"
+            >
+              <option value="">{t("repository_ui.registration.auto_instance")}</option>
+              {hosts.map((host) => (
+                <option key={host.id} value={host.id}>
+                  {host.name} · {host.web_url}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <Button
           type="submit"
           disabled={busy || pending}

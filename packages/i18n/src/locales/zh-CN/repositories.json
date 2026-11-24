@@ -54,7 +54,8 @@
       "configuration_conflict": "仓库已配置或配置发生冲突。",
       "invalid_repository_url": "请输入有效的仓库完整地址。",
       "repository_host_not_configured": "尚未配置该仓库站点，请联系管理员。",
-      "unsupported_provider": "仅支持 GitLab 仓库。请填写迁移后的 GitLab 仓库地址。"
+      "unsupported_provider": "仅支持 GitLab 仓库。请填写迁移后的 GitLab 仓库地址。",
+      "repository_instance_required": "无法唯一识别此 SSH 地址所属的 GitLab 实例，请在托管实例中选择。"
     },
     "prototype": "Storybook 原型仓库",
     "bindings": "专用仓库绑定",
@@ -117,7 +118,8 @@
       "sync_hint": "请检查成员身份和平台账号管理成员的权限；已有外部授权将保留。",
       "retry": "重新验证",
       "new_authorization": "授权其他账号",
-      "disabled": "仓库已停用"
+      "disabled": "仓库已停用",
+      "auto_instance": "自动识别 GitLab 实例"
     }
   }
 }

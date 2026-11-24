@@ -4,6 +4,7 @@
 
 """Resolve registered repository URLs and add only after verified access."""
 
+import re
 from urllib.parse import urlsplit, unquote
 from django.db import transaction
 from django.db.models import Q
@@ -17,34 +18,65 @@ from .repository_transport import RepositoryError
 from .vault import unseal, seal, seal_oauth, oauth_material
 
 
-def resolve_address(address):
-    """Match a full URL to an enabled registered host without contacting arbitrary hosts."""
+def resolve_address(address, instance_id=None):
+    """Normalize web/clone URLs to a registered API host; never connect over SSH."""
     try:
-        url = urlsplit(address.strip())
+        address = address.strip()
+        if not address or any(c.isspace() or ord(c) < 32 for c in address) or "\\" in address:
+            raise ValueError
+        scp = re.fullmatch(r"([^@/:]+)@(\[[^\]]+\]|[^/:]+):(.+)", address) if "://" not in address else None
+        if scp:
+            address = f"ssh://{scp[1]}@{scp[2]}/{scp[3]}"
+        url = urlsplit(address)
+        ssh = url.scheme == "ssh"
         if (
-            url.scheme not in ("https", "http")
+            url.scheme not in ("https", "http", "ssh")
             or not url.hostname
-            or url.username
-            or url.password
+            or (url.username and not ssh)
+            or url.password is not None
             or url.query
             or url.fragment
         ):
             raise ValueError
-        matches = []
-        for host in RepositoryInstance.objects.filter(enabled=True):
-            base = urlsplit(host.web_url.rstrip("/"))
-            prefix = base.path.rstrip("/") + "/"
-            if (url.scheme, url.hostname, url.port) == (base.scheme, base.hostname, base.port) and url.path.startswith(
-                prefix
-            ):
-                matches.append((len(prefix), host, unquote(url.path[len(prefix) :]).rstrip("/").removesuffix(".git")))
-        if not matches:
-            raise RepositoryError("repository_host_not_configured", 400)
-        _, host, path = max(matches, key=lambda item: item[0])
+        _ = url.port  # Validate the SSH port, but never confuse it with the web port.
+        hosts = list(RepositoryInstance.objects.filter(enabled=True))
+        if ssh:
+            matches = [
+                host
+                for host in hosts
+                if (
+                    str(host.pk) == str(instance_id) if instance_id else urlsplit(host.web_url).hostname == url.hostname
+                )
+            ]
+            if instance_id and not matches:
+                raise RepositoryError("repository_host_not_configured", 400)
+            if len(matches) != 1:
+                raise RepositoryError("repository_instance_required", 400)
+            host = matches[0]
+            # SSH clone paths are relative to GitLab, without the web deployment subpath.
+            path = unquote(url.path.removeprefix("/")).rstrip("/").removesuffix(".git")
+        else:
+            matches = []
+            for host in hosts:
+                base = urlsplit(host.web_url.rstrip("/"))
+                prefix = base.path.rstrip("/") + "/"
+                if (url.scheme, url.hostname, url.port) == (
+                    base.scheme,
+                    base.hostname,
+                    base.port,
+                ) and url.path.startswith(prefix):
+                    matches.append(
+                        (len(prefix), host, unquote(url.path[len(prefix) :]).rstrip("/").removesuffix(".git"))
+                    )
+            if not matches:
+                raise RepositoryError("repository_host_not_configured", 400)
+            _, host, path = max(matches, key=lambda item: item[0])
+            if instance_id and str(host.pk) != str(instance_id):
+                raise RepositoryError("repository_host_not_configured", 400)
         if host.provider != "gitlab":
             raise RepositoryError("unsupported_provider")
         safe_path(path, False)
-        if len(path.split("/")) < 2:
+        if len(path.split("/")) < 2 or path.startswith("~"):
             raise ValueError
         return host, path
     except ValueError:
@@ -116,6 +148,7 @@ class AddInput(StrictSerializer):
     url = serializers.CharField(max_length=2048)
     purpose = serializers.ChoiceField(choices=["development", "reference", "documentation", "prototype"])
     method = serializers.ChoiceField(choices=["register", "inspect", "oauth", "existing", "anonymous", "token"])
+    instance_id = serializers.UUIDField(required=False)
     credential_id = serializers.UUIDField(required=False)
     token = serializers.CharField(max_length=8192, required=False, trim_whitespace=False, write_only=True)
 
@@ -135,9 +168,11 @@ class AddRepository(RepositoryAPI):
         if data["method"] == "register":
             from .repository_registration import register
 
-            return Response(register(project, request.user, data["url"], data["purpose"]), status=202)
+            return Response(
+                register(project, request.user, data["url"], data["purpose"], data.get("instance_id")), status=202
+            )
         try:
-            host, path = resolve_address(data["url"])
+            host, path = resolve_address(data["url"], data.get("instance_id"))
         except RepositoryError as error:
             from .repository_oauth_setup import can_configure
 

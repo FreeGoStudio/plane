@@ -54,7 +54,8 @@
       "configuration_conflict": "This repository is already configured or its settings conflict.",
       "invalid_repository_url": "Geben Sie eine gültige Repository-URL ein.",
       "repository_host_not_configured": "Dieser Hosting-Dienst ist nicht konfiguriert. Wenden Sie sich an die Administration.",
-      "unsupported_provider": "Only GitLab repositories are supported. Enter the migrated GitLab repository URL."
+      "unsupported_provider": "Only GitLab repositories are supported. Enter the migrated GitLab repository URL.",
+      "repository_instance_required": "Select the registered GitLab instance for this SSH address; it could not be identified uniquely."
     },
     "prototype": "Storybook-Prototyp",
     "bindings": "Erforderliche Repository-Zuordnungen",
@@ -117,7 +118,8 @@
       "sync_hint": "Check member identities and the platform account’s permission to manage members. Existing external permissions are preserved.",
       "retry": "Retry verification",
       "new_authorization": "Authorize another account",
-      "disabled": "Repository disabled"
+      "disabled": "Repository disabled",
+      "auto_instance": "Detect GitLab instance automatically"
     }
   }
 }
