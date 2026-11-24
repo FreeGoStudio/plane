@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "WBS を再生成",
+    "regenerate_hint": "現在の PRD を再分析します。タスクの変更には承認が必要です。",
+    "regenerate_in_progress": "WBS の分析中です。完了してから再生成してください。",
     "scenario_initial": "初回のタスク分解",
     "scenario_draft": "未承認の下書きを置き換え",
     "scenario_created": "未着手のタスクを調整",

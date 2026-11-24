@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Wygeneruj WBS ponownie",
+    "regenerate_hint": "Ponownie przeanalizuj bieżący PRD. Zmiany w zadaniach wymagają zatwierdzenia.",
+    "regenerate_in_progress": "Analiza WBS trwa. Przed ponownym wygenerowaniem należy poczekać.",
     "scenario_initial": "Pierwszy podział zadań",
     "scenario_draft": "Zastąp niezatwierdzony szkic",
     "scenario_created": "Dostosuj nierozpoczęte zadania",

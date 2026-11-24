@@ -264,7 +264,7 @@ export const inputs = {
       expected_updated_at: z.string().min(1),
       idempotency_key: z.string().min(8).max(128),
       confirmed: z.literal(true),
-      mode: z.literal("update").optional(),
+      mode: z.enum(["update", "regenerate"]).optional(),
     })
     .strict(),
   get_wbs: z.object({ ...nativeProject, item_id: z.uuid(), run_id: z.uuid().optional() }).strict(),

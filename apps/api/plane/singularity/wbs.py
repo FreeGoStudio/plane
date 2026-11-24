@@ -106,7 +106,7 @@ def start_run(user, issue, data):
         set(data) - {"expected_updated_at", "idempotency_key", "confirmed", "mode"}
         or not {"expected_updated_at", "idempotency_key", "confirmed"} <= set(data)
         or data.get("confirmed") is not True
-        or data.get("mode", "update") != "update"
+        or data.get("mode", "update") not in ["update", "regenerate"]
     ):
         raise ValidationError("Confirm the saved requirement version before requesting a draft")
     key = data["idempotency_key"]
@@ -115,6 +115,8 @@ def start_run(user, issue, data):
     issue = Issue.issue_objects.select_for_update(of=("self",)).get(pk=issue.pk)
     old = WbsRun.objects.filter(issue=issue, requested_by=user, request_key=key).first()
     if old:
+        if data.get("mode", "update") != old.snapshot.get("request_mode", "update"):
+            raise WbsConflict("Idempotency key already used for another version")
         if data["expected_updated_at"] != old.snapshot["updated_at"]:
             raise WbsConflict("Idempotency key already used for another version")
         return old
@@ -138,7 +140,7 @@ def start_run(user, issue, data):
             raise ValidationError("WBS skill is unavailable or exceeds the input limit")
         snapshot["skill_files"] = files
     if (
-        data.get("mode") == "update"
+        data.get("mode") in ["update", "regenerate"]
         or has_documents
         or WbsRun.objects.filter(issue=issue, snapshot__workflow=2).exists()
     ):

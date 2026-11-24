@@ -19,7 +19,7 @@ const descriptions: Record<keyof typeof inputs, string> = {
   adopt_requirement_revision:
     "Adopt an AI-passed exact document revision for prototype generation, using the expected current target SHA. Poll adoption status before using it. Human overrides are only available in the signed-in Plane UI.",
   start_wbs:
-    "Queue WBS analysis without changing work items. Use mode=update to freeze the current PRD and analyze changes at each task's development stage, including before PRD adoption. Reuse idempotency_key after uncertain responses.",
+    "Queue WBS analysis without changing work items. Use mode=update to freeze the current PRD and analyze changes at each task's development stage, including before PRD adoption. Use mode=regenerate for fresh analysis of an unchanged PRD; queued or running analysis must finish first. Reuse idempotency_key after uncertain responses.",
   get_wbs: "Read WBS execution status and the draft for human review. Omit run_id to list recent runs.",
   review_wbs:
     "Only after explicit human approval of this exact digest and per-task choices: apply changes atomically. Update runs require matching PRD adoption, or source_confirmed for body-only requirements. If choosing update/append instead of cancellation, include the human-reviewed replacement_tasks. Rejection requires a reason. Never infer approval from analysis requests.",

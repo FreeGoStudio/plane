@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Régénérer le WBS",
+    "regenerate_hint": "Analyser à nouveau le PRD actuel. Les modifications des tâches nécessitent une approbation.",
+    "regenerate_in_progress": "L’analyse WBS est en cours. Veuillez attendre avant de régénérer.",
     "scenario_initial": "Première décomposition des tâches",
     "scenario_draft": "Remplacer un brouillon non approuvé",
     "scenario_created": "Ajuster les tâches non commencées",

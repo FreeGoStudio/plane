@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Rigenera WBS",
+    "regenerate_hint": "Analizzare nuovamente il PRD attuale. Le modifiche alle attività richiedono approvazione.",
+    "regenerate_in_progress": "L’analisi WBS è in corso. Attendere prima di rigenerare.",
     "scenario_initial": "Prima suddivisione delle attività",
     "scenario_draft": "Sostituisci una bozza non approvata",
     "scenario_created": "Modifica le attività non iniziate",

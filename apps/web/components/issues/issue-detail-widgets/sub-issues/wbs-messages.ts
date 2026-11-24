@@ -3,6 +3,7 @@
 // See the LICENSE file for details.
 
 const messageKeys = {
+  "WBS analysis is in progress; wait before regenerating": "wbs.regenerate_in_progress",
   "WBS version conflict": "wbs.server_wbs_version_conflict",
   "Active human account required": "wbs.server_active_human_account_required",
   "Workspace membership required": "wbs.server_workspace_membership_required",

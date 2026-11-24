@@ -76,7 +76,7 @@ export function WbsPanel({
   const [choices, setChoices] = useState<Record<string, ChangeAction>>({});
   const [replacements, setReplacements] = useState<Record<string, WbsTask>>({});
   const [bodyConfirmed, setBodyConfirmed] = useState(false);
-  const requestKey = useRef(crypto.randomUUID());
+  const requestKeys = useRef({ update: crypto.randomUUID(), regenerate: crypto.randomUUID() });
   const refresh = useCallback(async () => {
     try {
       setData(await repositoryService.read<Data>(path));
@@ -105,7 +105,7 @@ export function WbsPanel({
     setBodyConfirmed(false);
   }, [run?.id, run?.result_digest, run?.execution?.choices, run?.execution?.replacement_tasks]);
   /** Preserve a submission key on transport failure and show server conflicts. */
-  const submit = async (decision?: "approve" | "reject") => {
+  const submit = async (decision?: "approve" | "reject", mode: "update" | "regenerate" = "update") => {
     if (!data) return;
     setBusy(true);
     setError("");
@@ -139,12 +139,12 @@ export function WbsPanel({
             }
           : {
               expected_updated_at: data.source_version,
-              idempotency_key: requestKey.current,
+              idempotency_key: requestKeys.current[mode],
               confirmed: true,
-              mode: "update",
+              mode,
             }
       );
-      requestKey.current = crypto.randomUUID();
+      requestKeys.current[mode] = crypto.randomUUID();
       setConfirmed(false);
       setApproved(false);
       const refreshed = await refresh();
@@ -218,6 +218,21 @@ export function WbsPanel({
               onClick={() => void submit()}
               label={t("wbs.update_wbs")}
             />
+            {run && (
+              <Button
+                size="sm"
+                stretch="auto"
+                variant="secondary"
+                disabled={
+                  disabled ||
+                  busy ||
+                  !confirmed ||
+                  data.results.some((item) => ["queued", "running"].includes(item.status))
+                }
+                onClick={() => void submit(undefined, "regenerate")}
+                label={t("wbs.regenerate")}
+              />
+            )}
             <Button
               size="sm"
               variant="secondary"
@@ -226,6 +241,7 @@ export function WbsPanel({
               label={t("wbs.refresh")}
               stretch="auto"
             />
+            {run && <p className="text-sm text-secondary">{t("wbs.regenerate_hint")}</p>}
           </>
         }
         {run?.result.summary && <p className="text-sm whitespace-pre-wrap">{run.result.summary}</p>}

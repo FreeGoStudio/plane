@@ -24,6 +24,14 @@ test("WBS updates forward versioned analysis and explicit per-task decisions", a
     idempotency_key: "update-123",
   });
   assert.equal(JSON.parse(f.calls.at(-1)!.body!).mode, "update");
+  await invoke(f.plane, "bearer", "start_wbs", {
+    ...base,
+    mode: "regenerate",
+    confirmed: true,
+    expected_updated_at: "2026-11-23T00:00:00Z",
+    idempotency_key: "regenerate-123",
+  });
+  assert.equal(JSON.parse(f.calls.at(-1)!.body!).mode, "regenerate");
   await invoke(f.plane, "bearer", "review_wbs", {
     ...base,
     run_id: id,

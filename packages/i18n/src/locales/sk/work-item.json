@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Znova vygenerovať WBS",
+    "regenerate_hint": "Znova analyzovať aktuálny PRD. Zmeny úloh vyžadujú schválenie.",
+    "regenerate_in_progress": "Prebieha analýza WBS. Pred opätovným generovaním počkajte.",
     "scenario_initial": "Prvé rozdelenie úloh",
     "scenario_draft": "Nahradiť neschválený návrh",
     "scenario_created": "Upraviť nezačaté úlohy",

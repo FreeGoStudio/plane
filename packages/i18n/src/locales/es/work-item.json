@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Regenerar WBS",
+    "regenerate_hint": "Analizar de nuevo el PRD actual. Los cambios en las tareas requieren aprobación.",
+    "regenerate_in_progress": "El análisis WBS está en curso. Espere antes de regenerarlo.",
     "scenario_initial": "Primer desglose de tareas",
     "scenario_draft": "Sustituir un borrador sin aprobar",
     "scenario_created": "Ajustar tareas no iniciadas",

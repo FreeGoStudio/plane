@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Tạo lại WBS",
+    "regenerate_hint": "Phân tích lại PRD hiện tại. Các thay đổi nhiệm vụ cần được phê duyệt.",
+    "regenerate_in_progress": "Đang phân tích WBS. Vui lòng chờ trước khi tạo lại.",
     "scenario_initial": "Phân chia nhiệm vụ lần đầu",
     "scenario_draft": "Thay thế bản nháp chưa được phê duyệt",
     "scenario_created": "Điều chỉnh nhiệm vụ chưa bắt đầu",

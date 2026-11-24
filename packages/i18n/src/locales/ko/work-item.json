@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "WBS 다시 생성",
+    "regenerate_hint": "현재 PRD를 다시 분석합니다. 작업 변경에는 승인이 필요합니다.",
+    "regenerate_in_progress": "WBS 분석이 진행 중입니다. 완료 후 다시 생성해 주세요.",
     "scenario_initial": "첫 작업 분할",
     "scenario_draft": "미승인 초안 대체",
     "scenario_created": "시작하지 않은 작업 조정",

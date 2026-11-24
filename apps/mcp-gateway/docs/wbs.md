@@ -13,6 +13,10 @@ The Hatchet `plane-wbs-generate` task receives only a business run UUID. A persi
 
 ## Current scope
 
+### Explicit regeneration
+
+The page offers **Regenerate WBS** after an analysis exists. Submit `mode: "regenerate"` with the same version/confirmation fields and a new request key to bypass unchanged-input reuse. Queued or running analysis returns a conflict; retrying the same request key returns its original run. Pending drafts become superseded but remain in history. Generation never changes child tasks, and approval retains all existing task-state protections. This does not add business-source inspection.
+
 ### PRD updates (2026-11-23)
 
 The requirement page now has **Update WBS**. It submits `mode: "update"` through the existing start endpoint. The four cases are initial analysis, replacing an unapproved draft, adjusting unstarted child tasks, and reviewing changes to started work. Mixed task states are processed individually. Analysis never changes child tasks.

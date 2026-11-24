@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Regenerare WBS",
+    "regenerate_hint": "Analizați din nou PRD-ul actual. Modificările sarcinilor necesită aprobare.",
+    "regenerate_in_progress": "Analiza WBS este în curs. Așteptați înainte de regenerare.",
     "scenario_initial": "Prima împărțire a sarcinilor",
     "scenario_draft": "Înlocuiți o schiță neaprobată",
     "scenario_created": "Ajustați sarcinile neîncepute",

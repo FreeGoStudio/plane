@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "重新產生 WBS",
+    "regenerate_hint": "重新分析目前的 PRD，任務變更仍需核准。",
+    "regenerate_in_progress": "WBS 正在分析中，請等待完成後再重新產生。",
     "scenario_initial": "首次任務拆分",
     "scenario_draft": "取代尚未核准的草稿",
     "scenario_created": "調整尚未開發的任務",

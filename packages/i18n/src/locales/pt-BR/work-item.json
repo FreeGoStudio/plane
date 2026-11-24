@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Gerar WBS novamente",
+    "regenerate_hint": "Analisar novamente o PRD atual. Alterações nas tarefas exigem aprovação.",
+    "regenerate_in_progress": "A análise WBS está em andamento. Aguarde antes de gerar novamente.",
     "scenario_initial": "Primeira divisão de tarefas",
     "scenario_draft": "Substituir rascunho não aprovado",
     "scenario_created": "Ajustar tarefas não iniciadas",

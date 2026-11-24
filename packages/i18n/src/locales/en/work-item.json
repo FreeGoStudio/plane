@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Regenerate WBS",
+    "regenerate_hint": "Analyze the current PRD again. Task changes require approval.",
+    "regenerate_in_progress": "WBS analysis is in progress. Wait before regenerating.",
     "scenario_initial": "First task breakdown",
     "scenario_draft": "Replace an unapproved draft",
     "scenario_created": "Adjust tasks that have not started",

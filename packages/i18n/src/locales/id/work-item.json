@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "Buat ulang WBS",
+    "regenerate_hint": "Analisis kembali PRD saat ini. Perubahan tugas memerlukan persetujuan.",
+    "regenerate_in_progress": "Analisis WBS sedang berlangsung. Tunggu sebelum membuat ulang.",
     "scenario_initial": "Pembagian tugas pertama",
     "scenario_draft": "Ganti draf yang belum disetujui",
     "scenario_created": "Sesuaikan tugas yang belum dimulai",

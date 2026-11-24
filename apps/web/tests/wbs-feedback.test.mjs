@@ -18,13 +18,18 @@ const { outputText } = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
 });
 
-function find(node) {
-  if (node?.props?.label === "wbs.update_wbs") return node;
-  return [node?.props?.children].flat(Infinity).filter(Boolean).map(find).find(Boolean);
+function find(node, label = "wbs.update_wbs") {
+  if (node?.props?.label === label) return node;
+  return [node?.props?.children]
+    .flat(Infinity)
+    .filter(Boolean)
+    .map((child) => find(child, label))
+    .find(Boolean);
 }
 
 // Exercise the component's submit callback with isolated hooks and service boundaries.
-async function clickUpdate(previous, returned, failure) {
+async function clickUpdate(previous, returned, failure, mode = "update", options = {}) {
+  const writes = [];
   const toasts = [];
   const states = [];
   const data = { results: previous ? [previous] : [], source_version: "v1", csrf_token: "csrf", can_start: true };
@@ -33,7 +38,7 @@ async function clickUpdate(previous, returned, failure) {
     react: {
       useState: (initial) => {
         const slot = index++;
-        states[slot] = slot === 0 ? data : initial;
+        states[slot] = slot === 0 ? data : slot === 4 ? (options.confirmed ?? true) : initial;
         return [
           states[slot],
           (value) => {
@@ -52,7 +57,8 @@ async function clickUpdate(previous, returned, failure) {
     "@/services/repository.service": {
       repositoryBase: () => "/api/",
       repositoryService: {
-        write: async () => {
+        write: async (...args) => {
+          writes.push(args);
           if (failure === "write") throw Error("Offline");
           if (failure && typeof failure === "object") throw Object.assign(Error("Request failed"), failure);
           return returned;
@@ -70,10 +76,21 @@ async function clickUpdate(previous, returned, failure) {
   };
   const exports = {};
   runInNewContext(outputText, { exports, require: (name) => dependencies[name], crypto });
-  const tree = exports.WbsPanel({ workspaceSlug: "test", projectId: "project", issueId: "issue", disabled: false });
-  find(tree).props.onClick();
+  const tree = exports.WbsPanel({
+    workspaceSlug: "test",
+    projectId: "project",
+    issueId: "issue",
+    disabled: options.disabled ?? false,
+  });
+  const button = find(tree, mode === "regenerate" ? "wbs.regenerate" : "wbs.update_wbs");
+  if (button && !button.props.disabled) button.props.onClick();
   await setImmediate();
-  return { toasts, error: states[1], errorDetails: states[2], tree };
+  await (options.moreClicks || []).reduce(async (previousClick, label) => {
+    await previousClick;
+    find(tree, label).props.onClick();
+    await setImmediate();
+  }, Promise.resolve());
+  return { toasts, error: states[1], errorDetails: states[2], tree, writes };
 }
 
 for (const status of ["queued", "running", "ready"]) {
@@ -123,4 +140,65 @@ test("unrecognized errors retain diagnostics alongside the localized fallback", 
   const { error, errorDetails } = await clickUpdate(undefined, undefined, { response: { data: details } });
   assert.equal(error, "wbs.server_error_unknown");
   assert.equal(errorDetails, JSON.stringify(details));
+});
+
+test("regenerate submits explicit mode and reports fresh analysis", async () => {
+  const { writes, toasts } = await clickUpdate(
+    { id: "old", status: "ready", result: {} },
+    { id: "new", status: "queued" },
+    undefined,
+    "regenerate"
+  );
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0][3].mode, "regenerate");
+  assert.equal(writes[0][3].confirmed, true);
+  assert.equal(toasts[0].message, "wbs.update_submitted");
+});
+for (const status of ["queued", "running"]) {
+  test(`regenerate disabled during ${status}`, async () => {
+    const { writes, tree } = await clickUpdate({ id: "old", status, result: {} }, undefined, undefined, "regenerate");
+    assert.equal(find(tree, "wbs.regenerate").props.disabled, true);
+    assert.equal(writes.length, 0);
+  });
+}
+for (const options of [{ confirmed: false }, { disabled: true }]) {
+  test(`regenerate respects confirmation and permissions: ${JSON.stringify(options)}`, async () => {
+    const { writes } = await clickUpdate(
+      { id: "old", status: "ready", result: {} },
+      undefined,
+      undefined,
+      "regenerate",
+      options
+    );
+    assert.equal(writes.length, 0);
+  });
+}
+test("regenerate is hidden before first analysis", async () => {
+  const { tree, writes } = await clickUpdate(undefined, undefined, undefined, "regenerate");
+  assert.equal(find(tree, "wbs.regenerate"), undefined);
+  assert.equal(writes.length, 0);
+});
+test("regenerate conflict is localized", async () => {
+  const { error, toasts } = await clickUpdate(
+    { id: "old", status: "ready", result: {} },
+    undefined,
+    { response: { data: { detail: "WBS analysis is in progress; wait before regenerating" } } },
+    "regenerate"
+  );
+  assert.equal(error, "wbs.regenerate_in_progress");
+  assert.equal(toasts.length, 0);
+});
+
+test("uncertain regeneration retries its key while update uses a separate key", async () => {
+  const { writes, toasts } = await clickUpdate(
+    { id: "old", status: "ready", result: {} },
+    undefined,
+    "write",
+    "regenerate",
+    { moreClicks: ["wbs.update_wbs", "wbs.regenerate"] }
+  );
+  assert.equal(writes.length, 3);
+  assert.equal(writes[0][3].idempotency_key, writes[2][3].idempotency_key);
+  assert.notEqual(writes[0][3].idempotency_key, writes[1][3].idempotency_key);
+  assert.equal(toasts.length, 0);
 });

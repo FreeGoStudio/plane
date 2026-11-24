@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "WBS neu generieren",
+    "regenerate_hint": "Das aktuelle PRD erneut analysieren. Aufgabenänderungen erfordern eine Genehmigung.",
+    "regenerate_in_progress": "Die WBS-Analyse läuft. Bitte vor der erneuten Generierung warten.",
     "scenario_initial": "Erste Aufgabenaufteilung",
     "scenario_draft": "Nicht genehmigten Entwurf ersetzen",
     "scenario_created": "Noch nicht begonnene Aufgaben anpassen",

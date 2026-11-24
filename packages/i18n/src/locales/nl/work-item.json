@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "WBS opnieuw genereren",
+    "regenerate_hint": "Analyseer het huidige PRD opnieuw. Taakwijzigingen vereisen goedkeuring.",
+    "regenerate_in_progress": "De WBS-analyse is bezig. Wacht voordat u opnieuw genereert.",
     "scenario_initial": "Eerste taakverdeling",
     "scenario_draft": "Niet-goedgekeurd concept vervangen",
     "scenario_created": "Nog niet gestarte taken aanpassen",

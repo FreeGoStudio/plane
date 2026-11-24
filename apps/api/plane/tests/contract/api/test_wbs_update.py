@@ -613,3 +613,105 @@ def test_mixed_task_stages_apply_individually_without_touching_completed_work(wo
     assert pending.name == "Implement login page" and started.name == "Existing"
     assert completed.updated_at == completed_version
     assert Issue.objects.filter(parent=requirement).count() == 4
+
+
+@pytest.mark.parametrize("status", ["ready", "completed", "failed", "rejected"])
+def test_regenerate_unchanged_input_preserves_history_and_tasks(world, requirement, status):
+    from plane.db.models import WbsRun
+
+    child = child_for(requirement)
+    old = ready(world[0], requirement, child, "update")
+    old.status = status
+    old.save()
+    before = list(Issue.objects.filter(parent=requirement).values())
+    data = {**payload(requirement, "regenerate-123"), "mode": "regenerate"}
+    new = start_run(world[0], requirement, data)
+    assert new.pk != old.pk and new.status == "queued"
+    assert new.snapshot["workflow"] == 2
+    assert new.snapshot["source"] == old.snapshot["source"]
+    assert new.snapshot["existing_children"] == old.snapshot["existing_children"]
+    assert new.snapshot["previous_run_id"] == str(old.pk)
+    assert start_run(world[0], requirement, data).pk == new.pk
+    assert WbsRun.objects.filter(issue=requirement).count() == 2
+    old.refresh_from_db()
+    assert old.status == ("superseded" if status == "ready" else status)
+    assert old.result == result(child, "update")
+    assert list(Issue.objects.filter(parent=requirement).values()) == before
+
+
+@pytest.mark.parametrize("status", ["queued", "running"])
+def test_regenerate_blocks_active_analysis(world, requirement, status):
+    from plane.db.models import WbsRun
+
+    old = start(world[0], requirement)
+    old.status = status
+    old.save()
+    with pytest.raises(WbsConflict, match="in progress"):
+        start_run(world[0], requirement, {**payload(requirement, "regenerate-456"), "mode": "regenerate"})
+    assert WbsRun.objects.filter(issue=requirement).count() == 1
+    old.refresh_from_db()
+    assert old.status == status
+
+
+def test_regenerate_request_key_cannot_replay_update(world, requirement):
+    old = ready(world[0], requirement)
+    with pytest.raises(WbsConflict, match="Idempotency"):
+        start_run(world[0], requirement, {**payload(requirement, old.request_key), "mode": "regenerate"})
+
+
+def test_regenerate_failure_does_not_change_children(world, requirement):
+    child = child_for(requirement)
+    ready(world[0], requirement, child, "update")
+    before = list(Issue.objects.filter(parent=requirement).values())
+    row = start_run(world[0], requirement, {**payload(requirement, "regenerate-789"), "mode": "regenerate"})
+    with patch("plane.singularity.wbs_generation.generate", side_effect=ValueError("invalid draft")):
+        with pytest.raises(RuntimeError, match="generation failed"):
+            execute(row.pk, "regenerate-worker")
+    assert list(Issue.objects.filter(parent=requirement).values()) == before
+
+
+def test_concurrent_regeneration_creates_one_run(world, requirement):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+    from django.db import close_old_connections
+    from plane.db.models import WbsRun
+
+    ready(world[0], requirement)
+    barrier = Barrier(2)
+
+    def request(key):
+        close_old_connections()
+        try:
+            barrier.wait(timeout=10)
+            return start_run(world[0], requirement, {**payload(requirement, key), "mode": "regenerate"}).pk
+        except WbsConflict:
+            return None
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        outcomes = list(pool.map(request, ["concurrent-111", "concurrent-222"]))
+    assert sum(value is not None for value in outcomes) == 1
+    assert WbsRun.objects.filter(issue=requirement).count() == 2
+
+
+@pytest.mark.parametrize("change", [{"confirmed": False}, {"expected_updated_at": "2000-01-01T00:00:00Z"}])
+def test_regenerate_retains_confirmation_and_version_guards(world, requirement, change):
+    from rest_framework.exceptions import APIException
+    from plane.db.models import WbsRun
+
+    ready(world[0], requirement)
+    with pytest.raises(APIException):
+        start_run(world[0], requirement, {**payload(requirement, "guard-123"), "mode": "regenerate", **change})
+    assert WbsRun.objects.filter(issue=requirement).count() == 1
+
+
+def test_regenerate_retains_membership_guard(world, requirement):
+    from rest_framework.exceptions import PermissionDenied
+    from plane.db.models import ProjectMember, WbsRun
+
+    ready(world[0], requirement)
+    ProjectMember.objects.filter(project=requirement.project, member=world[0]).update(role=5)
+    with pytest.raises(PermissionDenied):
+        start_run(world[0], requirement, {**payload(requirement, "permission-123"), "mode": "regenerate"})
+    assert WbsRun.objects.filter(issue=requirement).count() == 1

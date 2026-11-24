@@ -184,14 +184,22 @@ def snapshot_for(issue, previous):
 
 
 def start_update(user, issue, data, skill_files):
+    """Reuse ordinary updates; explicitly regenerate only when no worker is active."""
+    regenerate = data.get("mode") == "regenerate"
+    if regenerate and WbsRun.objects.filter(issue=issue, status__in=["queued", "running"]).exists():
+        raise WbsConflict("WBS analysis is in progress; wait before regenerating")
     previous = WbsRun.objects.filter(issue=issue).order_by("-created_at").first()
     snapshot = snapshot_for(issue, previous)
+    if regenerate:
+        snapshot["request_mode"] = "regenerate"
     if skill_files:
         snapshot["skill_files"] = skill_files
     active = WbsRun.objects.filter(issue=issue, status__in=["queued", "running", "ready"])
     for old in active:
         if (
-            old.pk == previous.pk
+            not regenerate
+            and previous is not None
+            and old.pk == previous.pk
             and old.snapshot.get("source") == snapshot["source"]
             and old.snapshot["existing_children"] == snapshot["existing_children"]
         ):

@@ -467,6 +467,9 @@
     }
   },
   "wbs": {
+    "regenerate": "WBS'yi yeniden oluştur",
+    "regenerate_hint": "Mevcut PRD'yi yeniden analiz edin. Görev değişiklikleri onay gerektirir.",
+    "regenerate_in_progress": "WBS analizi devam ediyor. Yeniden oluşturmadan önce bekleyin.",
     "scenario_initial": "İlk görev ayrıştırması",
     "scenario_draft": "Onaylanmamış taslağı değiştir",
     "scenario_created": "Başlamamış görevleri düzenle",
