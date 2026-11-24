@@ -86,7 +86,7 @@ test("disabled and unknown-purpose repositories remain accessible, and binding t
 });
 const button = ({ label, children, stretch: _stretch, variant: _variant, ...props }) =>
   React.createElement("button", props, label ?? children);
-function renderPage(section, overrides = {}, repositoryRows = rows) {
+function renderPage(section, overrides = {}, repositoryRows = rows, callback = "") {
   const currentInfo = { ...info, ...overrides };
   const mocks = {
     swr: {
@@ -98,10 +98,12 @@ function renderPage(section, overrides = {}, repositoryRows = rows) {
             : repositoryRows,
       }),
     },
-    "react-router": { useSearchParams: () => [new URLSearchParams(`section=${section}`)] },
+    "react-router": { useSearchParams: () => [new URLSearchParams(`section=${section}${callback}`)] },
     "@makeplane/propel/components/button": { Button: button },
     "@makeplane/propel/components/input": { Input: "input" },
-    "@plane/i18n": { useTranslation: () => ({ t: (key) => key }) },
+    "@plane/i18n": {
+      useTranslation: () => ({ t: (key) => (key.startsWith("repository_ui.results.") ? `translated:${key}` : key) }),
+    },
     "@/components/settings/content-wrapper": {
       SettingsContentWrapper: ({ children }) => React.createElement("main", null, children),
     },
@@ -115,6 +117,7 @@ function renderPage(section, overrides = {}, repositoryRows = rows) {
         React.createElement("span", { "data-add-section": addSection }, "repository_ui.add"),
     },
     "./repository-sections": sections,
+    "./repository-oauth-setup": { RepositoryOAuthSetup: () => null },
     "@/services/repository.service": { repositoryBase: () => "/test/", repositoryService: {} },
   };
   const { ProjectRepositoriesSettings } = load("./repositories.tsx", mocks);
@@ -143,6 +146,15 @@ test("code list renders both names, expired connection status and collapsed deta
     assert.match(html, new RegExp(`repository_ui.${action}`));
   assert.match(html, /member-permissions/);
 });
+
+for (const outcome of ["connected", "upstream_resource_invisible", "cancelled"]) {
+  test(`personal OAuth return ${outcome} expands the target repository with local feedback`, () => {
+    const html = renderPage("development", {}, rows, `&repository=code&connection=${outcome}`);
+    assert.match(html, /id="repository-details-code">/);
+    assert.doesNotMatch(html, /id="repository-details-code" hidden/);
+    assert.match(html, new RegExp(`repository-details-code[\\s\\S]*translated:repository_ui.results.${outcome}`));
+  });
+}
 test("default document binding retains change-binding control and candidates", () => {
   const html = renderPage("documentation");
   assert.match(html, /repository_ui.change_binding/);
@@ -335,4 +347,105 @@ test("repository address example uses GitLab", () => {
   );
   assert.match(html, /placeholder="https:\/\/gitlab.com\/group\/repository"/);
   assert.doesNotMatch(html, /github.com/);
+});
+
+for (const outcome of ["success", "failure"]) {
+  test(`registration ${outcome}: local feedback, no credential request, double submit suppressed`, async () => {
+    const state = ["https://gitlab.com/team/repo", false, "", false];
+    let cursor = 0;
+    const ref = { current: false };
+    let resolveWrite;
+    let rejectWrite;
+    let calls = 0;
+    let payload;
+    const request = new Promise((resolve, reject) => {
+      resolveWrite = resolve;
+      rejectWrite = reject;
+    });
+    const { RepositoryAdd } = load("./repository-add.tsx", {
+      react: {
+        ...React,
+        useRef: () => ref,
+        useState: () => {
+          const index = cursor++;
+          return [
+            state[index],
+            (value) => {
+              state[index] = value;
+            },
+          ];
+        },
+      },
+      "@makeplane/propel/components/button": { Button: button },
+      "@makeplane/propel/components/input": { Input: "input", InputGroup: "div" },
+      "@plane/i18n": { useTranslation: () => ({ t: (key) => `translated:${key}` }) },
+      "@/services/repository.service": {
+        repositoryService: {
+          write: (...args) => {
+            calls++;
+            payload = args[3];
+            return request;
+          },
+        },
+      },
+    });
+    function render() {
+      cursor = 0;
+      return RepositoryAdd({
+        base: "/test/",
+        csrf: "csrf",
+        section: "development",
+        busy: false,
+        onAdded: async () => {},
+      });
+    }
+    const tree = render();
+    const form = tree.props.children.find((child) => child?.type === "form");
+    form.props.onSubmit({ preventDefault() {} });
+    form.props.onSubmit({ preventDefault() {} });
+    assert.equal(calls, 1);
+    assert.deepEqual(payload, { url: state[0], purpose: "development", method: "register" });
+    assert.equal(state[1], true);
+    if (outcome === "success") resolveWrite({ status: "pending", purpose: "development" });
+    else rejectWrite({ isAxiosError: true, response: { data: { error: "invalid_repository_url" } } });
+    await new Promise((resolve) => setImmediate(resolve));
+    const html = renderToStaticMarkup(render());
+    assert.equal(state[1], false);
+    assert.match(html, new RegExp(outcome === "success" ? 'role="status"' : 'role="alert"'));
+    assert.match(html, new RegExp(outcome === "success" ? "registration.pending" : "invalid_repository_url"));
+    assert.equal(state[0], outcome === "success" ? "" : "https://gitlab.com/team/repo");
+    assert.doesNotMatch(html, /name="token"|oauth_setup|connection_options/);
+  });
+}
+
+test("registration status survives reload and shows retry next to the affected address", () => {
+  const { RepositoryAdd } = load("./repository-add.tsx", {
+    "@makeplane/propel/components/button": { Button: button },
+    "@makeplane/propel/components/input": { Input: "input", InputGroup: "div" },
+    "@plane/i18n": { useTranslation: () => ({ t: (key) => `translated:${key}` }) },
+    "@/services/repository.service": { repositoryService: {} },
+  });
+  const html = renderToStaticMarkup(
+    React.createElement(RepositoryAdd, {
+      base: "/test/",
+      csrf: "csrf",
+      section: "development",
+      busy: false,
+      onAdded: async () => {},
+      registrations: [
+        {
+          id: "pending",
+          path: "team/repo",
+          purpose: "development",
+          status: "waiting_access",
+          error_code: "upstream_resource_invisible",
+          url: "https://gitlab.com/team/repo",
+        },
+      ],
+    })
+  );
+  assert.match(html, /team\/repo/);
+  assert.match(html, /registration.waiting_access/);
+  assert.match(html, /registration.retry/);
+  assert.match(html, /registration.access_hint/);
 });

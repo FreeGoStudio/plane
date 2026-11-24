@@ -105,6 +105,19 @@
       "create": "Utwórz aplikację OAuth",
       "gitlab_steps": "Wybierz Add new application, Confidential i read_api. Następnie wprowadź Application ID i Secret poniżej.",
       "private_networks": "Dozwolone sieci prywatne (opcjonalnie, CIDR oddzielone przecinkami)"
+    },
+    "registration": {
+      "hint": "Register a project repository without connecting a personal account. Platform access and member permissions are checked in the background.",
+      "pending": "Registered · checking platform access",
+      "waiting_access": "Registered · platform access needs attention",
+      "syncing": "Platform connected · syncing members",
+      "sync_error": "Platform connected · member sync needs attention",
+      "ready": "Platform connected · members synchronized",
+      "access_hint": "Grant the platform service account access to this repository, or check the address and platform configuration, then retry.",
+      "sync_hint": "Check member identities and the platform account’s permission to manage members. Existing external permissions are preserved.",
+      "retry": "Retry verification",
+      "new_authorization": "Authorize another account",
+      "disabled": "Repository disabled"
     }
   }
 }

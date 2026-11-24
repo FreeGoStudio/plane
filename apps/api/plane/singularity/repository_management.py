@@ -27,6 +27,7 @@ from plane.db.models import (
     RepositoryProvisioning,
     RepositoryMemberGrant,
     RepositoryManagementEvent,
+    RepositoryRegistration,
 )
 from .repository_bindings import ROLES, binding_data
 from .repository_transport import RepositoryError, RepositoryTransport
@@ -283,7 +284,23 @@ def active_members(project):
 
 def sync_grant(grant, client, desired):
     repository = grant.repository
-    client.repository(repository.external_id)  # Fixed group boundary before permission writes.
+    manual = RepositoryRegistration.objects.filter(repository=repository, instance=client.instance).exists()
+    if manual:
+        initialization = RepositoryProvisioning.objects.filter(
+            project=repository.project, instance=client.instance
+        ).first()
+        if initialization and any(
+            str(slot.get("external_id")) == repository.external_id for slot in initialization.slots.values()
+        ):
+            manual = False
+    if manual:
+        remote = client.call("GET", "/projects/" + quote(repository.external_id, safe=""))
+        if str(remote.get("id")) != repository.external_id:
+            raise RepositoryError("repository_identity_changed", 409)
+    else:
+        client.repository(repository.external_id)  # Fixed group boundary for built-in repositories.
+        if not hasattr(client, "creation_threshold"):
+            client.group()
     identity = external_user(grant.user, repository.instance)
     if not grant.external_user_id:
         if not identity:
@@ -295,7 +312,7 @@ def sync_grant(grant, client, desired):
         raise RepositoryError("repository_member_identity_changed", 409)
     root = f"/projects/{quote(repository.external_id, safe='')}/members"
     suffix = quote(grant.external_user_id, safe="")
-    if desired:
+    if desired and not manual:
         group_member = client.optional(f"/groups/{client.group_id}/members/all/{suffix}")
         if group_member and int(group_member.get("access_level", 0)) >= client.creation_threshold:
             raise RepositoryError("execution_identity_has_group_creation_rights", 409)
@@ -343,7 +360,7 @@ def sync_members(row, client):
     project = row.project
     binding = ProjectRepositoryBinding.objects.filter(project=project).first()
     ids = [getattr(binding, role + "_repository_id", None) for role in ROLES] if binding else []
-    repositories = ProjectRepository.objects.filter(project=project, enabled=True).filter(
+    repositories = ProjectRepository.objects.filter(project=project, enabled=True, registrations__isnull=True).filter(
         Q(pk__in=ids) | Q(purpose="development")
     )
     members = {member.member_id: member for member in active_members(project)}
@@ -351,9 +368,9 @@ def sync_members(row, client):
         for member in members.values():
             RepositoryMemberGrant.objects.get_or_create(repository=repository, user=member.member)
     target_ids = set(repositories.values_list("pk", flat=True))
-    grants = RepositoryMemberGrant.objects.filter(repository__project=project).select_related(
-        "repository__instance", "user"
-    )
+    grants = RepositoryMemberGrant.objects.filter(
+        repository__project=project, repository__registrations__isnull=True
+    ).select_related("repository__instance", "user")
     for grant in grants:
         if grant.repository.instance_id != client.instance.pk:
             RepositoryMemberGrant.objects.filter(pk=grant.pk).update(

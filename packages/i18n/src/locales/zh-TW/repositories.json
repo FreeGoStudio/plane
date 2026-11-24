@@ -105,6 +105,19 @@
       "create": "前往建立 OAuth 應用程式",
       "gitlab_steps": "選擇 Add new application，勾選 Confidential 和 read_api。建立後將 Application ID 和 Secret 填回下方。",
       "private_networks": "允許存取的內部網段（選填，CIDR 格式，以逗號分隔）"
+    },
+    "registration": {
+      "hint": "登記專案儲存庫不需要個人授權。平台會在背景驗證存取並同步專案成員權限。",
+      "pending": "已登記 · 正在驗證平台存取",
+      "waiting_access": "已登記 · 待設定平台存取",
+      "syncing": "平台已連線 · 正在同步成員",
+      "sync_error": "平台已連線 · 成員同步待處理",
+      "ready": "平台已連線 · 成員同步完成",
+      "access_hint": "請授予平台服務帳號此儲存庫的存取權，或檢查儲存庫網址與平台設定後重試。",
+      "sync_hint": "請檢查成員身分及平台帳號管理成員的權限；既有外部授權將保留。",
+      "retry": "重新驗證",
+      "new_authorization": "授權其他帳號",
+      "disabled": "Repository disabled"
     }
   }
 }

@@ -56,6 +56,27 @@ class ProjectRepository(models.Model):
         ]
 
 
+class RepositoryRegistration(models.Model):
+    """Durable manual registration, independent of any member's credentials."""
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    project = models.ForeignKey("db.Project", on_delete=models.CASCADE)
+    instance = models.ForeignKey(RepositoryInstance, on_delete=models.PROTECT)
+    path = models.CharField(max_length=512)
+    purpose = models.CharField(max_length=16)
+    requested_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    repository = models.ForeignKey(ProjectRepository, null=True, on_delete=models.PROTECT, related_name="registrations")
+    status = models.CharField(max_length=24, default="pending")
+    error_code = models.CharField(max_length=80, blank=True)
+    next_attempt_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["project", "instance", "path"], name="unique_repository_registration")
+        ]
+
+
 class ProjectRepositoryBinding(models.Model):
     """One authoritative pair of repository slots per Plane project."""
 

@@ -115,18 +115,27 @@ def finish_add(project, owner, instance, metadata, purpose, credential=None):
 class AddInput(StrictSerializer):
     url = serializers.CharField(max_length=2048)
     purpose = serializers.ChoiceField(choices=["development", "reference", "documentation", "prototype"])
-    method = serializers.ChoiceField(choices=["inspect", "oauth", "existing", "anonymous", "token"])
+    method = serializers.ChoiceField(choices=["register", "inspect", "oauth", "existing", "anonymous", "token"])
     credential_id = serializers.UUIDField(required=False)
     token = serializers.CharField(max_length=8192, required=False, trim_whitespace=False, write_only=True)
 
 
 class AddRepository(RepositoryAPI):
+    def get(self, request, slug, project_id):
+        from .repository_registration import registrations
+
+        return Response(registrations(self.project(request, slug, project_id)))
+
     def post(self, request, slug, project_id):
         """Inspect a URL, start consent, or verify access before saving the new repository."""
         from .repository_oauth import oauth_config, start_add
 
         project = self.project(request, slug, project_id, admin=True)
         data = validated(AddInput, request.data)
+        if data["method"] == "register":
+            from .repository_registration import register
+
+            return Response(register(project, request.user, data["url"], data["purpose"]), status=202)
         try:
             host, path = resolve_address(data["url"])
         except RepositoryError as error:

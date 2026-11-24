@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.response import Response
-from plane.db.models import ProjectRepository, RepositoryProvisioning, RepositoryMemberGrant
+from plane.db.models import ProjectRepository, RepositoryProvisioning, RepositoryMemberGrant, RepositoryRegistration
 from .repository_api import RepositoryAPI, StrictSerializer, validated
 from .repository_transport import RepositoryError
 from .repository_management import (
@@ -93,7 +93,10 @@ class RepositoryMembers(RepositoryAPI):
         if repository.instance_id != instance.pk or repository.purpose == "reference":
             raise RepositoryError("repository_outside_managed_instance", 409)
         data = validated(GrantInput, request.data)
-        row = RepositoryProvisioning.objects.filter(project=project).first()
+        row = (
+            RepositoryRegistration.objects.filter(repository=repository).first()
+            or RepositoryProvisioning.objects.filter(project=project).first()
+        )
         if row is None:
             raise RepositoryError("initialize_repositories_first", 409)
         member = active_members(project).filter(member_id=user_id).first()

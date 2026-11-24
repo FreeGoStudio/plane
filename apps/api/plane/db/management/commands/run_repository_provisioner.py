@@ -7,7 +7,8 @@ from pathlib import Path
 from django.core.management.base import BaseCommand
 from django.db import close_old_connections
 from django.utils import timezone
-from plane.db.models import RepositoryProvisioning
+from plane.db.models import RepositoryProvisioning, RepositoryRegistration
+from plane.singularity.repository_registration import process_registration
 from plane.singularity.repository_management import management_instance, GitLabRepositoryManager, process_project
 
 
@@ -23,7 +24,12 @@ class Command(BaseCommand):
             close_old_connections()
             instance, group_id = management_instance()
             client = GitLabRepositoryManager(instance, group_id, Path(options["secret_file"]).read_text().strip())
-            client.group()
+            for pk in (
+                RepositoryRegistration.objects.filter(next_attempt_at__lte=timezone.now())
+                .order_by("next_attempt_at")
+                .values_list("pk", flat=True)[:100]
+            ):
+                process_registration(pk, client)
             ids = list(
                 RepositoryProvisioning.objects.filter(next_attempt_at__lte=timezone.now())
                 .exclude(status="blocked")

@@ -488,6 +488,7 @@ class ProjectRepositoryConnections(RepositoryAccess):
             return {
                 "id": str(host.pk),
                 "name": host.name,
+                "web_url": host.web_url,
                 "provider": host.provider,
                 "oauth_available": available,
             }
@@ -504,6 +505,29 @@ class ProjectRepositoryConnections(RepositoryAccess):
 
     def post(self, request, slug, project_id, pk):
         row = self.row(request, slug, project_id, pk)
+        if request.data.get("method") == "connect" and set(request.data) == {"method"}:
+            from .repository_add import available_credentials
+            from .repository_connection import usable_connection
+            from .repository_managed import managed_instance
+            from .repository_oauth import start
+
+            selection = RepositorySelection.objects.filter(owner=request.user, repository=row).first()
+            choices = available_credentials(request.user, row.instance)
+            if selection or managed_instance(row.instance):
+                # Explicit reconnect clears only this owner's opt-out.
+                RepositoryConnectionOptOut.objects.filter(owner=request.user, repository=row).delete()
+                credential, token = selected_credential(request.user, row)
+            elif choices:
+                credential = usable_connection(request.user, choices[0])
+                token = unseal(credential)
+            else:
+                return Response(start(request, row))
+            RepositoryProvider(row.instance, token).metadata(row.external_id)
+            RepositorySelection.objects.update_or_create(
+                owner=request.user, repository=row, defaults={"credential": credential, "anonymous": credential is None}
+            )
+            self.credential = credential
+            return Response({"connected": True})
         if request.data.get("method") == "oauth" and set(request.data) == {"method"}:
             from .repository_oauth import start
 

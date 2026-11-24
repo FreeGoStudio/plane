@@ -105,6 +105,19 @@
       "create": "前往创建 OAuth 应用",
       "gitlab_steps": "选择 Add new application，勾选 Confidential 和 read_api。创建后将 Application ID 和 Secret 填回下方。",
       "private_networks": "允许访问的内网网段（选填，CIDR 格式，逗号分隔）"
+    },
+    "registration": {
+      "hint": "登记项目仓库不需要个人授权。平台将在后台验证访问并同步项目成员权限。",
+      "pending": "已登记 · 正在验证平台访问",
+      "waiting_access": "已登记 · 待配置平台访问",
+      "syncing": "平台已连接 · 正在同步成员",
+      "sync_error": "平台已连接 · 成员同步待处理",
+      "ready": "平台已连接 · 成员同步完成",
+      "access_hint": "请为平台服务账号授予此仓库访问权限，或检查仓库地址和平台配置，然后重试。",
+      "sync_hint": "请检查成员身份和平台账号管理成员的权限；已有外部授权将保留。",
+      "retry": "重新验证",
+      "new_authorization": "授权其他账号",
+      "disabled": "仓库已停用"
     }
   }
 }

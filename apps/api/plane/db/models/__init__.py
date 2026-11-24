@@ -97,6 +97,7 @@ from .repository_management import RepositoryProvisioning, RepositoryMemberGrant
 from .delegation import Delegation, DelegationCode, DelegationToken, DiscussionReceipt, DelegationAudit, APIMutationReceipt
 from .company_account import CompanyAccount
 from .repository import (
+    RepositoryRegistration,
     RepositoryInstance,
     RepositoryOAuthApplication,
     ManagedRepositoryConnection,

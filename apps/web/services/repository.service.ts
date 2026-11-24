@@ -19,11 +19,21 @@ export type Repository = {
   credential_id: string | null;
   anonymous: boolean;
 };
+export type RepositoryRegistration = {
+  id: string;
+  instance_id: string;
+  path: string;
+  url: string;
+  purpose: string;
+  status: "pending" | "waiting_access" | "syncing" | "sync_error" | "ready" | "disabled";
+  error_code: string;
+  repository_id: string | null;
+};
 export type ConnectionInfo = {
   csrf_token: string;
   can_manage: boolean;
   can_configure_oauth?: boolean;
-  hosts: { id: string; name: string; provider: string; oauth_available: boolean }[];
+  hosts: { id: string; name: string; provider: string; web_url: string; oauth_available: boolean }[];
   credentials: {
     id: string;
     instance_id: string;

@@ -105,6 +105,19 @@
       "create": "OAuth アプリを作成",
       "gitlab_steps": "Add new application を選び、Confidential と read_api を有効にしてください。作成後、Application ID と Secret を下に入力してください。",
       "private_networks": "許可するプライベートネットワーク（任意、CIDR をカンマ区切りで入力）"
+    },
+    "registration": {
+      "hint": "Register a project repository without connecting a personal account. Platform access and member permissions are checked in the background.",
+      "pending": "Registered · checking platform access",
+      "waiting_access": "Registered · platform access needs attention",
+      "syncing": "Platform connected · syncing members",
+      "sync_error": "Platform connected · member sync needs attention",
+      "ready": "Platform connected · members synchronized",
+      "access_hint": "Grant the platform service account access to this repository, or check the address and platform configuration, then retry.",
+      "sync_hint": "Check member identities and the platform account’s permission to manage members. Existing external permissions are preserved.",
+      "retry": "Retry verification",
+      "new_authorization": "Authorize another account",
+      "disabled": "Repository disabled"
     }
   }
 }

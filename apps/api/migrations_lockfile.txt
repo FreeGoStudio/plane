@@ -4,6 +4,6 @@
 # A merge conflict here means another PR added a migration to the same app first:
 # merge preview, delete your migration, and run makemigrations again.
 
-db: 0144_gitlab_only_repository_connections
+db: 0145_manual_repository_registration
 
 license: 0006_instance_is_current_version_deprecated

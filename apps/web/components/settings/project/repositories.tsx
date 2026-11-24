@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  * See the LICENSE file for details.
  */
-import { useState, type ComponentProps } from "react";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { useSearchParams } from "react-router";
 import useSWR from "swr";
 import { isAxiosError } from "axios";
@@ -14,6 +14,7 @@ import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 import { SettingsHeading } from "@/components/settings/heading";
 import { repositorySection, selectedRepositorySection, type RepositoryBindings } from "./repository-sections";
 import { RepositoryAdd } from "./repository-add";
+import { RepositoryOAuthSetup } from "./repository-oauth-setup";
 import { RepositoryInitialization, RepositoryMemberPermissions } from "./repository-management";
 import {
   repositoryService as api,
@@ -21,6 +22,7 @@ import {
   type Repository,
   type ConnectionInfo,
   type RepositoryContent,
+  type RepositoryRegistration,
 } from "@/services/repository.service";
 
 function Button({
@@ -148,9 +150,38 @@ export function ProjectRepositoriesSettings({
     mutate: refreshBindings,
   } = useSWR<RepositoryBindings>(base + "repository-bindings/", (url: string) => api.read<RepositoryBindings>(url));
   const section = selectedRepositorySection(params, rows, bindings);
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const {
+    data: registrations,
+    error: registrationError,
+    mutate: refreshRegistrations,
+  } = useSWR<RepositoryRegistration[]>(
+    base + "repository-add/",
+    (url: string) => api.read<RepositoryRegistration[]>(url),
+    { refreshInterval: 5000 }
+  );
+  const registeredIds = registrations?.map((row) => row.repository_id).join(",");
+  useEffect(() => {
+    if (registeredIds) void mutate();
+  }, [registeredIds, mutate]);
+  const [expanded, setExpanded] = useState<string | null>(params.get("connection") ? params.get("repository") : null);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
+  const [personalStatus, setPersonalStatus] = useState<Record<string, string>>({});
+  const shownCallback = useRef("");
+  const callbackRepository = params.get("repository");
+  const callbackResult = params.get("connection");
+  useEffect(() => {
+    const key = `${callbackRepository}:${callbackResult}`;
+    if (
+      callbackRepository &&
+      callbackResult &&
+      rows?.some((row) => row.id === callbackRepository) &&
+      shownCallback.current !== key
+    ) {
+      shownCallback.current = key;
+      document.getElementById(callbackRepository)?.scrollIntoView({ block: "center" });
+    }
+  }, [callbackRepository, callbackResult, rows]);
   const [preview, setPreview] = useState<{ repository: Repository; value: RepositoryContent } | null>(null);
   const text = (key: string) => t(`repository_ui.${key}`);
   const feedback = (code: string) => {
@@ -166,13 +197,17 @@ export function ProjectRepositoriesSettings({
     const translated = t(key);
     return translated === key ? text("failed") : translated;
   };
-  async function action(fn: () => Promise<void>) {
+  async function action(fn: () => Promise<void>, repositoryId?: string) {
     setBusy(true);
     setStatus("");
+    if (repositoryId) setPersonalStatus((current) => ({ ...current, [repositoryId]: t("submitting") }));
     try {
       await fn();
+      if (repositoryId) setPersonalStatus((current) => ({ ...current, [repositoryId]: text("saved") }));
     } catch (e) {
-      setStatus(feedback(isAxiosError(e) ? (e.response?.data?.error ?? "failed") : "failed"));
+      const message = feedback(isAxiosError(e) ? (e.response?.data?.error ?? "failed") : "failed");
+      setStatus(message);
+      if (repositoryId) setPersonalStatus((current) => ({ ...current, [repositoryId]: message }));
     } finally {
       setBusy(false);
     }
@@ -285,6 +320,7 @@ export function ProjectRepositoriesSettings({
               const boundRole = bindingRoles.find((role) => bindings?.[`${role}_repository_id`] === row.id);
               const credential = info.credentials.find((c) => c.id === row.credential_id);
               const host = info.hosts.find((h) => h.id === row.instance_id);
+              const registration = registrations?.find((item) => item.repository_id === row.id);
               const access = credential
                 ? text(
                     credential.expires_at && Date.parse(credential.expires_at) <= Date.now() ? "expired" : "connected"
@@ -314,6 +350,11 @@ export function ProjectRepositoriesSettings({
                     </span>
                   </div>
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                    {registration && (
+                      <p className="text-body-xs-regular text-secondary" role="status">
+                        {text(`registration.${registration.status}`)}
+                      </p>
+                    )}
                     <p className="text-body-xs-regular text-secondary">
                       {text("personal_access")} · {access}
                     </p>
@@ -333,6 +374,11 @@ export function ProjectRepositoriesSettings({
                     </div>
                   </div>
                   <div id={`repository-details-${row.id}`} hidden={!isExpanded}>
+                    {(personalStatus[row.id] || (params.get("repository") === row.id && params.get("connection"))) && (
+                      <p role="status" aria-live="polite" className="my-3 text-body-sm-regular">
+                        {personalStatus[row.id] || feedback(params.get("connection")!)}
+                      </p>
+                    )}
                     <p className="mt-4 text-body-sm-regular break-all text-secondary">
                       {row.instance_name} / {row.path}
                     </p>
@@ -350,17 +396,19 @@ export function ProjectRepositoriesSettings({
                       <>
                         <div className="mt-3 flex flex-wrap gap-2">
                           <Button
-                            disabled={busy || !host?.oauth_available}
+                            disabled={busy}
                             onClick={() =>
                               void action(async () => {
-                                const authorization = await api.write<{ authorization_url: string }>(
+                                const authorization = await api.write<{ authorization_url?: string }>(
                                   base + `repositories/${row.id}/connection/`,
                                   "POST",
                                   info.csrf_token,
-                                  { method: "oauth" }
+                                  { method: "connect" }
                                 );
-                                window.location.assign(authorization.authorization_url);
-                              })
+                                if (authorization.authorization_url)
+                                  window.location.assign(authorization.authorization_url);
+                                else await Promise.all([mutate(), refreshInfo()]);
+                              }, row.id)
                             }
                           >
                             {text("connect")} GitLab
@@ -369,7 +417,10 @@ export function ProjectRepositoriesSettings({
                             <Button
                               disabled={busy}
                               onClick={() =>
-                                void action(() => write(`repositories/${row.id}/connection/`, undefined, "DELETE"))
+                                void action(
+                                  () => write(`repositories/${row.id}/connection/`, undefined, "DELETE"),
+                                  row.id
+                                )
                               }
                             >
                               {text("disconnect")}
@@ -378,6 +429,38 @@ export function ProjectRepositoriesSettings({
                         </div>
                         <details className="mt-4 text-body-sm-regular">
                           <summary className="cursor-pointer text-secondary">{text("connection_options")}</summary>
+                          {host?.oauth_available && (
+                            <Button
+                              disabled={busy}
+                              onClick={() =>
+                                void action(async () => {
+                                  const authorization = await api.write<{ authorization_url: string }>(
+                                    base + `repositories/${row.id}/connection/`,
+                                    "POST",
+                                    info.csrf_token,
+                                    { method: "oauth" }
+                                  );
+                                  window.location.assign(authorization.authorization_url);
+                                }, row.id)
+                              }
+                            >
+                              {text("registration.new_authorization")}
+                            </Button>
+                          )}
+                          {info.can_configure_oauth && (
+                            <RepositoryOAuthSetup
+                              instanceId={row.instance_id}
+                              repositoryUrl={
+                                info.hosts.find((item) => item.id === row.instance_id)?.web_url || "https://gitlab.com"
+                              }
+                              csrf={info.csrf_token}
+                              busy={busy}
+                              action={(fn) => action(fn, row.id)}
+                              onConfigured={async () => {
+                                await refreshInfo();
+                              }}
+                            />
+                          )}
                           <p className="my-3 text-body-xs-regular text-tertiary">
                             {host?.oauth_available ? text("scope") : text("oauth_unavailable")}
                           </p>
@@ -387,13 +470,15 @@ export function ProjectRepositoriesSettings({
                               e.preventDefault();
                               const form = e.currentTarget;
                               const data = new FormData(form);
-                              void action(() =>
-                                write(
-                                  `repositories/${row.id}/access/`,
-                                  data.get("credential") === "anonymous"
-                                    ? { anonymous: true }
-                                    : { credential_id: data.get("credential") }
-                                )
+                              void action(
+                                () =>
+                                  write(
+                                    `repositories/${row.id}/access/`,
+                                    data.get("credential") === "anonymous"
+                                      ? { anonymous: true }
+                                      : { credential_id: data.get("credential") }
+                                  ),
+                                row.id
                               );
                             }}
                           >
@@ -442,8 +527,9 @@ export function ProjectRepositoriesSettings({
                               const data = new FormData(form);
                               const token = String(data.get("token"));
                               form.reset();
-                              void action(() =>
-                                write(`repositories/${row.id}/connection/`, { label: row.path, token })
+                              void action(
+                                () => write(`repositories/${row.id}/connection/`, { label: row.path, token }),
+                                row.id
                               );
                             }}
                           >
@@ -537,16 +623,16 @@ export function ProjectRepositoriesSettings({
               key={section}
               base={base}
               csrf={info.csrf_token}
-              canConfigureOAuth={info.can_configure_oauth}
               section={section}
               busy={busy}
-              action={action}
+              registrations={registrations}
               onAdded={async (purpose) => {
-                await Promise.all([mutate(), refreshInfo(), refreshBindings()]);
+                await Promise.all([refreshRegistrations(), mutate(), refreshInfo(), refreshBindings()]);
                 setParams({ section: purpose });
               }}
             />
           )}
+          {registrationError && <p role="alert">{text("load_failed")}</p>}
         </>
       )}
       {preview && repositorySection(preview.repository, bindings) === section && (
