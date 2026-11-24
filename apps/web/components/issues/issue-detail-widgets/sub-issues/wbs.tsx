@@ -10,14 +10,8 @@ import { useTranslation } from "@plane/i18n";
 import { repositoryBase, repositoryService } from "@/services/repository.service";
 import { RequirementReviewPanel } from "./requirement-review";
 import { WbsChanges } from "./wbs-changes";
-import {
-  choicesComplete,
-  readinessMessageKey,
-  type ChangeAction,
-  type WbsChange,
-  type WbsChild,
-  type WbsTask,
-} from "./wbs-update";
+import { wbsMessage } from "./wbs-messages";
+import { choicesComplete, type ChangeAction, type WbsChange, type WbsChild, type WbsTask } from "./wbs-update";
 
 type Task = {
   id: string;
@@ -74,6 +68,7 @@ export function WbsPanel({
   const path = repositoryBase(workspaceSlug, projectId) + `work-items/${issueId}/wbs/`;
   const [data, setData] = useState<Data>();
   const [error, setError] = useState("");
+  const [errorDetails, setErrorDetails] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [approved, setApproved] = useState(false);
@@ -88,6 +83,7 @@ export function WbsPanel({
       return true;
     } catch {
       setError(t("wbs.load_error"));
+      setErrorDetails(undefined);
       return false;
     }
   }, [path, t]);
@@ -95,7 +91,8 @@ export function WbsPanel({
     void refresh();
   }, [refresh]);
   const run = data?.results[0];
-  const readinessKey = readinessMessageKey(run?.readiness?.reason || "");
+  const readinessMessage = wbsMessage(run?.readiness?.reason);
+  const executionMessage = wbsMessage(run?.error);
   useEffect(() => {
     if (!run || !["queued", "running"].includes(run.status)) return;
     const timer = setInterval(() => void refresh(), 4000);
@@ -112,6 +109,7 @@ export function WbsPanel({
     if (!data) return;
     setBusy(true);
     setError("");
+    setErrorDetails(undefined);
     try {
       const updated = await repositoryService.write<Run>(
         path + (decision && run ? `${run.id}/` : ""),
@@ -162,7 +160,9 @@ export function WbsPanel({
       if (decision === "approve") window.location.reload();
     } catch (failure) {
       const details = (failure as { response?: { data?: unknown } }).response?.data;
-      setError(details ? JSON.stringify(details) : t("wbs.action_error"));
+      const message = wbsMessage(details);
+      setError(details ? t(message.key, message.params) : t("wbs.action_error"));
+      setErrorDetails(message.details);
     } finally {
       setBusy(false);
     }
@@ -190,7 +190,19 @@ export function WbsPanel({
             {t(run.workflow === 2 && run.status === "completed" ? "wbs.applied" : `wbs.status_${run.status}`)}
           </p>
         )}
-        {run?.error && <p role="alert">{run.error}</p>}
+        {errorDetails && (
+          <details className="text-sm break-words">
+            <summary>{t("wbs.server_error_details")}</summary>
+            <pre className="whitespace-pre-wrap">{errorDetails}</pre>
+          </details>
+        )}
+        {run?.error && <p role="alert">{t(executionMessage.key, executionMessage.params)}</p>}
+        {run?.error && executionMessage.details && (
+          <details className="text-sm break-words">
+            <summary>{t("wbs.server_error_details")}</summary>
+            <pre className="whitespace-pre-wrap">{executionMessage.details}</pre>
+          </details>
+        )}
         {run?.scenario && <p className="text-sm">{t(`wbs.scenario_${run.scenario}`)}</p>}
         {
           <>
@@ -245,8 +257,14 @@ export function WbsPanel({
         )}
         {run?.readiness && !run.readiness.can_apply && (
           <p role="status" className="text-sm text-warning-primary">
-            {readinessKey ? t(readinessKey) : run.readiness.reason}
+            {t(readinessMessage.key, readinessMessage.params)}
           </p>
+        )}
+        {run?.readiness && !run.readiness.can_apply && readinessMessage.details && (
+          <details className="text-sm break-words">
+            <summary>{t("wbs.server_error_details")}</summary>
+            <pre className="whitespace-pre-wrap">{readinessMessage.details}</pre>
+          </details>
         )}
         {run?.result.changes && (
           <WbsChanges

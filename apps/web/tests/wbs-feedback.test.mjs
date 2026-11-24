@@ -54,6 +54,7 @@ async function clickUpdate(previous, returned, failure) {
       repositoryService: {
         write: async () => {
           if (failure === "write") throw Error("Offline");
+          if (failure && typeof failure === "object") throw Object.assign(Error("Request failed"), failure);
           return returned;
         },
         read: async () => {
@@ -64,14 +65,15 @@ async function clickUpdate(previous, returned, failure) {
     },
     "./requirement-review": {},
     "./wbs-changes": {},
-    "./wbs-update": { choicesComplete: () => false, readinessMessageKey: () => undefined },
+    "./wbs-update": { choicesComplete: () => false },
+    "./wbs-messages": require("../components/issues/issue-detail-widgets/sub-issues/wbs-messages.ts"),
   };
   const exports = {};
   runInNewContext(outputText, { exports, require: (name) => dependencies[name], crypto });
   const tree = exports.WbsPanel({ workspaceSlug: "test", projectId: "project", issueId: "issue", disabled: false });
   find(tree).props.onClick();
   await setImmediate();
-  return { toasts, error: states[1] };
+  return { toasts, error: states[1], errorDetails: states[2], tree };
 }
 
 for (const status of ["queued", "running", "ready"]) {
@@ -94,3 +96,31 @@ for (const failure of ["write", "refresh"]) {
     assert.ok(error);
   });
 }
+
+test("server conflicts are localized instead of displaying raw JSON", async () => {
+  const { error, toasts } = await clickUpdate(undefined, undefined, {
+    response: { data: { detail: "PRD changed; update WBS again" } },
+  });
+  assert.equal(error, "wbs.server_prd_changed_update_wbs_again");
+  assert.equal(toasts.length, 0);
+});
+test("worker and readiness diagnostics both render through translation keys", async () => {
+  const run = {
+    id: "run",
+    status: "ready",
+    result: {},
+    error: "ReadTimeout",
+    readiness: { can_apply: false, reason: "Child tasks changed; update WBS again" },
+  };
+  const { tree } = await clickUpdate(run, run);
+  const rendered = JSON.stringify(tree);
+  assert.ok(rendered.includes("wbs.server_readtimeout"));
+  assert.ok(rendered.includes("wbs.server_child_tasks_changed_update_wbs_again"));
+  assert.ok(!rendered.includes("ReadTimeout"));
+});
+test("unrecognized errors retain diagnostics alongside the localized fallback", async () => {
+  const details = { fields: ["New server reason"] };
+  const { error, errorDetails } = await clickUpdate(undefined, undefined, { response: { data: details } });
+  assert.equal(error, "wbs.server_error_unknown");
+  assert.equal(errorDetails, JSON.stringify(details));
+});

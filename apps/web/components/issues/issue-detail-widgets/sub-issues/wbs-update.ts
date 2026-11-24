@@ -23,11 +23,6 @@ export type WbsChange = {
 };
 export type WbsChild = { id: string; name: string; description_html: string; stage: string };
 
-/** Translate the adoption prerequisite while preserving unrecognized server diagnostics. */
-export function readinessMessageKey(reason: string): "wbs.confirm_prd_before_apply" | undefined {
-  return reason === "Confirm this PRD version before applying WBS changes" ? "wbs.confirm_prd_before_apply" : undefined;
-}
-
 export function needsChoice(change: WbsChange, child?: WbsChild): boolean {
   return !!change.target_id && child?.stage !== "unstarted" && change.action !== "keep";
 }

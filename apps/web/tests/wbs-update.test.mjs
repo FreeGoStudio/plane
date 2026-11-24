@@ -7,17 +7,9 @@ import {
   actionOptions,
   needsChoice,
   choicesComplete,
-  readinessMessageKey,
 } from "../components/issues/issue-detail-widgets/sub-issues/wbs-update.ts";
 
 const change = { id: "T1", target_id: "child", action: "update", task: { title: "New requirement" } };
-test("PRD adoption prerequisite uses a translated message without hiding unknown reasons", () => {
-  assert.equal(
-    readinessMessageKey("Confirm this PRD version before applying WBS changes"),
-    "wbs.confirm_prd_before_apply"
-  );
-  assert.equal(readinessMessageKey("Other server reason"), undefined);
-});
 test("started tasks require an explicit selection; unstarted tasks use the proposed action", () => {
   assert.equal(needsChoice(change, { stage: "started" }), true);
   assert.equal(needsChoice(change, { stage: "unstarted" }), false);
