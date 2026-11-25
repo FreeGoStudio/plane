@@ -205,7 +205,7 @@ export function CodeReviewPanel({
             setRepository(e.target.value);
             setPage(1);
           }}
-          className="rounded border border-subtle bg-surface-1 p-2"
+          className="max-w-full min-w-0 rounded border border-subtle bg-surface-1 p-2"
         >
           <option value="">{t("code_review.repository")}</option>
           {repositories.map((repo) => (

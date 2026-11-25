@@ -238,9 +238,9 @@ export function RequirementReviewPanel({
                 </p>
                 <p className="break-all">{run.source_sha}</p>
                 <p>{t(`document_review.${run.status}`)}</p>
-                <p>
+                <p className="break-all">
                   {run.result.provenance
-                    ? `${run.result.provenance.policy_version} · ${run.result.provenance.model} · ${run.result.provenance.reviewed_at}`
+                    ? `${run.result.provenance.policy_version} · ${run.result.provenance.model} · ${formatTimestamp(run.result.provenance.reviewed_at)}`
                     : t("review_report.legacy_policy")}
                 </p>
                 {run.result.provenance && <p className="break-all">{run.result.provenance.policy_digest}</p>}
