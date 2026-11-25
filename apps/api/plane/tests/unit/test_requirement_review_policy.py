@@ -157,6 +157,25 @@ def test_generation_requires_policy_and_exposes_it_to_existing_consumers(policy,
     response = Mock()
 
     def set_response(value):
+        from plane.singularity.requirement_review_coverage import requirement_inventory
+
+        value.update(
+            change_summary="支付幂等要求",
+            next_action="补充验收条件",
+            coverage=[
+                {
+                    "requirement_id": requirement_inventory(snapshot["basis"])[0]["id"],
+                    "status": "gap",
+                    "explanation": "缺少幂等验收",
+                    "references": [],
+                    "finding_ids": ["F1"],
+                }
+            ],
+            checks=[
+                {"id": key, "status": "needs_attention", "explanation": "存在待处理缺口"}
+                for key in ("scope", "rule_consistency", "acceptance_testability", "equivalent_coverage")
+            ],
+        )
         response.json.return_value = {
             "status": "completed",
             "output": [{"type": "message", "content": [{"type": "output_text", "text": json.dumps(value)}]}],

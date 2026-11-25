@@ -34,12 +34,16 @@ def raw_report():
     }
 
 
-@pytest.mark.parametrize("case", ["complete", "missing", "partial", "budget", "wrong_sha", "unknown_schema", "exit"])
+@pytest.mark.parametrize(
+    "case", ["complete", "narrative", "missing", "partial", "budget", "wrong_sha", "unknown_schema", "exit"]
+)
 def test_coverage_not_exit_code_determines_completion(case):
     from plane.singularity.code_review_runner import normalize_report
 
     value = copy.deepcopy(raw_report())
     paths = ["src/a.py"]
+    if case == "narrative":
+        value["summary"] = "The callback now deduplicates deliveries."
     if case == "missing":
         paths.append("src/missing.py")
     if case == "partial":
@@ -51,7 +55,9 @@ def test_coverage_not_exit_code_determines_completion(case):
     if case == "unknown_schema":
         value["manifest"]["schema_version"] = "unknown"
     status, report = normalize_report(value, paths, "c" * 40, "a" * 40, 1 if case == "exit" else 0)
-    assert (status == "completed") == (case == "complete")
+    assert (status == "completed") == (case in ("complete", "narrative"))
+    if case == "narrative":
+        assert report["change_summary"] == value["summary"]
     assert report["coverage"]["diff_files"] == paths
 
 

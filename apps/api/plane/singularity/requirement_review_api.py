@@ -22,7 +22,19 @@ from plane.db.models import (
     RequirementAdoption,
 )
 from .wbs import WbsAPI, require_member
-from .requirement_review import configure, retry_run, adopt, current_input, provider_for, target_head, version_adoption
+from .requirement_review import (
+    configure,
+    retry_run,
+    rereview_run,
+    adopt,
+    current_input,
+    provider_for,
+    target_head,
+    version_adoption,
+    is_superseded,
+)
+from .review_report import compare_findings
+from urllib.parse import quote
 
 
 def config_data(row):
@@ -40,11 +52,19 @@ def config_data(row):
 
 
 def run_data(row):
+    """Expose version-bound evidence and conservative history without altering saved reports."""
     adoption = version_adoption(row)
+    previous = (
+        RequirementReviewRun.objects.filter(config_id=row.config_id, created_at__lt=row.created_at, status="completed")
+        .order_by("-created_at")
+        .first()
+    )
+    repo = row.config.repository
     return {
         "id": str(row.pk),
         "source_sha": row.source_sha,
         "adoption_status": adoption.status if adoption else None,
+        "superseded": is_superseded(row),
         "merge_request": row.merge_request,
         "status": row.status,
         "result": row.result,
@@ -56,6 +76,15 @@ def run_data(row):
         "rules": row.snapshot["rules"],
         "created_at": row.created_at,
         "retry_of": str(row.retry_of_id) if row.retry_of_id else None,
+        "source_url": repo.instance.web_url.rstrip("/") + "/" + repo.path + "/-/blob/" + quote(row.source_sha, safe=""),
+        "comparison": {
+            "previous_run_id": str(previous.pk),
+            "previous_source_sha": previous.source_sha,
+            "same_source": previous.source_sha == row.source_sha,
+            "findings": compare_findings(row.result.get("findings", []), previous.result.get("findings", [])),
+        }
+        if previous and row.status == "completed"
+        else None,
     }
 
 
@@ -128,6 +157,10 @@ class RequirementReviewAPI(WbsAPI):
             if set(request.data) != {"idempotency_key"}:
                 raise ValidationError("Provide idempotency_key")
             return Response(run_data(retry_run(request.user, row, request.data["idempotency_key"])), status=202)
+        if action == "rereview":
+            if set(request.data) != {"idempotency_key"}:
+                raise ValidationError("Provide idempotency_key")
+            return Response(run_data(rereview_run(request.user, row, request.data["idempotency_key"])), status=202)
         if action == "adopt":
             return Response(
                 adoption_data(adopt(request.user, row, request.data, human_session=request.auth is None)), status=202

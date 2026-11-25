@@ -291,6 +291,16 @@ def poll_one():
         )
 
 
+def is_superseded(row):
+    """Keep an older fixed-version verdict historical once explicit reassessment starts."""
+    return RequirementReviewRun.objects.filter(
+        config_id=row.config_id,
+        source_sha=row.source_sha,
+        created_at__gt=row.created_at,
+        snapshot__has_key="rereview_of",
+    ).exists()
+
+
 def current_input(row):
     """An approval may only consume the same configuration and business basis."""
     config = RequirementReviewConfig.objects.select_related("issue__project", "owner", "repository__instance").get(
@@ -303,6 +313,8 @@ def current_input(row):
         or row.snapshot["rules"] != RULE_VERSION
     ):
         raise WbsConflict("Review inputs changed; request a new review")
+    if is_superseded(row):
+        raise WbsConflict("A newer explicit reassessment supersedes this review")
     return config
 
 
@@ -328,6 +340,39 @@ def retry_run(user, row, key):
     if new.retry_of_id != row.pk:
         raise WbsConflict("Retry key belongs to another run")
     return new
+
+
+@transaction.atomic
+def rereview_run(user, row, key):
+    """Explicitly reassess the same unadopted fixed input, preserving completed reports."""
+    require_member(user, row.config.issue.project, True)
+    config = RequirementReviewConfig.objects.select_for_update().get(pk=row.config_id)
+    if row.status not in ("completed", "failed"):
+        raise WbsConflict("Wait for review completion")
+    if not isinstance(key, str) or not re.fullmatch(r"[A-Za-z0-9_-]{8,100}", key):
+        raise ValidationError("Invalid rereview key")
+    prior = RequirementReviewRun.objects.filter(config=config, request_key="rereview:" + key).first()
+    if prior:
+        if prior.retry_of_id != row.pk:
+            raise WbsConflict("Rereview key belongs to another run")
+        return prior
+    current_input(row)
+    if version_adoption(row):
+        raise WbsConflict("An adopted or adopting version cannot be reassessed in place")
+    if RequirementReviewRun.objects.filter(config=config, status__in=["queued", "running"]).exists():
+        raise WbsConflict("Another review is active")
+    from .requirement_review_coverage import POLICY_VERSION
+
+    snapshot = {**row.snapshot, "report_policy": POLICY_VERSION, "rereview_of": str(row.pk)}
+    return RequirementReviewRun.objects.create(
+        config=config,
+        request_key="rereview:" + key,
+        source_sha=row.source_sha,
+        snapshot=snapshot,
+        input_digest=digest(snapshot),
+        merge_request=row.merge_request,
+        retry_of=row,
+    )
 
 
 def version_adoption(row):

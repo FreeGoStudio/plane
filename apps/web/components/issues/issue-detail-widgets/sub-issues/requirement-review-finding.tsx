@@ -5,6 +5,7 @@
  */
 import ReactMarkdown from "react-markdown";
 import { useTranslation } from "@plane/i18n";
+import { ReviewSource, ReviewHandoff } from "../review-report-sections";
 
 export type DocumentFinding = {
   id: string;
@@ -54,7 +55,15 @@ function FindingProse({ children }: { children: string }) {
 }
 
 /** Keep the actionable explanation separate from the exact, unchanged source evidence. */
-export function RequirementReviewFinding({ finding }: { finding: DocumentFinding }) {
+export function RequirementReviewFinding({
+  finding,
+  sourceUrl,
+  sourceSha,
+}: {
+  finding: DocumentFinding;
+  sourceUrl?: string;
+  sourceSha?: string;
+}) {
   const { t } = useTranslation();
   const policy = finding.policy;
   const evidenceFields = policy
@@ -79,6 +88,10 @@ export function RequirementReviewFinding({ finding }: { finding: DocumentFinding
         </span>
       </summary>
       <div className="mt-4 max-w-4xl space-y-5 border-t border-subtle pt-4">
+        <ReviewSource base={sourceUrl} path={finding.path} line={finding.line} />
+        <ReviewHandoff
+          text={`${t("review_report.handoff_boundary")}\n${sourceSha ?? ""}\n${finding.path}:${finding.line}\n${findingTitle(finding)}\n${policy ? policy.gap + "\n" + policy.original_basis + "\n" + policy.minimum_fix + "\n" + policy.closure_condition : finding.reason + "\n" + finding.suggestion}`}
+        />
         {policy && (
           <div className="space-y-2 text-caption-sm-regular text-secondary">
             <p>{t(`document_review.policy_${policy.evidence_status}`)}</p>

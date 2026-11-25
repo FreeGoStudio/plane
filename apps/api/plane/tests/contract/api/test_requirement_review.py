@@ -255,6 +255,37 @@ def test_execution_lease_blocks_duplicate_worker(review):
         execute(row.pk, "duplicate")
 
 
+def test_completed_review_can_be_reassessed_without_rewriting_history(review, world):
+    from plane.singularity.requirement_review import rereview_run, current_input
+
+    row = ready(review)
+    original = row.result.copy()
+    new = rereview_run(world[0], row, "reassess-fixed-version")
+    assert new.source_sha == row.source_sha and new.retry_of_id == row.pk
+    assert new.snapshot["report_policy"] == "documents-report-v2"
+    assert new.snapshot["documents"] == row.snapshot["documents"]
+    assert rereview_run(world[0], row, "reassess-fixed-version").pk == new.pk
+    row.refresh_from_db()
+    assert row.result == original and row.status == "completed"
+    with pytest.raises(WbsConflict, match="supersedes"):
+        current_input(row)
+    current_input(new)
+    from plane.singularity.requirement_review_api import run_data
+
+    assert run_data(row)["superseded"] is True
+    assert run_data(new)["superseded"] is False
+    assert run_data(new)["source_url"].endswith("/-/blob/" + row.source_sha)
+
+
+def test_reassessment_cannot_change_adopted_version(review, world):
+    from plane.singularity.requirement_review import rereview_run
+
+    row = ready(review)
+    adopt(world[0], row, {"target_sha": "b" * 40, "idempotency_key": "adopt-before-rereview"})
+    with pytest.raises(WbsConflict, match="adopted or adopting"):
+        rereview_run(world[0], row, "reassess-after-adoption")
+
+
 def test_adoption_requires_pass_or_explicit_human_override(review, world):
     row = ready(review)
     row.result = {**result(), "verdict": "changes_requested"}

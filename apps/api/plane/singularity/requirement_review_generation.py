@@ -7,6 +7,7 @@
 import json
 import os
 import uuid
+import hashlib
 from datetime import timedelta
 from pathlib import Path
 from typing import Literal
@@ -20,6 +21,14 @@ from .wbs_generation import StrictModel
 from .wbs import digest
 from .requirement_review import current_input
 from .requirement_review_policy import REVIEW_POLICY, ReviewPolicy, policy_reason, validate_policy
+from .requirement_review_coverage import (
+    POLICY_VERSION,
+    COVERAGE_INSTRUCTIONS,
+    Coverage,
+    Check,
+    requirement_inventory,
+    validate_coverage,
+)
 
 
 class Finding(StrictModel):
@@ -38,6 +47,12 @@ class ReviewResult(StrictModel):
     verdict: Literal["passed", "changes_requested", "insufficient_information"]
     summary: str = Field(min_length=1, max_length=5000)
     findings: list[Finding] = Field(max_length=80)
+    change_summary: str | None = None
+    next_action: str | None = None
+    coverage: list[Coverage] | None = None
+    checks: list[Check] | None = None
+    requirement_inventory: list[dict] | None = None
+    provenance: dict | None = None
 
 
 class GeneratedFinding(Finding):
@@ -48,8 +63,14 @@ class GeneratedFinding(Finding):
     policy: ReviewPolicy
 
 
-class GeneratedReviewResult(ReviewResult):
+class GeneratedReviewResult(StrictModel):
+    verdict: Literal["passed", "changes_requested", "insufficient_information"]
+    summary: str = Field(min_length=1, max_length=5000)
     findings: list[GeneratedFinding] = Field(max_length=80)
+    change_summary: str = Field(min_length=1, max_length=5000)
+    next_action: str = Field(min_length=1, max_length=3000)
+    coverage: list[Coverage] = Field(max_length=300)
+    checks: list[Check] = Field(min_length=4, max_length=4)
 
 
 def validate_result(value, snapshot):
@@ -85,6 +106,14 @@ def validate_result(value, snapshot):
     )
     if result.verdict != expected:
         raise ValueError("inconsistent_verdict")
+    if result.coverage is not None:
+        validate_coverage(
+            result.coverage,
+            result.checks or [],
+            requirement_inventory(snapshot["basis"]),
+            snapshot["documents"],
+            {x.id for x in result.findings},
+        )
     return result.model_dump(exclude_none=True)
 
 
@@ -110,8 +139,11 @@ def generate(snapshot):
                 "使用清楚、具体的业务语言，避免抽象套话；不要为排版添加字面反斜杠或转义后的换行。"
                 "evidence仍必须逐字引用原文，不得为了可读性改写证据。"
             )
-            + REVIEW_POLICY,
-            "input": json.dumps(snapshot, ensure_ascii=False),
+            + REVIEW_POLICY
+            + COVERAGE_INSTRUCTIONS,
+            "input": json.dumps(
+                {**snapshot, "requirement_inventory": requirement_inventory(snapshot["basis"])}, ensure_ascii=False
+            ),
             "max_output_tokens": 14000,
             "text": {
                 "format": {
@@ -140,6 +172,13 @@ def generate(snapshot):
     result = validate_result(generated.model_dump(), snapshot)
     for finding, structured in zip(result["findings"], generated.findings):
         finding["reason"] = policy_reason(finding["reason"], structured.policy)
+    result["requirement_inventory"] = requirement_inventory(snapshot["basis"])
+    result["provenance"] = {
+        "policy_version": POLICY_VERSION,
+        "policy_digest": hashlib.sha256((REVIEW_POLICY + COVERAGE_INSTRUCTIONS).encode()).hexdigest(),
+        "model": os.environ.get("DOCUMENT_REVIEW_MODEL", "gpt-6.1-sol"),
+        "reviewed_at": timezone.now().isoformat(),
+    }
     return result
 
 

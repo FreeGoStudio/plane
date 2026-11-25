@@ -15,6 +15,7 @@ import time
 from pathlib import Path
 from .code_review_provider import provider_for
 from .repository_transport import validate_instance
+from .review_report import code_report_details
 
 ALLOWED_EXCLUSIONS = {"binary", "deleted", "default_path", "provider_directory", "secret_exclude"}
 
@@ -34,6 +35,7 @@ def normalize_report(raw, diff_files, base, head, exit_code):
     if not diff_files and exit_code == 0 and not raw["comments"]:
         report.update(summary="无代码差异，等待人工确认", no_diff=True)
         coverage["missing"] = []
+        code_report_details("completed", report, raw)
         return "completed", report
     manifest = raw.get("manifest") or {}
     inputs = manifest.get("input") or {}
@@ -93,13 +95,14 @@ def normalize_report(raw, diff_files, base, head, exit_code):
             or {x["path"] for x in selected} != done
             or manifest.get("terminal_state") not in ("complete", "skipped")
             or manifest.get("run_failure")
-            or (raw.get("summary") or {}).get("budget_exceeded")
+            or (isinstance(raw.get("summary"), dict) and raw["summary"].get("budget_exceeded"))
             or any(w.get("type") in ("review_limit_reached", "subtask_error") for w in raw.get("warnings", []))
         )
     except (TypeError, KeyError, ValueError):
         return "failed", report
     status = "failed" if exit_code else "partial" if incomplete else "completed"
     report["summary"] = "审查完整，等待人工确认" if status == "completed" else "审查覆盖不完整，不能确认放行"
+    code_report_details(status, report, raw)
     return status, report
 
 

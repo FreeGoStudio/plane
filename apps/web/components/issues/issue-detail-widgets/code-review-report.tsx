@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 import { useTranslation } from "@plane/i18n";
+import { ReviewOverview, ReviewChecks, ReviewChanges, ReviewSource, ReviewHandoff } from "./review-report-sections";
+import type { ReviewCheck, ReviewComparison } from "./review-report-sections";
 
 export type ReviewRun = {
   id: string;
@@ -15,9 +17,14 @@ export type ReviewRun = {
   input_digest: string;
   report_digest: string;
   error: string;
+  source_url?: string;
+  comparison?: ReviewComparison | null;
   snapshot?: { settings?: { tool_version: string; model: string } };
   report: {
     summary?: string;
+    change_summary?: string;
+    checks?: ReviewCheck[];
+    change_groups?: { name: string; files: string[]; finding_count: number }[];
     findings?: { path: string; line: number; end_line?: number; severity: string; message: string }[];
     coverage?: {
       diff_files?: string[];
@@ -32,23 +39,54 @@ export type ReviewRun = {
 export function CodeReviewReport({ run }: { run: ReviewRun }) {
   const { t } = useTranslation();
   return (
-    <div className="text-sm space-y-2">
-      <p>
-        {t("code_review.status")}: {t(`code_review.${run.status}`)}
-      </p>
-      <p role={run.error ? "alert" : undefined}>{run.error || run.report.summary}</p>
-      <dl className="text-xs break-all text-secondary">
-        <dt>{t("code_review.source")}</dt>
-        <dd>{run.source_sha}</dd>
-        <dt>{t("code_review.target")}</dt>
-        <dd>{run.target_sha}</dd>
-        <dt>{t("code_review.baseline")}</dt>
-        <dd>{run.merge_base}</dd>
-        <dt>{t("code_review.tool")}</dt>
-        <dd>
-          {run.snapshot?.settings?.tool_version} / {run.snapshot?.settings?.model}
-        </dd>
-      </dl>
+    <div className="text-sm space-y-4">
+      <ReviewOverview
+        conclusion={t(run.status === "completed" ? "review_report.code_completed" : `code_review.${run.status}`)}
+        summary={run.report.change_summary ?? run.report.summary}
+        next={t(run.status === "completed" ? "review_report.code_next" : "review_report.wait_next")}
+        counts={[
+          { label: t("review_report.findings"), value: run.report.findings?.length ?? 0 },
+          { label: t("review_report.files"), value: run.report.coverage?.diff_files?.length ?? 0 },
+          { label: t("review_report.uncovered"), value: run.report.coverage?.missing?.length ?? 0 },
+        ]}
+      />
+      {run.error && <p role="alert">{run.error}</p>}
+      <ReviewChecks checks={run.report.checks} />
+      <ReviewChanges comparison={run.comparison} />
+      <section className="space-y-2">
+        <h4 className="font-medium">{t("review_report.change_groups")}</h4>
+        {run.report.change_groups?.map((group) => (
+          <details key={group.name} className="rounded border border-subtle p-3">
+            <summary className="cursor-pointer break-all">
+              {group.name} · {group.files.length} {t("review_report.files")} · {group.finding_count}{" "}
+              {t("review_report.findings")}
+            </summary>
+            <ul className="mt-2 space-y-1">
+              {group.files.map((path) => (
+                <li key={path}>
+                  <ReviewSource base={run.source_url} path={path} />
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))}
+        {!run.report.change_groups && <p className="text-secondary">{t("review_report.legacy_groups")}</p>}
+      </section>
+      <details className="rounded border border-subtle p-3">
+        <summary>{t("review_report.version_details")}</summary>
+        <dl className="text-xs break-all text-secondary">
+          <dt>{t("code_review.source")}</dt>
+          <dd>{run.source_sha}</dd>
+          <dt>{t("code_review.target")}</dt>
+          <dd>{run.target_sha}</dd>
+          <dt>{t("code_review.baseline")}</dt>
+          <dd>{run.merge_base}</dd>
+          <dt>{t("code_review.tool")}</dt>
+          <dd>
+            {run.snapshot?.settings?.tool_version} / {run.snapshot?.settings?.model}
+          </dd>
+        </dl>
+      </details>
       <ul className="space-y-2">
         {run.report.findings?.map((finding) => (
           <li
@@ -59,6 +97,12 @@ export function CodeReviewReport({ run }: { run: ReviewRun }) {
               {finding.severity} · {finding.path}:{finding.line}
             </strong>
             <p className="whitespace-pre-wrap">{finding.message}</p>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <ReviewSource base={run.source_url} path={finding.path} line={finding.line} />
+              <ReviewHandoff
+                text={`${t("review_report.handoff_boundary")}\n${run.source_sha}\n${finding.path}:${finding.line}\n${finding.severity}\n${finding.message}`}
+              />
+            </div>
           </li>
         ))}
       </ul>

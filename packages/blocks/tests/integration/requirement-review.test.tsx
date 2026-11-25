@@ -7,6 +7,14 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RequirementReviewPanel } from "../../../../apps/web/components/issues/issue-detail-widgets/sub-issues/requirement-review";
 import { RequirementReviewFinding } from "../../../../apps/web/components/issues/issue-detail-widgets/sub-issues/requirement-review-finding";
+import {
+  ReviewChecks,
+  ReviewChanges,
+  ReviewSource,
+  ReviewHandoff,
+  ReviewCoverage,
+} from "../../../../apps/web/components/issues/issue-detail-widgets/review-report-sections";
+import { CodeReviewReport } from "../../../../apps/web/components/issues/issue-detail-widgets/code-review-report";
 
 const service = vi.hoisted(() => ({ read: vi.fn(), write: vi.fn() }));
 vi.mock("@/services/repository.service", () => ({ repositoryBase: () => "/test/", repositoryService: service }));
@@ -125,6 +133,29 @@ afterEach(() => {
 });
 
 describe("document version adoption", () => {
+  it("keeps a superseded pass readable but prevents adoption", async () => {
+    const value = data();
+    service.read.mockResolvedValue({ ...value, results: [{ ...value.results[0], superseded: true }] });
+    panel();
+    expect(((await screen.findByRole("button", { name: "采用此版本" })) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByText("review_report.superseded")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "review_report.rereview" })).toBeNull();
+  });
+  it("requests a new fixed-version assessment and selects the new run", async () => {
+    const value = data();
+    service.read.mockResolvedValueOnce(value).mockResolvedValue({
+      ...value,
+      results: [{ ...value.results[0], id: "new-review", status: "queued", result: {} }, ...value.results],
+    });
+    service.write.mockResolvedValue({ id: "new-review" });
+    panel();
+    fireEvent.click(await screen.findByRole("button", { name: "review_report.rereview" }));
+    await waitFor(() => expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("new-review"));
+    expect(service.write).toHaveBeenCalledWith(expect.stringContaining("review/rereview/"), "POST", "test", {
+      idempotency_key: expect.any(String),
+    });
+    expect(screen.queryByRole("button", { name: "采用此版本" })).toBeNull();
+  });
   it.each(["pending", "running"])("disables a %s version after loading", async (status) => {
     service.read.mockResolvedValue(data(status));
     panel();
@@ -164,5 +195,96 @@ describe("document version adoption", () => {
     service.read.mockResolvedValue(data());
     panel();
     expect(((await screen.findByRole("button", { name: "采用此版本" })) as HTMLButtonElement).disabled).toBe(false);
+  });
+});
+
+describe("review report evidence boundaries", () => {
+  it("does not turn missing historical checks into success", () => {
+    render(<ReviewChecks />);
+    expect(screen.getByText("review_report.legacy_checks")).toBeTruthy();
+    expect(screen.queryByText("review_report.passed")).toBeNull();
+  });
+  it("labels disappearance on the same revision as unverified", () => {
+    const { container } = render(
+      <ReviewChanges
+        comparison={{
+          previous_run_id: "old",
+          previous_source_sha: "sha",
+          same_source: true,
+          findings: [
+            { fingerprint: "f", status: "not_reobserved", path: "prd.md", title: "Missing acceptance criterion" },
+          ],
+        }}
+      />
+    );
+    expect(container.textContent).toContain("review_report.not_reobserved");
+    expect(container.textContent).toContain("review_report.same_source");
+    expect(container.querySelector("details")?.open).toBe(false);
+  });
+  it("links evidence to a fixed revision and refuses executable URL schemes", () => {
+    const { container, rerender } = render(
+      <ReviewSource base="https://git.example/repo/-/blob/abc123" path="docs/a b.md" line={8} />
+    );
+    expect(container.querySelector("a")?.getAttribute("href")).toBe(
+      "https://git.example/repo/-/blob/abc123/docs/a%20b.md#L8"
+    );
+    rerender(<ReviewSource base="javascript:alert(1)" path="prd.md" />);
+    expect(container.querySelector("a")).toBeNull();
+  });
+  it("shows original requirements with collapsed source evidence", () => {
+    const { container } = render(
+      <ReviewCoverage
+        inventory={[{ id: "R1", text: "Keep an audit trail" }]}
+        rows={[
+          {
+            requirement_id: "R1",
+            status: "covered",
+            explanation: "AC-1 covers it",
+            references: [{ path: "prd.md", line: 2, quote: "AC-1: record the actor" }],
+            finding_ids: [],
+          },
+        ]}
+      />
+    );
+    expect(container.querySelector("summary")?.textContent).toContain("Keep an audit trail");
+    expect(container.querySelector("details")?.open).toBe(false);
+    expect(container.querySelector("blockquote")?.textContent).toBe("AC-1: record the actor");
+  });
+  it("copies the bounded handoff without submitting a repair", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    render(<ReviewHandoff text="Verify original scope; repair only AC-1" />);
+    fireEvent.click(screen.getByRole("button"));
+    await screen.findByText("review_report.copied");
+    expect(writeText).toHaveBeenCalledWith("Verify original scope; repair only AC-1");
+    expect(service.write).not.toHaveBeenCalled();
+  });
+  it("keeps code execution completion distinct from human acceptance and runtime tests", () => {
+    render(
+      <CodeReviewReport
+        run={{
+          id: "r",
+          link_id: "l",
+          status: "completed",
+          source_sha: "head",
+          target_sha: "target",
+          merge_base: "base",
+          input_digest: "i",
+          report_digest: "d",
+          error: "",
+          report: {
+            change_summary: "Payment callback changes",
+            checks: [{ id: "runtime_tests", status: "not_checked", explanation: "Static review only" }],
+            change_groups: [{ name: "src", files: ["src/pay.py"], finding_count: 0 }],
+            findings: [],
+            coverage: { diff_files: ["src/pay.py"], missing: [] },
+          },
+        }}
+      />
+    );
+    expect(screen.getByRole("status").textContent).toBe("review_report.code_completed");
+    expect(screen.getByText("review_report.not_checked")).toBeTruthy();
+    expect(screen.getByText("Payment callback changes")).toBeTruthy();
+    expect(screen.getByText("src/pay.py", { selector: "span" })).toBeTruthy();
   });
 });

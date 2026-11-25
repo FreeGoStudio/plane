@@ -18,6 +18,7 @@ from .code_review_decisions import decide
 from .code_review_gate import accepted_decision
 from .wbs import require_member
 from plane.db.models import CodeReviewDecision, CodeReviewEvent
+from .review_report import compare_findings
 
 
 def decision_data(row):
@@ -38,7 +39,8 @@ def decision_data(row):
 
 
 def run_data(row):
-    return {
+    """Project fixed-revision source links and exact finding comparisons for authorized readers."""
+    value = {
         key: getattr(row, key)
         for key in (
             "id",
@@ -58,6 +60,24 @@ def run_data(row):
             "link_id",
         )
     }
+    previous = (
+        CodeReviewRun.objects.filter(link_id=row.link_id, created_at__lt=row.created_at, status="completed")
+        .order_by("-created_at")
+        .first()
+    )
+    repo = row.link.repository
+    value["source_url"] = repo.instance.web_url.rstrip("/") + "/" + repo.path + "/-/blob/" + row.source_sha
+    value["comparison"] = (
+        {
+            "previous_run_id": str(previous.pk),
+            "previous_source_sha": previous.source_sha,
+            "same_source": previous.source_sha == row.source_sha,
+            "findings": compare_findings(row.report.get("findings", []), previous.report.get("findings", [])),
+        }
+        if previous and row.status == "completed"
+        else None
+    )
+    return value
 
 
 def link_data(row):
