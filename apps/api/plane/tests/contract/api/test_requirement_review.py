@@ -6,6 +6,7 @@
 """Document pushes, immutable review conclusions and explicit human overrides."""
 
 from datetime import timedelta
+import base64
 from unittest.mock import Mock, patch
 import pytest
 from django.test import Client
@@ -56,7 +57,7 @@ def review(world, monkeypatch):
         {"draft_branch": "draft/POS-1", "adopted_branch": "POS-1", "paths": ["docs/prd.md"], "expected_revision": 0},
     )
     provider = Mock()
-    provider.resolve.return_value = ({}, "", "a" * 40, None)
+    provider.resolve.return_value = ({}, "", "a" * 40)
     provider.file.return_value = {"commit_sha": "a" * 40, "content": "# Login\nAC01: Login page"}
     with (
         patch("plane.singularity.requirement_review.provider_for", return_value=provider),
@@ -95,9 +96,75 @@ def test_push_snapshot_deduplicates_and_replays_without_model(review):
     assert RequirementReviewRun.objects.count() == 1
 
 
+@pytest.mark.parametrize("explicit_sha", [False, True])
+def test_capture_with_real_repository_provider_contract(review, explicit_sha):
+    """Mock only transport so provider return-shape changes cannot hide in fixtures."""
+    from plane.singularity.repository_provider import RepositoryProvider
+
+    config, _ = review
+    commit, baseline = "a" * 40, "b" * 40
+    content = "# Login\nAC01: Login page"
+
+    def get(path, params=None):
+        if path == "/projects/22":
+            return {"id": 22, "path_with_namespace": "team/docs", "default_branch": "main"}
+        if "/repository/commits/" in path:
+            return {"id": baseline if path.endswith("/POS-1") else commit}
+        if path.endswith("/repository/tree"):
+            assert params["ref"] == commit
+            return [{"name": "prd.md", "type": "blob", "mode": "100644"}]
+        if path.endswith("/repository/files/docs%2Fprd.md"):
+            assert params["ref"] == commit
+            return {
+                "commit_id": commit,
+                "blob_id": "c" * 40,
+                "size": len(content),
+                "encoding": "base64",
+                "content": base64.b64encode(content.encode()).decode(),
+            }
+        raise AssertionError(path)
+
+    provider = RepositoryProvider(config.repository.instance)
+    with (
+        patch.object(provider.http, "get", side_effect=get),
+        patch("plane.singularity.requirement_review.provider_for", return_value=provider),
+    ):
+        row = capture_snapshot(config, commit if explicit_sha else None)
+        assert capture_snapshot(config, commit).pk == row.pk
+    assert row.source_sha == commit
+    assert row.snapshot["baseline_sha"] == baseline
+    assert row.snapshot["documents"] == {"docs/prd.md": content}
+    assert row.status == "queued"
+
+
+@pytest.mark.parametrize(
+    "message,expected",
+    [
+        ("not enough values to unpack (expected 4, got 3)", "ValueError: unpack expected 4, got 3"),
+        ("https://user:private-token@git.example?token=secret", "ValueError"),
+    ],
+)
+def test_capture_failure_has_safe_location_and_recovers(review, message, expected):
+    config, provider = review
+    provider.resolve.side_effect = ValueError(message)
+    poll_one()
+    config.refresh_from_db()
+    assert config.error.startswith(expected + " at requirement_review.py:")
+    assert len(config.error) <= 100
+    assert "private-token" not in config.error and "secret" not in config.error
+    assert not RequirementReviewRun.objects.exists()
+    provider.resolve.side_effect = None
+    config.poll_after = None
+    config.save(update_fields=["poll_after"])
+    poll_one()
+    config.refresh_from_db()
+    assert config.error == ""
+    assert RequirementReviewRun.objects.count() == 1
+
+
 def test_consecutive_commits_keep_both_results(review):
     first = ready(review)
-    review[1].resolve.return_value = ({}, "", "b" * 40, None)
+    review[1].resolve.return_value = ({}, "", "b" * 40)
     review[1].file.return_value = {"commit_sha": "b" * 40, "content": "# New"}
     second = capture(review[0])
     assert first.pk != second.pk
@@ -247,8 +314,14 @@ def test_adoption_status_survives_history_pagination_and_new_version_is_availabl
     first.save()
     for index in range(21):
         RequirementAdoption.objects.create(
-            config=row.config, run=row, actor=world[0], source_sha="d" * 40,
-            target_sha="b" * 40, config_revision=1, kind="ai_passed", status="failed",
+            config=row.config,
+            run=row,
+            actor=world[0],
+            source_sha="d" * 40,
+            target_sha="b" * 40,
+            config_revision=1,
+            kind="ai_passed",
+            status="failed",
             request_key=f"historical-failure-{index}",
         )
     client = Client()
@@ -348,7 +421,7 @@ def test_rapid_pushes_are_reviewed_at_each_event_commit(review):
         RequirementReviewEvent.objects.create(
             repository=config.repository, event_key=sha, branch=config.draft_branch, source_sha=sha
         )
-    provider.resolve.side_effect = lambda repo, ref: ({}, "", ref if len(ref) == 40 else "b" * 40, None)
+    provider.resolve.side_effect = lambda repo, ref: ({}, "", ref if len(ref) == 40 else "b" * 40)
     provider.file.side_effect = lambda repo, sha, path: {"commit_sha": sha, "content": "# " + sha}
     poll_one()
     assert set(RequirementReviewRun.objects.values_list("source_sha", flat=True)) == {"a" * 40, "b" * 40}
@@ -500,7 +573,7 @@ def test_new_mr_is_created_before_review_and_keeps_both_branches(review):
 
 def test_first_baseline_cannot_include_unreviewed_documents(review):
     config, provider = review
-    provider.resolve.side_effect = lambda repo, ref: ({}, "", "a" * 40, None)
+    provider.resolve.side_effect = lambda repo, ref: ({}, "", "a" * 40)
     provider.file.side_effect = lambda repo, sha, path: {
         "commit_sha": sha,
         "content": '{"base_sha":"' + "b" * 40 + '"}' if path.startswith(".singularity/") else "# Login",
@@ -549,6 +622,6 @@ def test_merge_gate_accepts_only_verified_merge_source_and_exact_old_target(revi
     assert client.post(url, payload, content_type="application/json", **headers).status_code == 200
     for change in ({"merge_source": None}, {"old_sha": "d" * 40}, {"merge_source": "d" * 40}):
         assert client.post(url, {**payload, **change}, content_type="application/json", **headers).status_code == 403
-    review[1].resolve.return_value = ({}, "", "d" * 40, None)
+    review[1].resolve.return_value = ({}, "", "d" * 40)
     with patch("plane.singularity.requirement_review_api.provider_for", return_value=review[1]):
         assert client.post(url, payload, content_type="application/json", **headers).status_code == 403

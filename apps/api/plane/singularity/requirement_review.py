@@ -183,7 +183,7 @@ def read_documents(config, provider, commit):
 def capture(config, source_sha=None):
     """Resolve HEAD once, snapshot full documents, then persist idempotently."""
     provider = provider_for(config)
-    _, _, commit, _ = provider.resolve(config.repository, source_sha or config.draft_branch)
+    _, _, commit = provider.resolve(config.repository, source_sha or config.draft_branch)
     if source_sha and commit != source_sha:
         raise ValidationError("Repository returned a different commit")
     config.issue.refresh_from_db()
@@ -238,6 +238,26 @@ def capture(config, source_sha=None):
         return row
 
 
+def capture_error(error):
+    """Keep code locations and structural counts, never arbitrary exception payloads."""
+    if isinstance(error, RepositoryError):
+        return error.code[:100]
+    detail = type(error).__name__
+    # Python's unpack counts are safe; URLs, response bodies and locals are not.
+    match = re.fullmatch(r"not enough values to unpack \(expected (\d+), got (\d+)\)", str(error))
+    if isinstance(error, ValueError) and match:
+        detail += f": unpack expected {match[1]}, got {match[2]}"
+    trace = error.__traceback__
+    location = ""
+    while trace:
+        code = trace.tb_frame.f_code
+        filename = code.co_filename.replace("\\", "/")
+        if "/plane/singularity/" in filename:
+            location = f" at {filename.rsplit('/', 1)[-1]}:{trace.tb_lineno}"
+        trace = trace.tb_next
+    return (detail + location)[:100]
+
+
 def poll_one():
     """Lease one due configuration; failures remain visible and retry independently."""
     with transaction.atomic():
@@ -267,7 +287,7 @@ def poll_one():
         RequirementReviewConfig.objects.filter(pk=config.pk, revision=config.revision).update(error="")
     except Exception as error:
         RequirementReviewConfig.objects.filter(pk=config.pk, revision=config.revision).update(
-            error=getattr(error, "code", type(error).__name__)[:100]
+            error=capture_error(error)
         )
 
 
