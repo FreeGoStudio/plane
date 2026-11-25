@@ -8,6 +8,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from django.db.models import Q
+from django.db import transaction
 from django.utils import timezone
 
 from .repository_provider import component
@@ -17,8 +18,21 @@ from .requirement_review import current_input, provider_for, target_head
 
 def transport(config):
     """Use only the dedicated executor credential, never a reader or admin token."""
-    token = Path(os.environ["DOCUMENT_ADOPTION_TOKEN_FILE"]).read_text(encoding="utf-8-sig").strip()
-    return RepositoryTransport(config.repository.instance, token)
+    from .document_executor import transport as repository_transport
+    from plane.db.models import DocumentRepositoryExecutor
+
+    # Compatibility is restricted to explicitly registered legacy repositories.
+    # Never send the old project token to a newly connected repository.
+    if (
+        str(config.repository_id) in os.environ.get("DOCUMENT_REVIEW_GATED_REPOSITORIES", "").split(",")
+        and os.environ.get("DOCUMENT_ADOPTION_TOKEN_FILE")
+        and not DocumentRepositoryExecutor.objects.filter(repository_id=config.repository_id)
+        .exclude(encrypted_material="")
+        .exists()
+    ):
+        token = Path(os.environ["DOCUMENT_ADOPTION_TOKEN_FILE"]).read_text(encoding="utf-8-sig").strip()
+        return RepositoryTransport(config.repository.instance, token)
+    return repository_transport(config.repository)
 
 
 def ensure_merge_request(run):
@@ -101,20 +115,34 @@ def prepare_one():
     """Prepare a persisted review's MR before dispatch, without giving AI write credentials."""
     from plane.db.models import RequirementReviewRun
 
-    run = (
-        RequirementReviewRun.objects.filter(status="queued", merge_request={})
-        .filter(Q(dispatch_at__isnull=True) | Q(dispatch_at__lt=timezone.now() - timedelta(seconds=60)))
-        .order_by("created_at")
-        .first()
-    )
-    if not run:
-        return
+    with transaction.atomic():
+        run = (
+            RequirementReviewRun.objects.select_for_update(skip_locked=True)
+            .filter(status="queued", merge_request={})
+            .filter(Q(dispatch_at__isnull=True) | Q(dispatch_at__lt=timezone.now() - timedelta(seconds=60)))
+            .order_by("created_at")
+            .first()
+        )
+        if not run:
+            return
+        run.preparation_attempts += 1
+        run.dispatch_at = timezone.now()
+        run.save(update_fields=["preparation_attempts", "dispatch_at"])
     try:
         ensure_merge_request(run)
         RequirementReviewRun.objects.filter(pk=run.pk).update(error="", dispatch_at=None)
     except Exception as error:
+        from .repository_transport import RepositoryError
+        from .wbs import WbsConflict
+        from rest_framework.exceptions import PermissionDenied
+
+        permanent = isinstance(error, (WbsConflict, PermissionDenied, ValueError)) or (
+            isinstance(error, RepositoryError) and error.status in (401, 403, 404, 409)
+        )
         RequirementReviewRun.objects.filter(pk=run.pk).update(
-            error=getattr(error, "code", type(error).__name__)[:100], dispatch_at=timezone.now()
+            status="failed" if permanent or run.preparation_attempts >= 5 else "queued",
+            error=getattr(error, "code", type(error).__name__)[:100],
+            dispatch_at=timezone.now(),
         )
 
 

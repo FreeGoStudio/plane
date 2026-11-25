@@ -192,7 +192,12 @@ class RequirementAdoptionGate(APIView):
         ).first()
         if not config:
             return Response({"allowed": True, "reason": "unmanaged_branch"})
-        if not config.enabled or data["actor"] != os.environ.get("DOCUMENT_REVIEW_EXECUTOR_GL_ID"):
+        from .document_executor import actor_matches
+
+        legacy_actor = str(config.repository_id) in os.environ.get("DOCUMENT_REVIEW_GATED_REPOSITORIES", "").split(
+            ","
+        ) and data["actor"] == os.environ.get("DOCUMENT_REVIEW_EXECUTOR_GL_ID")
+        if not config.enabled or not (legacy_actor or actor_matches(config.repository_id, data["actor"])):
             return Response({"allowed": False, "reason": "use_requirement_adoption"}, status=403)
         if data["old_sha"] == "0" * len(data["old_sha"]) and not config.adopted_sha:
             initial = RequirementReviewRun.objects.filter(config=config, snapshot__baseline_sha=data["new_sha"]).first()

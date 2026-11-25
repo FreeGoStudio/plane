@@ -50,6 +50,9 @@ class Command(BaseCommand):
                     from plane.singularity.repository_managed import maintain_connections
 
                     maintain_connections(client)
+                    from plane.singularity.document_executor import maintain_executors
+
+                    maintain_executors(client)
             except (CompanyError, VaultError, OSError, ValueError, KeyError, TypeError):
                 # Never emit upstream response bodies, state or credential values.
                 self.stderr.write("Company administrator credential maintenance failed; retrying")

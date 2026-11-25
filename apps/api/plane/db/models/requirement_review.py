@@ -7,6 +7,24 @@
 import uuid
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
+
+
+class DocumentRepositoryExecutor(models.Model):
+    """Platform-owned project credential; never a user's selected reader credential."""
+
+    repository = models.OneToOneField("db.ProjectRepository", primary_key=True, on_delete=models.CASCADE)
+    status = models.CharField(max_length=24, default="pending")
+    error_code = models.CharField(max_length=100, blank=True)
+    token_id = models.PositiveBigIntegerField(null=True)
+    actor_id = models.CharField(max_length=64, blank=True)
+    expires_at = models.DateField(null=True)
+    key_version = models.CharField(max_length=32, blank=True)
+    encrypted_material = models.TextField(blank=True)
+    issuance_name = models.CharField(max_length=100, blank=True)
+    retired_tokens = models.JSONField(default=list)
+    next_check_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class RequirementReviewConfig(models.Model):
@@ -41,6 +59,7 @@ class RequirementReviewRun(models.Model):
     result_digest = models.CharField(max_length=64, blank=True)
     error = models.CharField(max_length=100, blank=True)
     attempts = models.PositiveIntegerField(default=0)
+    preparation_attempts = models.PositiveIntegerField(default=0)
     dispatch_at = models.DateTimeField(null=True)
     lease_until = models.DateTimeField(null=True)
     execution_token = models.UUIDField(null=True)

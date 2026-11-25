@@ -62,6 +62,7 @@ def review(world, monkeypatch):
     with (
         patch("plane.singularity.requirement_review.provider_for", return_value=provider),
         patch("plane.singularity.requirement_review_api.provider_for", return_value=provider),
+        patch("plane.singularity.requirement_merge_request.provider_for", return_value=provider),
     ):
         yield row, provider
 
