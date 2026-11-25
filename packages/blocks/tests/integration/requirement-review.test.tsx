@@ -6,6 +6,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { RequirementReviewPanel } from "../../../../apps/web/components/issues/issue-detail-widgets/sub-issues/requirement-review";
+import { RequirementReviewFinding } from "../../../../apps/web/components/issues/issue-detail-widgets/sub-issues/requirement-review-finding";
 
 const service = vi.hoisted(() => ({ read: vi.fn(), write: vi.fn() }));
 vi.mock("@/services/repository.service", () => ({ repositoryBase: () => "/test/", repositoryService: service }));
@@ -15,9 +16,58 @@ vi.mock("@plane/i18n", () => {
     "document_review.adopting": "采用中",
     "document_review.adoption_completed": "已采用",
     "document_review.override": "人工确认采用",
+    "document_review.finding_problem": "问题与影响",
+    "document_review.finding_action": "建议修改",
+    "document_review.finding_evidence": "查看引用原文",
   };
   const t = (key: string) => labels[key] ?? key;
   return { useTranslation: () => ({ t }) };
+});
+
+describe("readable document findings", () => {
+  const finding = {
+    id: "F1",
+    severity: "blocking",
+    path: "requirements/SING-19/prd.md",
+    line: 33,
+    reason: "缺少固定版本 PRD 的审查与采用检查。仅核对提交，无法证明采用完成。",
+    suggestion: "在 AC-004 增加：\n\n- 记录固定版本。\n- 核对采用结果。",
+    evidence: "| AC-004 | 冻结候选 | 未经人工批准不得发布 |",
+  };
+  it("gives legacy findings a readable heading and keeps exact evidence separately collapsed", () => {
+    const { container } = render(<RequirementReviewFinding finding={finding} />);
+    expect(container.querySelector("summary")?.textContent).toContain("缺少固定版本 PRD 的审查与采用检查。");
+    expect(screen.getByRole("heading", { name: "问题与影响", hidden: true })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "建议修改", hidden: true })).toBeTruthy();
+    expect(container.querySelectorAll("li")).toHaveLength(2);
+    expect(container.querySelector("pre")?.textContent).toBe(finding.evidence);
+    expect(container.querySelector("details details")?.hasAttribute("open")).toBe(false);
+  });
+  it("prefers the concise generated title without truncating the full explanation", () => {
+    const { container } = render(<RequirementReviewFinding finding={{ ...finding, title: "缺少 PRD 采用检查" }} />);
+    expect(container.querySelector("summary")?.textContent).toContain("缺少 PRD 采用检查");
+    expect(container.textContent).toContain(finding.reason);
+  });
+  it("renders markdown escapes and line breaks without enabling injected HTML or media", () => {
+    const { container } = render(
+      <RequirementReviewFinding
+        finding={{
+          ...finding,
+          reason: "核对 A\\|B。\\\n保留原始约束。<script>alert(1)</script>",
+          suggestion: "![remote](https://example.com/track.png)\n[unsafe](javascript:alert(1))",
+          evidence: "<img src=x onerror=alert(1)>",
+        }}
+      />
+    );
+    expect(container.textContent).toContain("核对 A|B。");
+    expect(container.querySelectorAll("script, img, iframe, a")).toHaveLength(0);
+    expect(container.querySelector("pre")?.textContent).toBe("<img src=x onerror=alert(1)>");
+  });
+  it("does not invent a line number or empty source section for missing information", () => {
+    const { container } = render(<RequirementReviewFinding finding={{ ...finding, line: 0, evidence: "" }} />);
+    expect(container.querySelector("summary")?.textContent).not.toContain(":0");
+    expect(screen.queryByText("查看引用原文")).toBeNull();
+  });
 });
 
 function data(status: string | null = null, verdict = "passed") {

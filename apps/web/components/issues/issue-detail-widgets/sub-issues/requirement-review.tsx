@@ -8,23 +8,15 @@ import { Button } from "@makeplane/propel/components/button";
 import { useTranslation } from "@plane/i18n";
 import { useDateFormatter } from "@plane/utils";
 import { repositoryBase, repositoryService } from "@/services/repository.service";
-
-type Finding = {
-  id: string;
-  severity: string;
-  path: string;
-  line: number;
-  evidence: string;
-  reason: string;
-  suggestion: string;
-};
+import { RequirementReviewFinding } from "./requirement-review-finding";
+import type { DocumentFinding } from "./requirement-review-finding";
 type Run = {
   id: string;
   source_sha: string;
   status: string;
   error: string;
   created_at: string;
-  result: { verdict?: string; summary?: string; findings?: Finding[] };
+  result: { verdict?: string; summary?: string; findings?: DocumentFinding[] };
   adoption_status?: "pending" | "running" | "completed" | null;
 };
 type Adoption = {
@@ -204,15 +196,7 @@ export function RequirementReviewPanel({
               {run.error && <p role="alert">{run.error}</p>}
               <p>{run.result.summary}</p>
               {run.result.findings?.map((f) => (
-                <details key={f.id} className="rounded border border-subtle p-2">
-                  <summary>
-                    {f.id} · {t(`document_review.${f.severity}`)} · {f.path}
-                    {f.line ? `:${f.line}` : ""}
-                  </summary>
-                  {f.evidence && <blockquote className="whitespace-pre-wrap">{f.evidence}</blockquote>}
-                  <p>{f.reason}</p>
-                  <p>{f.suggestion}</p>
-                </details>
+                <RequirementReviewFinding key={f.id} finding={f} />
               ))}
               {run.status === "failed" && (
                 <Button

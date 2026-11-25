@@ -79,6 +79,35 @@ def result(verdict="passed"):
     return {"verdict": verdict, "summary": "Reviewed", "findings": []}
 
 
+def test_readable_titles_preserve_legacy_results_and_evidence_validation():
+    from plane.singularity.requirement_review_generation import GeneratedReviewResult
+
+    value = {
+        "verdict": "changes_requested",
+        "summary": "需修改",
+        "findings": [
+            {
+                "id": "F1",
+                "severity": "blocking",
+                "path": "prd.md",
+                "line": 1,
+                "evidence": "| AC-004 | 冻结候选 |",
+                "reason": "缺少采用检查。",
+                "suggestion": "补充采用检查。",
+            }
+        ],
+    }
+    snapshot = {"documents": {"prd.md": "| AC-004 | 冻结候选 |"}}
+    assert validate_result(value, snapshot) == value
+    value["findings"][0]["title"] = "缺少固定 PRD 采用检查"
+    assert validate_result(value, snapshot) == value
+    schema = GeneratedReviewResult.model_json_schema()
+    assert "title" in schema["$defs"]["GeneratedFinding"]["required"]
+    value["findings"][0]["evidence"] = "改写后的证据"
+    with pytest.raises(ValueError, match="invented_evidence"):
+        validate_result(value, snapshot)
+
+
 def ready(review):
     row = capture(review[0])
     with patch("plane.singularity.requirement_review_generation.generate", return_value=result()):

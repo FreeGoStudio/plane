@@ -611,7 +611,10 @@
     "previous": "Previous",
     "next": "Next",
     "ai_passed": "AI passed",
-    "override_record": "Human override"
+    "override_record": "Human override",
+    "finding_problem": "Problem and impact",
+    "finding_action": "Suggested changes",
+    "finding_evidence": "View original evidence"
   },
   "code_review": {
     "pending": "Awaiting review or acceptance",

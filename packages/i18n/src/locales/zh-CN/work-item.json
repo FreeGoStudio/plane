@@ -611,7 +611,10 @@
     "previous": "上一页",
     "next": "下一页",
     "ai_passed": "AI 通过",
-    "override_record": "经人工确认采用"
+    "override_record": "经人工确认采用",
+    "finding_problem": "问题与影响",
+    "finding_action": "建议修改",
+    "finding_evidence": "查看引用原文"
   },
   "code_review": {
     "pending": "待重审或待确认",
