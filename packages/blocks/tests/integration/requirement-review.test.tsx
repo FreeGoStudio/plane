@@ -19,6 +19,8 @@ vi.mock("@plane/i18n", () => {
     "document_review.finding_problem": "问题与影响",
     "document_review.finding_action": "建议修改",
     "document_review.finding_evidence": "查看引用原文",
+    "document_review.policy_details": "查看判定依据",
+    "document_review.policy_closure": "关闭条件",
   };
   const t = (key: string) => labels[key] ?? key;
   return { useTranslation: () => ({ t }) };
@@ -67,6 +69,37 @@ describe("readable document findings", () => {
     const { container } = render(<RequirementReviewFinding finding={{ ...finding, line: 0, evidence: "" }} />);
     expect(container.querySelector("summary")?.textContent).not.toContain(":0");
     expect(screen.queryByText("查看引用原文")).toBeNull();
+  });
+  it("shows structured findings without duplicating the flattened legacy explanation", () => {
+    const policy = {
+      priority: "P1",
+      evidence_status: "confirmed",
+      blocking_scope: "固定版本采用",
+      gap: "缺少固定版本采用核对。",
+      impact: "可能错误验收。",
+      minimum_fix: "核对采用记录及对应版本。",
+      original_basis: "必须采用固定版本。",
+      counterexample: "所有AC通过但采用未完成。",
+      coverage_check: "版本冻结不能证明已采用。",
+      closure_condition: "补齐核对并保留证据。",
+      delivery_prerequisite: false,
+      prerequisite_basis: "不适用的前置条件说明",
+    };
+    const { container } = render(
+      <RequirementReviewFinding finding={{ ...finding, policy, reason: "不应重复显示的拼接长文" }} />
+    );
+    expect(container.querySelector("summary")?.textContent).toContain("P1");
+    expect(container.textContent).not.toContain("不应重复显示的拼接长文");
+    expect(container.textContent).not.toContain(policy.prerequisite_basis);
+    expect(container.textContent?.split(policy.minimum_fix)).toHaveLength(2);
+    const evidence = screen.getByText("查看判定依据").closest("details")!;
+    expect(evidence.open).toBe(false);
+    fireEvent.click(container.querySelector("summary")!);
+    fireEvent.click(screen.getByText("查看判定依据"));
+    expect(evidence.open).toBe(true);
+    expect(evidence.querySelectorAll("dt")).toHaveLength(3);
+    expect(evidence.textContent).toContain(policy.counterexample);
+    expect(container.textContent).toContain(policy.closure_condition);
   });
 });
 

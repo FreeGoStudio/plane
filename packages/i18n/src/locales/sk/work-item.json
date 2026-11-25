@@ -614,7 +614,17 @@
     "override_record": "Human override",
     "finding_problem": "Problem and impact",
     "finding_action": "Suggested changes",
-    "finding_evidence": "View original evidence"
+    "finding_evidence": "View original evidence",
+    "policy_confirmed": "Evidence confirmed",
+    "policy_needs_clarification": "Needs clarification",
+    "policy_needs_verification": "Needs verification",
+    "policy_scope": "Affected acceptance scope",
+    "policy_details": "Review supporting evidence",
+    "policy_basis": "Original requirement",
+    "policy_counterexample": "Counterexample",
+    "policy_coverage": "Equivalent coverage check",
+    "policy_prerequisite": "Required delivery prerequisite",
+    "policy_closure": "Conditions for resolution"
   },
   "code_review": {
     "pending": "Awaiting review or acceptance",

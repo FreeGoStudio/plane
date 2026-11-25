@@ -614,7 +614,17 @@
     "override_record": "经人工确认采用",
     "finding_problem": "问题与影响",
     "finding_action": "建议修改",
-    "finding_evidence": "查看引用原文"
+    "finding_evidence": "查看引用原文",
+    "policy_confirmed": "已证实",
+    "policy_needs_clarification": "待澄清",
+    "policy_needs_verification": "待验证",
+    "policy_scope": "阻断范围",
+    "policy_details": "查看判定依据",
+    "policy_basis": "原始要求",
+    "policy_counterexample": "反例证明",
+    "policy_coverage": "等效覆盖检查",
+    "policy_prerequisite": "原定交付前置条件",
+    "policy_closure": "关闭条件"
   },
   "code_review": {
     "pending": "待重审或待确认",
